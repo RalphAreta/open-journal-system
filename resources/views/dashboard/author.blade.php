@@ -10,15 +10,15 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
     <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
         <p class="text-sm text-slate-700 font-medium">Total Submissions</p>
-        <p class="text-2xl font-bold text-red-700">{{ $stats['total'] }}</p>
+        <p class="text-2xl font-bold text-black">{{ $stats['total'] }}</p>
     </div>
     <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
         <p class="text-sm text-slate-700 font-medium">Submitted</p>
-        <p class="text-2xl font-bold text-red-700">{{ $stats['submitted'] }}</p>
+        <p class="text-2xl font-bold text-black">{{ $stats['submitted'] }}</p>
     </div>
     <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
         <p class="text-sm text-slate-700 font-medium">Under Review</p>
-        <p class="text-2xl font-bold text-red-700">{{ $stats['under_review'] }}</p>
+        <p class="text-2xl font-bold text-yellow-500">{{ $stats['under_review'] }}</p>
     </div>
     <div class="bg-white rounded-lg shadow-md p-4 border-2 border-green-100">
         <p class="text-sm text-slate-700 font-medium">Accepted</p>
