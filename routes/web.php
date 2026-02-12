@@ -24,6 +24,7 @@ Route::middleware('guest')->group(function (): void {
 Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/submissions/{submission}/download', [ReviewController::class, 'downloadFile'])->name('submissions.download');
 
     Route::middleware('role:author')->group(function (): void {
         Route::get('/dashboard/author', [DashboardController::class, 'author'])->name('dashboard.author');
@@ -53,5 +54,7 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/admin/roles/{role}', [AdminRoleController::class, 'update'])->name('admin.roles.update');
         Route::get('/admin/settings', [SystemSettingController::class, 'index'])->name('admin.settings.index');
         Route::put('/admin/settings', [SystemSettingController::class, 'update'])->name('admin.settings.update');
+        Route::get('/admin/submissions', [ReviewController::class, 'adminSubmissions'])->name('admin.submissions');
+        Route::get('/admin/submissions/{submission}', [ReviewController::class, 'adminShow'])->name('admin.submissions.show');
     });
 });

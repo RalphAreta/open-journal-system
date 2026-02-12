@@ -5,6 +5,23 @@
 @section('content')
 <h1 class="text-2xl font-semibold mb-2">Submit Review</h1>
 <p class="text-slate-600 mb-6">Submission: <strong>{{ $submission->title }}</strong> by {{ $submission->author->name }}</p>
+
+<div class="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+    <h2 class="text-lg font-semibold text-blue-900 mb-4">Submission File</h2>
+    @if($submission->file_path)
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-blue-700 mb-2"><strong>File:</strong> {{ $submission->file_name }}</p>
+            </div>
+            <a href="{{ route('submissions.download', ['submission' => $submission]) }}" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 inline-block">
+                📥 Download File
+            </a>
+        </div>
+    @else
+        <p class="text-slate-500 italic">No file submitted.</p>
+    @endif
+</div>
+
 <form method="POST" action="{{ route('reviews.store') }}" class="max-w-2xl space-y-4">
     @csrf
     <input type="hidden" name="review_assignment_id" value="{{ $assignment->id }}">

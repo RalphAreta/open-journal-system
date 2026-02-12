@@ -7,7 +7,9 @@ use App\Models\ReviewAssignment;
 use App\Models\Submission;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReviewController extends Controller
 {
@@ -152,5 +154,70 @@ class ReviewController extends Controller
         ]);
 
         return redirect()->route('editor.submissions')->with('success', 'Decision recorded.');
+    }
+
+    /**
+     * Admin: list all submissions for management.
+     */
+    public function adminSubmissions(Request $request): View
+    {
+        $submissions = Submission::with(['author', 'reviews.reviewer', 'reviewAssignments.reviewer'])
+            ->latest()
+            ->paginate(15);
+
+        return view('reviews.admin-submissions', compact('submissions'));
+    }
+
+    /**
+     * Admin: show submission details.
+     */
+    public function adminShow(Submission $submission): View
+    {
+        $submission->load(['author', 'reviews.reviewer', 'reviewAssignments.reviewer']);
+        return view('reviews.admin-show', compact('submission'));
+    }
+
+    /**
+     * Download submission file (reviewer or editor access).
+     */
+    public function downloadFile(Submission $submission): StreamedResponse
+    {
+        $user = request()->user();
+
+        // Check if user is an editor (can download any submission)
+        if ($user->isEditor()) {
+            return $this->serializeFile($submission);
+        }
+
+        // Check if user is a reviewer assigned to this submission
+        $isAssignedReviewer = ReviewAssignment::where('submission_id', $submission->id)
+            ->where('reviewer_id', $user->id)
+            ->exists();
+
+        if ($isAssignedReviewer) {
+            return $this->serializeFile($submission);
+        }
+
+        // Check if user is admin
+        if ($user->isAdmin()) {
+            return $this->serializeFile($submission);
+        }
+
+        abort(403);
+    }
+
+    /**
+     * Helper method to download file.
+     */
+    private function serializeFile(Submission $submission): StreamedResponse
+    {
+        if (!$submission->file_path || !Storage::disk('local')->exists($submission->file_path)) {
+            abort(404, 'File not found.');
+        }
+
+        return Storage::disk('local')->download(
+            $submission->file_path,
+            $submission->file_name
+        );
     }
 }

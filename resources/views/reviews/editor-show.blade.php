@@ -9,6 +9,23 @@
         <p><span class="text-slate-500">Author:</span> {{ $submission->author->name }}</p>
         <p><span class="text-slate-500">Status:</span> <span class="px-2 py-1 rounded-full bg-slate-100">{{ $submission->status }}</span></p>
         <p><span class="text-slate-500">Abstract:</span> {{ $submission->abstract }}</p>
+        
+        <div class="border-t pt-4">
+            <p class="font-medium text-slate-700 mb-3">Submission File</p>
+            @if($submission->file_path)
+                <div class="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded">
+                    <div>
+                        <p class="text-sm text-blue-700"><strong>File:</strong> {{ $submission->file_name }}</p>
+                    </div>
+                    <a href="{{ route('submissions.download', ['submission' => $submission]) }}" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 inline-block text-sm">
+                        📥 Download
+                    </a>
+                </div>
+            @else
+                <p class="text-slate-500 italic">No file submitted.</p>
+            @endif
+        </div>
+
         @if($submission->reviews->isNotEmpty())
             <div class="border-t pt-4">
                 <p class="font-medium text-slate-700 mb-2">Reviews</p>

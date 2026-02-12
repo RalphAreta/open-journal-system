@@ -15,7 +15,7 @@
         <p class="text-3xl font-semibold">{{ $roleCount }}</p>
         <p class="mt-2 text-sm text-indigo-600">Manage roles →</p>
     </a>
-    <a href="{{ route('editor.submissions') }}" class="bg-white rounded-lg shadow p-6 border border-slate-200 hover:border-indigo-300 transition">
+    <a href="{{ route('admin.submissions') }}" class="bg-white rounded-lg shadow p-6 border border-slate-200 hover:border-indigo-300 transition">
         <p class="text-sm text-slate-500">Submissions</p>
         <p class="text-3xl font-semibold">{{ $submissionCount }}</p>
         <p class="mt-2 text-sm text-indigo-600">View submissions →</p>
