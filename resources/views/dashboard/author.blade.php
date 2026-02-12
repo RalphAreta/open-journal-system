@@ -3,32 +3,35 @@
 @section('title', 'Author Dashboard')
 
 @section('content')
-<h1 class="text-2xl font-semibold mb-6">Author Dashboard</h1>
+<div class="mb-6">
+    <h1 class="text-3xl font-bold text-red-700 mb-2">Author Dashboard</h1>
+    <p class="text-slate-600">Manage your submissions</p>
+</div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-    <div class="bg-white rounded-lg shadow p-4 border border-slate-200">
-        <p class="text-sm text-slate-500">Total Submissions</p>
-        <p class="text-2xl font-semibold">{{ $stats['total'] }}</p>
+    <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
+        <p class="text-sm text-slate-700 font-medium">Total Submissions</p>
+        <p class="text-2xl font-bold text-red-700">{{ $stats['total'] }}</p>
     </div>
-    <div class="bg-white rounded-lg shadow p-4 border border-slate-200">
-        <p class="text-sm text-slate-500">Submitted</p>
-        <p class="text-2xl font-semibold">{{ $stats['submitted'] }}</p>
+    <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
+        <p class="text-sm text-slate-700 font-medium">Submitted</p>
+        <p class="text-2xl font-bold text-red-700">{{ $stats['submitted'] }}</p>
     </div>
-    <div class="bg-white rounded-lg shadow p-4 border border-slate-200">
-        <p class="text-sm text-slate-500">Under Review</p>
-        <p class="text-2xl font-semibold">{{ $stats['under_review'] }}</p>
+    <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
+        <p class="text-sm text-slate-700 font-medium">Under Review</p>
+        <p class="text-2xl font-bold text-red-700">{{ $stats['under_review'] }}</p>
     </div>
-    <div class="bg-white rounded-lg shadow p-4 border border-slate-200">
-        <p class="text-sm text-slate-500">Accepted</p>
-        <p class="text-2xl font-semibold text-green-600">{{ $stats['accepted'] }}</p>
+    <div class="bg-white rounded-lg shadow-md p-4 border-2 border-green-100">
+        <p class="text-sm text-slate-700 font-medium">Accepted</p>
+        <p class="text-2xl font-bold text-green-600">{{ $stats['accepted'] }}</p>
     </div>
-    <div class="bg-white rounded-lg shadow p-4 border border-slate-200">
-        <p class="text-sm text-slate-500">Rejected</p>
-        <p class="text-2xl font-semibold text-red-600">{{ $stats['rejected'] }}</p>
+    <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
+        <p class="text-sm text-slate-700 font-medium">Rejected</p>
+        <p class="text-2xl font-bold text-red-600">{{ $stats['rejected'] }}</p>
     </div>
 </div>
 <div class="flex justify-between items-center mb-4">
     <h2 class="text-lg font-medium">My Submissions</h2>
-    <a href="{{ route('submissions.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm">New Submission</a>
+    <a href="{{ route('submissions.create') }}" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-sm font-medium shadow-sm transition-colors">New Submission</a>
 </div>
 <div class="bg-white rounded-lg shadow overflow-hidden border border-slate-200">
     <table class="min-w-full divide-y divide-slate-200">
@@ -47,11 +50,11 @@
                     <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-slate-100">{{ $s->status }}</span></td>
                     <td class="px-4 py-3 text-sm text-slate-500">{{ $s->submitted_at?->format('M d, Y') ?? '-' }}</td>
                     <td class="px-4 py-3 text-right">
-                        <a href="{{ route('submissions.show', $s) }}" class="text-indigo-600 hover:underline text-sm">View</a>
+                        <a href="{{ route('submissions.show', $s) }}" class="text-red-600 hover:text-red-700 hover:underline text-sm font-medium">View</a>
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="4" class="px-4 py-8 text-center text-slate-500">No submissions yet. <a href="{{ route('submissions.create') }}" class="text-indigo-600">Submit an article</a>.</td></tr>
+                <tr><td colspan="4" class="px-4 py-8 text-center text-slate-500">No submissions yet. <a href="{{ route('submissions.create') }}" class="text-red-600 hover:text-red-700 font-medium">Submit an article</a>.</td></tr>
             @endforelse
         </tbody>
     </table>

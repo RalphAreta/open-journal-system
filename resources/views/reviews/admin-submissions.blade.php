@@ -8,24 +8,24 @@
     <table class="min-w-full divide-y divide-slate-200">
         <thead class="bg-slate-50">
             <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Title</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Author</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Status</th>
-                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase">Actions</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase">Title</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase">Author</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase">Status</th>
+                <th class="px-4 py-3 text-right text-xs font-medium text-slate-700 uppercase">Actions</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-slate-200">
             @forelse($submissions as $s)
                 <tr>
-                    <td class="px-4 py-3 text-sm">{{ Str::limit($s->title, 50) }}</td>
-                    <td class="px-4 py-3 text-sm">{{ $s->author->name ?? '-' }}</td>
-                    <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-slate-100">{{ $s->status }}</span></td>
+                    <td class="px-4 py-3 text-sm text-slate-900">{{ Str::limit($s->title, 50) }}</td>
+                    <td class="px-4 py-3 text-sm text-slate-900">{{ $s->author->name ?? '-' }}</td>
+                    <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-slate-100 text-slate-900">{{ $s->status }}</span></td>
                     <td class="px-4 py-3 text-right">
-                        <a href="{{ route('admin.submissions.show', $s) }}" class="text-indigo-600 hover:underline text-sm">View</a>
+                        <a href="{{ route('admin.submissions.show', $s) }}" class="text-red-600 hover:text-red-700 hover:underline text-sm font-medium">View</a>
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="4" class="px-4 py-8 text-center text-slate-500">No submissions.</td></tr>
+                <tr><td colspan="4" class="px-4 py-8 text-center text-slate-700">No submissions.</td></tr>
             @endforelse
         </tbody>
     </table>

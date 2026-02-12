@@ -26,9 +26,9 @@
             </div>
         </div>
     @endforeach
-    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Save Settings</button>
+    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 font-medium shadow-sm transition-colors">Save Settings</button>
 </form>
 @if($settings->isEmpty())
-    <p class="text-slate-500">No settings defined. Add settings via the database or a seeder.</p>
+    <p class="text-slate-700">No settings defined. Add settings via the database or a seeder.</p>
 @endif
 @endsection

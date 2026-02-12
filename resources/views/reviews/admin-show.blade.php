@@ -41,7 +41,7 @@
     </div>
 
     <div class="mt-4">
-        <a href="{{ route('admin.submissions') }}" class="text-indigo-600 hover:underline">← Back to submissions</a>
+        <a href="{{ route('admin.submissions') }}" class="text-red-600 hover:underline">← Back to submissions</a>
     </div>
 </div>
 @endsection
