@@ -20,7 +20,7 @@
     <div class="bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 p-5 transition-all duration-200 hover:border-green-200">
         <div class="flex items-center justify-between mb-3">
             <p class="text-sm font-medium text-slate-700">Completed Reviews</p>
-            <span class="text-2xl">✓</span>
+            <span class="text-2xl">✅</span>
         </div>
         <p class="text-3xl font-bold text-green-600">{{ $stats['completed'] }}</p>
         <p class="text-xs text-slate-700 mt-2">Submitted</p>

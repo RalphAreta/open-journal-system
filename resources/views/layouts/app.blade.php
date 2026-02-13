@@ -103,7 +103,7 @@
                 </div>
             </div>
             <div class="border-t border-slate-800 pt-6 text-center text-sm text-slate-500">
-                <p>Built with care for academic excellence</p>
+                <p>Leading Innovations, Transforming Lives, Building the Nation</p>
             </div>
         </div>
     </footer>
