@@ -4,39 +4,39 @@
 
 @section('content')
 <div class="mb-8">
-    <h1 class="text-4xl font-bold text-slate-900 mb-2">Editor Dashboard</h1>
+    <h1 class="text-5xl font-bold text-slate-900 mb-2">Editor Dashboard</h1>
     <p class="text-lg text-slate-600">Review and manage submissions</p>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
     <div class="bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 p-5 transition-all duration-200 hover:border-slate-300">
         <div class="flex items-center justify-between mb-3">
-            <p class="text-sm font-medium text-slate-700">Total Submissions</p>
-            <span class="text-2xl">📊</span>
+            <p class="text-md font-medium text-slate-700">Total Submissions</p>
+            <span class="text-5xl">📊</span>
         </div>
         <p class="text-3xl font-bold text-slate-900">{{ $stats['total'] }}</p>
         <p class="text-xs text-slate-700 mt-2">All submissions</p>
     </div>
     <div class="bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 p-5 transition-all duration-200 hover:border-blue-200">
         <div class="flex items-center justify-between mb-3">
-            <p class="text-sm font-medium text-slate-700">New (Submitted)</p>
-            <span class="text-2xl">📥</span>
+            <p class="text-md font-medium text-slate-700">New (Submitted)</p>
+            <span class="text-5xl">📥</span>
         </div>
         <p class="text-3xl font-bold text-blue-600">{{ $stats['submitted'] }}</p>
         <p class="text-xs text-slate-700 mt-2">Awaiting distribution</p>
     </div>
     <div class="bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 p-5 transition-all duration-200 hover:border-amber-200">
         <div class="flex items-center justify-between mb-3">
-            <p class="text-sm font-medium text-slate-700">Under Review</p>
-            <span class="text-2xl">👥</span>
+            <p class="text-md font-medium text-slate-700">Under Review</p>
+            <span class="text-5xl">📋</span>
         </div>
         <p class="text-3xl font-bold text-amber-600">{{ $stats['under_review'] }}</p>
         <p class="text-xs text-slate-700 mt-2">With reviewers</p>
     </div>
     <div class="bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 p-5 transition-all duration-200 hover:border-red-200">
         <div class="flex items-center justify-between mb-3">
-            <p class="text-sm font-medium text-slate-700">Decision Pending</p>
-            <span class="text-2xl">⏳</span>
+            <p class="text-md font-medium text-slate-700">Decision Pending</p>
+            <span class="text-5xl">⏳</span>
         </div>
         <p class="text-3xl font-bold text-red-600">{{ $stats['decisions_pending'] }}</p>
         <p class="text-xs text-slate-700 mt-2">Awaiting your decision</p>

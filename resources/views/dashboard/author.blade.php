@@ -4,28 +4,28 @@
 
 @section('content')
 <div class="mb-6">
-    <h1 class="text-3xl font-bold text-red-700 mb-2">Author Dashboard</h1>
+    <h1 class="text-5xl font-bold text-slate-900 mb-2">Author Dashboard</h1>
     <p class="text-slate-600">Manage your submissions</p>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
     <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
-        <p class="text-sm text-slate-700 font-medium">Total Submissions</p>
+        <p class="text-md text-slate-700 font-medium">Total Submissions</p>
         <p class="text-2xl font-bold text-black">{{ $stats['total'] }}</p>
     </div>
     <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
-        <p class="text-sm text-slate-700 font-medium">Submitted</p>
+        <p class="text-md text-slate-700 font-medium">Submitted</p>
         <p class="text-2xl font-bold text-black">{{ $stats['submitted'] }}</p>
     </div>
     <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
-        <p class="text-sm text-slate-700 font-medium">Under Review</p>
+        <p class="text-md text-slate-700 font-medium">Under Review</p>
         <p class="text-2xl font-bold text-yellow-500">{{ $stats['under_review'] }}</p>
     </div>
     <div class="bg-white rounded-lg shadow-md p-4 border-2 border-green-100">
-        <p class="text-sm text-slate-700 font-medium">Accepted</p>
+        <p class="text-md text-slate-700 font-medium">Accepted</p>
         <p class="text-2xl font-bold text-green-600">{{ $stats['accepted'] }}</p>
     </div>
     <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
-        <p class="text-sm text-slate-700 font-medium">Rejected</p>
+        <p class="text-md text-slate-700 font-medium">Rejected</p>
         <p class="text-2xl font-bold text-red-600">{{ $stats['rejected'] }}</p>
     </div>
 </div>

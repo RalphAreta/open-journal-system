@@ -4,23 +4,23 @@
 
 @section('content')
 <div class="mb-8">
-    <h1 class="text-4xl font-bold text-slate-900 mb-2">Reviewer Dashboard</h1>
+    <h1 class="text-5xl font-bold text-slate-900 mb-2">Reviewer Dashboard</h1>
     <p class="text-lg text-slate-600">Track and complete your review assignments</p>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
     <div class="bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 p-5 transition-all duration-200 hover:border-red-200">
         <div class="flex items-center justify-between mb-3">
-            <p class="text-sm font-medium text-slate-700">Pending Reviews</p>
-            <span class="text-2xl">⏰</span>
+            <p class="text-md font-medium text-slate-700">Pending Reviews</p>
+            <span class="text-5xl">⏰</span>
         </div>
         <p class="text-3xl font-bold text-red-600">{{ $stats['pending'] }}</p>
         <p class="text-xs text-slate-700 mt-2">Awaiting your submission</p>
     </div>
     <div class="bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 p-5 transition-all duration-200 hover:border-green-200">
         <div class="flex items-center justify-between mb-3">
-            <p class="text-sm font-medium text-slate-700">Completed Reviews</p>
-            <span class="text-2xl">✅</span>
+            <p class="text-md font-medium text-slate-700">Completed Reviews</p>
+            <span class="text-5xl">✅</span>
         </div>
         <p class="text-3xl font-bold text-green-600">{{ $stats['completed'] }}</p>
         <p class="text-xs text-slate-700 mt-2">Submitted</p>
