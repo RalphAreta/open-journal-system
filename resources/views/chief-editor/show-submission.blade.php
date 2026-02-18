@@ -1,0 +1,206 @@
+@php
+use App\Models\Submission;
+@endphp
+
+@extends('layouts.app')
+
+@section('title', 'Review & Assign Submission')
+
+@section('content')
+<div class="mb-8">
+    <h1 class="text-5xl font-bold text-slate-900 mb-2">{{ $submission->title }}</h1>
+    <p class="text-lg text-slate-600">{{ $submission->author->name }}</p>
+</div>
+
+<div class="grid grid-cols-3 gap-6">
+    <!-- Submission Details -->
+    <div class="col-span-2">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 mb-6">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">Submission Details</h2>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-900 mb-2">Research Field</label>
+                    <p class="text-slate-700">{{ $submission->research_field ?? 'Not specified' }}</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-900 mb-2">Abstract</label>
+                    <p class="text-slate-700 leading-relaxed">{{ $submission->abstract }}</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-900 mb-2">Keywords</label>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach (explode(',', $submission->keywords) as $keyword)
+                            <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">
+                                {{ trim($keyword) }}
+                            </span>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-900 mb-2">Status</label>
+                    <span class="inline-block px-4 py-2 rounded-lg font-semibold
+                        {{ $submission->status === 'submitted' ? 'bg-yellow-50 text-yellow-700' : '' }}
+                        {{ $submission->status === 'under_review' ? 'bg-blue-50 text-blue-700' : '' }}
+                        {{ $submission->status === 'accepted' ? 'bg-green-50 text-green-700' : '' }}
+                        {{ $submission->status === 'rejected' ? 'bg-red-50 text-red-700' : '' }}
+                    ">
+                        {{ \App\Models\Submission::statusOptions()[$submission->status] ?? $submission->status }}
+                    </span>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-900 mb-2">Submitted</label>
+                    <p class="text-slate-700">{{ $submission->submitted_at->format('F d, Y \\a\\t h:i A') }}</p>
+                </div>
+
+                @if ($submission->file_name)
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-900 mb-2">Submission File</label>
+                        <a href="{{ route('submissions.download', $submission) }}" class="inline-flex items-center gap-2 text-red-600 hover:text-red-700 font-semibold">
+                            📥 {{ $submission->file_name }}
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        @if ($submission->chief_editor_notes)
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-8">
+                <h3 class="font-bold text-slate-900 mb-3">Chief Editor Notes</h3>
+                <p class="text-slate-700">{{ $submission->chief_editor_notes }}</p>
+            </div>
+        @endif
+    </div>
+
+    <!-- Assignment Panel -->
+    <div class="col-span-1">
+        <!-- Current Assignment -->
+        @php
+            $currentAssignments = $submission->assignments()
+                ->whereNull('rejected_at')
+                ->latest('assigned_at')
+                ->get();
+        @endphp
+        @if ($currentAssignments->count() > 0)
+            <div class="bg-green-50 border border-green-200 rounded-xl p-6 mb-6">
+                <h3 class="font-bold text-green-900 mb-3">✓ Currently Assigned</h3>
+                <div class="space-y-2">
+                    @foreach ($currentAssignments as $assignment)
+                        <div class="bg-white rounded-lg p-3">
+                            <p class="font-semibold text-slate-900">{{ $assignment->assignedTo->name }}</p>
+                            <p class="text-xs text-slate-500">{{ $assignment->expertise_field }}</p>
+                            @if ($assignment->isAccepted())
+                                <p class="text-xs text-green-700 font-semibold mt-1">✓ Accepted</p>
+                            @elseif ($assignment->isPending())
+                                <p class="text-xs text-yellow-700 font-semibold mt-1">⏳ Pending</p>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+
+                <button type="button" onclick="document.getElementById('reassign-form').style.display = 'block'" class="mt-4 w-full text-sm text-green-700 hover:text-green-900 font-semibold transition-colors">
+                    Change Assignments
+                </button>
+            </div>
+        @endif
+
+        <!-- Assign Form -->
+        <form id="reassign-form" method="POST" action="{{ !$submission->assignedEditor ? route('chief-editor.assign', $submission) : route('chief-editor.reassign', $submission) }}" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6" {{ $submission->assignedEditor ? 'style=display:none' : '' }}>
+            @csrf
+
+            <h3 class="font-bold text-slate-900 mb-4">
+                {{ $submission->assignedEditor ? 'Reassign Editors' : 'Assign Editors' }}
+            </h3>
+            <p class="text-sm text-slate-600 mb-4">Select one or more editors to assign this submission</p>
+
+            <!-- Editors by expertise -->
+            @if (!empty($editorsByField))
+                <div class="space-y-3 mb-4 max-h-64 overflow-y-auto">
+                    @foreach ($editorsByField as $field => $editors)
+                        <div class="border-l-4 border-red-200 bg-red-50 p-3 rounded">
+                            <p class="text-xs font-semibold text-red-700 uppercase mb-2">{{ $field }}</p>
+                            <div class="space-y-2">
+                                @foreach ($editors as $editor)
+                                    <label class="flex items-start gap-3 cursor-pointer">
+                                        <input type="checkbox" name="editor_ids[]" value="{{ $editor->id }}" class="mt-1 rounded border-slate-300 text-red-600 focus:ring-red-500">
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-slate-900">{{ $editor->name }}</p>
+                                            <p class="text-xs text-slate-600">{{ $field }}</p>
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4 text-sm text-yellow-700">
+                    No editors have assigned expertise fields yet.
+                </div>
+            @endif
+
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-slate-900 mb-2">Notes (Optional)</label>
+                <textarea name="notes" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Add assignment notes..."></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" id="assign-btn" disabled>
+                {{ $submission->assignedEditor ? '✓ Reassign' : '✓ Assign' }}
+            </button>
+
+            @if ($submission->assignedEditor)
+                <button type="button" onclick="document.getElementById('reassign-form').style.display = 'none'" class="w-full mt-2 bg-slate-100 text-slate-700 py-2 rounded-lg hover:bg-slate-200 font-semibold transition-colors">
+                    Cancel
+                </button>
+            @endif
+        </form>
+
+        <script>
+            // Enable submit button only when at least one editor is selected
+            const checkboxes = document.querySelectorAll('input[name="editor_ids[]"]');
+            const assignBtn = document.getElementById('assign-btn');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    assignBtn.disabled = !Array.from(checkboxes).some(cb => cb.checked);
+                });
+            });
+        </script>
+
+        <!-- Assignment History -->
+        @if ($submission->assignments()->count() > 0)
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mt-6">
+                <h3 class="font-bold text-slate-900 mb-4">Assignment History</h3>
+                <div class="space-y-3">
+                    @foreach ($submission->assignments()->latest()->get() as $assignment)
+                        <div class="bg-white rounded-lg p-3 text-sm border-l-4 {{ $assignment->isAccepted() ? 'border-green-500' : ($assignment->isRejected() ? 'border-red-500' : 'border-yellow-500') }}">
+                            <p class="font-semibold text-slate-900">{{ $assignment->assignedTo->name }}</p>
+                            <p class="text-xs text-slate-600">{{ $assignment->expertise_field }}</p>
+                            <p class="text-xs text-slate-500 mt-1">
+                                {{ $assignment->assigned_at->format('M d, Y') }}
+                                @if ($assignment->isAccepted())
+                                    <span class="text-green-700 font-semibold">✓ Accepted</span>
+                                @elseif ($assignment->isRejected())
+                                    <span class="text-red-700 font-semibold">✗ Rejected</span>
+                                @else
+                                    <span class="text-yellow-700 font-semibold">⏳ Pending</span>
+                                @endif
+                            </p>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    </div>
+</div>
+
+<div class="mt-8">
+    <a href="{{ route('chief-editor.dashboard') }}" class="inline-block text-red-600 hover:text-red-700 transition-colors font-medium">
+        ← Back to Dashboard
+    </a>
+</div>
+@endsection

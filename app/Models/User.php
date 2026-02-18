@@ -58,6 +58,16 @@ class User extends Authenticatable
         return $this->hasMany(Review::class, 'reviewer_id');
     }
 
+    public function editorExpertise(): HasMany
+    {
+        return $this->hasMany(EditorExpertise::class);
+    }
+
+    public function submissionAssignments(): HasMany
+    {
+        return $this->hasMany(SubmissionAssignment::class, 'assigned_to_user_id');
+    }
+
     public function hasRole(string $roleName): bool
     {
         return $this->roles()->where('name', $roleName)->exists();
@@ -66,6 +76,11 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->hasRole('admin');
+    }
+
+    public function isEditorInChief(): bool
+    {
+        return $this->hasRole('editor-in-chief');
     }
 
     public function isEditor(): bool
@@ -83,7 +98,7 @@ class User extends Authenticatable
         return $this->hasRole('author');
     }
 
-    /** Get primary role for dashboard redirect (admin > editor > reviewer > author). */
+    /** Get primary role for dashboard redirect (admin > editor > reviewer > author). Note: editor-in-chief handled separately. */
     public function primaryRole(): ?Role
     {
         $order = ['admin', 'editor', 'reviewer', 'author'];

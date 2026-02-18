@@ -4,6 +4,29 @@
 
 @section('content')
 <div class="max-w-4xl">
+    @if ($errors->any())
+        <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+            <h3 class="font-semibold text-red-900 mb-2">Validation Error</h3>
+            <ul class="text-red-700 text-sm space-y-1">
+                @foreach ($errors->all() as $error)
+                    <li>• {{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 text-green-700 font-semibold">
+            ✓ {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 font-semibold">
+            ✗ {{ session('error') }}
+        </div>
+    @endif
+
     <h1 class="text-2xl font-semibold mb-6">{{ $submission->title }}</h1>
     <div class="bg-white rounded-lg shadow border border-slate-200 p-6 space-y-4 mb-6">
         <p><span class="text-slate-700 font-medium">Author:</span> <span class="text-slate-900">{{ $submission->author->name }}</span></p>
@@ -64,23 +87,76 @@
 
         <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
             <h2 class="text-lg font-medium mb-4">Editor Decision</h2>
-            <form method="POST" action="{{ route('editor.decision', $submission) }}" class="space-y-4">
+            <form method="POST" action="{{ route('editor.decision', $submission) }}" class="space-y-4" id="decision-form">
                 @csrf
                 <div>
                     <label for="status" class="block text-sm font-medium text-slate-700">Decision</label>
-                    <select id="status" name="status" required class="mt-1 block w-full rounded-md border-slate-300 shadow-sm">
+                    <select id="status" name="status" required class="mt-1 block w-full rounded-md border-slate-300 shadow-sm border p-2">
+                        <option value="">-- Select Decision --</option>
                         <option value="accepted">Accept</option>
                         <option value="rejected">Reject</option>
                         <option value="revisions_requested">Revisions Requested</option>
                     </select>
+                    @error('status') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
+
+                <div id="revision-fields" style="display: none;" class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg space-y-4">
+                    <div>
+                        <label for="revision_type" class="block text-sm font-medium text-slate-900">Revision Type</label>
+                        <select id="revision_type" name="revision_type" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm border p-2">
+                            <option value="">Select revision type...</option>
+                            <option value="minor">Minor Revisions</option>
+                            <option value="major">Major Revisions</option>
+                        </select>
+                        @error('revision_type') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label for="revision_reason" class="block text-sm font-medium text-slate-900">Reason for Revision</label>
+                        <textarea id="revision_reason" name="revision_reason" rows="3" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm border p-2" placeholder="Explain what needs to be revised and why..."></textarea>
+                        @error('revision_reason') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
                 <div>
-                    <label for="editor_notes" class="block text-sm font-medium text-slate-700">Notes (optional)</label>
-                    <textarea id="editor_notes" name="editor_notes" rows="3" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm">{{ old('editor_notes') }}</textarea>
+                    <label for="editor_notes" class="block text-sm font-medium text-slate-700">Editor Notes (optional)</label>
+                    <textarea id="editor_notes" name="editor_notes" rows="3" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm border p-2">{{ old('editor_notes') }}</textarea>
+                    @error('editor_notes') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
                 <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 font-medium shadow-sm transition-colors">Record Decision</button>
             </form>
         </div>
+
+        <script>
+            const statusSelect = document.getElementById('status');
+            const decisionForm = document.getElementById('decision-form');
+            const revisionFields = document.getElementById('revision-fields');
+            const revisionTypeInput = document.getElementById('revision_type');
+            const revisionReasonInput = document.getElementById('revision_reason');
+
+            function toggleRevisionFields() {
+                if (statusSelect.value === 'revisions_requested') {
+                    revisionFields.style.display = 'block';
+                    revisionTypeInput.setAttribute('required', 'required');
+                    revisionReasonInput.setAttribute('required', 'required');
+                } else {
+                    revisionFields.style.display = 'none';
+                    revisionTypeInput.removeAttribute('required');
+                    revisionReasonInput.removeAttribute('required');
+                }
+            }
+
+            // Handle form submission - only submit revision fields if needed
+            decisionForm.addEventListener('submit', function(e) {
+                if (statusSelect.value !== 'revisions_requested') {
+                    revisionTypeInput.disabled = true;
+                    revisionReasonInput.disabled = true;
+                }
+            });
+
+            statusSelect.addEventListener('change', toggleRevisionFields);
+            toggleRevisionFields(); // Initial check
+        </script>
     @endif
 
     <div class="mt-4">

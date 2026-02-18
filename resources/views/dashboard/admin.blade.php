@@ -35,9 +35,21 @@
         <p class="text-4xl font-bold text-slate-900 mb-2">{{ $submissionCount }}</p>
         <p class="text-sm text-red-600 font-medium group-hover:text-red-700">View submissions →</p>
     </a>
+
+    <a href="{{ route('admin.editor-expertise.index') }}" class="bg-white rounded-xl shadow-sm hover:shadow-lg border border-slate-200 p-6 transition-all duration-200 group">
+        <div class="flex items-center justify-between mb-4">
+            <p class="text-md font-medium text-slate-600 group-hover:text-slate-900">Editor Expertise</p>
+            <span class="text-5xl group-hover:scale-110 transition-transform duration-200">🎓</span>
+        </div>
+        <p class="text-sm text-slate-600 mb-3">Manage specialized fields</p>
+        <p class="text-sm text-red-600 font-medium group-hover:text-red-700">Manage expertise →</p>
+    </a>
 </div>
 
 <div class="flex gap-4">
+    <a href="{{ route('admin.editor-expertise.index') }}" class="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium shadow-sm hover:shadow-md">
+        <span>🎓</span> Manage Editor Expertise
+    </a>
     <a href="{{ route('admin.settings.index') }}" class="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-all duration-200 font-medium shadow-sm hover:shadow-md">
         <span>⚙️</span> System Settings
     </a>

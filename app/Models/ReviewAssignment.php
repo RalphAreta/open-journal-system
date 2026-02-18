@@ -12,6 +12,7 @@ class ReviewAssignment extends Model
         'submission_id',
         'reviewer_id',
         'assigned_by',
+        'referee_invitation_id',
         'status',
         'due_at',
         'completed_at',
@@ -47,5 +48,10 @@ class ReviewAssignment extends Model
     public function review(): HasOne
     {
         return $this->hasOne(Review::class);
+    }
+
+    public function refereeInvitation(): BelongsTo
+    {
+        return $this->belongsTo(RefereeInvitation::class);
     }
 }

@@ -3,8 +3,10 @@
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\EditorExpertiseController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ChiefEditorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubmissionController;
@@ -29,6 +31,8 @@ Route::middleware('auth')->group(function (): void {
     Route::middleware('role:author')->group(function (): void {
         Route::get('/dashboard/author', [DashboardController::class, 'author'])->name('dashboard.author');
         Route::resource('submissions', SubmissionController::class)->except('destroy');
+        Route::get('/submissions/{submission}/revisions', [SubmissionController::class, 'revisions'])->name('submissions.revisions');
+        Route::post('/submissions/{submission}/submit-revision', [SubmissionController::class, 'submitRevision'])->name('submissions.submit-revision');
     });
 
     Route::middleware('role:reviewer')->group(function (): void {
@@ -46,6 +50,14 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/editor/submissions/{submission}/decision', [ReviewController::class, 'editorDecision'])->name('editor.decision');
     });
 
+    Route::middleware('role:editor-in-chief')->group(function (): void {
+        Route::get('/chief-editor/dashboard', [ChiefEditorController::class, 'dashboard'])->name('chief-editor.dashboard');
+        Route::get('/chief-editor/submissions/{submission}', [ChiefEditorController::class, 'showSubmission'])->name('chief-editor.submission.show');
+        Route::post('/chief-editor/submissions/{submission}/assign', [ChiefEditorController::class, 'assignSubmission'])->name('chief-editor.assign');
+        Route::post('/chief-editor/submissions/{submission}/reassign', [ChiefEditorController::class, 'reassignSubmission'])->name('chief-editor.reassign');
+        Route::post('/chief-editor/submissions/{submission}/review', [ChiefEditorController::class, 'reviewSubmission'])->name('chief-editor.review');
+    });
+
     Route::middleware('role:admin')->group(function (): void {
         Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
         Route::resource('admin/users', AdminUserController::class)->except('show')->names('admin.users')->parameters(['users' => 'user']);
@@ -56,5 +68,13 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/admin/settings', [SystemSettingController::class, 'update'])->name('admin.settings.update');
         Route::get('/admin/submissions', [ReviewController::class, 'adminSubmissions'])->name('admin.submissions');
         Route::get('/admin/submissions/{submission}', [ReviewController::class, 'adminShow'])->name('admin.submissions.show');
+        
+        // Editor Expertise Management
+        Route::get('/admin/editor-expertise', [EditorExpertiseController::class, 'index'])->name('admin.editor-expertise.index');
+        Route::get('/admin/editor-expertise/{user}', [EditorExpertiseController::class, 'show'])->name('admin.editor-expertise.show');
+        Route::get('/admin/editor-expertise/{user}/edit', [EditorExpertiseController::class, 'edit'])->name('admin.editor-expertise.edit');
+        Route::put('/admin/editor-expertise/{user}', [EditorExpertiseController::class, 'update'])->name('admin.editor-expertise.update');
+        Route::post('/admin/editor-expertise/{user}/add-field', [EditorExpertiseController::class, 'addField'])->name('admin.editor-expertise.add-field');
+        Route::delete('/admin/editor-expertise/{expertise}', [EditorExpertiseController::class, 'removeField'])->name('admin.editor-expertise.remove-field');
     });
 });

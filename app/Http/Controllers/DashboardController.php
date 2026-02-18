@@ -15,6 +15,12 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        
+        // Special handling for editor-in-chief
+        if ($user?->isEditorInChief()) {
+            return redirect()->route('chief-editor.dashboard');
+        }
+
         $role = $user?->primaryRole();
         if ($role) {
             return redirect()->route("dashboard.{$role->name}");
@@ -33,6 +39,7 @@ class DashboardController extends Controller
             'total' => $request->user()->submissionsAsAuthor()->count(),
             'submitted' => $request->user()->submissionsAsAuthor()->where('status', Submission::STATUS_SUBMITTED)->count(),
             'under_review' => $request->user()->submissionsAsAuthor()->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
+            'revisions_requested' => $request->user()->submissionsAsAuthor()->where('status', Submission::STATUS_REVISIONS_REQUESTED)->count(),
             'accepted' => $request->user()->submissionsAsAuthor()->where('status', Submission::STATUS_ACCEPTED)->count(),
             'rejected' => $request->user()->submissionsAsAuthor()->where('status', Submission::STATUS_REJECTED)->count(),
         ];
@@ -58,15 +65,18 @@ class DashboardController extends Controller
 
     public function editor(Request $request): View
     {
-        $submissions = Submission::with(['author', 'reviews', 'reviewAssignments'])
+        $userId = $request->user()->id;
+
+        $submissions = Submission::where('assigned_editor_id', $userId)
+            ->with(['author', 'reviews', 'reviewAssignments'])
             ->latest()
             ->paginate(10);
 
         $stats = [
-            'total' => Submission::count(),
-            'submitted' => Submission::where('status', Submission::STATUS_SUBMITTED)->count(),
-            'under_review' => Submission::where('status', Submission::STATUS_UNDER_REVIEW)->count(),
-            'decisions_pending' => Submission::whereIn('status', [
+            'total' => Submission::where('assigned_editor_id', $userId)->count(),
+            'submitted' => Submission::where('assigned_editor_id', $userId)->where('status', Submission::STATUS_SUBMITTED)->count(),
+            'under_review' => Submission::where('assigned_editor_id', $userId)->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
+            'decisions_pending' => Submission::where('assigned_editor_id', $userId)->whereIn('status', [
                 Submission::STATUS_UNDER_REVIEW,
                 Submission::STATUS_REVISIONS_REQUESTED,
             ])->count(),

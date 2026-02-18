@@ -7,7 +7,7 @@
     <h1 class="text-5xl font-bold text-slate-900 mb-2">Author Dashboard</h1>
     <p class="text-slate-600">Manage your submissions</p>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
     <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
         <p class="text-md text-slate-700 font-medium">Total Submissions</p>
         <p class="text-2xl font-bold text-black">{{ $stats['total'] }}</p>
@@ -19,6 +19,10 @@
     <div class="bg-white rounded-lg shadow-md p-4 border-2 border-red-100">
         <p class="text-md text-slate-700 font-medium">Under Review</p>
         <p class="text-2xl font-bold text-yellow-500">{{ $stats['under_review'] }}</p>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-4 border-2 border-orange-100">
+        <p class="text-md text-slate-700 font-medium">Revisions Requested</p>
+        <p class="text-2xl font-bold text-orange-600">{{ $stats['revisions_requested'] }}</p>
     </div>
     <div class="bg-white rounded-lg shadow-md p-4 border-2 border-green-100">
         <p class="text-md text-slate-700 font-medium">Accepted</p>
@@ -33,6 +37,36 @@
     <h2 class="text-lg font-medium">My Submissions</h2>
     <a href="{{ route('submissions.create') }}" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-sm font-medium shadow-sm transition-colors">New Submission</a>
 </div>
+
+@if ($stats['revisions_requested'] > 0)
+    @php
+        $revisionsNeeded = auth()->user()->submissionsAsAuthor()->where('status', 'revisions_requested')->get();
+    @endphp
+    <div class="mb-6 bg-orange-50 border border-orange-200 rounded-lg p-6">
+        <div class="flex items-start gap-4">
+            <svg class="w-6 h-6 text-orange-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            <div class="flex-1">
+                <h3 class="font-bold text-orange-900 text-lg">Revisions Required</h3>
+                <p class="text-sm text-orange-800 mt-2">You have {{ $stats['revisions_requested'] }} submission{{ $stats['revisions_requested'] > 1 ? 's' : '' }} that require revisions. Please review the feedback and submit your revised manuscripts.</p>
+                <div class="mt-3 space-y-2">
+                    @foreach ($revisionsNeeded as $submission)
+                        <div class="flex items-center justify-between bg-white rounded p-3">
+                            <div>
+                                <p class="font-semibold text-slate-900">{{ Str::limit($submission->title, 50) }}</p>
+                                <p class="text-sm text-slate-600">Requested {{ $submission->editor_decision_at->format('M d, Y') }}</p>
+                            </div>
+                            <a href="{{ route('submissions.revisions', $submission) }}" class="text-orange-700 hover:text-orange-900 font-semibold text-sm whitespace-nowrap">
+                                View & Revise →
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
 <div class="bg-white rounded-lg shadow overflow-hidden border border-slate-200">
     <table class="min-w-full divide-y divide-slate-200">
         <thead class="bg-slate-50">

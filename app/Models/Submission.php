@@ -13,19 +13,24 @@ class Submission extends Model
         'title',
         'abstract',
         'keywords',
+        'research_field',
         'file_path',
         'file_name',
         'status',
         'editor_id',
+        'assigned_editor_id',
         'submitted_at',
+        'chief_editor_review_at',
         'editor_decision_at',
         'editor_notes',
+        'chief_editor_notes',
     ];
 
     protected function casts(): array
     {
         return [
             'submitted_at' => 'datetime',
+            'chief_editor_review_at' => 'datetime',
             'editor_decision_at' => 'datetime',
         ];
     }
@@ -65,6 +70,21 @@ class Submission extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function assignedEditor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_editor_id');
+    }
+
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(SubmissionAssignment::class);
+    }
+
+    public function revisionRequests(): HasMany
+    {
+        return $this->hasMany(RevisionRequest::class);
     }
 
     public function isEditableByAuthor(): bool

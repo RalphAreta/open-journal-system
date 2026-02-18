@@ -25,6 +25,17 @@
             class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-red-500 focus:ring-red-500">
     </div>
     <div>
+        <label for="research_field" class="block text-sm font-medium text-slate-700">Research Field *</label>
+        <select id="research_field" name="research_field" required
+            class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-red-500 focus:ring-red-500 @error('research_field') border-red-500 @enderror">
+            <option value="">-- Select a research field --</option>
+            @foreach ($fieldOptions as $value => $label)
+                <option value="{{ $value }}" {{ old('research_field', $submission->research_field) === $value ? 'selected' : '' }}>{{ $label }}</option>
+            @endforeach
+        </select>
+        @error('research_field')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+    </div>
+    <div>
         <label for="file" class="block text-sm font-medium text-slate-700">Replace file (optional)</label>
         <p class="text-sm text-slate-500 mb-1">Current: {{ $submission->file_name ?? 'None' }}</p>
         <input id="file" type="file" name="file" accept=".pdf,.doc,.docx"

@@ -11,6 +11,7 @@ class Review extends Model
         'submission_id',
         'reviewer_id',
         'review_assignment_id',
+        'referee_invitation_id',
         'recommendation',
         'comments_for_author',
         'comments_for_editor',
@@ -53,5 +54,10 @@ class Review extends Model
     public function reviewAssignment(): BelongsTo
     {
         return $this->belongsTo(ReviewAssignment::class);
+    }
+
+    public function refereeInvitation(): BelongsTo
+    {
+        return $this->belongsTo(RefereeInvitation::class);
     }
 }

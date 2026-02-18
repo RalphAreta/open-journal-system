@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use App\Models\ReviewAssignment;
 use App\Models\Submission;
+use App\Models\RevisionRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -90,7 +91,8 @@ class ReviewController extends Controller
      */
     public function editorSubmissions(Request $request): View
     {
-        $submissions = Submission::with(['author', 'reviews.reviewer', 'reviewAssignments.reviewer'])
+        $submissions = Submission::where('assigned_editor_id', $request->user()->id)
+            ->with(['author', 'reviews.reviewer', 'reviewAssignments.reviewer'])
             ->latest()
             ->paginate(15);
 
@@ -102,6 +104,11 @@ class ReviewController extends Controller
      */
     public function editorShow(Submission $submission): View
     {
+        // Check if submission is assigned to current editor
+        if ($submission->assigned_editor_id !== auth()->id()) {
+            abort(403, 'You do not have access to this submission.');
+        }
+
         $submission->load(['author', 'reviews.reviewer', 'reviewAssignments.reviewer']);
         return view('reviews.editor-show', compact('submission'));
     }
@@ -111,6 +118,11 @@ class ReviewController extends Controller
      */
     public function assignReviewer(Request $request, Submission $submission): RedirectResponse
     {
+        // Check if submission is assigned to current editor
+        if ($submission->assigned_editor_id !== $request->user()->id) {
+            abort(403, 'You do not have access to this submission.');
+        }
+
         $validated = $request->validate([
             'reviewer_id' => ['required', 'exists:users,id'],
             'due_at' => ['nullable', 'date'],
@@ -141,9 +153,16 @@ class ReviewController extends Controller
      */
     public function editorDecision(Request $request, Submission $submission): RedirectResponse
     {
+        // Check if submission is assigned to current editor
+        if ($submission->assigned_editor_id !== $request->user()->id) {
+            abort(403, 'You do not have access to this submission.');
+        }
+
         $validated = $request->validate([
             'status' => ['required', 'in:accepted,rejected,revisions_requested'],
             'editor_notes' => ['nullable', 'string'],
+            'revision_type' => ['required_if:status,revisions_requested', 'in:minor,major'],
+            'revision_reason' => ['required_if:status,revisions_requested', 'string'],
         ]);
 
         $submission->update([
@@ -152,6 +171,20 @@ class ReviewController extends Controller
             'editor_decision_at' => now(),
             'editor_notes' => $validated['editor_notes'] ?? null,
         ]);
+
+        // Create revision request if applicable
+        if ($validated['status'] === Submission::STATUS_REVISIONS_REQUESTED) {
+            RevisionRequest::create([
+                'submission_id' => $submission->id,
+                'requested_by_user_id' => $request->user()->id,
+                'revision_type' => $validated['revision_type'],
+                'reason' => $validated['revision_reason'],
+                'requested_at' => now(),
+            ]);
+
+            return redirect()->route('editor.submissions')
+                ->with('success', 'Revision request sent to author.');
+        }
 
         return redirect()->route('editor.submissions')->with('success', 'Decision recorded.');
     }

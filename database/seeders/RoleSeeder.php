@@ -11,7 +11,8 @@ class RoleSeeder extends Seeder
     {
         $roles = [
             ['name' => 'admin', 'display_name' => 'Administrator', 'description' => 'Full system access'],
-            ['name' => 'editor', 'display_name' => 'Editor', 'description' => 'Manage submissions and make editorial decisions'],
+            ['name' => 'editor-in-chief', 'display_name' => 'Editor-in-Chief', 'description' => 'Review new submissions and assign to editors based on expertise'],
+            ['name' => 'editor', 'display_name' => 'Editor', 'description' => 'Manage assigned submissions and make editorial decisions'],
             ['name' => 'reviewer', 'display_name' => 'Reviewer', 'description' => 'Review assigned submissions'],
             ['name' => 'author', 'display_name' => 'Author', 'description' => 'Submit and manage own articles'],
         ];
