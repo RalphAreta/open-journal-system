@@ -24,15 +24,15 @@ class ChiefEditorController extends Controller
             ->paginate(10, ['*'], 'assigned');
 
         $stats = [
-            'total_submissions' => Submission::count(),
+            'total_submissions'   => Submission::count(),
             'pending_assignments' => Submission::where('status', Submission::STATUS_SUBMITTED)
                 ->whereNull('assigned_editor_id')
                 ->count(),
-            'assigned_count' => Submission::whereNotNull('assigned_editor_id')->count(),
-            'under_review' => Submission::where('status', Submission::STATUS_UNDER_REVIEW)->count(),
-            'completed' => Submission::whereIn('status', [
+            'assigned_count'      => Submission::whereNotNull('assigned_editor_id')->count(),
+            'under_review'        => Submission::where('status', Submission::STATUS_UNDER_REVIEW)->count(),
+            'completed'           => Submission::whereIn('status', [
                 Submission::STATUS_ACCEPTED,
-                Submission::STATUS_REJECTED
+                Submission::STATUS_REJECTED,
             ])->count(),
         ];
 
@@ -41,142 +41,144 @@ class ChiefEditorController extends Controller
 
     public function showSubmission(Submission $submission)
     {
-        // Load available editors with their expertise
-        $editorsWithExpertise = User::whereHas('roles', function ($query) {
-            $query->where('name', 'editor');
-        })
+        $researchField = $submission->research_field;
+
+        // Only load editors whose expertise MATCHES the submission's research field
+        $matchingEditors = User::whereHas('roles', function ($query) {
+                $query->where('name', 'editor');
+            })
+            ->whereHas('editorExpertise', function ($query) use ($researchField) {
+                $query->where('field_name', $researchField);
+            })
             ->with('editorExpertise')
             ->get();
 
-        // Group editors by expertise field
+        // Group by expertise field (will mostly be one field, but keeps structure consistent)
         $editorsByField = [];
-        foreach ($editorsWithExpertise as $editor) {
-            if ($editor->editorExpertise->isNotEmpty()) {
-                foreach ($editor->editorExpertise as $expertise) {
-                    if (!isset($editorsByField[$expertise->field_name])) {
-                        $editorsByField[$expertise->field_name] = [];
-                    }
+        foreach ($matchingEditors as $editor) {
+            foreach ($editor->editorExpertise as $expertise) {
+                if ($expertise->field_name === $researchField) {
                     $editorsByField[$expertise->field_name][] = $editor;
                 }
             }
         }
 
-        return view('chief-editor.show-submission', compact('submission', 'editorsWithExpertise', 'editorsByField'));
+        // Also pass all editors as fallback so chief editor can still assign manually if no match
+        $allEditors = User::whereHas('roles', function ($query) {
+                $query->where('name', 'editor');
+            })
+            ->with('editorExpertise')
+            ->get();
+
+        $allEditorsByField = [];
+        foreach ($allEditors as $editor) {
+            foreach ($editor->editorExpertise as $expertise) {
+                $allEditorsByField[$expertise->field_name][] = $editor;
+            }
+        }
+
+        return view('chief-editor.show-submission', compact(
+            'submission',
+            'editorsByField',      // matched editors (same field as submission)
+            'allEditorsByField',   // all editors grouped by field (fallback)
+            'researchField',
+        ));
     }
 
     public function assignSubmission(Request $request, Submission $submission)
     {
         $validated = $request->validate([
-            'editor_ids' => 'required|array|min:1',
+            'editor_ids'   => 'required|array|min:1',
             'editor_ids.*' => 'exists:users,id',
-            'notes' => 'nullable|string|max:1000',
+            'notes'        => 'nullable|string|max:1000',
         ]);
 
-        $editorIds = $validated['editor_ids'];
-        $editors = User::whereIn('id', $editorIds)->get();
+        $editors = User::whereIn('id', $validated['editor_ids'])->get();
 
-        // Validate all selected users are editors
         foreach ($editors as $editor) {
             if (!$editor->hasRole('editor')) {
                 return back()->withErrors("{$editor->name} is not an editor.");
             }
         }
 
-        // Create assignment records for each selected editor
-        $editorNames = [];
+        $editorNames   = [];
         $primaryEditor = null;
 
         foreach ($editors as $index => $editor) {
-            // Get editor's primary expertise field
             $expertiseField = $editor->editorExpertise->first()?->field_name ?? 'General';
 
-            // Create assignment
             SubmissionAssignment::create([
-                'submission_id' => $submission->id,
+                'submission_id'       => $submission->id,
                 'assigned_to_user_id' => $editor->id,
                 'assigned_by_user_id' => auth()->id(),
-                'expertise_field' => $expertiseField,
-                'assignment_notes' => $validated['notes'] ?? null,
-                'assigned_at' => now(),
+                'expertise_field'     => $expertiseField,
+                'assignment_notes'    => $validated['notes'] ?? null,
+                'assigned_at'         => now(),
             ]);
 
             $editorNames[] = $editor->name;
 
-            // Set first selected editor as primary
             if ($index === 0) {
                 $primaryEditor = $editor->id;
             }
         }
 
-        // Update submission with primary assigned editor
         $submission->update([
-            'assigned_editor_id' => $primaryEditor,
+            'assigned_editor_id'     => $primaryEditor,
             'chief_editor_review_at' => now(),
         ]);
 
-        $editorList = implode(', ', $editorNames);
         return redirect()->route('chief-editor.submission.show', $submission)
-            ->with('success', "Submission assigned to: {$editorList}.");
+            ->with('success', 'Submission assigned to: ' . implode(', ', $editorNames) . '.');
     }
 
     public function reassignSubmission(Request $request, Submission $submission)
     {
         $validated = $request->validate([
-            'editor_ids' => 'required|array|min:1',
+            'editor_ids'   => 'required|array|min:1',
             'editor_ids.*' => 'exists:users,id',
-            'notes' => 'nullable|string|max:1000',
+            'notes'        => 'nullable|string|max:1000',
         ]);
 
-        $editorIds = $validated['editor_ids'];
-        $editors = User::whereIn('id', $editorIds)->get();
+        $editors = User::whereIn('id', $validated['editor_ids'])->get();
 
-        // Validate all selected users are editors
         foreach ($editors as $editor) {
             if (!$editor->hasRole('editor')) {
                 return back()->withErrors("{$editor->name} is not an editor.");
             }
         }
 
-        // Mark previous assignments as rejected
         $submission->assignments()->latest()->get()->each(function ($assignment) {
             if (!$assignment->isAccepted()) {
                 $assignment->update(['rejected_at' => now()]);
             }
         });
 
-        // Create new assignment records
-        $editorNames = [];
+        $editorNames   = [];
         $primaryEditor = null;
 
         foreach ($editors as $index => $editor) {
-            // Get editor's primary expertise field
             $expertiseField = $editor->editorExpertise->first()?->field_name ?? 'General';
 
-            // Create assignment
             SubmissionAssignment::create([
-                'submission_id' => $submission->id,
+                'submission_id'       => $submission->id,
                 'assigned_to_user_id' => $editor->id,
                 'assigned_by_user_id' => auth()->id(),
-                'expertise_field' => $expertiseField,
-                'assignment_notes' => $validated['notes'] ?? null,
-                'assigned_at' => now(),
+                'expertise_field'     => $expertiseField,
+                'assignment_notes'    => $validated['notes'] ?? null,
+                'assigned_at'         => now(),
             ]);
 
             $editorNames[] = $editor->name;
 
-            // Set first selected editor as primary
             if ($index === 0) {
                 $primaryEditor = $editor->id;
             }
         }
 
-        // Update submission
-        $submission->update([
-            'assigned_editor_id' => $primaryEditor,
-        ]);
+        $submission->update(['assigned_editor_id' => $primaryEditor]);
 
-        $editorList = implode(', ', $editorNames);
-        return back()->with('success', "Submission reassigned to: {$editorList}.");
+        return back()->with('success', 'Submission reassigned to: ' . implode(', ', $editorNames) . '.');
     }
 
     public function reviewSubmission(Request $request, Submission $submission)
@@ -186,7 +188,7 @@ class ChiefEditorController extends Controller
         ]);
 
         $submission->update([
-            'chief_editor_notes' => $validated['notes'],
+            'chief_editor_notes'     => $validated['notes'],
             'chief_editor_review_at' => now(),
         ]);
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\EditorExpertiseController;
+use App\Http\Controllers\Admin\ExpertiseCategoryController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ChiefEditorController;
@@ -68,7 +69,7 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/admin/settings', [SystemSettingController::class, 'update'])->name('admin.settings.update');
         Route::get('/admin/submissions', [ReviewController::class, 'adminSubmissions'])->name('admin.submissions');
         Route::get('/admin/submissions/{submission}', [ReviewController::class, 'adminShow'])->name('admin.submissions.show');
-        
+
         // Editor Expertise Management
         Route::get('/admin/editor-expertise', [EditorExpertiseController::class, 'index'])->name('admin.editor-expertise.index');
         Route::get('/admin/editor-expertise/{user}', [EditorExpertiseController::class, 'show'])->name('admin.editor-expertise.show');
@@ -76,5 +77,11 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/admin/editor-expertise/{user}', [EditorExpertiseController::class, 'update'])->name('admin.editor-expertise.update');
         Route::post('/admin/editor-expertise/{user}/add-field', [EditorExpertiseController::class, 'addField'])->name('admin.editor-expertise.add-field');
         Route::delete('/admin/editor-expertise/{expertise}', [EditorExpertiseController::class, 'removeField'])->name('admin.editor-expertise.remove-field');
+
+        // Expertise Categories Management
+        Route::get('/admin/expertise-categories', [ExpertiseCategoryController::class, 'index'])->name('admin.expertise-categories.index');
+        Route::post('/admin/expertise-categories', [ExpertiseCategoryController::class, 'store'])->name('admin.expertise-categories.store');
+        Route::put('/admin/expertise-categories/{expertiseCategory}', [ExpertiseCategoryController::class, 'update'])->name('admin.expertise-categories.update');
+        Route::delete('/admin/expertise-categories/{expertiseCategory}', [ExpertiseCategoryController::class, 'destroy'])->name('admin.expertise-categories.destroy');
     });
 });

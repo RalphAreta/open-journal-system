@@ -4,8 +4,16 @@
 
 @section('content')
 <div class="mb-8">
-    <h1 class="text-5xl font-bold text-slate-900 mb-2">Manage Editor Expertise</h1>
-    <p class="text-lg text-slate-600">Set and update fields of expertise for each editor</p>
+    <div class="flex items-start justify-between">
+        <div>
+            <h1 class="text-5xl font-bold text-slate-900 mb-2">Manage Editor Expertise</h1>
+            <p class="text-lg text-slate-600">Set and update fields of expertise for each editor</p>
+        </div>
+        <a href="{{ route('admin.expertise-categories.index') }}"
+           class="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg transition-colors text-sm font-medium">
+            ⚙️ Manage Categories
+        </a>
+    </div>
 </div>
 
 @if ($editors->count() > 0)
