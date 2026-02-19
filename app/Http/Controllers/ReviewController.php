@@ -102,7 +102,7 @@ class ReviewController extends Controller
     /**
      * Editor: show submission and make decision.
      */
-  public function editorShow(Submission $submission): View
+ public function editorShow(Submission $submission): View
 {
     if ($submission->assigned_editor_id !== auth()->id()) {
         abort(403, 'You do not have access to this submission.');
@@ -114,10 +114,16 @@ class ReviewController extends Controller
 
     $matchedReviewers = \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'reviewer'))
         ->whereHas('editorExpertise', fn($q) => $q->where('field_name', $researchField))
+        ->withCount(['reviewAssignments as active_reviews_count' => fn($q) =>
+            $q->whereNotIn('status', ['completed', 'declined'])
+        ])
         ->get();
 
     $otherReviewers = \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'reviewer'))
         ->whereNotIn('id', $matchedReviewers->pluck('id'))
+        ->withCount(['reviewAssignments as active_reviews_count' => fn($q) =>
+            $q->whereNotIn('status', ['completed', 'declined'])
+        ])
         ->get();
 
     return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers'));
