@@ -102,23 +102,31 @@ class ReviewController extends Controller
     /**
      * Editor: show submission and make decision.
      */
-    public function editorShow(Submission $submission): View
-    {
-        // Check if submission is assigned to current editor
-        if ($submission->assigned_editor_id !== auth()->id()) {
-            abort(403, 'You do not have access to this submission.');
-        }
-
-        $submission->load(['author', 'reviews.reviewer', 'reviewAssignments.reviewer']);
-        return view('reviews.editor-show', compact('submission'));
+  public function editorShow(Submission $submission): View
+{
+    if ($submission->assigned_editor_id !== auth()->id()) {
+        abort(403, 'You do not have access to this submission.');
     }
 
+    $submission->load(['author', 'reviews.reviewer', 'reviewAssignments.reviewer']);
+
+    $researchField = $submission->research_field;
+
+    $matchedReviewers = \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'reviewer'))
+        ->whereHas('editorExpertise', fn($q) => $q->where('field_name', $researchField))
+        ->get();
+
+    $otherReviewers = \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'reviewer'))
+        ->whereNotIn('id', $matchedReviewers->pluck('id'))
+        ->get();
+
+    return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers'));
+}
     /**
      * Editor: assign reviewer to submission.
      */
     public function assignReviewer(Request $request, Submission $submission): RedirectResponse
     {
-        // Check if submission is assigned to current editor
         if ($submission->assigned_editor_id !== $request->user()->id) {
             abort(403, 'You do not have access to this submission.');
         }
@@ -153,7 +161,6 @@ class ReviewController extends Controller
      */
     public function editorDecision(Request $request, Submission $submission): RedirectResponse
     {
-        // Check if submission is assigned to current editor
         if ($submission->assigned_editor_id !== $request->user()->id) {
             abort(403, 'You do not have access to this submission.');
         }
@@ -172,7 +179,6 @@ class ReviewController extends Controller
             'editor_notes' => $validated['editor_notes'] ?? null,
         ]);
 
-        // Create revision request if applicable
         if ($validated['status'] === Submission::STATUS_REVISIONS_REQUESTED) {
             RevisionRequest::create([
                 'submission_id' => $submission->id,
@@ -217,12 +223,10 @@ class ReviewController extends Controller
     {
         $user = request()->user();
 
-        // Check if user is an editor (can download any submission)
         if ($user->isEditor()) {
             return $this->serializeFile($submission);
         }
 
-        // Check if user is a reviewer assigned to this submission
         $isAssignedReviewer = ReviewAssignment::where('submission_id', $submission->id)
             ->where('reviewer_id', $user->id)
             ->exists();
@@ -231,12 +235,25 @@ class ReviewController extends Controller
             return $this->serializeFile($submission);
         }
 
-        // Check if user is admin
         if ($user->isAdmin()) {
             return $this->serializeFile($submission);
         }
 
         abort(403);
+    }
+
+    /**
+     * Reviewer: show pending reviewer assignments table.
+     */
+    public function pendingReviewerAssignments(): View
+    {
+        $assignments = ReviewAssignment::where('reviewer_id', auth()->id())
+            ->whereIn('status', ['pending', 'agreed'])
+            ->with(['submission.author', 'reviewer', 'editor'])
+            ->latest()
+            ->paginate(10);
+
+        return view('reviewer.pending-reviewer-assignments', compact('assignments'));
     }
 
     /**

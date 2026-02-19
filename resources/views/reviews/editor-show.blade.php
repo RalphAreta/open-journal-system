@@ -31,15 +31,18 @@
     <div class="bg-white rounded-lg shadow border border-slate-200 p-6 space-y-4 mb-6">
         <p><span class="text-slate-700 font-medium">Author:</span> <span class="text-slate-900">{{ $submission->author->name }}</span></p>
         <p><span class="text-slate-700 font-medium">Status:</span> <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-900">{{ $submission->status }}</span></p>
+        <p><span class="text-slate-700 font-medium">Research Field:</span>
+            <span class="inline-block bg-red-50 border border-red-200 text-red-700 px-2 py-0.5 rounded-full text-sm">
+                {{ $submission->research_field ?? 'Not specified' }}
+            </span>
+        </p>
         <p><span class="text-slate-700 font-medium">Abstract:</span> <span class="text-slate-900">{{ $submission->abstract }}</span></p>
-        
+
         <div class="border-t pt-4">
             <p class="font-medium text-slate-900 mb-3">Submission File</p>
             @if($submission->file_path)
                 <div class="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded">
-                    <div>
-                        <p class="text-sm text-blue-900"><strong>File:</strong> {{ $submission->file_name }}</p>
-                    </div>
+                    <p class="text-sm text-blue-900"><strong>File:</strong> {{ $submission->file_name }}</p>
                     <a href="{{ route('submissions.download', ['submission' => $submission]) }}" class="text-blue-600 hover:text-blue-800 hover:underline">
                         Download file
                     </a>
@@ -65,26 +68,56 @@
 
     @if(in_array($submission->status, ['submitted', 'under_review', 'revisions_requested']))
         <div class="bg-white rounded-lg shadow border border-slate-200 p-6 mb-6">
-            <h2 class="text-lg font-medium mb-4">Assign Reviewer</h2>
+            <h2 class="text-lg font-medium mb-1">Assign Reviewer</h2>
+
+            {{-- Matched reviewers notice --}}
+            @if($matchedReviewers->count() > 0)
+                <p class="text-sm text-green-700 bg-green-50 border border-green-200 rounded px-3 py-2 mb-4">
+                    ✅ Showing <strong>{{ $matchedReviewers->count() }}</strong> reviewer(s) matched to
+                    <strong>{{ $submission->research_field }}</strong>
+                </p>
+            @else
+                <p class="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-4">
+                    ⚠️ No reviewers matched for <strong>{{ $submission->research_field ?? 'this research field' }}</strong>.
+                    Showing all reviewers as fallback.
+                </p>
+            @endif
+
             <form method="POST" action="{{ route('editor.assign-reviewer', $submission) }}" class="flex gap-2 flex-wrap items-end">
                 @csrf
                 <div>
-                    <label for="reviewer_id" class="block text-sm text-slate-700 font-medium">Reviewer</label>
-                    <select id="reviewer_id" name="reviewer_id" required class="rounded-md border-slate-300 shadow-sm">
+                    <label for="reviewer_id" class="block text-sm text-slate-700 font-medium mb-1">Reviewer</label>
+                    <select id="reviewer_id" name="reviewer_id" required class="rounded-md border-slate-300 shadow-sm min-w-64">
                         <option value="">Select...</option>
-                        @foreach(\App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'reviewer'))->get() as $u)
-                            <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }})</option>
-                        @endforeach
+
+                        {{-- Matched reviewers (by research field) --}}
+                        @if($matchedReviewers->count() > 0)
+                            <optgroup label="✅ Matched — {{ $submission->research_field }}">
+                                @foreach($matchedReviewers as $u)
+                                    <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }})</option>
+                                @endforeach
+                            </optgroup>
+                        @endif
+
+                        {{-- Other reviewers --}}
+                        @if($otherReviewers->count() > 0)
+                            <optgroup label="Other Reviewers">
+                                @foreach($otherReviewers as $u)
+                                    <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }})</option>
+                                @endforeach
+                            </optgroup>
+                        @endif
                     </select>
                 </div>
                 <div>
-                    <label for="due_at" class="block text-sm text-slate-700 font-medium">Due date</label>
+                    <label for="due_at" class="block text-sm text-slate-700 font-medium mb-1">Due date</label>
                     <input type="date" name="due_at" id="due_at" class="rounded-md border-slate-300 shadow-sm">
                 </div>
-                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 font-medium shadow-sm transition-colors">Assign</button>
+                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 font-medium shadow-sm transition-colors">
+                    Assign
+                </button>
             </form>
         </div>
-
 
         <script>
             const statusSelect = document.getElementById('status');
@@ -105,7 +138,6 @@
                 }
             }
 
-            // Handle form submission - only submit revision fields if needed
             decisionForm.addEventListener('submit', function(e) {
                 if (statusSelect.value !== 'revisions_requested') {
                     revisionTypeInput.disabled = true;
@@ -114,7 +146,7 @@
             });
 
             statusSelect.addEventListener('change', toggleRevisionFields);
-            toggleRevisionFields(); // Initial check
+            toggleRevisionFields();
         </script>
     @endif
 

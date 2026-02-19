@@ -28,8 +28,12 @@
 </div>
 
 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-    <div class="border-b border-slate-200 bg-slate-50 px-6 py-4">
+    <div class="border-b border-slate-200 bg-slate-50 px-6 py-4 flex justify-between items-center">
         <h2 class="text-lg font-semibold text-slate-900">Review Assignments</h2>
+        <a href="{{ route('reviewer.pending-assignments') }}"
+           class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+            📋 Pending Reviewer Assignments
+        </a>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full">
