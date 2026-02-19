@@ -34,11 +34,11 @@
                                transition-all cursor-pointer
                                @error('role') border-red-500 @enderror">
                         <option value="" disabled {{ old('role') ? '' : 'selected' }}>— Select your role —</option>
-                        <option value="author"          {{ old('role') === 'author'           ? 'selected' : '' }}>✍️  Author</option>
-                        <option value="reviewer"        {{ old('role') === 'reviewer'         ? 'selected' : '' }}>🔍  Reviewer</option>
-                        <option value="editor"          {{ old('role') === 'editor'           ? 'selected' : '' }}>✏️  Editor</option>
-                        <option value="editor-in-chief" {{ old('role') === 'editor-in-chief'  ? 'selected' : '' }}>👑  Editor in Chief</option>
-                        <option value="admin"           {{ old('role') === 'admin'            ? 'selected' : '' }}>🛡️  Admin</option>
+                        <option value="author"          {{ old('role') === 'author'           ? 'selected' : '' }}>  Author</option>
+                        <option value="reviewer"        {{ old('role') === 'reviewer'         ? 'selected' : '' }}>  Reviewer</option>
+                        <option value="editor"          {{ old('role') === 'editor'           ? 'selected' : '' }}>  Editor</option>
+                        <option value="editor-in-chief" {{ old('role') === 'editor-in-chief'  ? 'selected' : '' }}>  Editor in Chief</option>
+                        <option value="admin"           {{ old('role') === 'admin'            ? 'selected' : '' }}>  Admin</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
                         <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

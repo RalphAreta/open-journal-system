@@ -85,47 +85,6 @@
             </form>
         </div>
 
-        <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
-            <h2 class="text-lg font-medium mb-4">Editor Decision</h2>
-            <form method="POST" action="{{ route('editor.decision', $submission) }}" class="space-y-4" id="decision-form">
-                @csrf
-                <div>
-                    <label for="status" class="block text-sm font-medium text-slate-700">Decision</label>
-                    <select id="status" name="status" required class="mt-1 block w-full rounded-md border-slate-300 shadow-sm border p-2">
-                        <option value="">-- Select Decision --</option>
-                        <option value="accepted">Accept</option>
-                        <option value="rejected">Reject</option>
-                        <option value="revisions_requested">Revisions Requested</option>
-                    </select>
-                    @error('status') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
-                </div>
-
-                <div id="revision-fields" style="display: none;" class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg space-y-4">
-                    <div>
-                        <label for="revision_type" class="block text-sm font-medium text-slate-900">Revision Type</label>
-                        <select id="revision_type" name="revision_type" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm border p-2">
-                            <option value="">Select revision type...</option>
-                            <option value="minor">Minor Revisions</option>
-                            <option value="major">Major Revisions</option>
-                        </select>
-                        @error('revision_type') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div>
-                        <label for="revision_reason" class="block text-sm font-medium text-slate-900">Reason for Revision</label>
-                        <textarea id="revision_reason" name="revision_reason" rows="3" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm border p-2" placeholder="Explain what needs to be revised and why..."></textarea>
-                        @error('revision_reason') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
-                    </div>
-                </div>
-
-                <div>
-                    <label for="editor_notes" class="block text-sm font-medium text-slate-700">Editor Notes (optional)</label>
-                    <textarea id="editor_notes" name="editor_notes" rows="3" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm border p-2">{{ old('editor_notes') }}</textarea>
-                    @error('editor_notes') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
-                </div>
-                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 font-medium shadow-sm transition-colors">Record Decision</button>
-            </form>
-        </div>
 
         <script>
             const statusSelect = document.getElementById('status');
