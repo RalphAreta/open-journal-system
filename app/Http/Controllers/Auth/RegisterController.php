@@ -23,25 +23,30 @@ class RegisterController extends Controller
     public function register(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
+            'roles'    => ['required', 'array', 'min:1'],
+            'roles.*'  => ['in:author,reviewer,editor'],  // only these 3 can self-register
         ]);
 
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
 
-        $authorRole = Role::where('name', 'author')->first();
-        if ($authorRole) {
-            $user->roles()->attach($authorRole->id);
-        }
+        $roleIds = Role::whereIn('name', $validated['roles'])->pluck('id');
+        $user->roles()->attach($roleIds);
 
         event(new Registered($user));
         Auth::login($user);
 
-        return redirect()->route('dashboard.author');
+        // Redirect by priority
+        return match(true) {
+            in_array('editor',   $validated['roles']) => redirect()->route('dashboard.editor'),
+            in_array('reviewer', $validated['roles']) => redirect()->route('dashboard.reviewer'),
+            default                                   => redirect()->route('dashboard.author'),
+        };
     }
 }
