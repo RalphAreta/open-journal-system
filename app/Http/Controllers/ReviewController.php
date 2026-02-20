@@ -205,6 +205,19 @@ class ReviewController extends Controller
             'due_at' => $validated['due_at'] ?? null,
         ]);
 
+        \App\Models\Notification::create([
+            'user_id'         => $reviewerId,
+            'title'           => '📋 New Review Assignment',
+            'message'         => "You have been assigned to review the manuscript \"{$submission->title}\". Please log in to view and submit your review.",
+            'type'            => 'info',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => \App\Models\Submission::class,
+        ]);
+
+        $submission->update(['status' => Submission::STATUS_UNDER_REVIEW]);
+
+        return back()->with('success', 'Reviewer assigned.');
+
         $submission->update(['status' => Submission::STATUS_UNDER_REVIEW]);
 
         return back()->with('success', 'Reviewer assigned.');
