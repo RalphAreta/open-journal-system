@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @stack('styles')
 </head>
 <body class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 font-sans antialiased flex flex-col">
@@ -43,16 +44,16 @@
                     @auth
                         <div class="hidden sm:flex items-center space-x-3">
                             <span class="text-sm text-slate-900 font-medium bg-slate-100 px-3 py-1 rounded-full">{{ auth()->user()->name }}</span>
-                            <form method="POST" action="{{ route('logout') }}" class="inline">
-                                @csrf
-                                <button type="submit" class="text-sm font-medium text-white bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg transition-colors duration-200">Logout</button>
-                            </form>
-                        </div>
+                          <form method="POST" action="{{ route('logout') }}" class="inline" id="logout-form">
+                            @csrf
+                            <button type="button" onclick="confirmLogout()" class="text-sm font-medium text-white bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg transition-colors duration-200">Logout</button>
+                        </form>
+                                                </div>
                         <div class="sm:hidden">
                             <form method="POST" action="{{ route('logout') }}" class="inline">
-                                @csrf
-                                <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-700">Logout</button>
-                            </form>
+                            @csrf
+                            <button type="button" onclick="confirmLogout()" class="text-sm font-medium text-red-600 hover:text-red-700">Logout</button>
+                        </form>
                         </div>
                     @else
                         <a href="{{ route('login') }}" class="text-sm font-medium text-slate-700 hover:text-red-600 transition-colors">Login</a>
@@ -107,5 +108,25 @@
             </div>
         </div>
     </footer>
+
+      <script>
+        function confirmLogout() {
+            Swal.fire({
+                title: 'Logging out?',
+                text: 'Are you sure you want to sign out?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, log me out',
+                cancelButtonText: 'Cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
+    </script>
+    @stack('scripts')
 </body>
 </html>

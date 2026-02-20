@@ -81,7 +81,7 @@
                 @enderror
             </div>
 
-            {{-- Expertise (shown when editor or reviewer is checked) --}}
+            {{-- Expertise --}}
             <div id="expertise-section" class="{{ (in_array('editor', old('roles', [])) || in_array('reviewer', old('roles', []))) ? '' : 'hidden' }} space-y-2">
                 <p class="block text-sm font-medium text-gray-700 mb-2">
                     Fields of Expertise
@@ -132,4 +132,18 @@
 
     roleCheckboxes.forEach(cb => cb.addEventListener('change', toggleExpertise));
 </script>
+
+@push('scripts')
+<script>
+    @if($errors->any())
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops!',
+            html: `{!! implode('<br>', $errors->all()) !!}`,
+            confirmButtonColor: '#dc2626',
+        });
+    @endif
+</script>
+@endpush
+
 @endsection
