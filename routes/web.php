@@ -90,4 +90,9 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/admin/expertise-categories/{expertiseCategory}', [ExpertiseCategoryController::class, 'update'])->name('admin.expertise-categories.update');
         Route::delete('/admin/expertise-categories/{expertiseCategory}', [ExpertiseCategoryController::class, 'destroy'])->name('admin.expertise-categories.destroy');
     });
+
+    Route::post('/notifications/{notification}/read', function (\App\Models\Notification $notification) {
+    $notification->markAsRead();
+    return response()->json(['ok' => true]);
+})->name('notifications.read')->middleware('auth');
 });
