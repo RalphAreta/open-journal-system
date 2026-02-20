@@ -24,6 +24,10 @@ class Submission extends Model
         'editor_decision_at',
         'editor_notes',
         'chief_editor_notes',
+        'initial_screening_status',
+        'initial_screening_comments',
+        'initial_screening_by',
+        'initial_screening_at',
     ];
 
     protected function casts(): array
@@ -32,6 +36,7 @@ class Submission extends Model
             'submitted_at' => 'datetime',
             'chief_editor_review_at' => 'datetime',
             'editor_decision_at' => 'datetime',
+            'initial_screening_at' => 'datetime',
         ];
     }
 
@@ -41,6 +46,10 @@ class Submission extends Model
     public const STATUS_ACCEPTED = 'accepted';
     public const STATUS_REJECTED = 'rejected';
 
+    public const SCREENING_STATUS_PENDING = 'pending';
+    public const SCREENING_STATUS_PASSED = 'passed';
+    public const SCREENING_STATUS_FAILED = 'failed';
+
     public static function statusOptions(): array
     {
         return [
@@ -49,6 +58,15 @@ class Submission extends Model
             self::STATUS_REVISIONS_REQUESTED => 'Revisions Requested',
             self::STATUS_ACCEPTED => 'Accepted',
             self::STATUS_REJECTED => 'Rejected',
+        ];
+    }
+
+    public static function screeningStatusOptions(): array
+    {
+        return [
+            self::SCREENING_STATUS_PENDING => 'Pending',
+            self::SCREENING_STATUS_PASSED => 'Passed',
+            self::SCREENING_STATUS_FAILED => 'Failed',
         ];
     }
 
@@ -77,6 +95,11 @@ class Submission extends Model
         return $this->belongsTo(User::class, 'assigned_editor_id');
     }
 
+    public function initialScreeningBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'initial_screening_by');
+    }
+
     public function assignments(): HasMany
     {
         return $this->hasMany(SubmissionAssignment::class);
@@ -90,5 +113,20 @@ class Submission extends Model
     public function isEditableByAuthor(): bool
     {
         return in_array($this->status, [self::STATUS_SUBMITTED, self::STATUS_REVISIONS_REQUESTED]);
+    }
+
+    public function hasPassedInitialScreening(): bool
+    {
+        return $this->initial_screening_status === self::SCREENING_STATUS_PASSED;
+    }
+
+    public function isPendingInitialScreening(): bool
+    {
+        return $this->initial_screening_status === self::SCREENING_STATUS_PENDING;
+    }
+
+    public function hasFailedInitialScreening(): bool
+    {
+        return $this->initial_screening_status === self::SCREENING_STATUS_FAILED;
     }
 }

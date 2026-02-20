@@ -85,8 +85,41 @@ class ChiefEditorController extends Controller
         ));
     }
 
+    public function initialScreening(Submission $submission)
+    {
+        return view('chief-editor.initial-screening', compact('submission'));
+    }
+
+    public function storeInitialScreening(Request $request, Submission $submission)
+    {
+        $validated = $request->validate([
+            'screening_status' => 'required|in:passed,failed',
+            'comments'         => 'required|string|max:2000',
+        ]);
+
+        $submission->update([
+            'initial_screening_status' => $validated['screening_status'],
+            'initial_screening_comments' => $validated['comments'],
+            'initial_screening_by' => auth()->id(),
+            'initial_screening_at' => now(),
+        ]);
+
+        // Notify author
+        \Illuminate\Support\Facades\Mail::to($submission->author->email)->queue(
+            new \App\Mail\InitialScreeningNotification($submission)
+        );
+
+        return redirect()->route('chief-editor.submission.show', $submission)
+            ->with('success', 'Initial screening completed and author has been notified.');
+    }
+
     public function assignSubmission(Request $request, Submission $submission)
     {
+        // Check if initial screening has passed
+        if (!$submission->hasPassedInitialScreening()) {
+            return back()->withErrors('This manuscript must pass the initial screening before being assigned to an editor.');
+        }
+
         $validated = $request->validate([
             'editor_ids'   => 'required|array|min:1',
             'editor_ids.*' => 'exists:users,id',

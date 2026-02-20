@@ -77,6 +77,66 @@ use App\Models\Submission;
                 <p class="text-slate-700">{{ $submission->chief_editor_notes }}</p>
             </div>
         @endif
+
+        <!-- Initial Screening Status -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 mb-6">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">Initial Screening</h2>
+            
+            @if ($submission->isPendingInitialScreening())
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                    <p class="text-yellow-900 font-semibold mb-4">⏳ Pending Initial Screening</p>
+                    <p class="text-yellow-800 text-sm mb-6">This manuscript has not been screened yet.</p>
+                    <a href="{{ route('chief-editor.initial-screening', $submission) }}"
+                       class="inline-block px-6 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg transition">
+                        Perform Initial Screening
+                    </a>
+                </div>
+            @elseif ($submission->hasPassedInitialScreening())
+                <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                    <p class="text-green-900 font-semibold mb-3">✓ Passed Initial Screening</p>
+                    <div class="space-y-3 mb-4">
+                        <div>
+                            <label class="text-sm font-medium text-green-800">Screened By</label>
+                            <p class="text-green-900">{{ $submission->initialScreeningBy?->name ?? 'Unknown' }}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-green-800">Screening Date</label>
+                            <p class="text-green-900">{{ $submission->initial_screening_at?->format('F d, Y \\a\\t h:i A') }}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-green-800">Screening Comments</label>
+                            <p class="text-green-900 mt-1">{{ $submission->initial_screening_comments }}</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('chief-editor.initial-screening', $submission) }}"
+                       class="inline-block text-green-700 hover:text-green-900 font-medium text-sm">
+                        Edit Screening Decision
+                    </a>
+                </div>
+            @else
+                <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                    <p class="text-red-900 font-semibold mb-3">✗ Failed Initial Screening</p>
+                    <div class="space-y-3 mb-4">
+                        <div>
+                            <label class="text-sm font-medium text-red-800">Screened By</label>
+                            <p class="text-red-900">{{ $submission->initialScreeningBy?->name ?? 'Unknown' }}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-red-800">Screening Date</label>
+                            <p class="text-red-900">{{ $submission->initial_screening_at?->format('F d, Y \\a\\t h:i A') }}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-red-800">Screening Comments</label>
+                            <p class="text-red-900 mt-1">{{ $submission->initial_screening_comments }}</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('chief-editor.initial-screening', $submission) }}"
+                       class="inline-block text-red-700 hover:text-red-900 font-medium text-sm">
+                        Override Decision
+                    </a>
+                </div>
+            @endif
+        </div>
     </div>
 
     <!-- Assignment Panel -->

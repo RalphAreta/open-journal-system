@@ -66,6 +66,224 @@
         @endif
     </div>
 
+    <!-- Initial Screening Section -->
+    <div class="bg-white rounded-lg shadow border border-slate-200 p-6 mb-6">
+        <h2 class="text-lg font-medium mb-4">Initial Screening Status</h2>
+        
+        @if ($submission->isPendingInitialScreening())
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                <p class="text-yellow-900 font-semibold mb-4">⏳ Pending Initial Screening</p>
+                <p class="text-yellow-800 text-sm mb-6">This manuscript has not been screened yet. Please perform the initial screening before assigning reviewers.</p>
+                <a href="{{ route('editor.initial-screening', $submission) }}"
+                   class="inline-block px-6 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg transition">
+                    Perform Initial Screening
+                </a>
+            </div>
+        @elseif ($submission->hasPassedInitialScreening())
+            <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                <p class="text-green-900 font-semibold mb-3">✓ Passed Initial Screening</p>
+                <div class="space-y-3 mb-4">
+                    <div>
+                        <label class="text-sm font-medium text-green-800">Screened By</label>
+                        <p class="text-green-900">{{ $submission->initialScreeningBy?->name ?? 'Unknown' }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-green-800">Screening Date</label>
+                        <p class="text-green-900">{{ $submission->initial_screening_at?->format('F d, Y \\a\\t h:i A') }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-green-800">Screening Comments</label>
+                        <p class="text-green-900 mt-1">{{ $submission->initial_screening_comments }}</p>
+                    </div>
+                </div>
+                <a href="{{ route('editor.initial-screening', $submission) }}"
+                   class="inline-block text-green-700 hover:text-green-900 font-medium text-sm">
+                    Edit Screening Decision
+                </a>
+            </div>
+        @else
+            <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                <p class="text-red-900 font-semibold mb-3">✗ Failed Initial Screening</p>
+                <div class="space-y-3 mb-4">
+                    <div>
+                        <label class="text-sm font-medium text-red-800">Screened By</label>
+                        <p class="text-red-900">{{ $submission->initialScreeningBy?->name ?? 'Unknown' }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-red-800">Screening Date</label>
+                        <p class="text-red-900">{{ $submission->initial_screening_at?->format('F d, Y \\a\\t h:i A') }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-red-800">Screening Comments</label>
+                        <p class="text-red-900 mt-1">{{ $submission->initial_screening_comments }}</p>
+                    </div>
+                </div>
+                <a href="{{ route('editor.initial-screening', $submission) }}"
+                   class="inline-block text-red-700 hover:text-red-900 font-medium text-sm">
+                    Override Decision
+                </a>
+            </div>
+        @endif
+    </div>
+
+    <!-- Editor Decision Section -->
+    @if($submission->reviews->isNotEmpty())
+        <div class="bg-white rounded-lg shadow border border-slate-200 p-6 mb-6">
+            <h2 class="text-lg font-medium mb-4">Editor Decision</h2>
+
+            @if(in_array($submission->status, ['accepted', 'rejected', 'revisions_requested']))
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                    <p class="text-blue-900 font-semibold mb-3">✓ Decision Already Recorded</p>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-sm font-medium text-blue-800">Status</label>
+                            <p class="text-blue-900 font-semibold">{{ \App\Models\Submission::statusOptions()[$submission->status] }}</p>
+                        </div>
+                        @if($submission->editor_notes)
+                            <div>
+                                <label class="text-sm font-medium text-blue-800">Editor Notes</label>
+                                <p class="text-blue-900 mt-1">{{ $submission->editor_notes }}</p>
+                            </div>
+                        @endif
+                        @if($submission->editor_decision_at)
+                            <div>
+                                <label class="text-sm font-medium text-blue-800">Decision Made On</label>
+                                <p class="text-blue-900">{{ $submission->editor_decision_at->format('F d, Y \\a\\t h:i A') }}</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @else
+                <form id="decision-form" method="POST" action="{{ route('editor.decision', $submission) }}" class="space-y-6">
+                    @csrf
+
+                    <div>
+                        <label for="status" class="block text-sm font-semibold text-slate-900 mb-3">
+                            Decision <span class="text-red-600">*</span>
+                        </label>
+                        <div class="space-y-3">
+                            <div class="flex items-start">
+                                <input type="radio" id="accepted" name="status" value="accepted" class="mt-1 h-4 w-4 text-green-600" required>
+                                <label for="accepted" class="ml-3 cursor-pointer">
+                                    <p class="font-medium text-slate-900">✓ Accept</p>
+                                    <p class="text-sm text-slate-600">Manuscript is accepted for publication</p>
+                                </label>
+                            </div>
+                            <div class="flex items-start">
+                                <input type="radio" id="rejected" name="status" value="rejected" class="mt-1 h-4 w-4 text-red-600" required>
+                                <label for="rejected" class="ml-3 cursor-pointer">
+                                    <p class="font-medium text-slate-900">✗ Reject</p>
+                                    <p class="text-sm text-slate-600">Manuscript is rejected</p>
+                                </label>
+                            </div>
+                            <div class="flex items-start">
+                                <input type="radio" id="minor" name="status" value="revisions_requested" class="revision-option mt-1 h-4 w-4 text-amber-600" required>
+                                <label for="minor" class="ml-3 cursor-pointer">
+                                    <p class="font-medium text-slate-900">⚡ Request Minor Revisions</p>
+                                    <p class="text-sm text-slate-600">Minor revisions required before acceptance</p>
+                                </label>
+                            </div>
+                            <div class="flex items-start">
+                                <input type="radio" id="major" name="status" value="revisions_requested" class="revision-option mt-1 h-4 w-4 text-orange-600" required>
+                                <label for="major" class="ml-3 cursor-pointer">
+                                    <p class="font-medium text-slate-900">⚠️ Request Major Revisions</p>
+                                    <p class="text-sm text-slate-600">Major revisions required before re-review</p>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="revision-fields" style="display: none; border-t pt-6 mt-6">
+                        <div class="mb-4">
+                            <label for="revision_type" class="block text-sm font-semibold text-slate-900 mb-2">
+                                Revision Type <span class="text-red-600">*</span>
+                            </label>
+                            <select id="revision_type" name="revision_type" class="block w-full rounded-md border-slate-300 shadow-sm">
+                                <option value="">-- Select revision type --</option>
+                                <option value="minor">Minor Revisions</option>
+                                <option value="major">Major Revisions</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="revision_reason" class="block text-sm font-semibold text-slate-900 mb-2">
+                                Revision Reason <span class="text-red-600">*</span>
+                            </label>
+                            <textarea
+                                id="revision_reason"
+                                name="revision_reason"
+                                rows="4"
+                                class="block w-full rounded-md border-slate-300 shadow-sm"
+                                placeholder="Explain what revisions are needed"
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="editor_notes" class="block text-sm font-semibold text-slate-900 mb-2">
+                            Editor Notes (Optional)
+                        </label>
+                        <textarea
+                            id="editor_notes"
+                            name="editor_notes"
+                            rows="4"
+                            maxlength="2000"
+                            class="block w-full rounded-md border-slate-300 shadow-sm"
+                            placeholder="Add any additional notes for the author..."
+                        ></textarea>
+                        <p class="text-xs text-slate-500 mt-1">Maximum 2000 characters</p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-6 border-t border-slate-200">
+                        <p class="text-sm text-slate-600">Make a decision based on the reviewer feedback above</p>
+                        <button
+                            type="submit"
+                            class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition"
+                        >
+                            Record Decision
+                        </button>
+                    </div>
+                </form>
+
+                <script>
+                    const statusRadios = document.querySelectorAll('input[name="status"]');
+                    const revisionRadios = document.querySelectorAll('.revision-option');
+                    const revisionFields = document.getElementById('revision-fields');
+                    const revisionTypeSelect = document.getElementById('revision_type');
+                    const revisionReasonInput = document.getElementById('revision_reason');
+                    const decisionForm = document.getElementById('decision-form');
+
+                    function toggleRevisionFields() {
+                        const isRevisionSelected = Array.from(revisionRadios).some(radio => radio.checked);
+                        if (isRevisionSelected) {
+                            revisionFields.style.display = 'block';
+                            revisionTypeSelect.setAttribute('required', 'required');
+                            revisionReasonInput.setAttribute('required', 'required');
+                        } else {
+                            revisionFields.style.display = 'none';
+                            revisionTypeSelect.removeAttribute('required');
+                            revisionReasonInput.removeAttribute('required');
+                        }
+                    }
+
+                    statusRadios.forEach(radio => {
+                        radio.addEventListener('change', toggleRevisionFields);
+                    });
+
+                    decisionForm.addEventListener('submit', function(e) {
+                        const isRevisionSelected = Array.from(revisionRadios).some(radio => radio.checked);
+                        if (!isRevisionSelected) {
+                            revisionTypeSelect.disabled = true;
+                            revisionReasonInput.disabled = true;
+                        }
+                    });
+
+                    toggleRevisionFields();
+                </script>
+            @endif
+        </div>
+    @endif
+
     @if(in_array($submission->status, ['submitted', 'under_review', 'revisions_requested']))
         <div class="bg-white rounded-lg shadow border border-slate-200 p-6 mb-6">
             <h2 class="text-lg font-medium mb-1">Assign Reviewer</h2>
@@ -118,36 +336,6 @@
                 </button>
             </form>
         </div>
-
-        <script>
-            const statusSelect = document.getElementById('status');
-            const decisionForm = document.getElementById('decision-form');
-            const revisionFields = document.getElementById('revision-fields');
-            const revisionTypeInput = document.getElementById('revision_type');
-            const revisionReasonInput = document.getElementById('revision_reason');
-
-            function toggleRevisionFields() {
-                if (statusSelect.value === 'revisions_requested') {
-                    revisionFields.style.display = 'block';
-                    revisionTypeInput.setAttribute('required', 'required');
-                    revisionReasonInput.setAttribute('required', 'required');
-                } else {
-                    revisionFields.style.display = 'none';
-                    revisionTypeInput.removeAttribute('required');
-                    revisionReasonInput.removeAttribute('required');
-                }
-            }
-
-            decisionForm.addEventListener('submit', function(e) {
-                if (statusSelect.value !== 'revisions_requested') {
-                    revisionTypeInput.disabled = true;
-                    revisionReasonInput.disabled = true;
-                }
-            });
-
-            statusSelect.addEventListener('change', toggleRevisionFields);
-            toggleRevisionFields();
-        </script>
     @endif
 
     <div class="mt-4">

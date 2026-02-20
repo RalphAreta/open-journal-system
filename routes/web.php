@@ -49,6 +49,8 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/dashboard/editor', [DashboardController::class, 'editor'])->name('dashboard.editor');
         Route::get('/editor/submissions', [ReviewController::class, 'editorSubmissions'])->name('editor.submissions');
         Route::get('/editor/submissions/{submission}', [ReviewController::class, 'editorShow'])->name('editor.submission.show');
+        Route::get('/editor/submissions/{submission}/initial-screening', [ReviewController::class, 'editorInitialScreening'])->name('editor.initial-screening');
+        Route::post('/editor/submissions/{submission}/initial-screening', [ReviewController::class, 'storeInitialScreening'])->name('editor.store-initial-screening');
         Route::post('/editor/submissions/{submission}/assign-reviewer', [ReviewController::class, 'assignReviewer'])->name('editor.assign-reviewer');
         Route::post('/editor/submissions/{submission}/decision', [ReviewController::class, 'editorDecision'])->name('editor.decision');
     });
@@ -56,6 +58,8 @@ Route::middleware('auth')->group(function (): void {
     Route::middleware('role:editor-in-chief')->group(function (): void {
         Route::get('/chief-editor/dashboard', [ChiefEditorController::class, 'dashboard'])->name('chief-editor.dashboard');
         Route::get('/chief-editor/submissions/{submission}', [ChiefEditorController::class, 'showSubmission'])->name('chief-editor.submission.show');
+        Route::get('/chief-editor/submissions/{submission}/initial-screening', [ChiefEditorController::class, 'initialScreening'])->name('chief-editor.initial-screening');
+        Route::post('/chief-editor/submissions/{submission}/initial-screening', [ChiefEditorController::class, 'storeInitialScreening'])->name('chief-editor.store-initial-screening');
         Route::post('/chief-editor/submissions/{submission}/assign', [ChiefEditorController::class, 'assignSubmission'])->name('chief-editor.assign');
         Route::post('/chief-editor/submissions/{submission}/reassign', [ChiefEditorController::class, 'reassignSubmission'])->name('chief-editor.reassign');
         Route::post('/chief-editor/submissions/{submission}/review', [ChiefEditorController::class, 'reviewSubmission'])->name('chief-editor.review');

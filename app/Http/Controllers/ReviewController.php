@@ -128,6 +128,49 @@ class ReviewController extends Controller
 
     return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers'));
 }
+
+    /**
+     * Editor: show initial screening form.
+     */
+    public function editorInitialScreening(Submission $submission): View
+    {
+        if ($submission->assigned_editor_id !== auth()->id()) {
+            abort(403, 'You do not have access to this submission.');
+        }
+
+        return view('reviews.editor-initial-screening', compact('submission'));
+    }
+
+    /**
+     * Editor: store initial screening decision.
+     */
+    public function storeInitialScreening(Request $request, Submission $submission): RedirectResponse
+    {
+        if ($submission->assigned_editor_id !== $request->user()->id) {
+            abort(403, 'You do not have access to this submission.');
+        }
+
+        $validated = $request->validate([
+            'screening_status' => 'required|in:passed,failed',
+            'comments'         => 'required|string|max:2000',
+        ]);
+
+        $submission->update([
+            'initial_screening_status' => $validated['screening_status'],
+            'initial_screening_comments' => $validated['comments'],
+            'initial_screening_by' => auth()->id(),
+            'initial_screening_at' => now(),
+        ]);
+
+        // Notify author
+        \Illuminate\Support\Facades\Mail::to($submission->author->email)->queue(
+            new \App\Mail\InitialScreeningNotification($submission)
+        );
+
+        return redirect()->route('editor.submission.show', $submission)
+            ->with('success', 'Initial screening completed and author has been notified.');
+    }
+
     /**
      * Editor: assign reviewer to submission.
      */
@@ -135,6 +178,11 @@ class ReviewController extends Controller
     {
         if ($submission->assigned_editor_id !== $request->user()->id) {
             abort(403, 'You do not have access to this submission.');
+        }
+
+        // Check if initial screening has passed
+        if (!$submission->hasPassedInitialScreening()) {
+            return back()->withErrors('This manuscript must pass the initial screening before assigning a reviewer.');
         }
 
         $validated = $request->validate([
@@ -229,7 +277,7 @@ class ReviewController extends Controller
     {
         $user = request()->user();
 
-        if ($user->isEditor()) {
+        if ($user->isEditor() || $user->isEditorInChief()) {
             return $this->serializeFile($submission);
         }
 
