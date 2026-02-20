@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="min-h-screen flex flex-col md:flex-row bg-slate-50">
-    {{-- Left Side: Branding & Visuals (Matching Option 2) --}}
+    {{-- Left Side: Branding & Visuals --}}
     <div class="hidden md:flex md:w-3/5 relative items-center justify-center p-12 overflow-hidden">
         <div class="absolute inset-0 z-0">
             <img src="{{ asset('images/homepage-webslider-1.jpg') }}" class="w-full h-full object-cover">
@@ -41,7 +41,7 @@
             <form method="POST" action="{{ route('login') }}" class="space-y-6">
                 @csrf
 
-                {{-- Role Selector with Restored Editor-in-Chief --}}
+                {{-- Role Selector --}}
                 <div>
                     <label for="role" class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 ml-1">Sign in as</label>
                     <div class="relative group">
@@ -69,9 +69,17 @@
 
                 <div>
                     <label for="password" class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 ml-1">Password</label>
-                    <input id="password" type="password" name="password" required
-                        class="w-full px-4 py-4 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/10 transition-all outline-none"
-                        placeholder="••••••••">
+                    <div class="relative">
+                        <input id="password" type="password" name="password" required
+                            class="w-full px-4 py-4 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/10 transition-all outline-none pr-12"
+                            placeholder="••••••••">
+                        <button type="button" onclick="togglePassword('password', 'eye-icon')" class="absolute inset-y-0 right-4 flex items-center text-slate-400 hover:text-red-600 transition-colors">
+                            <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="flex items-center justify-between">
@@ -96,4 +104,19 @@
         </div>
     </div>
 </div>
+
+<script>
+    function togglePassword(inputId, iconId) {
+        const passwordInput = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />';
+        } else {
+            passwordInput.type = 'password';
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
+        }
+    }
+</script>
 @endsection
