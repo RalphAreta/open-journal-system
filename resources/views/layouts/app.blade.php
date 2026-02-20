@@ -11,14 +11,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @stack('styles')
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 font-sans antialiased flex flex-col">
+<body class="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 text-slate-900 font-sans antialiased flex flex-col">
     <nav class="bg-white border-b-4 border-red-600 shadow-lg sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
                 <div class="flex items-center gap-8">
                     <a href="{{ url('/') }}" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
                         <img src="{{ asset('images/batstateu-logo.png') }}" alt="Batangas State University Logo" class="h-12 w-auto">
-                        <span class="text-4xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">IRJIEST</span>
+                        <span class="text-4xl font-bold bg-linear-to-r from-red-600 to-red-700 bg-clip-text text-transparent">IRJIEST</span>
                     </a>
                     @auth
                         <div class="hidden md:flex md:space-x-1">
@@ -48,7 +48,7 @@
                             @csrf
                             <button type="button" onclick="confirmLogout()" class="text-sm font-medium text-white bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg transition-colors duration-200">Logout</button>
                         </form>
-                                                </div>
+                                                                                </div>
                         <div class="sm:hidden">
                             <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
@@ -64,7 +64,7 @@
         </div>
     </nav>
 
-    <main class="flex-grow max-w-7xl mx-auto w-full py-8 px-4 sm:px-6 lg:px-8">
+    <main class="grow max-w-7xl mx-auto w-full py-8 px-4 sm:px-6 lg:px-8">
         @if(session('success'))
             <div class="mb-6 rounded-lg bg-green-50 border-l-4 border-green-500 p-4 text-sm text-green-800 shadow-sm">
                 <div class="flex items-center"><span class="text-lg mr-3">✓</span>{{ session('success') }}</div>

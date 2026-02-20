@@ -15,7 +15,7 @@
             background-position: center;
             background-attachment: fixed;
         }
-        
+
         .hero-overlay {
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.25) 100%);
         }
