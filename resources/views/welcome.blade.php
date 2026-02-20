@@ -123,7 +123,9 @@
                 </div>
             </div>
             <div class="bg-slate-100 aspect-square rounded-4xl relative overflow-hidden group">
-                <img src="{{ asset('images/homepage-webslider-1.jpg') }}" class="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" alt="Research">
+                <img src="{{ asset('images/homepage-webslider-1.jpg') }}"
+                 class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out scale-110 group-hover:scale-100"
+                 alt="Research">
                 <div class="absolute inset-0 bg-red-600/20 mix-blend-multiply group-hover:opacity-0 transition-opacity"></div>
             </div>
         </div>
