@@ -8,7 +8,7 @@
     <div class="hidden md:flex md:w-3/5 relative items-center justify-center p-12 overflow-hidden">
         <div class="absolute inset-0 z-0">
             <img src="{{ asset('images/homepage-webslider-1.jpg') }}" class="w-full h-full object-cover" alt="BatStateU Campus">
-            <div class="absolute inset-0 bg-gradient-to-br from-red-900/95 via-red-800/40 to-slate-950/90"></div>
+            <div class="absolute inset-0 bg-linear-to-br from-red-900/95 via-red-800/40 to-slate-950/90"></div>
         </div>
 
         <div class="relative z-10 text-white max-w-lg">
@@ -60,7 +60,7 @@
                     <div>
                         <label class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 ml-1">Full Name</label>
                         <input type="text" name="name" value="{{ old('name') }}" required
-                               class="w-full px-4 py-3.5 rounded-xl border transition-all outline-none @error('name') border-red-500 bg-red-50/30 @else border-slate-200 bg-slate-50/50 focus:bg-white focus:border-red-500 @enderror">
+                               class="w-full px-4 py-3.5 rounded-xl border transition-all outline-none {{ $errors->has('name') ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-slate-50/50 focus:bg-white focus:border-red-500' }}">
                         @error('name') <p class="text-red-500 text-[10px] font-black mt-1 uppercase ml-1 tracking-tight">{{ $message }}</p> @enderror
                     </div>
 
@@ -68,12 +68,12 @@
                     <div>
                         <label class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 ml-1">Institutional Email</label>
                         <input type="email" name="email" value="{{ old('email') }}" required
-                               class="w-full px-4 py-3.5 rounded-xl border transition-all outline-none @error('email') border-red-500 bg-red-50/30 @else border-slate-200 bg-slate-50/50 focus:bg-white focus:border-red-500 @enderror">
+                               class="w-full px-4 py-3.5 rounded-xl border transition-all outline-none {{ $errors->has('email') ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-slate-50/50 focus:bg-white focus:border-red-500' }}">
                         @error('email') <p class="text-red-500 text-[10px] font-black mt-1 uppercase ml-1 tracking-tight">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
-                {{-- Multi-Role Selection --}}
+                {{-- Roles --}}
                 <div>
                     <label class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-3 ml-1">Register as</label>
                     <div class="grid grid-cols-3 gap-2">
@@ -89,12 +89,11 @@
                         </label>
                         @endforeach
                     </div>
-                    @error('roles') <p class="text-red-500 text-[10px] font-black mt-1 uppercase ml-1 tracking-tight">{{ $message }}</p> @enderror
                 </div>
 
-                {{-- Fields of Expertise --}}
+                {{-- Expertise --}}
                 <div id="expertise-container" class="hidden transform scale-95 opacity-0 transition-all duration-300 origin-top">
-                    <div class="p-5 border-2 border-dashed @error('expertise') border-red-300 bg-red-50/30 @else border-slate-200 bg-slate-50/50 @enderror rounded-2xl">
+                    <div class="p-5 border-2 border-dashed rounded-2xl {{ $errors->has('expertise') ? 'border-red-300 bg-red-50/30' : 'border-slate-200 bg-slate-50/50' }}">
                         <label class="block text-[11px] font-black text-slate-800 uppercase tracking-wider mb-4">Fields of Expertise:</label>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 max-h-56 overflow-y-auto pr-2 custom-scrollbar-thin">
                             @foreach($categories as $category)
@@ -114,11 +113,13 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 ml-1">Password</label>
-                        <input type="password" name="password" required class="w-full px-4 py-3.5 rounded-xl border @error('password') border-red-500 @else border-slate-200 @enderror bg-slate-50/50 focus:border-red-500 outline-none">
+                        <input type="password" name="password" required
+                               class="w-full px-4 py-3.5 rounded-xl border transition-all outline-none {{ $errors->has('password') ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-slate-50/50 focus:border-red-500' }}">
                     </div>
                     <div>
                         <label class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 ml-1">Confirm</label>
-                        <input type="password" name="password_confirmation" required class="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:border-red-500 outline-none">
+                        <input type="password" name="password_confirmation" required
+                               class="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:border-red-500 outline-none">
                     </div>
                 </div>
 
