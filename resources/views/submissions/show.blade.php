@@ -3,82 +3,172 @@
 @section('title', $submission->title)
 
 @section('content')
-<div class="max-w-4xl">
-    <div class="flex justify-between items-start mb-6">
-        <h1 class="text-2xl font-semibold">{{ $submission->title }}</h1>
-        <span class="px-3 py-1 rounded-full text-sm bg-slate-100">{{ $submission->status }}</span>
-    </div>
-    <div class="bg-white rounded-lg shadow border border-slate-200 p-6 space-y-4">
-        <div>
-            <p class="text-sm text-slate-700 font-medium">Author</p>
-            <p class="text-slate-900">{{ $submission->author->name }}</p>
+<div class="max-w-6xl mx-auto py-8">
+    {{-- Header & Core Navigation --}}
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+        <div class="flex-1">
+            <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+                <a href="{{ route('submissions.index') }}" class="hover:text-red-600 transition-colors">Board</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
+                <span class="text-slate-900 tracking-widest">Archive #{{ str_pad($submission->id, 5, '0', STR_PAD_LEFT) }}</span>
+            </nav>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tighter leading-[1.1] max-w-4xl">
+                {{ $submission->title }}
+            </h1>
         </div>
-        <div>
-            <p class="text-sm text-slate-700 font-medium">Submitted</p>
-            <p class="text-slate-900">{{ $submission->submitted_at?->format('F j, Y') ?? '-' }}</p>
-        </div>
-        @if($submission->keywords)
-            <div>
-                <p class="text-sm text-slate-700 font-medium">Keywords</p>
-                <p class="text-slate-900">{{ $submission->keywords }}</p>
-            </div>
-        @endif
-        <div>
-            <p class="text-sm text-slate-700 font-medium">Abstract</p>
-            <p class="text-slate-900">{{ $submission->abstract }}</p>
-        </div>
-        @if($submission->file_name)
-            <div>
-                <p class="text-sm text-slate-700 font-medium">File</p>
-                <p class="text-slate-900">{{ $submission->file_name }}</p>
-            </div>
-        @endif
-        @if($submission->editor_notes && (auth()->user()->id === $submission->author_id || auth()->user()->isEditor() || auth()->user()->isAdmin()))
-            <div class="border-t pt-4">
-                <p class="text-sm text-slate-700 font-medium">Editor notes</p>
-                <p class="text-slate-900">{{ $submission->editor_notes }}</p>
-            </div>
-        @endif
 
-        @php
-            $pendingRevisions = $submission->revisionRequests()->whereNull('revised_at')->count();
-        @endphp
-        @if ($pendingRevisions > 0 && auth()->user()->id === $submission->author_id)
-            <div class="border-t pt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                    </svg>
-                    <div>
-                        <p class="font-semibold text-yellow-900">Revisions Requested</p>
-                        <p class="text-sm text-yellow-800 mt-1">{{ $pendingRevisions }} revision{{ $pendingRevisions > 1 ? 's' : '' }} awaiting your response.</p>
-                        <a href="{{ route('submissions.revisions', $submission) }}" class="inline-block mt-2 text-yellow-700 hover:text-yellow-900 font-semibold text-sm">
-                            View & Submit Revisions →
+        <div class="flex items-center gap-3 shrink-0">
+            @if($submission->isEditableByAuthor() && auth()->user()->id === $submission->author_id && $submission->status === 'submitted')
+                <a href="{{ route('submissions.edit', $submission) }}" class="px-6 py-3 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all">
+                    Edit Details
+                </a>
+            @endif
+            <a href="{{ route('submissions.index') }}" class="px-6 py-3 bg-slate-100 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">
+                Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        {{-- Left: The Meat (Abstract, Revisions, Reviews) --}}
+        <div class="lg:col-span-8 space-y-12">
+
+            {{-- 1. Urgent Action: Pending Revisions --}}
+            @php $pendingRevisions = $submission->revisionRequests()->whereNull('revised_at')->count(); @endphp
+            @if ($pendingRevisions > 0 && auth()->user()->id === $submission->author_id)
+                <div class="bg-red-600 rounded-[2.5rem] p-1 shadow-2xl shadow-red-100">
+                    <div class="bg-white rounded-[2.2rem] p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-red-600 shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-black text-slate-900 tracking-tight">Revisions Requested</h3>
+                                <p class="text-sm text-slate-500 font-medium">{{ $pendingRevisions }} request(s) are awaiting your response.</p>
+                            </div>
+                        </div>
+                        <a href="{{ route('submissions.revisions', $submission) }}" class="w-full md:w-auto px-8 py-4 bg-red-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-700 transition-all text-center">
+                            Submit Revisions
                         </a>
                     </div>
                 </div>
-            </div>
-        @endif
+            @endif
 
-        @if($submission->reviews->isNotEmpty() && (auth()->user()->id === $submission->author_id || auth()->user()->isEditor() || auth()->user()->isAdmin()))
-            <div class="border-t pt-4">
-                <p class="text-sm font-medium text-slate-900 mb-2">Reviews</p>
-                @foreach($submission->reviews as $r)
-                    <div class="mb-4 p-3 bg-slate-50 rounded">
-                        <p class="text-sm text-slate-700">Reviewer: {{ $r->reviewer->name }} — Recommendation: {{ \App\Models\Review::recommendationOptions()[$r->recommendation] ?? $r->recommendation }}</p>
-                        @if($r->comments_for_author && (auth()->user()->id === $submission->author_id || auth()->user()->isEditor() || auth()->user()->isAdmin()))
-                            <p class="mt-2 text-slate-900">{{ $r->comments_for_author }}</p>
-                        @endif
+            {{-- 2. Abstract Content --}}
+            <section class="space-y-4">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Abstract</h2>
+                    <div class="h-px bg-slate-100 flex-1"></div>
+                </div>
+                <div class="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100">
+                    <p class="text-slate-700 text-lg leading-relaxed font-medium italic">
+                        "{{ $submission->abstract }}"
+                    </p>
+                </div>
+            </section>
+
+            {{-- 3. Reviewer Feedback (Conditional) --}}
+            @if($submission->reviews->isNotEmpty() && (auth()->user()->id === $submission->author_id || auth()->user()->isEditor() || auth()->user()->isAdmin()))
+                <section class="space-y-6">
+                    <div class="flex items-center gap-4">
+                        <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Peer Review Logs</h2>
+                        <div class="h-px bg-slate-100 flex-1"></div>
                     </div>
-                @endforeach
+
+                    <div class="space-y-4">
+                        @foreach($submission->reviews as $r)
+                            <div class="bg-white border border-slate-200 rounded-3xl p-8 hover:border-red-200 transition-colors shadow-sm">
+                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px] font-black">
+                                            {{ substr($r->reviewer->name, 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-black text-slate-900 uppercase tracking-widest">Reviewer: {{ $r->reviewer->name }}</p>
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase">{{ $r->created_at->format('M d, Y') }}</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 text-[9px] font-black uppercase tracking-widest text-slate-600">
+                                        {{ \App\Models\Review::recommendationOptions()[$r->recommendation] ?? $r->recommendation }}
+                                    </span>
+                                </div>
+
+                                @if($r->comments_for_author)
+                                    <div class="prose prose-sm max-w-none text-slate-600 leading-relaxed font-medium">
+                                        {{ $r->comments_for_author }}
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+            @endif
+
+            {{-- 4. Editor Notes (Conditional) --}}
+            @if($submission->editor_notes && (auth()->user()->id === $submission->author_id || auth()->user()->isEditor() || auth()->user()->isAdmin()))
+                <section class="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-slate-200">
+                    <h2 class="text-[10px] font-black text-red-500 uppercase tracking-widest mb-4">Official Editor Notes</h2>
+                    <p class="text-slate-300 leading-relaxed font-medium">
+                        {{ $submission->editor_notes }}
+                    </p>
+                </section>
+            @endif
+        </div>
+
+        {{-- Right: Technical Sidebar --}}
+        <div class="lg:col-span-4 space-y-6">
+            <div class="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm sticky top-8">
+                <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-8">Metadata</h3>
+
+                <div class="space-y-8">
+                    <div>
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2">Current Status</p>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                            {{ str_replace('_', ' ', $submission->status) }}
+                        </span>
+                    </div>
+
+                    <div>
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-1">Corresponding Author</p>
+                        <p class="text-sm font-bold text-slate-900">{{ $submission->author->name }}</p>
+                    </div>
+
+                    <div>
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-1">Submission Date</p>
+                        <p class="text-sm font-bold text-slate-900">{{ $submission->submitted_at?->format('M d, Y') ?? '-' }}</p>
+                    </div>
+
+                    @if($submission->keywords)
+                        <div>
+                            <p class="text-[10px] font-black uppercase text-slate-400 mb-3">Key Taxonomy</p>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach(explode(',', $submission->keywords) as $keyword)
+                                    <span class="px-3 py-1 bg-slate-50 text-slate-600 text-[10px] font-bold rounded-lg border border-slate-100 capitalize">
+                                        {{ trim($keyword) }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    @if($submission->file_name)
+                        <div class="pt-6 border-t border-slate-100">
+                            <p class="text-[10px] font-black uppercase text-slate-400 mb-3">Active Manuscript</p>
+                            <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100 group cursor-pointer hover:border-red-200 transition-colors">
+                                <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-red-600 shadow-sm">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </div>
+                                <div class="flex-1 overflow-hidden">
+                                    <p class="text-[10px] font-black text-slate-900 truncate uppercase">{{ $submission->file_name }}</p>
+                                    <p class="text-[9px] font-bold text-slate-400 uppercase">Document File</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
             </div>
-        @endif
-    </div>
-    <div class="mt-4 flex gap-2">
-        @if($submission->isEditableByAuthor() && auth()->user()->id === $submission->author_id && $submission->status === 'submitted')
-            <a href="{{ route('submissions.edit', $submission) }}" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 font-medium shadow-sm transition-colors">Edit</a>
-        @endif
-        <a href="{{ route('submissions.index') }}" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-md hover:bg-slate-300">Back to list</a>
+        </div>
     </div>
 </div>
 @endsection

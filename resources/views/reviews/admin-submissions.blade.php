@@ -3,32 +3,75 @@
 @section('title', 'Manage Submissions')
 
 @section('content')
-<h1 class="text-2xl font-semibold mb-6">Manage Submissions</h1>
-<div class="bg-white rounded-lg shadow overflow-hidden border border-slate-200">
-    <table class="min-w-full divide-y divide-slate-200">
-        <thead class="bg-slate-50">
-            <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase">Title</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase">Author</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase">Status</th>
-                <th class="px-4 py-3 text-right text-xs font-medium text-slate-700 uppercase">Actions</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-200">
-            @forelse($submissions as $s)
-                <tr>
-                    <td class="px-4 py-3 text-sm text-slate-900">{{ Str::limit($s->title, 50) }}</td>
-                    <td class="px-4 py-3 text-sm text-slate-900">{{ $s->author->name ?? '-' }}</td>
-                    <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-slate-100 text-slate-900">{{ $s->status }}</span></td>
-                    <td class="px-4 py-3 text-right">
-                        <a href="{{ route('admin.submissions.show', $s) }}" class="text-red-600 hover:text-red-700 hover:underline text-sm font-medium">View</a>
-                    </td>
-                </tr>
-            @empty
-                <tr><td colspan="4" class="px-4 py-8 text-center text-slate-700">No submissions.</td></tr>
-            @endforelse
-        </tbody>
-    </table>
-    <div class="px-4 py-2 border-t border-slate-200">{{ $submissions->links() }}</div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">Manage Submissions</h1>
+            <p class="text-sm text-slate-500 mt-1">View and manage all incoming user submissions.</p>
+        </div>
+        <div class="bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
+            <span class="text-sm font-medium text-slate-600">Total: {{ $submissions->total() }}</span>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Title</th>
+                        <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Author</th>
+                        <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-slate-200">
+                    @forelse($submissions as $s)
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
+                                {{ Str::limit($s->title, 50) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                {{ $s->author->name ?? '—' }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @php
+                                    $statusColor = match(strtolower($s->status)) {
+                                        'approved' => 'bg-emerald-50 text-emerald-700 border-emerald-100',
+                                        'pending'  => 'bg-amber-50 text-amber-700 border-amber-100',
+                                        'rejected' => 'bg-rose-50 text-rose-700 border-rose-100',
+                                        default    => 'bg-slate-50 text-slate-700 border-slate-100',
+                                    };
+                                @endphp
+                                <span class="px-2.5 py-1 text-xs font-bold rounded-full border {{ $statusColor }} uppercase">
+                                    {{ $s->status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="{{ route('admin.submissions.show', $s) }}" class="inline-flex items-center text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md transition-colors">
+                                    View Details
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-12 text-center">
+                                <svg class="mx-auto h-12 w-12 text-slate-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <p class="text-slate-500 font-medium">No submissions found.</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        @if($submissions->hasPages())
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200">
+                {{ $submissions->links() }}
+            </div>
+        @endif
+    </div>
 </div>
 @endsection

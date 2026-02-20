@@ -1,31 +1,49 @@
 @extends('layouts.app')
 
-@section('title', 'Roles')
+@section('title', 'System Roles')
 
 @section('content')
-<h1 class="text-2xl font-semibold mb-6">Roles</h1>
-<div class="bg-white rounded-lg shadow overflow-hidden border border-slate-200">
-    <table class="min-w-full divide-y divide-slate-200">
-        <thead class="bg-slate-50">
-            <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase">Name</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase">Display Name</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase">Users</th>
-                <th class="px-4 py-3 text-right text-xs font-medium text-slate-700 uppercase">Actions</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-200">
-            @foreach($roles as $role)
-                <tr>
-                    <td class="px-4 py-3 text-sm text-slate-900">{{ $role->name }}</td>
-                    <td class="px-4 py-3 text-sm text-slate-900">{{ $role->display_name }}</td>
-                    <td class="px-4 py-3 text-sm text-slate-900">{{ $role->users_count }}</td>
-                    <td class="px-4 py-3 text-right">
-                        <a href="{{ route('admin.roles.edit', $role) }}" class="text-red-600 hover:text-red-700 hover:underline text-sm font-medium">Edit</a>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+<div class="max-w-6xl mx-auto py-8">
+    {{-- Header --}}
+    <div class="mb-10">
+        <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+            <a href="{{ route('dashboard.admin') }}" class="hover:text-red-600 transition-colors">Admin</a>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
+            <span class="text-slate-900 tracking-widest">Access Control</span>
+        </nav>
+        <h1 class="text-4xl font-black text-slate-900 tracking-tighter leading-tight">Roles & Permissions</h1>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        @foreach($roles as $role)
+        <div class="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm group hover:border-red-200 transition-all relative overflow-hidden">
+            {{-- Decorative Icon --}}
+            <div class="absolute -right-4 -top-4 text-slate-50 group-hover:text-red-50 transition-colors transform rotate-12">
+                <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+            </div>
+
+            <div class="relative z-10">
+                <div class="mb-6">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Role Name</p>
+                    <h3 class="text-lg font-black text-red-600 uppercase tracking-tight leading-tight">{{ $role->display_name }}</h3>
+
+                </div>
+
+                <div class="flex items-end justify-between border-t border-slate-50 pt-6 mt-12">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Active Users</p>
+                        {{-- Fixed: Using count() on the relationship if users_count isn't pre-loaded --}}
+                        <p class="text-3xl font-black text-slate-900 tracking-tighter leading-none">
+                            {{ $role->users_count ?? $role->users->count() }}
+                        </p>
+                    </div>
+                    <a href="{{ route('admin.roles.edit', $role) }}" class="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-600 transition-all shadow-lg shadow-slate-200 active:scale-95">
+                        Configure
+                    </a>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
 </div>
 @endsection

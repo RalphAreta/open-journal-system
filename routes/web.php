@@ -12,9 +12,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubmissionController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth; // Make sure this is at the top of the file
 
 Route::get('/', function () {
-    return auth()->check() ? redirect()->route('dashboard') : view('welcome');
+    return Auth::check() ? redirect()->route('dashboard') : view('welcome');
 });
 
 Route::middleware('guest')->group(function (): void {
@@ -41,8 +42,7 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
         Route::get('/reviews/assignment/{assignment}/create', [ReviewController::class, 'create'])->name('reviews.create');
         Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-
-         Route::get('/reviewer/pending-assignments', [ReviewController::class, 'pendingReviewerAssignments'])->name('reviewer.pending-assignments');
+        Route::get('/reviewer/pending-assignments', [ReviewController::class, 'pendingReviewerAssignments'])->name('reviewer.pending-assignments');
     });
 
     Route::middleware('role:editor')->group(function (): void {
@@ -68,13 +68,20 @@ Route::middleware('auth')->group(function (): void {
     Route::middleware('role:admin')->group(function (): void {
         Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
         Route::resource('admin/users', AdminUserController::class)->except('show')->names('admin.users')->parameters(['users' => 'user']);
+
+        // Role Management
         Route::get('/admin/roles', [AdminRoleController::class, 'index'])->name('admin.roles.index');
         Route::get('/admin/roles/{role}/edit', [AdminRoleController::class, 'edit'])->name('admin.roles.edit');
         Route::put('/admin/roles/{role}', [AdminRoleController::class, 'update'])->name('admin.roles.update');
+        Route::delete('/admin/roles/{role}', [AdminRoleController::class, 'destroy'])->name('admin.roles.destroy'); // Fixed: Added destroy route
+
         Route::get('/admin/settings', [SystemSettingController::class, 'index'])->name('admin.settings.index');
         Route::put('/admin/settings', [SystemSettingController::class, 'update'])->name('admin.settings.update');
+
+        // Submission Management
         Route::get('/admin/submissions', [ReviewController::class, 'adminSubmissions'])->name('admin.submissions');
         Route::get('/admin/submissions/{submission}', [ReviewController::class, 'adminShow'])->name('admin.submissions.show');
+        Route::patch('/admin/submissions/{submission}/update', [ReviewController::class, 'adminUpdateSubmission'])->name('admin.submissions.update');
 
         // Editor Expertise Management
         Route::get('/admin/editor-expertise', [EditorExpertiseController::class, 'index'])->name('admin.editor-expertise.index');
@@ -92,7 +99,7 @@ Route::middleware('auth')->group(function (): void {
     });
 
     Route::post('/notifications/{notification}/read', function (\App\Models\Notification $notification) {
-    $notification->markAsRead();
-    return response()->json(['ok' => true]);
-})->name('notifications.read')->middleware('auth');
+        $notification->markAsRead();
+        return response()->json(['ok' => true]);
+    })->name('notifications.read')->middleware('auth');
 });
