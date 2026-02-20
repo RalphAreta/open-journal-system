@@ -97,4 +97,39 @@
         </div>
     </div>
 </div>
+
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: '{{ session('success') }}',
+        confirmButtonColor: '#3085d6',
+        timer: 3000,
+        timerProgressBar: true,
+    });
+</script>
+@endif
+
+@if(session('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Login Failed!',
+        text: '{{ session('error') }}',
+        confirmButtonColor: '#d33',
+    });
+</script>
+@endif
+
+@if($errors->any())
+<script>
+    Swal.fire({
+        icon: 'warning',
+        title: 'Oops!',
+        html: `{!! implode('<br>', $errors->all()) !!}`,
+        confirmButtonColor: '#f0ad4e',
+    });
+</script>
+@endif
 @endsection

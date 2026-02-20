@@ -29,18 +29,17 @@ class LoginController extends Controller
         if (! Auth::attempt($credentials, $remember)) {
             return back()
                 ->withInput($request->only('email', 'role'))
-                ->withErrors(['email' => 'These credentials do not match our records.']);
+                ->with('error', 'These credentials do not match our records.');
         }
 
         $user         = Auth::user();
         $selectedRole = $request->input('role');
 
-        // Check if user actually has the selected role
         if (! $user->hasRole($selectedRole)) {
             Auth::logout();
             return back()
                 ->withInput($request->only('email', 'role'))
-                ->withErrors(['role' => 'Your account does not have the selected role.']);
+                ->with('error', 'Your account does not have the selected role.');
         }
 
         $request->session()->regenerate();

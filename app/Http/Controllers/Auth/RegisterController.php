@@ -17,11 +17,12 @@ use Illuminate\View\View;
 
 class RegisterController extends Controller
 {
-   public function showRegistrationForm(): View
-{
-    $categories = \App\Models\ExpertiseCategory::orderBy('is_custom')->orderBy('name')->pluck('name');
-    return view('auth.register', compact('categories'));
-}
+    public function showRegistrationForm(): View
+    {
+        $categories = \App\Models\ExpertiseCategory::orderBy('is_custom')->orderBy('name')->pluck('name');
+        return view('auth.register', compact('categories'));
+    }
+
     public function register(Request $request): RedirectResponse
     {
         $needsExpertise = collect($request->input('roles', []))
@@ -59,12 +60,8 @@ class RegisterController extends Controller
         }
 
         event(new Registered($user));
-        Auth::login($user);
 
-        return match(true) {
-            in_array('editor',   $validated['roles']) => redirect()->route('dashboard.editor'),
-            in_array('reviewer', $validated['roles']) => redirect()->route('dashboard.reviewer'),
-            default                                   => redirect()->route('dashboard.author'),
-        };
+        return redirect()->route('login')
+            ->with('success', 'Account created successfully! Please sign in to continue.');
     }
 }
