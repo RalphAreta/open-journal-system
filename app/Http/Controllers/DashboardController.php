@@ -55,20 +55,26 @@ class DashboardController extends Controller
 }
 
     public function reviewer(Request $request): View
-    {
-        $assignments = $request->user()
-            ->reviewAssignments()
-            ->with(['submission.author', 'submission.reviews'])
-            ->latest()
-            ->paginate(10);
+{
+    $user = $request->user(); // ✅ ideclare muna si $user
 
-        $stats = [
-            'pending' => $request->user()->reviewAssignments()->where('status', ReviewAssignment::STATUS_ASSIGNED)->count(),
-            'completed' => $request->user()->reviewAssignments()->where('status', ReviewAssignment::STATUS_COMPLETED)->count(),
-        ];
+    $assignments = $user->reviewAssignments()
+        ->with(['submission.author', 'submission.reviews'])
+        ->latest()
+        ->paginate(10);
 
-        return view('dashboard.reviewer', compact('assignments', 'stats'));
-    }
+    $stats = [
+        'pending'   => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_ASSIGNED)->count(),
+        'completed' => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_COMPLETED)->count(),
+    ];
+
+    $notifications = \App\Models\Notification::where('user_id', $user->id)
+        ->latest()
+        ->take(10)
+        ->get();
+
+    return view('dashboard.reviewer', compact('assignments', 'stats', 'notifications')); // ✅ dagdag ang notifications
+}
 
     public function editor(Request $request): View
     {
