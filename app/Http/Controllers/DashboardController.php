@@ -28,24 +28,31 @@ class DashboardController extends Controller
         return redirect()->route('login');
     }
 
-    public function author(Request $request): View
-    {
-        $submissions = $request->user()
-            ->submissionsAsAuthor()
-            ->latest()
-            ->paginate(10);
+   public function author(Request $request): View
+{
+    $user = $request->user();
 
-        $stats = [
-            'total' => $request->user()->submissionsAsAuthor()->count(),
-            'submitted' => $request->user()->submissionsAsAuthor()->where('status', Submission::STATUS_SUBMITTED)->count(),
-            'under_review' => $request->user()->submissionsAsAuthor()->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
-            'revisions_requested' => $request->user()->submissionsAsAuthor()->where('status', Submission::STATUS_REVISIONS_REQUESTED)->count(),
-            'accepted' => $request->user()->submissionsAsAuthor()->where('status', Submission::STATUS_ACCEPTED)->count(),
-            'rejected' => $request->user()->submissionsAsAuthor()->where('status', Submission::STATUS_REJECTED)->count(),
-        ];
+    $submissions = $user->submissionsAsAuthor()
+        ->latest()
+        ->paginate(10);
 
-        return view('dashboard.author', compact('submissions', 'stats'));
-    }
+    $stats = [
+        'total'               => $user->submissionsAsAuthor()->count(),
+        'submitted'           => $user->submissionsAsAuthor()->where('status', Submission::STATUS_SUBMITTED)->count(),
+        'under_review'        => $user->submissionsAsAuthor()->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
+        'revisions_requested' => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REVISIONS_REQUESTED)->count(),
+        'accepted'            => $user->submissionsAsAuthor()->where('status', Submission::STATUS_ACCEPTED)->count(),
+        'rejected'            => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REJECTED)->count(),
+    ];
+
+    // ✅ DAGDAG LANG ITO
+    $notifications = \App\Models\Notification::where('user_id', $user->id)
+        ->latest()
+        ->take(10)
+        ->get();
+
+    return view('dashboard.author', compact('submissions', 'stats', 'notifications')); // ✅ dagdag ang notifications
+}
 
     public function reviewer(Request $request): View
     {

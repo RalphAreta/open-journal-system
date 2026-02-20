@@ -67,6 +67,48 @@
         </div>
     </div>
 @endif
+
+@if ($notifications->count() > 0)
+    <div class="mb-6">
+        <h2 class="text-lg font-medium mb-3">Notifications</h2>
+        <div class="space-y-3">
+            @foreach ($notifications as $notif)
+                <div class="flex items-start gap-4 p-4 rounded-lg border
+                    {{ $notif->isUnread() ? 'bg-white border-red-200 shadow-sm' : 'bg-slate-50 border-slate-200' }}">
+                    <div class="text-xl mt-0.5">
+                        @if ($notif->type === 'success') ✅
+                        @elseif ($notif->type === 'danger') ❌
+                        @elseif ($notif->type === 'warning') ⚠️
+                        @else ℹ️
+                        @endif
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <p class="font-semibold text-slate-900 text-sm">
+                                {{ $notif->title }}
+                                @if ($notif->isUnread())
+                                    <span class="ml-2 inline-block w-2 h-2 rounded-full bg-red-500"></span>
+                                @endif
+                            </p>
+                            <span class="text-xs text-slate-400 whitespace-nowrap ml-4">
+                                {{ $notif->created_at->diffForHumans() }}
+                            </span>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-1 whitespace-pre-line">{{ $notif->message }}</p>
+                        @if ($notif->notifiable_type === \App\Models\Submission::class)
+                            <a href="{{ route('submissions.show', $notif->notifiable_id) }}"
+                               onclick="markRead({{ $notif->id }})"
+                               class="text-xs text-red-600 hover:text-red-700 font-medium mt-2 inline-block">
+                                View Submission →
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endif
+
 <div class="bg-white rounded-lg shadow overflow-hidden border border-slate-200">
     <table class="min-w-full divide-y divide-slate-200">
         <thead class="bg-slate-50">
@@ -94,4 +136,28 @@
     </table>
     <div class="px-4 py-2 border-t border-slate-200">{{ $submissions->links() }}</div>
 </div>
+@push('scripts')
+<script>
+    function markRead(id) {
+        fetch(`/notifications/${id}/read`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Content-Type': 'application/json',
+            }
+        });
+    }
+
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            confirmButtonColor: '#dc2626',
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    @endif
+</script>
+@endpush
 @endsection

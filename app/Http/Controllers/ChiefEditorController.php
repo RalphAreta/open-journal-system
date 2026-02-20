@@ -91,27 +91,39 @@ class ChiefEditorController extends Controller
     }
 
     public function storeInitialScreening(Request $request, Submission $submission)
-    {
-        $validated = $request->validate([
-            'screening_status' => 'required|in:passed,failed',
-            'comments'         => 'required|string|max:2000',
-        ]);
+{
+    $validated = $request->validate([
+        'screening_status' => 'required|in:passed,failed',
+        'comments'         => 'required|string|max:2000',
+    ]);
 
-        $submission->update([
-            'initial_screening_status' => $validated['screening_status'],
-            'initial_screening_comments' => $validated['comments'],
-            'initial_screening_by' => auth()->id(),
-            'initial_screening_at' => now(),
-        ]);
+    $submission->update([
+        'initial_screening_status'   => $validated['screening_status'],
+        'initial_screening_comments' => $validated['comments'],
+        'initial_screening_by'       => auth()->id(),
+        'initial_screening_at'       => now(),
+    ]);
 
-        // Notify author
-        \Illuminate\Support\Facades\Mail::to($submission->author->email)->queue(
-            new \App\Mail\InitialScreeningNotification($submission)
+    // Send in-system notification to author
+    $isPassed = $validated['screening_status'] === 'passed';
+
+    \App\Models\Notification::create([
+        'user_id'        => $submission->author_id,
+        'title'          => $isPassed ? '✅ Submission Passed Initial Screening' : '❌ Submission Failed Initial Screening',
+        'message'        => $isPassed
+            ? "Your manuscript \"{$submission->title}\" has passed the initial screening and will proceed to editorial review.\n\nComments: {$validated['comments']}"
+            : "Your manuscript \"{$submission->title}\" did not pass the initial screening.\n\nComments: {$validated['comments']}",
+        'type'           => $isPassed ? 'success' : 'danger',
+        'notifiable_id'  => $submission->id,
+        'notifiable_type' => Submission::class,
+    ]);
+
+    return redirect()->route('chief-editor.submission.show', $submission)
+        ->with('success', $isPassed
+            ? 'Initial screening passed. Author has been notified.'
+            : 'Initial screening failed. Author has been notified.'
         );
-
-        return redirect()->route('chief-editor.submission.show', $submission)
-            ->with('success', 'Initial screening completed and author has been notified.');
-    }
+}
 
     public function assignSubmission(Request $request, Submission $submission)
     {
