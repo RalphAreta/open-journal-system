@@ -1,135 +1,99 @@
 @extends('layouts.app')
 
-@section('title', 'Login')
+@section('title', 'Login | IRJIEST Portal')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center relative overflow-hidden"
-     style="background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-            url('{{ asset('images/homepage-webslider-1.jpg') }}') center/cover no-repeat;">
-
-    <div class="max-w-xl w-full bg-white rounded-2xl p-10 border-2 border-red-200 shadow-2xl mx-4 relative z-10">
-
-        {{-- Header --}}
-        <div class="text-center mb-8">
-            <img src="{{ asset('images/batstateu-logo.png') }}" alt="BatStateU Logo"
-                 class="h-12 mx-auto mb-4 hover:opacity-80 transition-opacity">
-            <h1 class="text-3xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent mb-2">
-                Welcome to IRJIEST
-            </h1>
-            <p class="text-sm text-slate-600">International Research Journal of Information Systems & Engineering Technology</p>
-            <p class="text-xs text-slate-500 mt-1">Batangas State University</p>
+<div class="min-h-screen flex flex-col md:flex-row bg-slate-50">
+    {{-- Left Side: Branding & Visuals (Matching Option 2) --}}
+    <div class="hidden md:flex md:w-3/5 relative items-center justify-center p-12 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="{{ asset('images/homepage-webslider-1.jpg') }}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-linear-to-br from-red-900/90 via-red-800/40 to-slate-900/80"></div>
         </div>
 
-        <form method="POST" action="{{ route('login') }}" class="space-y-5">
-            @csrf
+        <div class="relative z-10 text-white max-w-lg">
+            <div class="mb-8 inline-block px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                <p class="text-xs font-black uppercase tracking-[0.3em]">Official Research Portal</p>
+            </div>
+            <h2 class="text-6xl font-black leading-tight mb-6 tracking-tighter">
+                Advancing <br>
+                <span class="text-red-400">Innovation</span> <br>
+                through Research.
+            </h2>
+            <p class="text-xl text-slate-200 leading-relaxed font-medium opacity-90">
+                BatStateU International Research Journal of Information Systems & Engineering Technology.
+            </p>
+        </div>
+        <div class="absolute bottom-[-10%] right-[-5%] w-80 h-80 bg-red-500/20 rounded-full blur-3xl"></div>
+    </div>
 
-            {{-- Role Selector --}}
-            <div>
-                <label for="role" class="block text-sm font-semibold text-slate-700 mb-2">Sign in as</label>
-                <div class="relative">
-                    <select id="role" name="role" required
-                        class="w-full px-4 py-2.5 rounded-lg border border-slate-300 shadow-sm appearance-none
-                               bg-white text-slate-700 font-medium
-                               focus:border-red-500 focus:ring-2 focus:ring-red-500 focus:ring-opacity-50
-                               transition-all cursor-pointer
-                               @error('role') border-red-500 @enderror">
-                        <option value="" disabled {{ old('role') ? '' : 'selected' }}>— Select your role —</option>
-                        <option value="author"          {{ old('role') === 'author'           ? 'selected' : '' }}>  Author</option>
-                        <option value="reviewer"        {{ old('role') === 'reviewer'         ? 'selected' : '' }}>  Reviewer</option>
-                        <option value="editor"          {{ old('role') === 'editor'           ? 'selected' : '' }}>  Editor</option>
-                        <option value="editor-in-chief" {{ old('role') === 'editor-in-chief'  ? 'selected' : '' }}>  Editor in Chief</option>
-                        <option value="admin"           {{ old('role') === 'admin'            ? 'selected' : '' }}>  Admin</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
+    {{-- Right Side: Login Form --}}
+    <div class="w-full md:w-2/5 flex items-center justify-center p-8 sm:p-12 bg-white relative shadow-2xl">
+        <div class="max-w-md w-full">
+            <div class="mb-12">
+                <a href="/">
+                    <img src="{{ asset('images/batstateu-logo.png') }}" class="h-16 mb-8 hover:scale-105 transition-transform duration-300">
+                </a>
+                <h1 class="text-4xl font-black text-slate-900 tracking-tighter mb-3">Sign in to IRJIEST</h1>
+                <p class="text-slate-500 font-medium text-lg">Enter your credentials to access the portal.</p>
+            </div>
+
+            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                @csrf
+
+                {{-- Role Selector with Restored Editor-in-Chief --}}
+                <div>
+                    <label for="role" class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 ml-1">Sign in as</label>
+                    <div class="relative group">
+                        <select id="role" name="role" required
+                            class="w-full px-4 py-4 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-700 font-semibold focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/10 transition-all appearance-none cursor-pointer">
+                            <option value="" disabled {{ old('role') ? '' : 'selected' }}>— Select your role —</option>
+                            <option value="author" {{ old('role') === 'author' ? 'selected' : '' }}>Author</option>
+                            <option value="reviewer" {{ old('role') === 'reviewer' ? 'selected' : '' }}>Reviewer</option>
+                            <option value="editor" {{ old('role') === 'editor' ? 'selected' : '' }}>Editor</option>
+                            <option value="editor-in-chief" {{ old('role') === 'editor-in-chief' ? 'selected' : '' }}>Editor in Chief</option>
+                            <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 group-hover:text-red-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </div>
                     </div>
                 </div>
-                @error('role')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
 
-            {{-- Email --}}
-            <div>
-                <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
-                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 shadow-sm
-                           focus:border-red-500 focus:ring-2 focus:ring-red-500 focus:ring-opacity-50
-                           transition-all @error('email') border-red-500 @enderror">
-                @error('email')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
+                <div>
+                    <label for="email" class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 ml-1">Email Address</label>
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" required
+                        class="w-full px-4 py-4 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/10 transition-all outline-none"
+                        placeholder="name@university.edu.ph">
+                </div>
 
-            {{-- Password --}}
-            <div>
-                <label for="password" class="block text-sm font-semibold text-slate-700 mb-2">Password</label>
-                <input id="password" type="password" name="password" required
-                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 shadow-sm
-                           focus:border-red-500 focus:ring-2 focus:ring-red-500 focus:ring-opacity-50
-                           transition-all">
-            </div>
+                <div>
+                    <label for="password" class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 ml-1">Password</label>
+                    <input id="password" type="password" name="password" required
+                        class="w-full px-4 py-4 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/10 transition-all outline-none"
+                        placeholder="••••••••">
+                </div>
 
-            {{-- Remember me --}}
-            <div class="flex items-center pt-1">
-                <input id="remember" type="checkbox" name="remember"
-                       class="w-4 h-4 rounded border-slate-300 text-red-600 focus:ring-2 focus:ring-red-500">
-                <label for="remember" class="ml-2 text-sm text-slate-600 cursor-pointer">Keep me signed in</label>
-            </div>
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center cursor-pointer group">
+                        <input type="checkbox" name="remember" class="w-5 h-5 rounded-lg border-slate-300 text-red-600 focus:ring-red-500 transition-all">
+                        <span class="ml-3 text-sm font-bold text-slate-600 group-hover:text-slate-900 transition-colors">Keep me signed in</span>
+                    </label>
+                </div>
 
-            <button type="submit"
-                class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-2.5 px-4 rounded-lg
-                       hover:shadow-lg hover:from-red-700 hover:to-red-800
-                       font-semibold transition-all duration-200 mt-2">
-                Sign In
-            </button>
-        </form>
+                <button type="submit"
+                    class="w-full bg-slate-900 text-white py-4 rounded-xl font-black uppercase tracking-widest text-sm hover:bg-red-700 transition-all duration-300 shadow-xl shadow-slate-200 hover:shadow-red-200 hover:-translate-y-1">
+                    Sign In to Portal
+                </button>
+            </form>
 
-        <div class="mt-6 pt-6 border-t border-slate-200">
-            <p class="text-sm text-center text-slate-600">
-                Don't have an account?
-                <a href="{{ route('register') }}" class="text-red-600 hover:text-red-700 font-semibold transition-colors">
-                    Create account
+            <div class="mt-12 pt-8 border-t border-slate-100 text-center">
+                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">New to the journal?</p>
+                <a href="{{ route('register') }}" class="inline-block w-full py-4 rounded-xl border-2 border-slate-100 text-slate-900 font-black uppercase tracking-widest text-sm hover:border-red-600 hover:text-red-600 transition-all duration-300">
+                    Create Account
                 </a>
-            </p>
+            </div>
         </div>
     </div>
 </div>
-
-@if(session('success'))
-<script>
-    Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: '{{ session('success') }}',
-        confirmButtonColor: '#3085d6',
-        timer: 3000,
-        timerProgressBar: true,
-    });
-</script>
-@endif
-
-@if(session('error'))
-<script>
-    Swal.fire({
-        icon: 'error',
-        title: 'Login Failed!',
-        text: '{{ session('error') }}',
-        confirmButtonColor: '#d33',
-    });
-</script>
-@endif
-
-@if($errors->any())
-<script>
-    Swal.fire({
-        icon: 'warning',
-        title: 'Oops!',
-        html: `{!! implode('<br>', $errors->all()) !!}`,
-        confirmButtonColor: '#f0ad4e',
-    });
-</script>
-@endif
 @endsection
