@@ -18,7 +18,7 @@
 
             <h2 class="text-7xl font-black leading-[1.05] mb-6 tracking-tighter">
                 Start your <br>
-                <span class="text-red-400">Contribution</span> <br>
+                <span class="text-red-500">Contribution</span> <br>
                 today.
             </h2>
 

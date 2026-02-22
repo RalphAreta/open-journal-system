@@ -77,18 +77,18 @@
 
         <div class="relative flex overflow-x-hidden group">
             <div class="animate-marquee whitespace-nowrap flex items-center gap-20">
-                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-default">Google Scholar</span>
-                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-default">CrossRef</span>
-                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-default">DOAJ</span>
-                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-default">Philippine E-Journals</span>
-                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-default">Scilit</span>
+                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-90 hover:grayscale-0 hover:opacity-100 transition-all cursor-default">Google Scholar</span>
+                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-90 hover:grayscale-0 hover:opacity-100 transition-all cursor-default">CrossRef</span>
+                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-90 hover:grayscale-0 hover:opacity-100 transition-all cursor-default">DOAJ</span>
+                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-90 hover:grayscale-0 hover:opacity-100 transition-all cursor-default">Philippine E-Journals</span>
+                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-90 hover:grayscale-0 hover:opacity-100 transition-all cursor-default">Scilit</span>
             </div>
             <div class="animate-marquee whitespace-nowrap flex items-center gap-20" aria-hidden="true">
-                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-50">Google Scholar</span>
-                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-50">CrossRef</span>
-                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-50">DOAJ</span>
-                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-50">Philippine E-Journals</span>
-                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-50">Scilit</span>
+                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-90">Google Scholar</span>
+                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-90">CrossRef</span>
+                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-90">DOAJ</span>
+                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-90">Philippine E-Journals</span>
+                <span class="text-2xl font-black text-slate-300 uppercase tracking-tighter grayscale opacity-90">Scilit</span>
             </div>
         </div>
     </section>

@@ -17,7 +17,7 @@
             </div>
             <h2 class="text-6xl font-black leading-tight mb-6 tracking-tighter">
                 Advancing <br>
-                <span class="text-red-400">Innovation</span> <br>
+                <span class="text-red-500">Innovation</span> <br>
                 through Research.
             </h2>
             <p class="text-xl text-slate-200 leading-relaxed font-medium opacity-90">
