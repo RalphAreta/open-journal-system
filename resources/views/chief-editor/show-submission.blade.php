@@ -71,13 +71,6 @@ use App\Models\Submission;
             </div>
         </div>
 
-        @if ($submission->chief_editor_notes)
-            <div class="bg-blue-50 border border-blue-200 rounded-xl p-8">
-                <h3 class="font-bold text-slate-900 mb-3">Chief Editor Notes</h3>
-                <p class="text-slate-700">{{ $submission->chief_editor_notes }}</p>
-            </div>
-        @endif
-
         <!-- Initial Screening Status -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 mb-6">
             <h2 class="text-2xl font-bold text-slate-900 mb-6">Initial Screening</h2>

@@ -232,11 +232,20 @@ class ChiefEditorController extends Controller
             'notes' => 'required|string|max:1000',
         ]);
 
-        $submission->update([
-            'chief_editor_notes'     => $validated['notes'],
-            'chief_editor_review_at' => now(),
-        ]);
+      $submission->update([
+    'chief_editor_notes'     => $validated['notes'],
+    'chief_editor_review_at' => now(),
+]);
 
-        return back()->with('success', 'Submission review notes added.');
+\App\Models\Notification::create([
+    'user_id'         => $submission->author_id,
+    'title'           => '📝 Chief Editor Added a Review Note',
+    'message'         => "The Chief Editor has added a note on your manuscript \"{$submission->title}\".\n\nNote: {$validated['notes']}",
+    'type'            => 'info',
+    'notifiable_id'   => $submission->id,
+    'notifiable_type' => Submission::class,
+]);
+
+return back()->with('success', 'Submission review notes added.');
     }
 }

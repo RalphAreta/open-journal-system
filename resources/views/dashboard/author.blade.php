@@ -90,6 +90,37 @@
                         <td class="px-8 py-6 font-mono text-[11px] text-slate-400">#{{ str_pad($s->id, 5, '0', STR_PAD_LEFT) }}</td>
                         <td class="px-8 py-6">
                             <p class="text-sm font-bold text-slate-900 group-hover:text-red-600 transition-colors title-cell">{{ $s->title }}</p>
+                       @if($s->initial_screening_comments || $s->editor_notes)
+    <div class="mt-2 space-y-1" onclick="event.stopPropagation()">
+        
+    @if($s->initial_screening_comments)
+    <div class="mt-2" onclick="event.stopPropagation()">
+        <div class="flex items-start gap-2 bg-purple-50 border border-purple-100 rounded-lg px-3 py-2">
+            <svg class="w-3 h-3 mt-0.5 text-purple-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v7a2 2 0 01-2 2H6l-4 4V5z"/>
+            </svg>
+            <div>
+                <p class="text-[9px] font-black text-purple-400 uppercase tracking-widest mb-0.5">Editor in Chief Comments</p>
+                <p class="text-[10px] text-slate-500 font-medium leading-relaxed line-clamp-2">{{ $s->initial_screening_comments }}</p>
+            </div>
+        </div>
+    </div>
+@endif
+
+        @if($s->editor_notes)
+            <div class="flex items-start gap-2 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
+                <svg class="w-3 h-3 mt-0.5 text-blue-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v7a2 2 0 01-2 2H6l-4 4V5z"/>
+                </svg>
+                <div>
+                    <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-0.5">Editor's Note</p>
+                    <p class="text-[10px] text-slate-500 font-medium leading-relaxed line-clamp-2">{{ $s->editor_notes }}</p>
+                </div>
+            </div>
+        @endif
+
+    </div>
+@endif
                         </td>
                         <td class="px-8 py-6">
                             @php

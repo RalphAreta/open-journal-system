@@ -33,8 +33,11 @@ class DashboardController extends Controller
     $user = $request->user();
 
     $submissions = $user->submissionsAsAuthor()
-        ->latest()
-        ->paginate(10);
+    ->with(['reviews' => function($q) {
+        $q->latest();
+    }])
+    ->latest()
+    ->paginate(10);
 
     $stats = [
         'total'               => $user->submissionsAsAuthor()->count(),
