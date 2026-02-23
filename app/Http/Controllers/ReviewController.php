@@ -144,32 +144,71 @@ class ReviewController extends Controller
     /**
      * Editor: store initial screening decision.
      */
-    public function storeInitialScreening(Request $request, Submission $submission): RedirectResponse
-    {
-        if ($submission->assigned_editor_id !== $request->user()->id) {
-            abort(403, 'You do not have access to this submission.');
-        }
+   public function storeInitialScreening(Request $request, Submission $submission): RedirectResponse
+{
+    if ($submission->assigned_editor_id !== $request->user()->id) {
+        abort(403);
+    }
 
-        $validated = $request->validate([
-            'screening_status' => 'required|in:passed,failed',
-            'comments'         => 'required|string|max:2000',
+    $validated = $request->validate([
+        'screening_status' => 'required|in:passed,failed,revision',
+        'comments'         => 'required|string|max:2000',
+        'revision_type'    => 'required_if:screening_status,revision|in:minor,major',
+    ]);
+
+    if ($validated['screening_status'] === 'revision') {
+        \App\Models\RevisionRequest::create([
+            'submission_id'        => $submission->id,
+            'requested_by_user_id' => $request->user()->id,
+            'revision_type'        => $validated['revision_type'],
+            'reason'               => $validated['comments'],
+            'requested_at'         => now(),
         ]);
 
         $submission->update([
-            'initial_screening_status' => $validated['screening_status'],
+            'status'                     => Submission::STATUS_REVISIONS_REQUESTED,
+            'initial_screening_status'   => 'failed',
             'initial_screening_comments' => $validated['comments'],
-            'initial_screening_by' => auth()->id(),
-            'initial_screening_at' => now(),
+            'initial_screening_by'       => auth()->id(),
+            'initial_screening_at'       => now(),
         ]);
 
-        // Notify author
-        \Illuminate\Support\Facades\Mail::to($submission->author->email)->queue(
-            new \App\Mail\InitialScreeningNotification($submission)
-        );
+        \App\Models\Notification::create([
+            'user_id'         => $submission->author_id,
+            'title'           => '🔄 Revision Requested — Initial Screening',
+            'message'         => "The editor has reviewed your manuscript \"{$submission->title}\" and is requesting a " . $validated['revision_type'] . " revision before it can proceed.\n\nReason: {$validated['comments']}",
+            'type'            => 'warning',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
 
         return redirect()->route('editor.submission.show', $submission)
-            ->with('success', 'Initial screening completed and author has been notified.');
+            ->with('success', 'Revision requested. Author has been notified.');
     }
+
+    $isPassed = $validated['screening_status'] === 'passed';
+
+    $submission->update([
+        'initial_screening_status'   => $validated['screening_status'],
+        'initial_screening_comments' => $validated['comments'],
+        'initial_screening_by'       => auth()->id(),
+        'initial_screening_at'       => now(),
+    ]);
+
+    \App\Models\Notification::create([
+        'user_id'         => $submission->author_id,
+        'title'           => $isPassed ? '✅ Submission Passed Initial Screening' : '❌ Submission Failed Initial Screening',
+        'message'         => $isPassed
+            ? "Your manuscript \"{$submission->title}\" has passed the initial screening.\n\nComments: {$validated['comments']}"
+            : "Your manuscript \"{$submission->title}\" did not pass the initial screening.\n\nComments: {$validated['comments']}",
+        'type'            => $isPassed ? 'success' : 'danger',
+        'notifiable_id'   => $submission->id,
+        'notifiable_type' => Submission::class,
+    ]);
+
+    return redirect()->route('editor.submission.show', $submission)
+        ->with('success', $isPassed ? 'Passed. Author notified.' : 'Failed. Author notified.');
+}
 
     /**
      * Editor: assign reviewer to submission.
@@ -337,4 +376,82 @@ class ReviewController extends Controller
             $submission->file_name
         );
     }
+
+    /**
+ * Editor: request revision from author.
+ */
+public function requestRevision(Request $request, Submission $submission): RedirectResponse
+{
+    if ($submission->assigned_editor_id !== $request->user()->id) {
+        abort(403);
+    }
+
+    $validated = $request->validate([
+        'revision_type'   => ['required', 'in:minor,major'],
+        'revision_reason' => ['required', 'string', 'max:2000'],
+    ]);
+
+    $revisionRequest = RevisionRequest::create([
+        'submission_id'        => $submission->id,
+        'requested_by_user_id' => $request->user()->id,
+        'revision_type'        => $validated['revision_type'],
+        'reason'               => $validated['revision_reason'],
+        'requested_at'         => now(),
+    ]);
+
+    $submission->update([
+        'status'             => Submission::STATUS_REVISIONS_REQUESTED,
+        'editor_id'          => $request->user()->id,
+        'editor_decision_at' => now(),
+    ]);
+
+    \App\Models\Notification::create([
+        'user_id'         => $submission->author_id,
+        'title'           => '🔄 Revision Requested',
+        'message'         => "The editor has requested a " . $validated['revision_type'] . " revision for your manuscript \"{$submission->title}\".\n\nReason: {$validated['revision_reason']}",
+        'type'            => 'warning',
+        'notifiable_id'   => $submission->id,
+        'notifiable_type' => Submission::class,
+    ]);
+
+    return back()->with('success', 'Revision request sent to author.');
+}
+
+/**
+ * Reviewer: request revision from author.
+ */
+public function reviewerRequestRevision(Request $request, Submission $submission): RedirectResponse
+{
+    $isAssigned = \App\Models\ReviewAssignment::where('submission_id', $submission->id)
+        ->where('reviewer_id', $request->user()->id)
+        ->exists();
+
+    if (!$isAssigned) {
+        abort(403);
+    }
+
+    $validated = $request->validate([
+        'revision_type'   => ['required', 'in:minor,major'],
+        'revision_reason' => ['required', 'string', 'max:2000'],
+    ]);
+
+    $revisionRequest = RevisionRequest::create([
+        'submission_id'        => $submission->id,
+        'requested_by_user_id' => $request->user()->id,
+        'revision_type'        => $validated['revision_type'],
+        'reason'               => $validated['revision_reason'],
+        'requested_at'         => now(),
+    ]);
+
+    \App\Models\Notification::create([
+        'user_id'         => $submission->author_id,
+        'title'           => '🔄 Revision Requested by Reviewer',
+        'message'         => "A reviewer has requested a " . $validated['revision_type'] . " revision for your manuscript \"{$submission->title}\".\n\nReason: {$validated['revision_reason']}",
+        'type'            => 'warning',
+        'notifiable_id'   => $submission->id,
+        'notifiable_type' => Submission::class,
+    ]);
+
+    return back()->with('success', 'Revision request sent to author.');
+}
 }

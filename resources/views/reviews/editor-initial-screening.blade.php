@@ -70,43 +70,53 @@
         <form action="{{ route('editor.store-initial-screening', $submission) }}" method="POST">
             @csrf
 
-            <div class="mb-6">
-                <label for="screening_status" class="block text-sm font-semibold text-slate-900 mb-3">
-                    Screening Decision
-                </label>
-                <div class="space-y-3">
-                    <div class="flex items-center">
-                        <input 
-                            type="radio" 
-                            id="passed" 
-                            name="screening_status" 
-                            value="passed"
-                            class="h-4 w-4 text-green-600 cursor-pointer"
-                            {{ old('screening_status') === 'passed' ? 'checked' : '' }}
-                            required
-                        >
-                        <label for="passed" class="ml-3 cursor-pointer">
-                            <span class="text-sm font-medium text-slate-900">✓ PASSED </span>
-                            <span class="text-sm text-slate-600">- Manuscript meets initial criteria and can proceed to reviewer assignment</span>
-                        </label>
-                    </div>
-                    <div class="flex items-center">
-                        <input 
-                            type="radio" 
-                            id="failed" 
-                            name="screening_status" 
-                            value="failed"
-                            class="h-4 w-4 text-red-600 cursor-pointer"
-                            {{ old('screening_status') === 'failed' ? 'checked' : '' }}
-                            required
-                        >
-                        <label for="failed" class="ml-3 cursor-pointer">
-                            <span class="text-sm font-medium text-slate-900">✗ FAILED </span>
-                            <span class="text-sm text-slate-600">- Manuscript does not meet initial criteria</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
+       <div class="mb-6">
+    <label class="block text-sm font-semibold text-slate-900 mb-3">
+        Screening Decision
+    </label>
+    <div class="space-y-3">
+        <div class="flex items-center">
+            <input type="radio" id="passed" name="screening_status" value="passed"
+                class="h-4 w-4 text-green-600 cursor-pointer screening-radio"
+                {{ old('screening_status') === 'passed' ? 'checked' : '' }} required>
+            <label for="passed" class="ml-3 cursor-pointer">
+                <span class="text-sm font-medium text-slate-900">✓ PASSED</span>
+                <span class="text-sm text-slate-600"> — Meets criteria, proceed to editor assignment</span>
+            </label>
+        </div>
+        <div class="flex items-center">
+            <input type="radio" id="revision" name="screening_status" value="revision"
+                class="h-4 w-4 text-amber-500 cursor-pointer screening-radio"
+                {{ old('screening_status') === 'revision' ? 'checked' : '' }}>
+            <label for="revision" class="ml-3 cursor-pointer">
+                <span class="text-sm font-medium text-slate-900">🔄 REQUEST REVISION</span>
+                <span class="text-sm text-slate-600"> — Ask author to revise before proceeding</span>
+            </label>
+        </div>
+        <div class="flex items-center">
+            <input type="radio" id="failed" name="screening_status" value="failed"
+                class="h-4 w-4 text-red-600 cursor-pointer screening-radio"
+                {{ old('screening_status') === 'failed' ? 'checked' : '' }}>
+            <label for="failed" class="ml-3 cursor-pointer">
+                <span class="text-sm font-medium text-slate-900">✗ FAILED</span>
+                <span class="text-sm text-slate-600"> — Does not meet initial criteria</span>
+            </label>
+        </div>
+    </div>
+</div>
+
+{{-- Revision type field - visible only when REQUEST REVISION is selected --}}
+<div id="revision-type-field" class="mb-6" style="{{ old('screening_status') === 'revision' ? '' : 'display:none' }}">
+    <label class="block text-sm font-semibold text-slate-900 mb-2">
+        Revision Type <span class="text-red-600">*</span>
+    </label>
+    <select name="revision_type" id="revision_type"
+        class="w-full max-w-xs rounded-lg border border-slate-300 shadow-sm p-2">
+        <option value="">-- Select --</option>
+        <option value="minor" {{ old('revision_type') === 'minor' ? 'selected' : '' }}>Minor Revision</option>
+        <option value="major" {{ old('revision_type') === 'major' ? 'selected' : '' }}>Major Revision</option>
+    </select>
+</div>
 
             <div class="mb-6">
                 <label for="comments" class="block text-sm font-semibold text-slate-900 mb-2">
@@ -141,6 +151,20 @@
                     Submit Screening Decision
                 </button>
             </div>
+            <script>
+    const screeningRadios = document.querySelectorAll('.screening-radio');
+    const revisionTypeField = document.getElementById('revision-type-field');
+    const revisionTypeSelect = document.getElementById('revision_type');
+
+    function toggleRevisionType() {
+        const isRevision = document.getElementById('revision').checked;
+        revisionTypeField.style.display = isRevision ? 'block' : 'none';
+        revisionTypeSelect.required = isRevision;
+    }
+
+    screeningRadios.forEach(r => r.addEventListener('change', toggleRevisionType));
+    toggleRevisionType();
+</script>
         </form>
     </div>
 </div>

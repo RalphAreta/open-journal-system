@@ -55,10 +55,17 @@
                             <button type="button" onclick="confirmLogout()" class="text-sm font-medium text-red-600 hover:text-red-700">Logout</button>
                         </form>
                         </div>
-                    @else
-                        <a href="{{ route('login') }}" class="text-sm font-medium text-slate-700 hover:text-red-600 transition-colors">Login</a>
-                        <a href="{{ route('register') }}" class="text-sm font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">Register</a>
-                    @endauth
+                   @else
+    <a href="{{ url('/') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-red-600 transition-colors group">
+        <svg class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Home
+    </a>
+    <span class="text-slate-200">|</span>
+    <a href="{{ route('login') }}" class="text-sm font-medium text-slate-700 hover:text-red-600 transition-colors">Login</a>
+    <a href="{{ route('register') }}" class="text-sm font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">Register</a>
+@endauth
                 </div>
             </div>
         </div>

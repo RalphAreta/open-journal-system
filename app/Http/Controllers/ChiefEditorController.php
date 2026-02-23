@@ -7,6 +7,7 @@ use App\Models\SubmissionAssignment;
 use App\Models\User;
 use App\Models\EditorExpertise;
 use Illuminate\Http\Request;
+use App\Models\RevisionRequest;
 
 class ChiefEditorController extends Controller
 {
@@ -44,14 +45,14 @@ class ChiefEditorController extends Controller
         $researchField = $submission->research_field;
 
         // Only load editors whose expertise MATCHES the submission's research field
-        $matchingEditors = User::whereHas('roles', function ($query) {
-                $query->where('name', 'editor');
-            })
-            ->whereHas('editorExpertise', function ($query) use ($researchField) {
-                $query->where('field_name', $researchField);
-            })
-            ->with('editorExpertise')
-            ->get();
+       $matchingEditors = User::whereHas('roles', fn($q) => $q->where('name', 'editor'))
+    ->whereHas('editorExpertise', fn($q) => $q->where('field_name', $researchField))
+  ->withCount(['submissionAssignments as active_assignments_count' => fn($q) =>
+        $q->whereNull('rejected_at')
+          ->whereHas('submission', fn($q2) => $q2->whereNotIn('status', ['accepted', 'rejected']))
+    ])
+    ->with('editorExpertise')
+    ->get();
 
         // Group by expertise field (will mostly be one field, but keeps structure consistent)
         $editorsByField = [];
@@ -64,11 +65,13 @@ class ChiefEditorController extends Controller
         }
 
         // Also pass all editors as fallback so chief editor can still assign manually if no match
-        $allEditors = User::whereHas('roles', function ($query) {
-                $query->where('name', 'editor');
-            })
-            ->with('editorExpertise')
-            ->get();
+        $allEditors = User::whereHas('roles', fn($q) => $q->where('name', 'editor'))
+   ->withCount(['submissionAssignments as active_assignments_count' => fn($q) =>
+        $q->whereNull('rejected_at')
+          ->whereHas('submission', fn($q2) => $q2->whereNotIn('status', ['accepted', 'rejected']))
+    ])
+    ->with('editorExpertise')
+    ->get();
 
         $allEditorsByField = [];
         foreach ($allEditors as $editor) {
@@ -90,12 +93,45 @@ class ChiefEditorController extends Controller
         return view('chief-editor.initial-screening', compact('submission'));
     }
 
-    public function storeInitialScreening(Request $request, Submission $submission)
+   public function storeInitialScreening(Request $request, Submission $submission)
 {
     $validated = $request->validate([
-        'screening_status' => 'required|in:passed,failed',
+        'screening_status' => 'required|in:passed,failed,revision',
         'comments'         => 'required|string|max:2000',
+      'revision_type' => 'nullable|in:minor,major|required_if:screening_status,revision',
     ]);
+
+    if ($validated['screening_status'] === 'revision') {
+        \App\Models\RevisionRequest::create([
+            'submission_id'        => $submission->id,
+            'requested_by_user_id' => auth()->id(),
+            'revision_type'        => $validated['revision_type'],
+            'reason'               => $validated['comments'],
+            'requested_at'         => now(),
+        ]);
+
+        $submission->update([
+            'status'                     => Submission::STATUS_REVISIONS_REQUESTED,
+            'initial_screening_status'   => 'failed',
+            'initial_screening_comments' => $validated['comments'],
+            'initial_screening_by'       => auth()->id(),
+            'initial_screening_at'       => now(),
+        ]);
+
+        \App\Models\Notification::create([
+            'user_id'         => $submission->author_id,
+            'title'           => '🔄 Revision Requested — Initial Screening',
+            'message'         => "The Chief Editor has reviewed your manuscript \"{$submission->title}\" and is requesting a " . $validated['revision_type'] . " revision before it can proceed.\n\nReason: {$validated['comments']}",
+            'type'            => 'warning',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+
+        return redirect()->route('chief-editor.submission.show', $submission)
+            ->with('success', 'Revision requested. Author has been notified.');
+    }
+
+    $isPassed = $validated['screening_status'] === 'passed';
 
     $submission->update([
         'initial_screening_status'   => $validated['screening_status'],
@@ -104,27 +140,20 @@ class ChiefEditorController extends Controller
         'initial_screening_at'       => now(),
     ]);
 
-    // Send in-system notification to author
-    $isPassed = $validated['screening_status'] === 'passed';
-
     \App\Models\Notification::create([
-        'user_id'        => $submission->author_id,
-        'title'          => $isPassed ? '✅ Submission Passed Initial Screening' : '❌ Submission Failed Initial Screening',
-        'message'        => $isPassed
-            ? "Your manuscript \"{$submission->title}\" has passed the initial screening and will proceed to editorial review.\n\nComments: {$validated['comments']}"
+        'user_id'         => $submission->author_id,
+        'title'           => $isPassed ? '✅ Submission Passed Initial Screening' : '❌ Submission Failed Initial Screening',
+        'message'         => $isPassed
+            ? "Your manuscript \"{$submission->title}\" has passed the initial screening.\n\nComments: {$validated['comments']}"
             : "Your manuscript \"{$submission->title}\" did not pass the initial screening.\n\nComments: {$validated['comments']}",
-        'type'           => $isPassed ? 'success' : 'danger',
-        'notifiable_id'  => $submission->id,
+        'type'            => $isPassed ? 'success' : 'danger',
+        'notifiable_id'   => $submission->id,
         'notifiable_type' => Submission::class,
     ]);
 
     return redirect()->route('chief-editor.submission.show', $submission)
-        ->with('success', $isPassed
-            ? 'Initial screening passed. Author has been notified.'
-            : 'Initial screening failed. Author has been notified.'
-        );
+        ->with('success', $isPassed ? 'Passed. Author notified.' : 'Failed. Author notified.');
 }
-
     public function assignSubmission(Request $request, Submission $submission)
     {
         // Check if initial screening has passed
@@ -226,26 +255,55 @@ class ChiefEditorController extends Controller
         return back()->with('success', 'Submission reassigned to: ' . implode(', ', $editorNames) . '.');
     }
 
-    public function reviewSubmission(Request $request, Submission $submission)
-    {
-        $validated = $request->validate([
-            'notes' => 'required|string|max:1000',
-        ]);
+   public function reviewSubmission(Request $request, Submission $submission)
+{
+    $validated = $request->validate([
+        'notes' => 'required|string|max:1000',
+    ]);
 
-      $submission->update([
-    'chief_editor_notes'     => $validated['notes'],
-    'chief_editor_review_at' => now(),
-]);
+    $submission->update([
+        'chief_editor_notes'     => $validated['notes'],
+        'chief_editor_review_at' => now(),
+    ]);
 
-\App\Models\Notification::create([
-    'user_id'         => $submission->author_id,
-    'title'           => '📝 Chief Editor Added a Review Note',
-    'message'         => "The Chief Editor has added a note on your manuscript \"{$submission->title}\".\n\nNote: {$validated['notes']}",
-    'type'            => 'info',
-    'notifiable_id'   => $submission->id,
-    'notifiable_type' => Submission::class,
-]);
+    \App\Models\Notification::create([
+        'user_id'         => $submission->author_id,
+        'title'           => '📝 Chief Editor Added a Review Note',
+        'message'         => "The Chief Editor has added a note on your manuscript \"{$submission->title}\".\n\nNote: {$validated['notes']}",
+        'type'            => 'info',
+        'notifiable_id'   => $submission->id,
+        'notifiable_type' => Submission::class,
+    ]);
 
-return back()->with('success', 'Submission review notes added.');
-    }
+    return back()->with('success', 'Submission review notes added.');
+}
+
+public function requestRevision(Request $request, Submission $submission)
+{
+    $validated = $request->validate([
+        'revision_type'   => ['required', 'in:minor,major'],
+        'revision_reason' => ['required', 'string', 'max:2000'],
+    ]);
+
+    \App\Models\RevisionRequest::create([
+        'submission_id'        => $submission->id,
+        'requested_by_user_id' => $request->user()->id,
+        'revision_type'        => $validated['revision_type'],
+        'reason'               => $validated['revision_reason'],
+        'requested_at'         => now(),
+    ]);
+
+    $submission->update(['status' => Submission::STATUS_REVISIONS_REQUESTED]);
+
+    \App\Models\Notification::create([
+        'user_id'         => $submission->author_id,
+        'title'           => '🔄 Revision Requested by Chief Editor',
+        'message'         => "The Chief Editor has requested a " . $validated['revision_type'] . " revision for your manuscript \"{$submission->title}\".\n\nReason: {$validated['revision_reason']}",
+        'type'            => 'warning',
+        'notifiable_id'   => $submission->id,
+        'notifiable_type' => Submission::class,
+    ]);
+
+    return back()->with('success', 'Revision request sent to author.');
+}
 }

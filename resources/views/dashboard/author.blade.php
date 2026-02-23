@@ -2,205 +2,423 @@
 
 @section('title', 'Author Dashboard')
 
+@push('styles')
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+    .author-wrap { font-family: 'DM Sans', sans-serif; }
+
+    /* ── Page Header ── */
+    .page-title {
+        font-family: 'Instrument Serif', serif;
+        font-size: 1.85rem; font-weight: 400;
+        color: #0F172A; letter-spacing: -.015em; line-height: 1.2;
+    }
+    .page-subtitle { font-size: .875rem; color: #64748B; margin-top: 4px; }
+    .page-date-badge {
+        font-size: .72rem; font-weight: 500; color: #94A3B8;
+        background: #fff; border: 1px solid #E2E8F0;
+        padding: 5px 12px; border-radius: 20px; white-space: nowrap;
+    }
+    .btn-new-submission {
+        display: inline-flex; align-items: center; gap: 7px;
+        background: #DC2626; color: #fff;
+        font-size: .76rem; font-weight: 700;
+        letter-spacing: .06em; text-transform: uppercase;
+        padding: 10px 22px; border-radius: 9px; text-decoration: none;
+        transition: background .15s, transform .1s, box-shadow .15s;
+        box-shadow: 0 4px 12px rgba(220,38,38,.20); white-space: nowrap;
+    }
+    .btn-new-submission:hover {
+        background: #B91C1C; transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(220,38,38,.28);
+    }
+
+    /* ── Stat Cards ── */
+    .stat-card {
+        background: #fff; border: 1.5px solid #E2E8F0; border-radius: 14px;
+        padding: 18px 20px; box-shadow: 0 1px 3px rgba(15,23,42,.05);
+        transition: box-shadow .2s, transform .2s, border-color .2s;
+        position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+        content: ''; position: absolute; inset: 0;
+        opacity: 0; transition: opacity .2s; pointer-events: none;
+    }
+    .stat-card:hover { box-shadow: 0 6px 20px rgba(15,23,42,.09); transform: translateY(-2px); }
+    .stat-card:hover::before { opacity: 1; }
+    .stat-card.c-slate::before   { background: linear-gradient(135deg,#F8FAFC 0%,transparent 60%); }
+    .stat-card.c-blue::before    { background: linear-gradient(135deg,#EFF6FF 0%,transparent 60%); }
+    .stat-card.c-yellow::before  { background: linear-gradient(135deg,#FEFCE8 0%,transparent 60%); }
+    .stat-card.c-orange::before  { background: linear-gradient(135deg,#FFF7ED 0%,transparent 60%); }
+    .stat-card.c-emerald::before { background: linear-gradient(135deg,#F0FDF4 0%,transparent 60%); }
+    .stat-card.c-red::before     { background: linear-gradient(135deg,#FFF5F5 0%,transparent 60%); }
+    .stat-card.c-slate:hover   { border-color: #CBD5E1; }
+    .stat-card.c-blue:hover    { border-color: #BFDBFE; }
+    .stat-card.c-yellow:hover  { border-color: #FDE68A; }
+    .stat-card.c-orange:hover  { border-color: #FDBA74; }
+    .stat-card.c-emerald:hover { border-color: #6EE7B7; }
+    .stat-card.c-red:hover     { border-color: #FECACA; }
+
+    .stat-label  { font-size: .65rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #94A3B8; margin-bottom: 10px; display: block; }
+    .stat-number { font-family: 'Instrument Serif', serif; font-size: 2.1rem; line-height: 1; }
+    .stat-number.c-slate   { color: #0F172A; }
+    .stat-number.c-blue    { color: #2563EB; }
+    .stat-number.c-yellow  { color: #D97706; }
+    .stat-number.c-orange  { color: #EA580C; }
+    .stat-number.c-emerald { color: #059669; }
+    .stat-number.c-red     { color: #DC2626; }
+
+    /* ── Search Bar ── */
+    .search-bar {
+        background: #fff; border: 1.5px solid #E2E8F0; border-radius: 14px;
+        padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+        box-shadow: 0 1px 3px rgba(15,23,42,.05);
+    }
+    .search-icon-wrap { position: relative; flex: 1; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94A3B8; pointer-events: none; }
+    .search-input {
+        width: 100%; background: #F8FAFC; border: 1px solid #E2E8F0;
+        border-radius: 9px; padding: 9px 14px 9px 38px;
+        font-size: .82rem; font-family: 'DM Sans', sans-serif; color: #0F172A; outline: none;
+        transition: border-color .15s, box-shadow .15s;
+    }
+    .search-input:focus { border-color: #FECACA; box-shadow: 0 0 0 3px rgba(220,38,38,.07); }
+    .search-input::placeholder { color: #94A3B8; }
+    .live-indicator {
+        display: flex; align-items: center; gap: 6px;
+        font-size: .68rem; font-weight: 700; letter-spacing: .07em;
+        text-transform: uppercase; color: #94A3B8; white-space: nowrap;
+    }
+
+    /* ── Alert Banner ── */
+    .alert-banner { border-radius: 14px; overflow: hidden; border: 1.5px solid #FED7AA; box-shadow: 0 4px 14px rgba(234,88,12,.10); }
+    .alert-inner  { background: #FFFBF5; padding: 16px 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; }
+    .alert-icon-box { width: 38px; height: 38px; border-radius: 10px; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .alert-tag  { font-size: .68rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #9A3412; }
+    .alert-desc { font-size: .78rem; font-weight: 500; color: #92400E; margin-top: 2px; }
+    .btn-revise {
+        background: #fff; border: 1.5px solid #FED7AA; padding: 7px 14px; border-radius: 7px;
+        font-size: .7rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+        color: #EA580C; text-decoration: none; transition: background .15s, transform .1s;
+    }
+    .btn-revise:hover { background: #EA580C; color: #fff; transform: translateY(-1px); }
+
+    /* ── Table Card ── */
+    .table-card {
+        background: #fff; border: 1.5px solid #E2E8F0; border-radius: 14px;
+        overflow: hidden; box-shadow: 0 1px 3px rgba(15,23,42,.05);
+    }
+    .tbl-author thead tr { background: #FAFBFC; }
+    .tbl-author th {
+        padding: 11px 22px; text-align: left;
+        font-size: .67rem; font-weight: 800; letter-spacing: .1em;
+        text-transform: uppercase; color: #94A3B8; border-bottom: 1.5px solid #E2E8F0;
+    }
+    .tbl-author th:last-child { text-align: right; }
+    .tbl-author td { padding: 14px 22px; font-size: .82rem; border-bottom: 1px solid #F1F5F9; }
+    .tbl-author tbody tr:last-child td { border-bottom: none; }
+    .tbl-author tbody tr { transition: background .12s; cursor: pointer; }
+    .tbl-author tbody tr:hover td { background: #F8FAFC; }
+    .tbl-author tbody tr:hover .ms-title { color: #DC2626; }
+
+    .ms-ref   { font-family: monospace; font-size: .72rem; color: #94A3B8; letter-spacing: .04em; }
+    .ms-title { font-size: .83rem; font-weight: 600; color: #0F172A; transition: color .12s; }
+    .ms-date  { font-size: .72rem; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: .04em; }
+
+    /* ── Inline Chips ── */
+    .chip-row {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 10px; border-radius: 20px; border: 1px solid transparent;
+        font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+        margin-top: 7px;
+    }
+    .chip-row .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .chip-row.emerald { background: #F0FDF4; border-color: #BBF7D0; color: #15803D; }
+    .chip-row.emerald .dot { background: #16A34A; }
+    .chip-row.red     { background: #FFF5F5; border-color: #FECACA; color: #B91C1C; }
+    .chip-row.red .dot { background: #DC2626; }
+
+    .comment-chip {
+        display: flex; align-items: flex-start; gap: 8px;
+        border-radius: 8px; padding: 8px 10px; margin-top: 6px; border: 1px solid transparent;
+    }
+    .comment-chip.purple { background: #FAF5FF; border-color: #E9D5FF; }
+    .comment-chip.blue   { background: #EFF6FF; border-color: #BFDBFE; }
+    .comment-chip svg { flex-shrink: 0; margin-top: 1px; }
+    .comment-tag  { font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 2px; }
+    .comment-tag.purple { color: #7C3AED; }
+    .comment-tag.blue   { color: #1D4ED8; }
+    .comment-text {
+        font-size: .75rem; color: #475569; line-height: 1.5;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    /* ── Status Badges ── */
+    .s-badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 11px; border-radius: 20px;
+        font-size: .68rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+        border: 1px solid transparent;
+    }
+    .s-badge .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .s-badge.accepted           { background:#F0FDF4; border-color:#BBF7D0; color:#15803D; }
+    .s-badge.accepted .dot      { background:#16A34A; }
+    .s-badge.under_review       { background:#EFF6FF; border-color:#BFDBFE; color:#1D4ED8; }
+    .s-badge.under_review .dot  { background:#2563EB; }
+    .s-badge.revisions_requested      { background:#FFF7ED; border-color:#FED7AA; color:#C2410C; }
+    .s-badge.revisions_requested .dot { background:#EA580C; }
+    .s-badge.rejected           { background:#FFF5F5; border-color:#FECACA; color:#B91C1C; }
+    .s-badge.rejected .dot      { background:#DC2626; }
+    .s-badge.submitted          { background:#F8FAFC; border-color:#E2E8F0; color:#475569; }
+    .s-badge.submitted .dot     { background:#64748B; }
+
+    /* ── Empty State ── */
+    .empty-state-wrap { padding: 64px 24px; text-align: center; }
+    .empty-icon { width: 56px; height: 56px; border-radius: 50%; background: #F8FAFC; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+    .empty-label { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #CBD5E1; }
+
+    /* ── Activity Stream ── */
+    .activity-title { font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #94A3B8; margin-bottom: 14px; }
+    .activity-card {
+        background: #fff; border: 1.5px solid #E2E8F0; border-radius: 12px;
+        padding: 14px 16px; display: flex; align-items: flex-start; gap: 10px;
+        box-shadow: 0 1px 3px rgba(15,23,42,.04);
+        transition: box-shadow .15s, transform .15s;
+    }
+    .activity-card:hover { box-shadow: 0 4px 12px rgba(15,23,42,.08); transform: translateY(-1px); }
+    .activity-dot  { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .activity-name { font-size: .78rem; font-weight: 600; color: #0F172A; line-height: 1.4; margin-bottom: 3px; }
+    .activity-time { font-size: .7rem; color: #94A3B8; font-weight: 500; }
+
+    /* ── Animations ── */
+    .fade-up   { animation: fadeUp .4s ease both; }
+    .fade-up-1 { animation: fadeUp .4s .07s ease both; }
+    .fade-up-2 { animation: fadeUp .4s .14s ease both; }
+    .fade-up-3 { animation: fadeUp .4s .21s ease both; }
+    .fade-up-4 { animation: fadeUp .4s .28s ease both; }
+    @keyframes fadeUp {
+        from { opacity:0; transform:translateY(12px); }
+        to   { opacity:1; transform:translateY(0); }
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="max-w-7xl mx-auto space-y-6">
-    {{-- Header Section --}}
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
+<div class="author-wrap max-w-7xl mx-auto space-y-6">
+
+    {{-- ── Page Header ── --}}
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 fade-up">
         <div>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight">Author Workspace</h1>
-            <p class="text-sm text-slate-500 font-medium">Overview of your research and manuscript pipeline</p>
+            <h1 class="page-title">Author Workspace</h1>
+            <p class="page-subtitle">Overview of your research and manuscript pipeline</p>
         </div>
-        <a href="{{ route('submissions.create') }}" class="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all text-center shadow-lg shadow-red-100">
-            + New Submission
-        </a>
+        <div class="flex items-center gap-3 self-start md:self-auto">
+            <span class="page-date-badge hidden sm:inline-block">{{ now()->format('D, M j Y') }}</span>
+            <a href="{{ route('submissions.create') }}" class="btn-new-submission">+ New Submission</a>
+        </div>
     </div>
 
-    {{-- Re-integrated Full Stats Grid --}}
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    {{-- ── Stats Grid ── --}}
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 fade-up-1">
         @foreach([
-            ['label' => 'Total Submissions', 'value' => $stats['total'], 'color' => 'slate-900', 'bg' => 'slate-50'],
-            ['label' => 'Submitted', 'value' => $stats['submitted'], 'color' => 'blue-600', 'bg' => 'blue-50/50'],
-            ['label' => 'Under Review', 'value' => $stats['under_review'], 'color' => 'yellow-600', 'bg' => 'yellow-50/50'],
-            ['label' => 'Revisions', 'value' => $stats['revisions_requested'], 'color' => 'orange-600', 'bg' => 'orange-50/50'],
-            ['label' => 'Accepted', 'value' => $stats['accepted'], 'color' => 'emerald-600', 'bg' => 'emerald-50/50'],
-            ['label' => 'Rejected', 'value' => $stats['rejected'], 'color' => 'red-600', 'bg' => 'red-50/50'],
+            ['label' => 'Total',        'value' => $stats['total'],               'cls' => 'c-slate'],
+            ['label' => 'Submitted',    'value' => $stats['submitted'],           'cls' => 'c-blue'],
+            ['label' => 'Under Review', 'value' => $stats['under_review'],        'cls' => 'c-yellow'],
+            ['label' => 'Revisions',    'value' => $stats['revisions_requested'], 'cls' => 'c-orange'],
+            ['label' => 'Accepted',     'value' => $stats['accepted'],            'cls' => 'c-emerald'],
+            ['label' => 'Rejected',     'value' => $stats['rejected'],            'cls' => 'c-red'],
         ] as $stat)
-            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 leading-tight">{{ $stat['label'] }}</p>
-                <p class="text-3xl font-black text-{{ $stat['color'] }}">{{ sprintf('%02d', $stat['value']) }}</p>
-            </div>
+        <div class="stat-card {{ $stat['cls'] }}">
+            <span class="stat-label">{{ $stat['label'] }}</span>
+            <p class="stat-number {{ $stat['cls'] }}">{{ sprintf('%02d', $stat['value']) }}</p>
+        </div>
         @endforeach
     </div>
 
-    {{-- Action Bar with Working Search --}}
-    <div class="flex flex-col md:flex-row gap-4 items-center bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-        <div class="relative flex-1 group">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5"/></svg>
+    {{-- ── Search Bar ── --}}
+    <div class="search-bar fade-up-2">
+        <div class="search-icon-wrap">
+            <span class="search-icon">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5"/>
+                </svg>
             </span>
-            <input type="text" id="dashboardSearch" placeholder="Filter manuscripts by title, ID, or status..."
-                class="w-full pl-11 pr-4 py-3 bg-slate-50 border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-red-500/20 transition-all outline-none"
-                onkeyup="filterTable()">
+            <input type="text" id="dashboardSearch"
+                placeholder="Filter manuscripts by title, ID, or status..."
+                class="search-input" onkeyup="filterTable()">
         </div>
-        <div class="hidden md:flex items-center gap-2 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+        <div class="live-indicator hidden md:flex">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             System Live
         </div>
     </div>
 
-    {{-- Urgent Revision Alert --}}
+    {{-- ── Revision Alert ── --}}
     @if ($stats['revisions_requested'] > 0)
         @php $revisionsNeeded = auth()->user()->submissionsAsAuthor()->where('status', 'revisions_requested')->get(); @endphp
-        <div class="bg-orange-600 rounded-2xl p-1 shadow-lg shadow-orange-100">
-            <div class="bg-orange-50 rounded-[14px] p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="alert-banner fade-up-2">
+            <div class="alert-inner">
                 <div class="flex items-center gap-3">
-                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 text-orange-600">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/></svg>
-                    </span>
+                    <div class="alert-icon-box">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/>
+                        </svg>
+                    </div>
                     <div>
-                        <p class="text-sm font-black text-orange-950 uppercase tracking-tight">Action Required</p>
-                        <p class="text-xs font-medium text-orange-800">Reviewers have submitted feedback on {{ $stats['revisions_requested'] }} paper(s).</p>
+                        <p class="alert-tag">Action Required</p>
+                        <p class="alert-desc">Reviewers submitted feedback on {{ $stats['revisions_requested'] }} paper(s).</p>
                     </div>
                 </div>
-                <div class="flex gap-2">
+                <div class="flex gap-2 flex-wrap">
                     @foreach($revisionsNeeded->take(2) as $rev)
-                        <a href="{{ route('submissions.revisions', $rev) }}" class="bg-white border border-orange-200 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest text-orange-700 hover:bg-orange-600 hover:text-white transition-all shadow-sm">
-                            Revise #{{ $rev->id }}
-                        </a>
+                        <a href="{{ route('submissions.revisions', $rev) }}" class="btn-revise">Revise #{{ $rev->id }}</a>
                     @endforeach
                 </div>
             </div>
         </div>
     @endif
 
-    {{-- Main Submissions Table --}}
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-        <table class="w-full text-left" id="submissionsTable">
-            <thead class="bg-slate-50/50 border-b border-slate-200">
-                <tr>
-                    <th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Reference</th>
-                    <th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 w-1/2">Manuscript Title</th>
-                    <th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Status</th>
-                    <th class="px-8 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Last Update</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-                @forelse($submissions as $s)
-                    <tr class="submission-row hover:bg-slate-50/80 transition-all cursor-pointer group" onclick="window.location='{{ route('submissions.show', $s) }}'">
-                        <td class="px-8 py-6 font-mono text-[11px] text-slate-400">#{{ str_pad($s->id, 5, '0', STR_PAD_LEFT) }}</td>
-                        <td class="px-8 py-6">
-                            <p class="text-sm font-bold text-slate-900 group-hover:text-red-600 transition-colors title-cell">{{ $s->title }}</p>
-                       @if($s->initial_screening_comments || $s->editor_notes)
-    <div class="mt-2 space-y-1" onclick="event.stopPropagation()">
-        
-    @if($s->initial_screening_comments)
-    <div class="mt-2" onclick="event.stopPropagation()">
-        <div class="flex items-start gap-2 bg-purple-50 border border-purple-100 rounded-lg px-3 py-2">
-            <svg class="w-3 h-3 mt-0.5 text-purple-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v7a2 2 0 01-2 2H6l-4 4V5z"/>
-            </svg>
-            <div>
-                <p class="text-[9px] font-black text-purple-400 uppercase tracking-widest mb-0.5">Editor in Chief Comments</p>
-                <p class="text-[10px] text-slate-500 font-medium leading-relaxed line-clamp-2">{{ $s->initial_screening_comments }}</p>
-            </div>
-        </div>
-    </div>
-@endif
+    {{-- ── Submissions Table ── --}}
+    <div class="table-card fade-up-3">
+        <div class="overflow-x-auto">
+            <table class="w-full tbl-author" id="submissionsTable">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th class="w-1/2">Manuscript Title</th>
+                        <th>Status</th>
+                        <th>Last Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($submissions as $s)
+                    <tr class="submission-row" onclick="window.location='{{ route('submissions.show', $s) }}'">
+                        <td><span class="ms-ref">#{{ str_pad($s->id, 5, '0', STR_PAD_LEFT) }}</span></td>
+                        <td>
+                            <p class="ms-title title-cell">{{ $s->title }}</p>
 
-        @if($s->editor_notes)
-            <div class="flex items-start gap-2 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
-                <svg class="w-3 h-3 mt-0.5 text-blue-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v7a2 2 0 01-2 2H6l-4 4V5z"/>
-                </svg>
-                <div>
-                    <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-0.5">Editor's Note</p>
-                    <p class="text-[10px] text-slate-500 font-medium leading-relaxed line-clamp-2">{{ $s->editor_notes }}</p>
-                </div>
-            </div>
-        @endif
+                            @if($s->initial_screening_comments || $s->editor_notes || $s->initial_screening_status !== 'pending')
+                            <div onclick="event.stopPropagation()">
 
-    </div>
-@endif
+                                {{-- Screening Status Chip --}}
+                                @if($s->initial_screening_status === 'passed')
+                                    <div class="chip-row emerald">
+                                        <span class="dot"></span> Passed Initial Screening
+                                    </div>
+                                @elseif($s->initial_screening_status === 'failed')
+                                    <div class="chip-row red">
+                                        <span class="dot"></span> Failed Initial Screening
+                                    </div>
+                                @endif
+
+                                {{-- Acceptance / Rejection Chip --}}
+                                @if($s->status === 'accepted')
+                                    <div class="chip-row emerald">
+                                        <span class="dot"></span> Manuscript Accepted
+                                    </div>
+                                @elseif($s->status === 'rejected')
+                                    <div class="chip-row red">
+                                        <span class="dot"></span> Manuscript Rejected
+                                    </div>
+                                @endif
+
+                                {{-- Screening Comments --}}
+                                @if($s->initial_screening_comments)
+                                <div class="comment-chip purple">
+                                    <svg class="w-3 h-3 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v7a2 2 0 01-2 2H6l-4 4V5z"/>
+                                    </svg>
+                                    <div>
+                                        <p class="comment-tag purple">Screening Comments</p>
+                                        <p class="comment-text">{{ $s->initial_screening_comments }}</p>
+                                    </div>
+                                </div>
+                                @endif
+
+                                {{-- Editor Notes --}}
+                                @if($s->editor_notes)
+                                <div class="comment-chip blue">
+                                    <svg class="w-3 h-3 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v7a2 2 0 01-2 2H6l-4 4V5z"/>
+                                    </svg>
+                                    <div>
+                                        <p class="comment-tag blue">Editor's Note</p>
+                                        <p class="comment-text">{{ $s->editor_notes }}</p>
+                                    </div>
+                                </div>
+                                @endif
+
+                            </div>
+                            @endif
                         </td>
-                        <td class="px-8 py-6">
+                        <td>
                             @php
-                                $color = match($s->status) {
-                                    'accepted' => 'emerald',
-                                    'under_review' => 'blue',
-                                    'revisions_requested' => 'orange',
-                                    'rejected' => 'red',
-                                    default => 'slate'
+                                $cls = match($s->status) {
+                                    'accepted'            => 'accepted',
+                                    'under_review'        => 'under_review',
+                                    'revisions_requested' => 'revisions_requested',
+                                    'rejected'            => 'rejected',
+                                    default               => 'submitted'
                                 };
                             @endphp
-                            <div class="status-cell inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-{{ $color }}-50 border border-{{ $color }}-100">
-                                <span class="w-1.5 h-1.5 rounded-full bg-{{ $color }}-500"></span>
-                                <span class="text-[9px] font-black uppercase tracking-widest text-{{ $color }}-700">
-                                    {{ str_replace('_', ' ', $s->status) }}
-                                </span>
-                            </div>
-                        </td>
-                        <td class="px-8 py-6 text-right">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tabular-nums">
-                                {{ $s->updated_at->format('d M Y') }}
+                            <span class="s-badge {{ $cls }} status-cell">
+                                <span class="dot"></span>
+                                {{ str_replace('_', ' ', $s->status) }}
                             </span>
                         </td>
+                        <td class="text-right">
+                            <span class="ms-date">{{ $s->updated_at->format('d M Y') }}</span>
+                        </td>
                     </tr>
-                @empty
+                    @empty
                     <tr>
-                        <td colspan="4" class="px-8 py-24 text-center">
-                            <div class="flex flex-col items-center">
-                                <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-                                    <svg class="w-8 h-8 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2"/></svg>
+                        <td colspan="4">
+                            <div class="empty-state-wrap">
+                                <div class="empty-icon">
+                                    <svg class="w-7 h-7 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 4v16m8-8H4" stroke-width="2"/>
+                                    </svg>
                                 </div>
-                                <p class="text-xs font-black text-slate-400 uppercase tracking-widest">No active manuscripts found</p>
+                                <p class="empty-label">No active manuscripts found</p>
                             </div>
                         </td>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    {{-- Bottom Activity Bar --}}
+    {{-- ── Activity Stream ── --}}
     @if($notifications->count() > 0)
-    <div class="pt-4">
-        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Live Activity Stream</h3>
+    <div class="fade-up-4">
+        <p class="activity-title">Live Activity Stream</p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             @foreach($notifications->take(3) as $notif)
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
-                    <span class="w-2 h-2 rounded-full mt-1.5 {{ $notif->isUnread() ? 'bg-red-500 animate-pulse' : 'bg-slate-200' }}"></span>
-                    <div class="flex-1">
-                        <p class="text-[11px] font-bold text-slate-900 leading-tight mb-1">{{ $notif->title }}</p>
-                        <p class="text-[10px] text-slate-500 font-medium">{{ $notif->created_at->diffForHumans() }}</p>
-                    </div>
+            <div class="activity-card">
+                <span class="activity-dot {{ $notif->isUnread() ? 'bg-red-500 animate-pulse' : 'bg-slate-200' }}"></span>
+                <div class="flex-1">
+                    <p class="activity-name">{{ $notif->title }}</p>
+                    <p class="activity-time">{{ $notif->created_at->diffForHumans() }}</p>
                 </div>
+            </div>
             @endforeach
         </div>
     </div>
     @endif
+
 </div>
+@endsection
 
 @push('scripts')
 <script>
-    /**
-     * Optimized Live Search
-     * Searches Title, ID, and Status badge
-     */
     function filterTable() {
-        const input = document.getElementById("dashboardSearch");
-        const filter = input.value.toUpperCase();
-        const rows = document.querySelectorAll(".submission-row");
-
-        rows.forEach(row => {
-            const title = row.querySelector(".title-cell").innerText.toUpperCase();
-            const id = row.cells[0].innerText.toUpperCase();
+        const filter = document.getElementById("dashboardSearch").value.toUpperCase();
+        document.querySelectorAll(".submission-row").forEach(row => {
+            const title  = row.querySelector(".title-cell").innerText.toUpperCase();
+            const id     = row.cells[0].innerText.toUpperCase();
             const status = row.querySelector(".status-cell").innerText.toUpperCase();
-
-            if (title.includes(filter) || id.includes(filter) || status.includes(filter)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
+            row.style.display = (title.includes(filter) || id.includes(filter) || status.includes(filter)) ? "" : "none";
         });
     }
 
@@ -210,7 +428,7 @@
             title: '<span class="text-sm font-black uppercase tracking-widest">Confirmed</span>',
             html: '<p class="text-xs font-medium text-slate-500">{{ session('success') }}</p>',
             confirmButtonText: 'CLOSE',
-            confirmButtonColor: '#000000',
+            confirmButtonColor: '#DC2626',
             customClass: {
                 popup: 'rounded-[2rem] border-none shadow-2xl',
                 confirmButton: 'rounded-xl px-8 py-3 font-black text-[10px] uppercase tracking-[0.2em]'
@@ -220,4 +438,3 @@
     @endif
 </script>
 @endpush
-@endsection

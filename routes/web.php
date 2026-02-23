@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/reviews/assignment/{assignment}/create', [ReviewController::class, 'create'])->name('reviews.create');
         Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
         Route::get('/reviewer/pending-assignments', [ReviewController::class, 'pendingReviewerAssignments'])->name('reviewer.pending-assignments');
+        Route::post('/reviewer/submissions/{submission}/request-revision', [ReviewController::class, 'reviewerRequestRevision'])->name('reviewer.request-revision');
     });
 
     Route::middleware('role:editor')->group(function (): void {
@@ -53,6 +54,7 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/editor/submissions/{submission}/initial-screening', [ReviewController::class, 'storeInitialScreening'])->name('editor.store-initial-screening');
         Route::post('/editor/submissions/{submission}/assign-reviewer', [ReviewController::class, 'assignReviewer'])->name('editor.assign-reviewer');
         Route::post('/editor/submissions/{submission}/decision', [ReviewController::class, 'editorDecision'])->name('editor.decision');
+        Route::post('/editor/submissions/{submission}/request-revision', [ReviewController::class, 'requestRevision'])->name('editor.request-revision');
     });
 
     Route::middleware('role:editor-in-chief')->group(function (): void {
@@ -63,6 +65,7 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/chief-editor/submissions/{submission}/assign', [ChiefEditorController::class, 'assignSubmission'])->name('chief-editor.assign');
         Route::post('/chief-editor/submissions/{submission}/reassign', [ChiefEditorController::class, 'reassignSubmission'])->name('chief-editor.reassign');
         Route::post('/chief-editor/submissions/{submission}/review', [ChiefEditorController::class, 'reviewSubmission'])->name('chief-editor.review');
+        Route::post('/chief-editor/submissions/{submission}/request-revision', [ChiefEditorController::class, 'requestRevision'])->name('chief-editor.request-revision');
     });
 
     Route::middleware('role:admin')->group(function (): void {

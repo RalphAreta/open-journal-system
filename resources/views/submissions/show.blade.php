@@ -104,15 +104,79 @@
                 </section>
             @endif
 
-            {{-- 4. Editor Notes (Conditional) --}}
-            @if($submission->editor_notes && (auth()->user()->id === $submission->author_id || auth()->user()->isEditor() || auth()->user()->isAdmin()))
-                <section class="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-slate-200">
-                    <h2 class="text-[10px] font-black text-red-500 uppercase tracking-widest mb-4">Official Editor Notes</h2>
-                    <p class="text-slate-300 leading-relaxed font-medium">
-                        {{ $submission->editor_notes }}
-                    </p>
-                </section>
+         {{-- 4. Editorial Feedback --}}
+@if($submission->initial_screening_status !== 'pending' || $submission->initial_screening_comments || $submission->editor_notes)
+<section class="space-y-4">
+    <div class="flex items-center gap-4">
+        <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Editorial Feedback</h2>
+        <div class="h-px bg-slate-100 flex-1"></div>
+    </div>
+
+    {{-- Chief Editor Block --}}
+    @if($submission->initial_screening_status !== 'pending' || $submission->initial_screening_comments)
+    <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm space-y-4">
+        {{-- Header --}}
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/></svg>
+            </div>
+            <div>
+                <p class="text-xs font-black text-slate-900 uppercase tracking-widest">Editor-in-Chief</p>
+                <p class="text-[10px] text-slate-400 font-medium">Initial Screening Decision</p>
+            </div>
+            {{-- Status Badge --}}
+            @if($submission->initial_screening_status === 'passed')
+                <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-full text-[9px] font-black text-emerald-700 uppercase tracking-widest">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Passed
+                </span>
+            @elseif($submission->initial_screening_status === 'failed')
+                <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 border border-red-100 rounded-full text-[9px] font-black text-red-700 uppercase tracking-widest">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Failed
+                </span>
             @endif
+        </div>
+
+        {{-- Comments --}}
+        @if($submission->initial_screening_comments)
+        <div class="bg-slate-50 rounded-2xl px-5 py-4 border border-slate-100">
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Screening Comments</p>
+            <p class="text-sm text-slate-600 leading-relaxed font-medium">{{ $submission->initial_screening_comments }}</p>
+        </div>
+        @endif
+    </div>
+    @endif
+
+    {{-- Editor Block --}}
+    @if($submission->editor_notes)
+    <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm space-y-4">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zm-2.207 2.207L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+            </div>
+            <div>
+                <p class="text-xs font-black text-slate-900 uppercase tracking-widest">Editor</p>
+                <p class="text-[10px] text-slate-400 font-medium">Official Editorial Notes</p>
+            </div>
+            {{-- Final decision badge --}}
+            @if($submission->status === 'accepted')
+                <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-full text-[9px] font-black text-emerald-700 uppercase tracking-widest">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Accepted
+                </span>
+            @elseif($submission->status === 'rejected')
+                <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 border border-red-100 rounded-full text-[9px] font-black text-red-700 uppercase tracking-widest">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Rejected
+                </span>
+            @endif
+        </div>
+        <div class="bg-slate-50 rounded-2xl px-5 py-4 border border-slate-100">
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Notes</p>
+            <p class="text-sm text-slate-600 leading-relaxed font-medium">{{ $submission->editor_notes }}</p>
+        </div>
+    </div>
+    @endif
+
+</section>
+@endif
         </div>
 
         {{-- Right: Technical Sidebar --}}

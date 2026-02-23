@@ -62,8 +62,8 @@
 
         <div class="relative z-10 max-w-4xl">
             <span class="inline-block px-4 py-1.5 bg-red-600 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-6">Volume 12 • Issue 2026</span>
-            <h1 class="text-7xl md:text-9xl font-black text-white tracking-tighter mb-4 drop-shadow-2xl">IRJIEST</h1>
-            <p class="text-orange-400 font-bold tracking-[0.3em] mb-8 text-sm md:text-base uppercase">Innovation • Engineering • Science • Technology</p>
+            <h1 class="text-7xl md:text-9xl font-black text-white tracking-tighter mb-4 drop-shadow-2xl">NICKO</h1>
+            <p class="text-orange-400 font-bold tracking-[0.3em] mb-8 text-sm md:text-base uppercase">POGI • GWAPO • HABULIN • MATCHO</p>
             <div class="flex flex-wrap justify-center gap-4">
                 <a href="/register" class="px-10 py-4 bg-red-600 text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl shadow-red-900/40 hover:-translate-y-1 transition-all">Begin Submission</a>
                 <a href="#journey" class="px-10 py-4 bg-white text-slate-900 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl hover:bg-slate-50 transition-all">Process</a>

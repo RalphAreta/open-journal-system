@@ -188,7 +188,17 @@ class SubmissionController extends Controller
             'status' => Submission::STATUS_SUBMITTED,
         ]);
 
-        return redirect()->route('submissions.show', $submission)
-            ->with('success', 'Revised manuscript submitted successfully. Awaiting editor review.');
+      // Notify the specific person who requested the revision
+\App\Models\Notification::create([
+    'user_id'         => $revisionRequest->requested_by_user_id,
+    'title'           => '📄 Revised Manuscript Submitted',
+    'message'         => "The author has submitted a revised manuscript for \"{$submission->title}\".\n\nAuthor Notes: {$validated['revision_notes']}",
+    'type'            => 'info',
+    'notifiable_id'   => $submission->id,
+    'notifiable_type' => Submission::class,
+]);
+
+return redirect()->route('submissions.show', $submission)
+    ->with('success', 'Revised manuscript submitted successfully. Awaiting editor review.');
     }
 }

@@ -31,7 +31,7 @@
 
                 {{-- Title --}}
                 <div class="space-y-2">
-                    <label for="title" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Article Title *</label>
+                    <label for="title" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Manuscript Title *</label>
                     <textarea name="title" id="title" rows="3" required
                         class="w-full p-4 bg-white border rounded-2xl text-sm font-bold focus:ring-4 focus:ring-red-500/10 focus:border-red-600 transition-all outline-none leading-relaxed @error('title') border-red-500 @else border-slate-200 @enderror"
                         placeholder="e.g., Quantum Computing Advancements in 2026">{{ old('title') }}</textarea>
