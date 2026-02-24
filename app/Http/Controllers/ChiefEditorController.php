@@ -6,6 +6,7 @@ use App\Models\Submission;
 use App\Models\SubmissionAssignment;
 use App\Models\User;
 use App\Models\EditorExpertise;
+use App\Services\RevisionService;
 use Illuminate\Http\Request;
 use App\Models\RevisionRequest;
 
@@ -25,13 +26,14 @@ class ChiefEditorController extends Controller
             ->paginate(10, ['*'], 'assigned');
 
         $stats = [
-            'total_submissions'   => Submission::count(),
-            'pending_assignments' => Submission::where('status', Submission::STATUS_SUBMITTED)
+            'total_submissions'      => Submission::count(),
+            'pending_assignments'    => Submission::where('status', Submission::STATUS_SUBMITTED)
                 ->whereNull('assigned_editor_id')
                 ->count(),
-            'assigned_count'      => Submission::whereNotNull('assigned_editor_id')->count(),
-            'under_review'        => Submission::where('status', Submission::STATUS_UNDER_REVIEW)->count(),
-            'completed'           => Submission::whereIn('status', [
+            'assigned_count'         => Submission::whereNotNull('assigned_editor_id')->count(),
+            'under_review'           => Submission::where('status', Submission::STATUS_UNDER_REVIEW)->count(),
+            'revision_under_review'  => Submission::where('status', Submission::STATUS_REVISION_UNDER_REVIEW)->count(),
+            'completed'              => Submission::whereIn('status', [
                 Submission::STATUS_ACCEPTED,
                 Submission::STATUS_REJECTED,
             ])->count(),
@@ -102,29 +104,19 @@ class ChiefEditorController extends Controller
     ]);
 
     if ($validated['screening_status'] === 'revision') {
-        \App\Models\RevisionRequest::create([
-            'submission_id'        => $submission->id,
-            'requested_by_user_id' => auth()->id(),
-            'revision_type'        => $validated['revision_type'],
-            'reason'               => $validated['comments'],
-            'requested_at'         => now(),
-        ]);
+        RevisionService::createRevisionRequest(
+            $submission,
+            auth()->user(),
+            $validated['revision_type'],
+            $validated['comments'],
+            'initial_screening' // This is initial screening stage
+        );
 
         $submission->update([
-            'status'                     => Submission::STATUS_REVISIONS_REQUESTED,
             'initial_screening_status'   => 'failed',
             'initial_screening_comments' => $validated['comments'],
             'initial_screening_by'       => auth()->id(),
             'initial_screening_at'       => now(),
-        ]);
-
-        \App\Models\Notification::create([
-            'user_id'         => $submission->author_id,
-            'title'           => '🔄 Revision Requested — Initial Screening',
-            'message'         => "The Chief Editor has reviewed your manuscript \"{$submission->title}\" and is requesting a " . $validated['revision_type'] . " revision before it can proceed.\n\nReason: {$validated['comments']}",
-            'type'            => 'warning',
-            'notifiable_id'   => $submission->id,
-            'notifiable_type' => Submission::class,
         ]);
 
         return redirect()->route('chief-editor.submission.show', $submission)
@@ -285,24 +277,13 @@ public function requestRevision(Request $request, Submission $submission)
         'revision_reason' => ['required', 'string', 'max:2000'],
     ]);
 
-    \App\Models\RevisionRequest::create([
-        'submission_id'        => $submission->id,
-        'requested_by_user_id' => $request->user()->id,
-        'revision_type'        => $validated['revision_type'],
-        'reason'               => $validated['revision_reason'],
-        'requested_at'         => now(),
-    ]);
-
-    $submission->update(['status' => Submission::STATUS_REVISIONS_REQUESTED]);
-
-    \App\Models\Notification::create([
-        'user_id'         => $submission->author_id,
-        'title'           => '🔄 Revision Requested by Chief Editor',
-        'message'         => "The Chief Editor has requested a " . $validated['revision_type'] . " revision for your manuscript \"{$submission->title}\".\n\nReason: {$validated['revision_reason']}",
-        'type'            => 'warning',
-        'notifiable_id'   => $submission->id,
-        'notifiable_type' => Submission::class,
-    ]);
+    RevisionService::createRevisionRequest(
+        $submission,
+        $request->user(),
+        $validated['revision_type'],
+        $validated['revision_reason'],
+        'initial_screening' // Chief editor stage
+    );
 
     return back()->with('success', 'Revision request sent to author.');
 }

@@ -164,7 +164,7 @@
     </div>
 
     {{-- ── Stats ── --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="stat-card red fade-up-1">
             <div class="flex items-center justify-between">
                 <span class="stat-label">Pending Reviews</span>
@@ -180,6 +180,22 @@
             </div>
             <p class="stat-number grn">{{ $stats['completed'] }}</p>
             <p class="stat-hint">Submitted</p>
+        </div>
+        <div class="stat-card fade-up-1" style="border-color: #9F7AEA; box-shadow: 0 1px 3px rgba(159, 122, 234, 0.1);">
+            <div class="flex items-center justify-between">
+                <span class="stat-label" style="color: #7C3AED;">Revision Reviews</span>
+                <div class="stat-icon-box" style="background: #EDE9FE; color: #7C3AED; font-size: 1.1rem;">🔄</div>
+            </div>
+            <p class="stat-number" style="color: #7C3AED;">{{ $stats['pending_revisions'] }}</p>
+            <p class="stat-hint">Revised manuscripts to review</p>
+        </div>
+        <div class="stat-card fade-up-1" style="border-color: #F59E0B; box-shadow: 0 1px 3px rgba(245, 158, 11, 0.1);">
+            <div class="flex items-center justify-between">
+                <span class="stat-label" style="color: #B45309;">Revisions Completed</span>
+                <div class="stat-icon-box" style="background: #FEF3C7; color: #B45309;">✓</div>
+            </div>
+            <p class="stat-number" style="color: #B45309;">{{ $stats['completed_revisions'] }}</p>
+            <p class="stat-hint">Revision reviews submitted</p>
         </div>
     </div>
 
@@ -214,6 +230,82 @@
                 </div>
             </div>
             @endforeach
+        </div>
+    </div>
+    @endif
+
+    {{-- ── Revised Manuscripts Section ── --}}
+    @if ($revisionReviews->count() > 0)
+    <div class="table-card fade-up-2 mb-6">
+        <div class="table-card-header" style="background: linear-gradient(135deg, #F3E8FF 0%, #FEF3C7 100%);">
+            <div>
+                <span class="table-card-title" style="color: #7C3AED; font-weight: 700;">🔄 Revised Manuscripts Awaiting Your Review</span>
+                <p style="font-size: 0.75rem; color: #7C3AED; margin-top: 4px;">Authors have submitted revised versions - your feedback is needed</p>
+            </div>
+            <span style="background: #DC2626; color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">
+                {{ $revisionReviews->count() }} awaiting
+            </span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full tbl">
+                <thead>
+                    <tr>
+                        <th>Manuscript Title</th>
+                        <th>Author</th>
+                        <th>Revision Type</th>
+                        <th>Author's Notes</th>
+                        <th>Due</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($revisionReviews as $rr)
+                    <tr style="background: #FFFAF0;">
+                        <td class="font-medium" style="max-width: 250px;">
+                            <span title="{{ $rr->revisionRequest->submission->title }}">
+                                {{ Str::limit($rr->revisionRequest->submission->title, 35) }}
+                            </span>
+                        </td>
+                        <td class="author-cell">{{ $rr->revisionRequest->submission->author->name ?? '-' }}</td>
+                        <td>
+                            @if ($rr->revisionRequest->revision_type === 'minor')
+                                <span style="background: #FEF3C7; color: #B45309; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">⚡ Minor</span>
+                            @else
+                                <span style="background: #FED7AA; color: #C2410C; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">🔴 Major</span>
+                            @endif
+                        </td>
+                        <td class="text-sm text-slate-600">
+                            @if ($rr->revisionRequest->revision_notes)
+                                <span title="{{ $rr->revisionRequest->revision_notes }}">
+                                    {{ Str::limit($rr->revisionRequest->revision_notes, 25) }}
+                                </span>
+                            @else
+                                <span class="text-slate-400">-</span>
+                            @endif
+                        </td>
+                        <td class="text-sm">
+                            @if ($rr->due_at)
+                                @php
+                                    $daysLeft = now()->diffInDays($rr->due_at, false);
+                                @endphp
+                                @if ($daysLeft < 0)
+                                    <span style="color: #DC2626; font-weight: 600;">{{ abs($daysLeft) }}d overdue</span>
+                                @elseif ($daysLeft <= 3)
+                                    <span style="color: #EA580C; font-weight: 600;">{{ $daysLeft }}d left</span>
+                                @else
+                                    <span style="color: #16A34A; font-weight: 600;">{{ $daysLeft }}d left</span>
+                                @endif
+                            @endif
+                        </td>
+                        <td class="actions-cell">
+                            <a href="{{ route('reviews.revision-create', $rr) }}" class="btn-submit-review" style="background: #7C3AED; border-color: #7C3AED;">
+                                ✎ Review Now
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
     @endif

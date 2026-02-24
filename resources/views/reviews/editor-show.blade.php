@@ -126,12 +126,74 @@
         @endif
     </div>
 
+    {{-- Revision Re-Review Section --}}
+    @if($submission->status === 'revision_under_review')
+        @php
+            $revisions = $submission->revisionRequests()->whereNotNull('revised_at')->get();
+            $latestRevision = $revisions->last();
+        @endphp
+        @if($latestRevision)
+            <div class="bg-white rounded-lg shadow border border-slate-200 p-6 mb-6">
+                <h2 class="text-lg font-medium mb-4">📋 Reviewer Feedback on Revised Manuscript</h2>
+
+                {{-- Author's Revision Notes --}}
+                @if ($latestRevision->author_notes)
+                    <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2">Author's Revision Notes</p>
+                        <p class="text-sm text-slate-700 whitespace-pre-wrap">{{ $latestRevision->author_notes }}</p>
+                    </div>
+                @endif
+
+                {{-- Revision Reviews --}}
+                <div class="space-y-4">
+                    @forelse ($latestRevision->revisionReviews as $rr)
+                        <div class="bg-slate-50 rounded-lg border border-slate-200 p-4">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <p class="font-semibold text-slate-900">Reviewer: {{ $rr->reviewer->name }}</p>
+                                    <p class="text-xs text-slate-500 mt-1">{{ $rr->created_at->format('M d, Y h:i A') }}</p>
+                                </div>
+                                @if ($rr->recommendation)
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+                                        {{ \App\Models\RevisionReview::recommendationOptions()[$rr->recommendation] ?? $rr->recommendation }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            @if ($rr->rating)
+                                <p class="text-sm text-slate-600 mb-3">
+                                    <span class="font-semibold">Rating:</span> {{ $rr->rating }}/5.0
+                                </p>
+                            @endif
+
+                            @if ($rr->comments_for_author)
+                                <div class="mb-3">
+                                    <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Comments for Author</p>
+                                    <p class="text-sm text-slate-700 whitespace-pre-wrap">{{ $rr->comments_for_author }}</p>
+                                </div>
+                            @endif
+
+                            @if ($rr->comments_for_editor)
+                                <div>
+                                    <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Comments for Editor</p>
+                                    <p class="text-sm text-slate-600 italic whitespace-pre-wrap">{{ $rr->comments_for_editor }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    @empty
+                        <p class="text-slate-600 text-sm">No revision reviews submitted yet.</p>
+                    @endforelse
+                </div>
+            </div>
+        @endif
+    @endif
+
     <!-- Editor Decision Section -->
-    @if($submission->reviews->isNotEmpty())
+    @if($submission->reviews->isNotEmpty() || $submission->status === 'revision_under_review')
         <div class="bg-white rounded-lg shadow border border-slate-200 p-6 mb-6">
             <h2 class="text-lg font-medium mb-4">Editor Decision</h2>
 
-            @if(in_array($submission->status, ['accepted', 'rejected', 'revisions_requested']))
+            @if(in_array($submission->status, ['accepted', 'rejected']))
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
                     <p class="text-blue-900 font-semibold mb-3">✓ Decision Already Recorded</p>
                     <div class="space-y-3">
@@ -152,6 +214,124 @@
                             </div>
                         @endif
                     </div>
+                </div>
+            @elseif($submission->status === 'revision_under_review')
+                <form id="revision-decision-form" method="POST" action="{{ route('editor.revision-decision', $submission) }}" class="space-y-6">
+                    @csrf
+
+                    <div>
+                        <label for="status" class="block text-sm font-semibold text-slate-900 mb-3">
+                            Final Decision <span class="text-red-600">*</span>
+                        </label>
+                        <div class="space-y-3">
+                            <div class="flex items-start">
+                                <input type="radio" id="revision_accepted" name="decision" value="accepted" class="mt-1 h-4 w-4 text-green-600" required>
+                                <label for="revision_accepted" class="ml-3 cursor-pointer">
+                                    <p class="font-medium text-slate-900">✓ Accept</p>
+                                    <p class="text-sm text-slate-600">Revisions are satisfactory, accept for publication</p>
+                                </label>
+                            </div>
+                            <div class="flex items-start">
+                                <input type="radio" id="revision_rejected" name="decision" value="rejected" class="mt-1 h-4 w-4 text-red-600" required>
+                                <label for="revision_rejected" class="ml-3 cursor-pointer">
+                                    <p class="font-medium text-slate-900">✗ Reject</p>
+                                    <p class="text-sm text-slate-600">Revisions are unsatisfactory, reject the manuscript</p>
+                                </label>
+                            </div>
+                            <div class="flex items-start">
+                                <input type="radio" id="revision_more" name="decision" value="revisions_requested" class="revision-option-rev mt-1 h-4 w-4 text-amber-600" required>
+                                <label for="revision_more" class="ml-3 cursor-pointer">
+                                    <p class="font-medium text-slate-900">🔄 More Revisions</p>
+                                    <p class="text-sm text-slate-600">Further revisions required for acceptance</p>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="revision-fields-more" style="display: none; border-t pt-6 mt-6">
+                        <div class="mb-4">
+                            <label for="revision_type_rev" class="block text-sm font-semibold text-slate-900 mb-2">
+                                Revision Type <span class="text-red-600">*</span>
+                            </label>
+                            <div class="flex gap-3">
+                                <label class="flex items-center">
+                                    <input type="radio" name="revision_type" value="minor" class="w-4 h-4 mr-2">
+                                    <span class="text-sm font-medium">⚡ Minor Revisions</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="revision_type" value="major" class="w-4 h-4 mr-2">
+                                    <span class="text-sm font-medium">🔴 Major Revisions</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="revision_reason_rev" class="block text-sm font-semibold text-slate-900 mb-2">
+                                Reason for Further Revisions <span class="text-red-600">*</span>
+                            </label>
+                            <textarea
+                                id="revision_reason_rev"
+                                name="revision_reason"
+                                rows="3"
+                                class="block w-full rounded-md border-slate-300 shadow-sm"
+                                placeholder="Explain why further revisions are needed"
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="editor_notes_rev" class="block text-sm font-semibold text-slate-900 mb-2">
+                            Decision Notes (Optional)
+                        </label>
+                        <textarea
+                            id="editor_notes_rev"
+                            name="editor_notes"
+                            rows="4"
+                            maxlength="2000"
+                            class="block w-full rounded-md border-slate-300 shadow-sm"
+                            placeholder="Add your final comments on this decision..."
+                        ></textarea>
+                        <p class="text-xs text-slate-500 mt-1">Maximum 2000 characters</p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-6 border-t border-slate-200">
+                        <p class="text-sm text-slate-600">Make your final decision on the revised manuscript</p>
+                        <button
+                            type="submit"
+                            class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition"
+                        >
+                            Confirm Final Decision
+                        </button>
+                    </div>
+                </form>
+
+                <script>
+                    const revisionDecisionRadios = document.querySelectorAll('input[name="decision"][type="radio"]');
+                    const revisionFieldsMore = document.getElementById('revision-fields-more');
+                    const revisionOptionRevs = document.querySelectorAll('.revision-option-rev');
+
+                    function toggleRevisionFieldsMore() {
+                        const isMoreRevisions = Array.from(revisionOptionRevs).some(r => r.checked);
+                        revisionFieldsMore.style.display = isMoreRevisions ? 'block' : 'none';
+                        
+                        // Disable/enable fields when hidden/shown to prevent submission
+                        const revisionFields = revisionFieldsMore.querySelectorAll('input, textarea, select');
+                        revisionFields.forEach(field => {
+                            field.disabled = !isMoreRevisions;
+                        });
+                    }
+
+                    revisionDecisionRadios.forEach(radio => {
+                        radio.addEventListener('change', toggleRevisionFieldsMore);
+                    });
+                    
+                    // Initialize on page load
+                    toggleRevisionFieldsMore();
+                </script>
+            @elseif($submission->status === 'revisions_requested')
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-6">
+                    <p class="text-amber-900 font-semibold mb-3">⏳ Awaiting Revised Manuscript</p>
+                    <p class="text-amber-800 text-sm">You have requested revisions from the author. This submission will move to "Revision Under Review" once the author submits their revised manuscript.</p>
                 </div>
             @else
                 <form id="decision-form" method="POST" action="{{ route('editor.decision', $submission) }}" class="space-y-6">
@@ -259,23 +439,19 @@
                             revisionFields.style.display = 'block';
                             revisionTypeSelect.setAttribute('required', 'required');
                             revisionReasonInput.setAttribute('required', 'required');
+                            revisionTypeSelect.disabled = false;
+                            revisionReasonInput.disabled = false;
                         } else {
                             revisionFields.style.display = 'none';
                             revisionTypeSelect.removeAttribute('required');
                             revisionReasonInput.removeAttribute('required');
+                            revisionTypeSelect.disabled = true;
+                            revisionReasonInput.disabled = true;
                         }
                     }
 
                     statusRadios.forEach(radio => {
                         radio.addEventListener('change', toggleRevisionFields);
-                    });
-
-                    decisionForm.addEventListener('submit', function(e) {
-                        const isRevisionSelected = Array.from(revisionRadios).some(radio => radio.checked);
-                        if (!isRevisionSelected) {
-                            revisionTypeSelect.disabled = true;
-                            revisionReasonInput.disabled = true;
-                        }
                     });
 
                     toggleRevisionFields();

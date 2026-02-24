@@ -37,10 +37,10 @@ use App\Models\Submission;
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium text-slate-600">Under Review</p>
-                <p class="text-4xl font-bold text-slate-900 mt-2">{{ $stats['under_review'] }}</p>
+                <p class="text-sm font-medium text-slate-600">Revision Pending</p>
+                <p class="text-4xl font-bold text-orange-600 mt-2">{{ $stats['revision_under_review'] }}</p>
             </div>
-            <span class="text-5xl opacity-20">👁️</span>
+            <span class="text-5xl opacity-20">🔄</span>
         </div>
     </div>
 
