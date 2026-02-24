@@ -239,9 +239,10 @@ class ReviewController extends Controller
 
         ReviewAssignment::create([
             'submission_id' => $submission->id,
-            'reviewer_id' => $reviewerId,
-            'assigned_by' => $request->user()->id,
-            'due_at' => $validated['due_at'] ?? null,
+            'reviewer_id'   => $reviewerId,
+            'assigned_by'   => $request->user()->id,
+            'due_at'        => $validated['due_at'] ?? null,
+            'status'        => 'pending', // ← reviewer can now accept/decline
         ]);
 
         \App\Models\Notification::create([
@@ -454,4 +455,50 @@ public function reviewerRequestRevision(Request $request, Submission $submission
 
     return back()->with('success', 'Revision request sent to author.');
 }
+
+/**
+     * Reviewer: accept review invitation.
+     */
+    public function acceptInvitation(ReviewAssignment $assignment): RedirectResponse
+    {
+        if ($assignment->reviewer_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $assignment->update(['status' => 'assigned']);
+
+        \App\Models\Notification::create([
+            'user_id'         => $assignment->assigned_by,
+            'title'           => '✅ Review Invitation Accepted',
+            'message'         => auth()->user()->name . " has accepted the review assignment for \"{$assignment->submission->title}\".",
+            'type'            => 'success',
+            'notifiable_id'   => $assignment->submission_id,
+            'notifiable_type' => \App\Models\Submission::class,
+        ]);
+
+        return back()->with('success', 'You have accepted the review assignment.');
+    }
+
+    /**
+     * Reviewer: decline review invitation.
+     */
+    public function declineInvitation(ReviewAssignment $assignment): RedirectResponse
+    {
+        if ($assignment->reviewer_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $assignment->update(['status' => 'declined']);
+
+        \App\Models\Notification::create([
+            'user_id'         => $assignment->assigned_by,
+            'title'           => '❌ Review Invitation Declined',
+            'message'         => auth()->user()->name . " has declined the review assignment for \"{$assignment->submission->title}\".",
+            'type'            => 'danger',
+            'notifiable_id'   => $assignment->submission_id,
+            'notifiable_type' => \App\Models\Submission::class,
+        ]);
+
+        return back()->with('info', 'You have declined the review assignment.');
+    }
 }

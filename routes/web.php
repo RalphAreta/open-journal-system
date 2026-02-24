@@ -44,6 +44,8 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
         Route::get('/reviewer/pending-assignments', [ReviewController::class, 'pendingReviewerAssignments'])->name('reviewer.pending-assignments');
         Route::post('/reviewer/submissions/{submission}/request-revision', [ReviewController::class, 'reviewerRequestRevision'])->name('reviewer.request-revision');
+        Route::post('/reviewer/invitation/{assignment}/accept',  [ReviewController::class, 'acceptInvitation'])->name('reviewer.invitation.accept');
+Route::post('/reviewer/invitation/{assignment}/decline', [ReviewController::class, 'declineInvitation'])->name('reviewer.invitation.decline');
     });
 
     Route::middleware('role:editor')->group(function (): void {

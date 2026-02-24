@@ -94,7 +94,7 @@
             @foreach($pendingInvitations as $a)
             @php
                 $dueDate   = $a->due_at ? \Carbon\Carbon::parse($a->due_at) : null;
-                $daysLeft  = $dueDate ? now()->diffInDays($dueDate, false) : null;
+                $daysLeft  = $dueDate ? (int) now()->diffInDays($dueDate, false) : null;
                 $dueCls    = $daysLeft === null ? '' : ($daysLeft < 0 ? 'due-overdue' : ($daysLeft <= 7 ? 'due-soon' : 'due-ok'));
                 $barPct    = $dueDate ? max(0, min(100, ($daysLeft / 30) * 100)) : 0;
             @endphp
@@ -242,7 +242,7 @@
                     @forelse($assignments->whereNotIn('status', ['pending']) as $a)
                     @php
                         $dueDate  = $a->due_at ? \Carbon\Carbon::parse($a->due_at) : null;
-                        $daysLeft = $dueDate ? now()->diffInDays($dueDate, false) : null;
+                        $daysLeft = $dueDate ? (int) now()->diffInDays($dueDate, false) : null;
                         $dueCls   = $daysLeft === null ? 'text-slate-400' : ($daysLeft < 0 ? 'text-red-600' : ($daysLeft <= 7 ? 'text-amber-600' : 'text-emerald-600'));
                     @endphp
                     <tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50/60 transition-colors group">
