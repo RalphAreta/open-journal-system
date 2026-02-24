@@ -254,7 +254,7 @@
 
             {{-- See More Button --}}
             <button type="button" onclick="toggleMoreNotifications()"
-                    class="w-full mt-3 px-4 py-2.5 text-center text-[11px] font-bold uppercase tracking-[.05em] text-slate-600 hover:text-slate-900 
+                    class="w-full mt-3 px-4 py-2.5 text-center text-[11px] font-bold uppercase tracking-[.05em] text-slate-600 hover:text-slate-900
                            bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-all hover:-translate-y-0.5">
                 <span id="seeMoreText">See More</span>
                 <span id="seeLessText" class="hidden">See Less</span>
@@ -475,7 +475,7 @@ function toggleMoreNotifications() {
     const moreContainer = document.getElementById('moreNotifications');
     const seeMoreText = document.getElementById('seeMoreText');
     const seeLessText = document.getElementById('seeLessText');
-    
+
     if (moreContainer.classList.contains('hidden')) {
         moreContainer.classList.remove('hidden');
         seeMoreText.classList.add('hidden');
