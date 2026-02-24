@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class ReviewAssignment extends Model
 {
@@ -53,5 +54,17 @@ class ReviewAssignment extends Model
     public function refereeInvitation(): BelongsTo
     {
         return $this->belongsTo(RefereeInvitation::class);
+    }
+
+    public function revisionRequest(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            RevisionRequest::class,
+            Submission::class,
+            'id',
+            'submission_id',
+            'submission_id',
+            'id'
+        );
     }
 }

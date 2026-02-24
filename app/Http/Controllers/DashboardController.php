@@ -76,7 +76,16 @@ class DashboardController extends Controller
         ->take(10)
         ->get();
 
-    return view('dashboard.reviewer', compact('assignments', 'stats', 'notifications')); // ✅ dagdag ang notifications
+    // Get review assignments for submissions with pending revision requests
+    $revisionReviews = $user->reviewAssignments()
+        ->whereHas('submission.revisionRequests', function ($query) {
+            $query->whereNull('revised_at'); // Only pending revision requests
+        })
+        ->with(['submission.author', 'submission.revisionRequests'])
+        ->latest()
+        ->get();
+
+    return view('dashboard.reviewer', compact('assignments', 'stats', 'notifications', 'revisionReviews')); // ✅ dagdag ang notifications
 }
 
     public function editor(Request $request): View

@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/dashboard/reviewer', [DashboardController::class, 'reviewer'])->name('dashboard.reviewer');
         Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
         Route::get('/reviews/assignment/{assignment}/create', [ReviewController::class, 'create'])->name('reviews.create');
+        Route::get('/reviews/revision/{revisionRequest}/create', [ReviewController::class, 'revisionCreate'])->name('reviews.revision-create');
         Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
         Route::get('/reviewer/pending-assignments', [ReviewController::class, 'pendingReviewerAssignments'])->name('reviewer.pending-assignments');
         Route::post('/reviewer/submissions/{submission}/request-revision', [ReviewController::class, 'reviewerRequestRevision'])->name('reviewer.request-revision');

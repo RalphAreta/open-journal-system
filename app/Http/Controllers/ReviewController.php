@@ -47,6 +47,25 @@ class ReviewController extends Controller
     }
 
     /**
+     * Show revised submission and form to submit revision review (reviewer).
+     */
+    public function revisionCreate(RevisionRequest $revisionRequest): View|RedirectResponse
+    {
+        $reviewAssignment = $revisionRequest->submission->reviewAssignments()
+            ->where('reviewer_id', request()->user()->id)
+            ->first();
+
+        if (!$reviewAssignment) {
+            abort(403, 'You are not assigned to review this submission.');
+        }
+
+        $revisionRequest->load('submission.author');
+        $submission = $revisionRequest->submission;
+
+        return view('reviews.create', compact('revisionRequest', 'submission'));
+    }
+
+    /**
      * Store review (reviewer).
      */
     public function store(Request $request): RedirectResponse
