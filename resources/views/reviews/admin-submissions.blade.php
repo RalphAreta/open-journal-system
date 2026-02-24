@@ -86,7 +86,7 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-slate-200">
                     @forelse($submissions as $s)
-                        <tr class="hover:bg-slate-50/50 transition-colors submission-row" 
+                        <tr class="hover:bg-slate-50/50 transition-colors submission-row"
                             data-searchtext="{{ strtolower($s->title . ' ' . ($s->author->name ?? '')) }}"
                             data-status="{{ strtolower($s->status) }}">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
