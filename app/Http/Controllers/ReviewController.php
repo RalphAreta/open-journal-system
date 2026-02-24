@@ -210,8 +210,9 @@ class ReviewController extends Controller
         ->with('success', $isPassed ? 'Passed. Author notified.' : 'Failed. Author notified.');
 }
 
-    /**
-     * Editor: assign reviewer to submission.
+   /**
+     * Editor: assign reviewer(s) to submission.
+     * Now accepts multiple reviewer_ids[]
      */
     public function assignReviewer(Request $request, Submission $submission): RedirectResponse
     {
@@ -219,48 +220,42 @@ class ReviewController extends Controller
             abort(403, 'You do not have access to this submission.');
         }
 
-        // Check if initial screening has passed
         if (!$submission->hasPassedInitialScreening()) {
             return back()->withErrors('This manuscript must pass the initial screening before assigning a reviewer.');
         }
 
         $validated = $request->validate([
-            'reviewer_id' => ['required', 'exists:users,id'],
-            'due_at' => ['nullable', 'date'],
+            'reviewer_ids'   => ['required', 'array', 'min:1'],
+            'reviewer_ids.*' => ['exists:users,id'],
+            'due_at'         => ['nullable', 'date'],
         ]);
 
-        $reviewerId = $validated['reviewer_id'];
-        $exists = ReviewAssignment::where('submission_id', $submission->id)
-            ->where('reviewer_id', $reviewerId)
-            ->exists();
-        if ($exists) {
-            return back()->with('error', 'This reviewer is already assigned.');
+        $assigned = 0;
+
+        foreach ($validated['reviewer_ids'] as $reviewerId) {
+            ReviewAssignment::create([
+                'submission_id' => $submission->id,
+                'reviewer_id'   => $reviewerId,
+                'assigned_by'   => $request->user()->id,
+                'due_at'        => $validated['due_at'] ?? null,
+                'status'        => 'pending',
+            ]);
+
+            \App\Models\Notification::create([
+                'user_id'         => $reviewerId,
+                'title'           => '📋 New Review Assignment',
+                'message'         => "You have been assigned to review the manuscript \"{$submission->title}\". Please log in to accept or decline.",
+                'type'            => 'info',
+                'notifiable_id'   => $submission->id,
+                'notifiable_type' => \App\Models\Submission::class,
+            ]);
+
+            $assigned++;
         }
 
-        ReviewAssignment::create([
-            'submission_id' => $submission->id,
-            'reviewer_id'   => $reviewerId,
-            'assigned_by'   => $request->user()->id,
-            'due_at'        => $validated['due_at'] ?? null,
-            'status'        => 'pending', // ← reviewer can now accept/decline
-        ]);
-
-        \App\Models\Notification::create([
-            'user_id'         => $reviewerId,
-            'title'           => '📋 New Review Assignment',
-            'message'         => "You have been assigned to review the manuscript \"{$submission->title}\". Please log in to view and submit your review.",
-            'type'            => 'info',
-            'notifiable_id'   => $submission->id,
-            'notifiable_type' => \App\Models\Submission::class,
-        ]);
-
         $submission->update(['status' => Submission::STATUS_UNDER_REVIEW]);
 
-        return back()->with('success', 'Reviewer assigned.');
-
-        $submission->update(['status' => Submission::STATUS_UNDER_REVIEW]);
-
-        return back()->with('success', 'Reviewer assigned.');
+        return back()->with('success', "{$assigned} reviewer(s) assigned successfully.");
     }
 
 /**
