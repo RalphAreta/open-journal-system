@@ -3,15 +3,22 @@
 @section('title', 'System Roles')
 
 @section('content')
-<div class="max-w-6xl mx-auto py-8">
-    {{-- Header --}}
-    <div class="mb-10">
-        <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
-            <a href="{{ route('dashboard.admin') }}" class="hover:text-red-600 transition-colors">Admin</a>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
-            <span class="text-slate-900 tracking-widest">Access Control</span>
-        </nav>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tighter leading-tight">Roles & Permissions</h1>
+<div class="max-w-6xl mx-auto py-8 px-4">
+    {{-- Header Section with Back Option --}}
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+        <div>
+            <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+                <a href="{{ route('dashboard.admin') }}" class="hover:text-red-600 transition-colors">Admin</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
+                <span class="text-slate-900 tracking-widest uppercase">Access Control</span>
+            </nav>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tighter leading-tight uppercase italic">Roles & Permissions</h1>
+        </div>
+
+        <a href="{{ route('dashboard.admin') }}" class="px-6 py-3 bg-white border border-slate-200 text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 hover:text-slate-600 transition-all active:scale-95 flex items-center gap-2">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back
+        </a>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -25,14 +32,12 @@
             <div class="relative z-10">
                 <div class="mb-6">
                     <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Role Name</p>
-                    <h3 class="text-lg font-black text-red-600 uppercase tracking-tight leading-tight">{{ $role->display_name }}</h3>
-
+                    <h3 class="text-lg font-black text-red-600 uppercase tracking-tight leading-tight italic">{{ $role->display_name }}</h3>
                 </div>
 
                 <div class="flex items-end justify-between border-t border-slate-50 pt-6 mt-12">
                     <div>
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Active Users</p>
-                        {{-- Fixed: Using count() on the relationship if users_count isn't pre-loaded --}}
                         <p class="text-3xl font-black text-slate-900 tracking-tighter leading-none">
                             {{ $role->users_count ?? $role->users->count() }}
                         </p>

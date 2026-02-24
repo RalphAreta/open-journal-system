@@ -26,12 +26,11 @@
             <p class="text-sm text-slate-500 mt-1">Set and update fields of expertise for each editor</p>
         </div>
         <a href="{{ route('admin.expertise-categories.index') }}"
-           class="inline-flex items-center gap-2 bg-white border border-slate-200 hover:border-slate-300
-                  text-slate-600 hover:text-slate-900 px-4 py-2 rounded-[9px] text-xs font-bold
-                  uppercase tracking-[.06em] transition-all hover:-translate-y-0.5 shadow-sm whitespace-nowrap">
+           class="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg transition-colors text-sm font-medium">
             ⚙️ Manage Categories
         </a>
     </div>
+</div>
 
     {{-- ── Editor Cards ── --}}
     @if ($editors->count() > 0)

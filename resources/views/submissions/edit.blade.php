@@ -3,16 +3,24 @@
 @section('title', 'Edit Submission')
 
 @section('content')
-<div class="max-w-6xl mx-auto py-8">
+<div class="max-w-6xl mx-auto py-8 px-4">
     {{-- Header Section --}}
-    <div class="mb-10">
-        <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
-            <a href="{{ route('submissions.index') }}" class="hover:text-red-600 transition-colors">Board</a>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
-            <span class="text-slate-900 tracking-widest">Edit Manuscript #{{ str_pad($submission->id, 5, '0', STR_PAD_LEFT) }}</span>
-        </nav>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tighter">Refine Submission</h1>
-        <p class="text-slate-500 font-medium mt-2">Update your manuscript metadata or replace the active research file.</p>
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+        <div>
+            <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
+                <a href="{{ route('submissions.index') }}" class="hover:text-red-600 transition-colors">Board</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
+                <span class="text-slate-900 tracking-widest">Edit Manuscript #{{ str_pad($submission->id, 5, '0', STR_PAD_LEFT) }}</span>
+            </nav>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase italic">Refine Submission</h1>
+            <p class="text-slate-500 font-medium mt-2">Update your manuscript metadata or replace the active research file.</p>
+        </div>
+
+        {{-- Added Back Button --}}
+        <a href="{{ route('submissions.show', $submission) }}" class="px-6 py-3 bg-white border border-slate-200 text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 hover:text-slate-600 transition-all active:scale-95 flex items-center gap-2">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back to Details
+        </a>
     </div>
 
     <form method="POST" action="{{ route('submissions.update', $submission) }}" enctype="multipart/form-data" class="grid grid-cols-1 lg:grid-cols-12 gap-12">

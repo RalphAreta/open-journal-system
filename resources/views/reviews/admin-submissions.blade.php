@@ -6,11 +6,27 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex justify-between items-center mb-8">
         <div>
+            <nav class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
+                <a href="{{ route('dashboard.admin') }}" class="hover:text-red-600 transition-colors">Admin</a>
+                <span>&gt;</span>
+                <span class="text-slate-900">Submissions</span>
+            </nav>
             <h1 class="text-2xl font-bold text-slate-900">Manage Submissions</h1>
             <p class="text-sm text-slate-500 mt-1">View and manage all incoming user submissions.</p>
         </div>
-        <div class="bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
-            <span class="text-sm font-medium text-slate-600">Total: {{ $submissions->total() }}</span>
+
+        <div class="flex items-center gap-3">
+            {{-- Added Back Button --}}
+            <a href="{{ route('dashboard.admin') }}" class="px-4 py-2 bg-white border border-slate-200 text-slate-500 rounded-lg text-sm font-medium hover:bg-slate-50 transition-all flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back
+            </a>
+
+            <div class="bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
+                <span class="text-sm font-medium text-slate-600">Total: {{ $submissions->total() }}</span>
+            </div>
         </div>
     </div>
 

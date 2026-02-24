@@ -19,26 +19,16 @@
 @endpush
 
 @section('content')
-<div class="font-body max-w-6xl mx-auto">
-
-    {{-- ── Header ── --}}
-    <div class="mb-7 fade-up">
-        <nav class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.08em] text-slate-400 mb-4">
+<div class="max-w-6xl mx-auto py-8">
+    {{-- Header Section --}}
+    <div class="mb-10">
+        <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
             <a href="{{ route('submissions.index') }}" class="hover:text-red-600 transition-colors">Board</a>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2.5"/></svg>
-            <span class="text-slate-600">New Submission</span>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
+            <span class="text-slate-900 tracking-widest">New Submission</span>
         </nav>
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div>
-                <h1 class="font-serif-display text-[1.85rem] font-normal text-slate-900 tracking-[-0.015em] leading-tight">
-                    Submit Your Research
-                </h1>
-                <p class="text-sm text-slate-500 mt-1">Please ensure all fields are accurate before submitting.</p>
-            </div>
-            <span class="text-xs font-medium text-slate-400 bg-white border border-slate-200 px-3 py-1.5 rounded-full hidden sm:inline-block self-start sm:self-auto">
-                {{ now()->format('D, M j Y') }}
-            </span>
-        </div>
+        <h1 class="text-4xl font-black text-slate-900 tracking-tighter leading-tight">Submit Your Research</h1>
+        <p class="text-slate-500 font-medium mt-2">Join our global community of researchers. Please ensure all fields are accurate.</p>
     </div>
 
     <form method="POST" action="{{ route('submissions.store') }}" enctype="multipart/form-data"
