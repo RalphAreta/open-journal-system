@@ -2,6 +2,18 @@
 
 @section('title', 'Manage Users')
 
+@push('styles')
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+    .font-serif-display { font-family: 'Instrument Serif', serif; }
+    .font-body          { font-family: 'DM Sans', sans-serif; }
+    .fade-up   { animation: fadeUp .4s ease both; }
+    .fade-up-1 { animation: fadeUp .4s .07s ease both; }
+    .fade-up-2 { animation: fadeUp .4s .14s ease both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+</style>
+@endpush
+
 @section('content')
 <div class="max-w-6xl mx-auto py-8 px-4">
     {{-- Header Section --}}
@@ -31,7 +43,7 @@
                         <th class="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-50">
+                <tbody>
                     @forelse($users as $u)
                     <tr class="hover:bg-slate-50/50 transition-colors group">
                         <td class="p-6">
@@ -61,7 +73,6 @@
                                 <a href="{{ route('admin.users.edit', $u) }}" class="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-800 transition-colors">
                                     Edit
                                 </a>
-
                                 @if(!$u->isAdmin() || \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'admin'))->count() > 1)
                                     <form method="POST" action="{{ route('admin.users.destroy', $u) }}" class="inline-flex" onsubmit="return confirm('Permanently delete this user?');">
                                         @csrf @method('DELETE')
@@ -87,5 +98,54 @@
             <div class="p-6 bg-slate-50 border-t border-slate-100">{{ $users->links() }}</div>
         @endif
     </div>
+
 </div>
+
+@push('scripts')
+<script>
+    function applyFilters() {
+        const searchText = document.getElementById('userSearch').value.toLowerCase();
+        const roleFilter = document.getElementById('roleFilter').value.toLowerCase();
+        const rows = document.querySelectorAll('.user-row');
+
+        rows.forEach(row => {
+            const rowText = row.innerText.toLowerCase();
+            const rowRoles = row.getAttribute('data-roles');
+
+            const matchesSearch = rowText.includes(searchText);
+            const matchesRole = roleFilter === "" || rowRoles.includes(roleFilter);
+
+            if (matchesSearch && matchesRole) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    function confirmUserDeletion(userId, userName) {
+        Swal.fire({
+            title: 'Delete user?',
+            text: `Are you sure you want to remove ${userName}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, delete',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+            customClass: {
+                popup: 'rounded-3xl border border-slate-100 shadow-2xl p-6',
+                title: 'text-xl font-black tracking-tighter uppercase italic text-slate-900',
+                confirmButton: 'px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest mx-1',
+                cancelButton: 'px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest mx-1'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + userId).submit();
+            }
+        });
+    }
+</script>
+@endpush
 @endsection

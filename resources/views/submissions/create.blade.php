@@ -2,6 +2,22 @@
 
 @section('title', 'Submit Manuscript')
 
+@push('styles')
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+    .font-serif-display { font-family: 'Instrument Serif', serif; }
+    .font-body          { font-family: 'DM Sans', sans-serif; }
+    select, textarea, input { font-family: 'DM Sans', sans-serif; }
+    select { appearance: none; -webkit-appearance: none; }
+    .field:focus { outline:none; border-color:#DC2626 !important; background:#fff !important; box-shadow:0 0 0 3px rgba(220,38,38,.07); }
+    .fade-up   { animation: fadeUp .4s ease both; }
+    .fade-up-1 { animation: fadeUp .4s .07s ease both; }
+    .fade-up-2 { animation: fadeUp .4s .14s ease both; }
+    .fade-up-3 { animation: fadeUp .4s .21s ease both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+</style>
+@endpush
+
 @section('content')
 <div class="max-w-6xl mx-auto py-8">
     {{-- Header Section --}}
@@ -15,140 +31,158 @@
         <p class="text-slate-500 font-medium mt-2">Join our global community of researchers. Please ensure all fields are accurate.</p>
     </div>
 
-    <form method="POST" action="{{ route('submissions.store') }}" enctype="multipart/form-data" class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+    <form method="POST" action="{{ route('submissions.store') }}" enctype="multipart/form-data"
+          class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         @csrf
 
-        {{-- Left: Form Inputs --}}
-        <div class="lg:col-span-8 space-y-10">
+        {{-- ── LEFT: Form ── --}}
+        <div class="lg:col-span-8 space-y-6">
 
-            {{-- Part 1: Core Data --}}
-            <section class="space-y-6">
-                <div class="flex items-center gap-4 mb-8">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-white text-[10px] font-black">01</span>
-                    <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">Core Information</h2>
+            {{-- Section 01: Core Information --}}
+            <div class="bg-white border border-slate-200 rounded-[14px] p-6 shadow-sm fade-up-1">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="w-7 h-7 rounded-lg bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">01</span>
+                    <h2 class="text-sm font-bold text-slate-900 uppercase tracking-[.06em]">Core Information</h2>
                     <div class="h-px bg-slate-100 flex-1"></div>
                 </div>
 
-                {{-- Title --}}
-                <div class="space-y-2">
-                    <label for="title" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Manuscript Title *</label>
-                    <textarea name="title" id="title" rows="3" required
-                        class="w-full p-4 bg-white border rounded-2xl text-sm font-bold focus:ring-4 focus:ring-red-500/10 focus:border-red-600 transition-all outline-none leading-relaxed @error('title') border-red-500 @else border-slate-200 @enderror"
-                        placeholder="e.g., Quantum Computing Advancements in 2026">{{ old('title') }}</textarea>
-                    @error('title')<p class="text-[10px] font-bold text-red-600 uppercase mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {{-- Research Field --}}
-                    <div class="space-y-2">
-                        <label for="research_field" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Research Field *</label>
-                        <select name="research_field" id="research_field" required
-                            class="w-full p-4 bg-white border rounded-2xl text-sm font-bold focus:ring-4 focus:ring-red-500/10 focus:border-red-600 transition-all outline-none appearance-none @error('research_field') border-red-500 @else border-slate-200 @enderror">
-                            <option value="">-- Select Field --</option>
-                            @foreach ($fieldOptions as $value => $label)
-                                <option value="{{ $value }}" {{ old('research_field') === $value ? 'selected' : '' }}>{{ $label }}</option>
-                            @endforeach
-                        </select>
-                        @error('research_field')<p class="text-[10px] font-bold text-red-600 uppercase mt-1">{{ $message }}</p>@enderror
+                <div class="space-y-5">
+                    {{-- Title --}}
+                    <div>
+                        <label for="title" class="block text-[11px] font-bold uppercase tracking-[.09em] text-slate-500 mb-1.5">Article Title *</label>
+                        <textarea name="title" id="title" rows="3" required
+                            class="field w-full px-3.5 py-3 border rounded-[9px] bg-slate-50 text-sm text-slate-900 leading-relaxed transition-all resize-none
+                                   {{ $errors->has('title') ? 'border-red-300 bg-red-50/30' : 'border-slate-200' }}"
+                            placeholder="e.g., Quantum Computing Advancements in 2026">{{ old('title') }}</textarea>
+                        @error('title')<p class="text-red-500 text-xs font-medium mt-1">{{ $message }}</p>@enderror
                     </div>
 
-                    {{-- Keywords --}}
-                    <div class="space-y-2">
-                        <label for="keywords" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Keywords</label>
-                        <input type="text" name="keywords" id="keywords" value="{{ old('keywords') }}"
-                            class="w-full p-4 bg-white border border-slate-200 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-red-500/10 focus:border-red-600 transition-all outline-none"
-                            placeholder="Quantum, AI, Physics">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {{-- Research Field --}}
+                        <div>
+                            <label for="research_field" class="block text-[11px] font-bold uppercase tracking-[.09em] text-slate-500 mb-1.5">Research Field *</label>
+                            <div class="relative">
+                                <select name="research_field" id="research_field" required
+                                    class="field w-full px-3.5 py-[11px] pr-10 border rounded-[9px] bg-slate-50 text-sm font-medium text-slate-700 cursor-pointer transition-all
+                                           {{ $errors->has('research_field') ? 'border-red-300 bg-red-50/30' : 'border-slate-200' }}">
+                                    <option value="">— Select Field —</option>
+                                    @foreach ($fieldOptions as $value => $label)
+                                        <option value="{{ $value }}" {{ old('research_field') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </span>
+                            </div>
+                            @error('research_field')<p class="text-red-500 text-xs font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        {{-- Keywords --}}
+                        <div>
+                            <label for="keywords" class="block text-[11px] font-bold uppercase tracking-[.09em] text-slate-500 mb-1.5">Keywords</label>
+                            <input type="text" name="keywords" id="keywords" value="{{ old('keywords') }}"
+                                class="field w-full px-3.5 py-[11px] border border-slate-200 rounded-[9px] bg-slate-50 text-sm text-slate-900 transition-all placeholder:text-slate-400"
+                                placeholder="Quantum, AI, Physics">
+                        </div>
+                    </div>
+
+                    {{-- Abstract --}}
+                    <div>
+                        <label for="abstract" class="block text-[11px] font-bold uppercase tracking-[.09em] text-slate-500 mb-1.5">Abstract *</label>
+                        <textarea name="abstract" id="abstract" rows="6" required
+                            class="field w-full px-3.5 py-3 border rounded-[9px] bg-slate-50 text-sm text-slate-900 leading-relaxed transition-all resize-none
+                                   {{ $errors->has('abstract') ? 'border-red-300 bg-red-50/30' : 'border-slate-200' }}"
+                            placeholder="Provide a concise summary of your research...">{{ old('abstract') }}</textarea>
+                        @error('abstract')<p class="text-red-500 text-xs font-medium mt-1">{{ $message }}</p>@enderror
                     </div>
                 </div>
+            </div>
 
-                {{-- Abstract --}}
-                <div class="space-y-2">
-                    <label for="abstract" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Abstract *</label>
-                    <textarea name="abstract" id="abstract" rows="6" required
-                        class="w-full p-4 bg-white border rounded-2xl text-sm font-medium focus:ring-4 focus:ring-red-500/10 focus:border-red-600 transition-all outline-none leading-relaxed @error('abstract') border-red-500 @else border-slate-200 @enderror"
-                        placeholder="Provide a concise summary of your research...">{{ old('abstract') }}</textarea>
-                    @error('abstract')<p class="text-[10px] font-bold text-red-600 uppercase mt-1">{{ $message }}</p>@enderror
-                </div>
-            </section>
-
-            {{-- Part 2: File Upload --}}
-            <section class="space-y-6">
-                <div class="flex items-center gap-4 mb-8">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-white text-[10px] font-black">02</span>
-                    <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">Manuscript File</h2>
+            {{-- Section 02: File Upload --}}
+            <div class="bg-white border border-slate-200 rounded-[14px] p-6 shadow-sm fade-up-2">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="w-7 h-7 rounded-lg bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">02</span>
+                    <h2 class="text-sm font-bold text-slate-900 uppercase tracking-[.06em]">Manuscript File</h2>
                     <div class="h-px bg-slate-100 flex-1"></div>
                 </div>
 
                 <div class="relative group">
                     <input type="file" name="file" id="file" accept=".pdf,.doc,.docx" required
                         class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                    <div class="p-10 border-2 border-dashed rounded-[2.5rem] group-hover:bg-white group-hover:border-red-600 transition-all text-center @error('file') border-red-500 bg-red-50 @else border-slate-200 bg-slate-50 @enderror">
-                        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-110 transition-transform">
-                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <div class="p-8 border-[1.5px] border-dashed rounded-[9px] text-center transition-all
+                                group-hover:border-red-400 group-hover:bg-red-50/30
+                                {{ $errors->has('file') ? 'border-red-300 bg-red-50/20' : 'border-slate-200 bg-slate-50' }}">
+                        <div class="w-12 h-12 bg-white border border-slate-200 rounded-[10px] flex items-center justify-center mx-auto mb-3 shadow-sm group-hover:scale-105 transition-transform">
+                            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
-                        <p class="text-sm font-black text-slate-900 uppercase tracking-widest mb-1">Click to Upload Manuscript</p>
-                        <p class="text-xs text-slate-400 font-medium uppercase tracking-tighter">PDF, DOC, or DOCX up to 10MB</p>
-                        <div id="file-name-display" class="mt-4 text-[10px] font-black text-red-600 uppercase tracking-widest hidden"></div>
+                        <p class="text-sm font-bold text-slate-700 mb-1">Click to Upload Manuscript</p>
+                        <p class="text-xs text-slate-400 font-medium">PDF, DOC, or DOCX — max 10MB</p>
+                        <div id="file-name-display" class="mt-3 text-xs font-bold text-red-600 hidden"></div>
                     </div>
                 </div>
-                @error('file')<p class="text-[10px] font-bold text-red-600 uppercase mt-1 text-center">{{ $message }}</p>@enderror
-            </section>
+                @error('file')<p class="text-red-500 text-xs font-medium mt-2 text-center">{{ $message }}</p>@enderror
+            </div>
 
-            {{-- Submit Actions --}}
-            <div class="pt-10 flex items-center justify-end gap-6 border-t border-slate-100">
-                <a href="{{ route('submissions.index') }}" class="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors">Cancel</a>
-                <button type="submit" class="px-12 py-4 bg-red-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-xl shadow-red-100 active:scale-95">
+            {{-- Actions --}}
+            <div class="flex items-center justify-end gap-4 pt-2 fade-up-3">
+                <a href="{{ route('submissions.index') }}"
+                   class="text-xs font-bold uppercase tracking-[.06em] text-slate-400 hover:text-slate-700 transition-colors px-4 py-2">
+                    Cancel
+                </a>
+                <button type="submit"
+                    class="bg-slate-900 hover:bg-red-600 text-white px-8 py-3 rounded-[9px]
+                           text-[11px] font-bold uppercase tracking-[.08em] font-body
+                           transition-all duration-200 hover:-translate-y-0.5
+                           shadow-md shadow-slate-200/80 hover:shadow-lg hover:shadow-red-200/50">
                     Submit Article
                 </button>
             </div>
         </div>
 
-        {{-- Right: Guidelines Sidebar --}}
-        <div class="lg:col-span-4 space-y-6">
-            <div class="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm sticky top-8">
-                <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-8">Author Checklist</h3>
+        {{-- ── RIGHT: Sidebar ── --}}
+        <div class="lg:col-span-4 fade-up-1">
+            <div class="bg-white border border-slate-200 rounded-[14px] p-6 shadow-sm sticky top-8">
+                <p class="text-[10px] font-bold uppercase tracking-[.1em] text-slate-400 mb-5">Author Checklist</p>
 
-                <ul class="space-y-6">
+                <ul class="space-y-4">
+                    @foreach([
+                        'Anonymize the manuscript file for double-blind review.',
+                        'The abstract should not exceed 300 words.',
+                        'Ensure all authors are properly acknowledged.',
+                    ] as $item)
                     <li class="flex items-start gap-3">
-                        <div class="mt-1 w-4 h-4 rounded-full border-2 border-red-600 flex items-center justify-center shrink-0">
-                            <div class="w-1.5 h-1.5 bg-red-600 rounded-full"></div>
+                        <div class="mt-0.5 w-4 h-4 rounded-full border-[1.5px] border-red-500 flex items-center justify-center flex-shrink-0">
+                            <div class="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
                         </div>
-                        <p class="text-[11px] font-bold text-slate-600 leading-relaxed uppercase tracking-tight">Anonymize the manuscript file for double-blind review.</p>
+                        <p class="text-xs font-medium text-slate-600 leading-relaxed">{{ $item }}</p>
                     </li>
-                    <li class="flex items-start gap-3">
-                        <div class="mt-1 w-4 h-4 rounded-full border-2 border-red-600 flex items-center justify-center shrink-0">
-                            <div class="w-1.5 h-1.5 bg-red-600 rounded-full"></div>
-                        </div>
-                        <p class="text-[11px] font-bold text-slate-600 leading-relaxed uppercase tracking-tight">The abstract should not exceed 300 words.</p>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <div class="mt-1 w-4 h-4 rounded-full border-2 border-red-600 flex items-center justify-center shrink-0">
-                            <div class="w-1.5 h-1.5 bg-red-600 rounded-full"></div>
-                        </div>
-                        <p class="text-[11px] font-bold text-slate-600 leading-relaxed uppercase tracking-tight">Ensure all authors are properly acknowledged.</p>
-                    </li>
+                    @endforeach
                 </ul>
 
-                <div class="mt-12 p-6 bg-slate-50 rounded-2xl border border-slate-100 italic">
-                    <p class="text-[10px] font-bold text-slate-400 leading-relaxed">
+                <div class="mt-6 pt-5 border-t border-slate-100">
+                    <p class="text-xs text-slate-400 leading-relaxed italic">
                         By submitting, you agree to the IRJIEST peer-review policy and copyright transfer agreement.
                     </p>
                 </div>
             </div>
         </div>
+
     </form>
 </div>
+@endsection
 
 @push('scripts')
 <script>
-    // File selection display logic
-    document.getElementById('file').onchange = function() {
+    document.getElementById('file').onchange = function () {
         const display = document.getElementById('file-name-display');
-        if(this.files.length > 0) {
+        if (this.files.length > 0) {
             display.classList.remove('hidden');
-            display.innerHTML = `Selected: ${this.files[0].name}`;
+            display.textContent = 'Selected: ' + this.files[0].name;
         }
     };
 </script>
 @endpush
-@endsection

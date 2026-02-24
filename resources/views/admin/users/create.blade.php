@@ -4,16 +4,23 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto py-8 px-4">
-    {{-- Header --}}
-    <div class="mb-10">
-        <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
-            <a href="{{ route('dashboard.admin') }}" class="hover:text-red-600 transition-colors">Admin</a>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
-            <a href="{{ route('admin.users.index') }}" class="hover:text-red-600 transition-colors">Directory</a>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
-            <span class="text-slate-900 tracking-widest uppercase">New Profile</span>
-        </nav>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tighter leading-tight">Add User</h1>
+    {{-- Header Section with Back Option --}}
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+        <div>
+            <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+                <a href="{{ route('dashboard.admin') }}" class="hover:text-red-600 transition-colors">Admin</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
+                <a href="{{ route('admin.users.index') }}" class="hover:text-red-600 transition-colors">Directory</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
+                <span class="text-slate-900 tracking-widest uppercase">New Profile</span>
+            </nav>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tighter leading-tight uppercase italic">Add User</h1>
+        </div>
+
+        <a href="{{ route('admin.users.index') }}" class="px-6 py-3 bg-white border border-slate-200 text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 hover:text-slate-600 transition-all active:scale-95 flex items-center gap-2">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back
+        </a>
     </div>
 
     <form method="POST" action="{{ route('admin.users.store') }}" class="bg-white border border-slate-200 rounded-[2.5rem] p-10 shadow-sm transition-all">
@@ -37,7 +44,6 @@
 
             {{-- Security Section with Eye Toggle --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-slate-50 pt-8">
-                {{-- Password Field --}}
                 <div class="space-y-2">
                     <label for="password" class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Password *</label>
                     <div class="relative">
@@ -52,7 +58,6 @@
                     </div>
                 </div>
 
-                {{-- Confirm Password Field --}}
                 <div class="space-y-2">
                     <label for="password_confirmation" class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Confirm Password *</label>
                     <div class="relative">
@@ -101,14 +106,11 @@
     function togglePassword(id) {
         const input = document.getElementById(id);
         const icon = document.getElementById('eye-icon-' + id);
-
         if (input.type === "password") {
             input.type = "text";
-            // Change to "Eye Off" Icon
             icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />`;
         } else {
             input.type = "password";
-            // Change back to "Eye" Icon
             icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
         }
     }
