@@ -81,10 +81,18 @@
                                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px] font-black">
-                                            {{ substr($r->reviewer->name, 0, 1) }}
+                                            @if(auth()->user()->id === $submission->author_id)
+                                                R
+                                            @else
+                                                {{ substr($r->reviewer->name, 0, 1) }}
+                                            @endif
                                         </div>
                                         <div>
-                                            <p class="text-xs font-black text-slate-900 uppercase tracking-widest">Reviewer: {{ $r->reviewer->name }}</p>
+                                            @if(auth()->user()->id === $submission->author_id)
+                                                <p class="text-xs font-black text-slate-900 uppercase tracking-widest">Reviewer</p>
+                                            @else
+                                                <p class="text-xs font-black text-slate-900 uppercase tracking-widest">Reviewer: {{ $r->reviewer->name }}</p>
+                                            @endif
                                             <p class="text-[10px] font-bold text-slate-400 uppercase">{{ $r->created_at->format('M d, Y') }}</p>
                                         </div>
                                     </div>
