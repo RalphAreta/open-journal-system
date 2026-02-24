@@ -598,4 +598,54 @@ public function editorRevisionDecision(Request $request, Submission $submission)
         return redirect()->route('editor.submissions')
             ->with('success', 'Decision recorded and author notified.');
     }
+
+    /**
+     * Reviewer: accept review invitation.
+     */
+    public function acceptInvitation(ReviewAssignment $assignment): RedirectResponse
+    {
+        if ($assignment->reviewer_id !== request()->user()->id) {
+            abort(403);
+        }
+
+        $assignment->update([
+            'status' => ReviewAssignment::STATUS_ASSIGNED,
+        ]);
+
+        \App\Models\Notification::create([
+            'user_id' => $assignment->submission->assigned_editor_id,
+            'title' => '✓ Review Invitation Accepted',
+            'message' => 'Reviewer has accepted invitation to review "' . $assignment->submission->title . '"',
+            'type' => 'success',
+            'notifiable_id' => $assignment->submission_id,
+            'notifiable_type' => Submission::class,
+        ]);
+
+        return redirect()->route('dashboard.reviewer')->with('success', 'Review invitation accepted.');
+    }
+
+    /**
+     * Reviewer: decline review invitation.
+     */
+    public function declineInvitation(ReviewAssignment $assignment): RedirectResponse
+    {
+        if ($assignment->reviewer_id !== request()->user()->id) {
+            abort(403);
+        }
+
+        $assignment->update([
+            'status' => ReviewAssignment::STATUS_DECLINED,
+        ]);
+
+        \App\Models\Notification::create([
+            'user_id' => $assignment->submission->assigned_editor_id,
+            'title' => '✗ Review Invitation Declined',
+            'message' => 'Reviewer has declined invitation to review "' . $assignment->submission->title . '"',
+            'type' => 'warning',
+            'notifiable_id' => $assignment->submission_id,
+            'notifiable_type' => Submission::class,
+        ]);
+
+        return redirect()->route('dashboard.reviewer')->with('info', 'Review invitation declined.');
+    }
 }

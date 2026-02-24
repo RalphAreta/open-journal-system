@@ -30,6 +30,7 @@ class ReviewAssignment extends Model
     public const STATUS_ASSIGNED = 'assigned';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_DECLINED = 'declined';
+    public const STATUS_PENDING = 'pending';
 
     public function submission(): BelongsTo
     {
