@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class RevisionRequest extends Model
 {
@@ -50,6 +51,11 @@ class RevisionRequest extends Model
     public function revisedSubmission(): BelongsTo
     {
         return $this->belongsTo(Submission::class, 'revised_submission_id');
+    }
+
+    public function revisionReviews(): HasMany
+    {
+        return $this->hasMany(RevisionReview::class);
     }
 
     public function isResolved(): bool

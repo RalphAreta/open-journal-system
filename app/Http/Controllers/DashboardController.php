@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ReviewAssignment;
 use App\Models\Submission;
+use App\Models\RevisionReview;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -40,12 +41,13 @@ class DashboardController extends Controller
     ->paginate(10);
 
     $stats = [
-        'total'               => $user->submissionsAsAuthor()->count(),
-        'submitted'           => $user->submissionsAsAuthor()->where('status', Submission::STATUS_SUBMITTED)->count(),
-        'under_review'        => $user->submissionsAsAuthor()->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
-        'revisions_requested' => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REVISIONS_REQUESTED)->count(),
-        'accepted'            => $user->submissionsAsAuthor()->where('status', Submission::STATUS_ACCEPTED)->count(),
-        'rejected'            => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REJECTED)->count(),
+        'total'                   => $user->submissionsAsAuthor()->count(),
+        'submitted'               => $user->submissionsAsAuthor()->where('status', Submission::STATUS_SUBMITTED)->count(),
+        'under_review'            => $user->submissionsAsAuthor()->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
+        'revisions_requested'     => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REVISIONS_REQUESTED)->count(),
+        'revision_under_review'   => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REVISION_UNDER_REVIEW)->count(),
+        'accepted'                => $user->submissionsAsAuthor()->where('status', Submission::STATUS_ACCEPTED)->count(),
+        'rejected'                => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REJECTED)->count(),
     ];
 
     // ✅ DAGDAG LANG ITO
@@ -66,9 +68,18 @@ class DashboardController extends Controller
         ->latest()
         ->paginate(10);
 
+    // Get pending revision reviews
+    $revisionReviews = RevisionReview::where('reviewer_id', $user->id)
+        ->where('status', RevisionReview::STATUS_ASSIGNED)
+        ->with(['revisionRequest.submission.author'])
+        ->latest()
+        ->get();
+
     $stats = [
-        'pending'   => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_ASSIGNED)->count(),
-        'completed' => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_COMPLETED)->count(),
+        'pending'               => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_ASSIGNED)->count(),
+        'completed'             => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_COMPLETED)->count(),
+        'pending_revisions'     => $revisionReviews->count(),
+        'completed_revisions'   => RevisionReview::where('reviewer_id', $user->id)->where('status', RevisionReview::STATUS_COMPLETED)->count(),
     ];
 
     $notifications = \App\Models\Notification::where('user_id', $user->id)
@@ -76,6 +87,7 @@ class DashboardController extends Controller
         ->take(10)
         ->get();
 
+<<<<<<< HEAD
     // Get review assignments for submissions with pending revision requests
     $revisionReviews = $user->reviewAssignments()
         ->whereHas('submission.revisionRequests', function ($query) {
@@ -86,6 +98,9 @@ class DashboardController extends Controller
         ->get();
 
     return view('dashboard.reviewer', compact('assignments', 'stats', 'notifications', 'revisionReviews')); // ✅ dagdag ang notifications
+=======
+    return view('dashboard.reviewer', compact('assignments', 'revisionReviews', 'stats', 'notifications')); // ✅ dagdag ang notifications
+>>>>>>> f305276230e974f2b7f10ac6bf061d61c98e8b24
 }
 
     public function editor(Request $request): View
@@ -101,8 +116,10 @@ class DashboardController extends Controller
             'total' => Submission::where('assigned_editor_id', $userId)->count(),
             'submitted' => Submission::where('assigned_editor_id', $userId)->where('status', Submission::STATUS_SUBMITTED)->count(),
             'under_review' => Submission::where('assigned_editor_id', $userId)->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
+            'revision_under_review' => Submission::where('assigned_editor_id', $userId)->where('status', Submission::STATUS_REVISION_UNDER_REVIEW)->count(),
             'decisions_pending' => Submission::where('assigned_editor_id', $userId)->whereIn('status', [
                 Submission::STATUS_UNDER_REVIEW,
+                Submission::STATUS_REVISION_UNDER_REVIEW,
                 Submission::STATUS_REVISIONS_REQUESTED,
             ])->count(),
         ];

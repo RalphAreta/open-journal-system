@@ -6,6 +6,8 @@ use App\Models\Review;
 use App\Models\ReviewAssignment;
 use App\Models\Submission;
 use App\Models\RevisionRequest;
+use App\Models\RevisionReview;
+use App\Services\RevisionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -111,7 +113,12 @@ class ReviewController extends Controller
     public function editorSubmissions(Request $request): View
     {
         $submissions = Submission::where('assigned_editor_id', $request->user()->id)
-            ->with(['author', 'reviews.reviewer', 'reviewAssignments.reviewer'])
+            ->with([
+                'author',
+                'reviews.reviewer',
+                'reviewAssignments.reviewer',
+                'revisionRequests.revisionReviews.reviewer',
+            ])
             ->latest()
             ->paginate(15);
 
@@ -121,32 +128,37 @@ class ReviewController extends Controller
     /**
      * Editor: show submission and make decision.
      */
- public function editorShow(Submission $submission): View
-{
-    if ($submission->assigned_editor_id !== auth()->id()) {
-        abort(403, 'You do not have access to this submission.');
+    public function editorShow(Submission $submission): View
+    {
+        if ($submission->assigned_editor_id !== auth()->id()) {
+            abort(403, 'You do not have access to this submission.');
+        }
+
+        $submission->load([
+            'author',
+            'reviews.reviewer',
+            'reviewAssignments.reviewer',
+            'revisionRequests.revisionReviews.reviewer',
+        ]);
+
+        $researchField = $submission->research_field;
+
+        $matchedReviewers = \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'reviewer'))
+            ->whereHas('editorExpertise', fn($q) => $q->where('field_name', $researchField))
+            ->withCount(['reviewAssignments as active_reviews_count' => fn($q) =>
+                $q->whereNotIn('status', ['completed', 'declined'])
+            ])
+            ->get();
+
+        $otherReviewers = \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'reviewer'))
+            ->whereNotIn('id', $matchedReviewers->pluck('id'))
+            ->withCount(['reviewAssignments as active_reviews_count' => fn($q) =>
+                $q->whereNotIn('status', ['completed', 'declined'])
+            ])
+            ->get();
+
+        return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers'));
     }
-
-    $submission->load(['author', 'reviews.reviewer', 'reviewAssignments.reviewer']);
-
-    $researchField = $submission->research_field;
-
-    $matchedReviewers = \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'reviewer'))
-        ->whereHas('editorExpertise', fn($q) => $q->where('field_name', $researchField))
-        ->withCount(['reviewAssignments as active_reviews_count' => fn($q) =>
-            $q->whereNotIn('status', ['completed', 'declined'])
-        ])
-        ->get();
-
-    $otherReviewers = \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'reviewer'))
-        ->whereNotIn('id', $matchedReviewers->pluck('id'))
-        ->withCount(['reviewAssignments as active_reviews_count' => fn($q) =>
-            $q->whereNotIn('status', ['completed', 'declined'])
-        ])
-        ->get();
-
-    return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers'));
-}
 
     /**
      * Editor: show initial screening form.
@@ -172,7 +184,7 @@ class ReviewController extends Controller
     $validated = $request->validate([
         'screening_status' => 'required|in:passed,failed,revision',
         'comments'         => 'required|string|max:2000',
-       'revision_type' => 'nullable|required_if:screening_status,revision|in:minor,major',
+        'revision_type'    => 'required_if:screening_status,revision|in:minor,major',
     ]);
 
     if ($validated['screening_status'] === 'revision') {
@@ -258,10 +270,9 @@ class ReviewController extends Controller
 
         ReviewAssignment::create([
             'submission_id' => $submission->id,
-            'reviewer_id'   => $reviewerId,
-            'assigned_by'   => $request->user()->id,
-            'due_at'        => $validated['due_at'] ?? null,
-            'status'        => 'pending', // ← reviewer can now accept/decline
+            'reviewer_id' => $reviewerId,
+            'assigned_by' => $request->user()->id,
+            'due_at' => $validated['due_at'] ?? null,
         ]);
 
         \App\Models\Notification::create([
@@ -282,7 +293,7 @@ class ReviewController extends Controller
         return back()->with('success', 'Reviewer assigned.');
     }
 
-/**
+    /**
      * Editor: make decision on submission.
      */
     public function editorDecision(Request $request, Submission $submission): RedirectResponse
@@ -292,26 +303,26 @@ class ReviewController extends Controller
         }
 
         $validated = $request->validate([
-            'status'          => ['required', 'in:accepted,rejected,revisions_requested'],
-            'editor_notes'    => ['nullable', 'string'],
-            'revision_type'   => ['nullable', 'required_if:status,revisions_requested', 'in:minor,major'],
-            'revision_reason' => ['nullable', 'required_if:status,revisions_requested', 'string'],
+            'status' => ['required', 'in:accepted,rejected,revisions_requested'],
+            'editor_notes' => ['nullable', 'string'],
+            'revision_type' => ['required_if:status,revisions_requested', 'in:minor,major'],
+            'revision_reason' => ['required_if:status,revisions_requested', 'string'],
         ]);
 
         $submission->update([
-            'status'             => $validated['status'],
-            'editor_id'          => $request->user()->id,
+            'status' => $validated['status'],
+            'editor_id' => $request->user()->id,
             'editor_decision_at' => now(),
-            'editor_notes'       => $validated['editor_notes'] ?? null,
+            'editor_notes' => $validated['editor_notes'] ?? null,
         ]);
 
         if ($validated['status'] === Submission::STATUS_REVISIONS_REQUESTED) {
             RevisionRequest::create([
-                'submission_id'        => $submission->id,
+                'submission_id' => $submission->id,
                 'requested_by_user_id' => $request->user()->id,
-                'revision_type'        => $validated['revision_type'],
-                'reason'               => $validated['revision_reason'],
-                'requested_at'         => now(),
+                'revision_type' => $validated['revision_type'],
+                'reason' => $validated['revision_reason'],
+                'requested_at' => now(),
             ]);
 
             return redirect()->route('editor.submissions')
@@ -411,113 +422,180 @@ public function requestRevision(Request $request, Submission $submission): Redir
         'revision_reason' => ['required', 'string', 'max:2000'],
     ]);
 
-    $revisionRequest = RevisionRequest::create([
-        'submission_id'        => $submission->id,
-        'requested_by_user_id' => $request->user()->id,
-        'revision_type'        => $validated['revision_type'],
-        'reason'               => $validated['revision_reason'],
-        'requested_at'         => now(),
-    ]);
-
-    $submission->update([
-        'status'             => Submission::STATUS_REVISIONS_REQUESTED,
-        'editor_id'          => $request->user()->id,
-        'editor_decision_at' => now(),
-    ]);
-
-    \App\Models\Notification::create([
-        'user_id'         => $submission->author_id,
-        'title'           => '🔄 Revision Requested',
-        'message'         => "The editor has requested a " . $validated['revision_type'] . " revision for your manuscript \"{$submission->title}\".\n\nReason: {$validated['revision_reason']}",
-        'type'            => 'warning',
-        'notifiable_id'   => $submission->id,
-        'notifiable_type' => Submission::class,
-    ]);
+    RevisionService::createRevisionRequest(
+        $submission,
+        $request->user(),
+        $validated['revision_type'],
+        $validated['revision_reason'],
+        'review' // Stage is always review for editor-requested revisions
+    );
 
     return back()->with('success', 'Revision request sent to author.');
 }
 
 /**
- * Reviewer: request revision from author.
+ * Reviewer: show form to submit review on revised manuscript.
  */
-public function reviewerRequestRevision(Request $request, Submission $submission): RedirectResponse
+public function createRevisionReview(RevisionReview $revisionReview): View|RedirectResponse
 {
-    $isAssigned = \App\Models\ReviewAssignment::where('submission_id', $submission->id)
-        ->where('reviewer_id', $request->user()->id)
-        ->exists();
-
-    if (!$isAssigned) {
+    if ($revisionReview->reviewer_id !== request()->user()->id) {
         abort(403);
     }
+    if ($revisionReview->status === RevisionReview::STATUS_COMPLETED) {
+        return redirect()->route('reviews.index')->with('info', 'You have already submitted this revision review.');
+    }
 
-    $validated = $request->validate([
-        'revision_type'   => ['required', 'in:minor,major'],
-        'revision_reason' => ['required', 'string', 'max:2000'],
-    ]);
+    $revisionReview->load('revisionRequest.submission.author');
+    $submission = $revisionReview->revisionRequest->submission;
 
-    $revisionRequest = RevisionRequest::create([
-        'submission_id'        => $submission->id,
-        'requested_by_user_id' => $request->user()->id,
-        'revision_type'        => $validated['revision_type'],
-        'reason'               => $validated['revision_reason'],
-        'requested_at'         => now(),
-    ]);
-
-    \App\Models\Notification::create([
-        'user_id'         => $submission->author_id,
-        'title'           => '🔄 Revision Requested by Reviewer',
-        'message'         => "A reviewer has requested a " . $validated['revision_type'] . " revision for your manuscript \"{$submission->title}\".\n\nReason: {$validated['revision_reason']}",
-        'type'            => 'warning',
-        'notifiable_id'   => $submission->id,
-        'notifiable_type' => Submission::class,
-    ]);
-
-    return back()->with('success', 'Revision request sent to author.');
+    return view('reviews.revision-review-create', compact('revisionReview', 'submission'));
 }
 
 /**
-     * Reviewer: accept review invitation.
-     */
-    public function acceptInvitation(ReviewAssignment $assignment): RedirectResponse
-    {
-        if ($assignment->reviewer_id !== auth()->id()) {
-            abort(403);
-        }
+ * Reviewer: store review on revised manuscript.
+ */
+public function storeRevisionReview(Request $request): RedirectResponse
+{
+    $validated = $request->validate([
+        'revision_review_id' => ['required', 'exists:revision_reviews,id'],
+        'recommendation' => ['required', 'in:accept,minor_revisions,major_revisions,reject'],
+        'comments_for_author' => ['nullable', 'string'],
+        'comments_for_editor' => ['nullable', 'string'],
+        'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
+    ]);
 
-        $assignment->update(['status' => 'assigned']);
-
-        \App\Models\Notification::create([
-            'user_id'         => $assignment->assigned_by,
-            'title'           => '✅ Review Invitation Accepted',
-            'message'         => auth()->user()->name . " has accepted the review assignment for \"{$assignment->submission->title}\".",
-            'type'            => 'success',
-            'notifiable_id'   => $assignment->submission_id,
-            'notifiable_type' => \App\Models\Submission::class,
-        ]);
-
-        return back()->with('success', 'You have accepted the review assignment.');
+    $revisionReview = RevisionReview::findOrFail($validated['revision_review_id']);
+    if ($revisionReview->reviewer_id !== $request->user()->id) {
+        abort(403);
+    }
+    if ($revisionReview->status === RevisionReview::STATUS_COMPLETED) {
+        return redirect()->route('reviews.index')->with('error', 'Review already submitted.');
     }
 
-    /**
-     * Reviewer: decline review invitation.
-     */
-    public function declineInvitation(ReviewAssignment $assignment): RedirectResponse
-    {
-        if ($assignment->reviewer_id !== auth()->id()) {
-            abort(403);
-        }
+    $revisionReview->update([
+        'status' => RevisionReview::STATUS_COMPLETED,
+        'recommendation' => $validated['recommendation'],
+        'comments_for_author' => $validated['comments_for_author'] ?? null,
+        'comments_for_editor' => $validated['comments_for_editor'] ?? null,
+        'rating' => $validated['rating'] ?? null,
+        'completed_at' => now(),
+    ]);
 
-        $assignment->update(['status' => 'declined']);
+    // Notify editor
+    $submission = $revisionReview->revisionRequest->submission;
+    \App\Models\Notification::create([
+        'user_id' => $submission->assigned_editor_id,
+        'title' => '✓ Revision Review Submitted',
+        'message' => "Reviewer has completed re-review for revised manuscript \"{$submission->title}\". Recommendation: " . $validated['recommendation'],
+        'type' => 'info',
+        'notifiable_id' => $submission->id,
+        'notifiable_type' => Submission::class,
+    ]);
 
-        \App\Models\Notification::create([
-            'user_id'         => $assignment->assigned_by,
-            'title'           => '❌ Review Invitation Declined',
-            'message'         => auth()->user()->name . " has declined the review assignment for \"{$assignment->submission->title}\".",
-            'type'            => 'danger',
-            'notifiable_id'   => $assignment->submission_id,
-            'notifiable_type' => \App\Models\Submission::class,
+    return redirect()->route('reviews.index')->with('success', 'Revision review submitted successfully.');
+}
+
+/**
+ * Editor: list pending revision reviews for submissions.
+ */
+public function editorRevisionReviews(Request $request): View
+{
+    $pendingSubmissions = Submission::where('assigned_editor_id', $request->user()->id)
+        ->where('status', Submission::STATUS_REVISION_UNDER_REVIEW)
+        ->with([
+            'revisionRequests.revisionReviews.reviewer',
+            'author',
+        ])
+        ->latest()
+        ->paginate(15);
+
+    $completedSubmissions = Submission::where('assigned_editor_id', $request->user()->id)
+        ->whereIn('status', [Submission::STATUS_ACCEPTED, Submission::STATUS_REJECTED])
+        ->where('editor_decision_at', '!=', null)
+        ->with(['revisionRequests', 'author'])
+        ->latest('editor_decision_at')
+        ->take(10)
+        ->get();
+
+    return view('reviews.editor-revision-reviews', compact('pendingSubmissions', 'completedSubmissions'));
+}
+
+/**
+ * Editor: make final decision after revision reviews.
+ */
+public function editorRevisionDecision(Request $request, Submission $submission): RedirectResponse
+{
+        \Log::info('editorRevisionDecision called', [
+            'submission_id' => $submission->id,
+            'user_id' => $request->user()->id,
+            'assigned_editor_id' => $submission->assigned_editor_id,
+            'status' => $submission->status,
         ]);
 
-        return back()->with('info', 'You have declined the review assignment.');
+        if ($submission->assigned_editor_id !== $request->user()->id) {
+            abort(403, 'You do not have access to this submission.');
+        }
+
+        if ($submission->status !== Submission::STATUS_REVISION_UNDER_REVIEW) {
+            return back()->withErrors('This submission is not awaiting your revision decision.');
+        }
+
+        $validated = $request->validate([
+            'decision' => ['required', 'in:accepted,rejected,revisions_requested'],
+            'editor_notes' => ['nullable', 'string'],
+            'revision_type' => ['required_if:decision,revisions_requested', 'in:minor,major'],
+            'revision_reason' => ['required_if:decision,revisions_requested', 'string'],
+        ]);
+
+        \Log::info('Validation passed', ['validated' => $validated]);
+
+        // Map decision to status constant
+        $statusMap = [
+            'accepted' => Submission::STATUS_ACCEPTED,
+            'rejected' => Submission::STATUS_REJECTED,
+            'revisions_requested' => Submission::STATUS_REVISIONS_REQUESTED,
+        ];
+
+        $mappedStatus = $statusMap[$validated['decision']];
+        \Log::info('Status mapping', [
+            'decision' => $validated['decision'],
+            'mappedStatus' => $mappedStatus,
+        ]);
+
+        $updated = $submission->update([
+            'status' => $mappedStatus,
+            'editor_id' => $request->user()->id,
+            'editor_decision_at' => now(),
+            'editor_notes' => $validated['editor_notes'] ?? null,
+        ]);
+
+        \Log::info('Update result', [
+            'updated' => $updated,
+            'submission_status_after' => $submission->fresh()->status,
+        ]);
+
+        if ($validated['decision'] === 'revisions_requested') {
+            RevisionService::createRevisionRequest(
+                $submission,
+                $request->user(),
+                $validated['revision_type'],
+                $validated['revision_reason'],
+                'review' // Stage is review since editor is requesting
+            );
+        } else {
+            // Final decision reached
+            $status = $validated['decision'] === 'accepted' ? 'Accepted' : 'Rejected';
+            \App\Models\Notification::create([
+                'user_id' => $submission->author_id,
+                'title' => "✓ Final Decision: {$status}",
+                'message' => "Your manuscript \"{$submission->title}\" has been {$status}.",
+                'type' => $validated['decision'] === 'accepted' ? 'success' : 'danger',
+                'notifiable_id' => $submission->id,
+                'notifiable_type' => Submission::class,
+            ]);
+        }
+
+        return redirect()->route('editor.submissions')
+            ->with('success', 'Decision recorded and author notified.');
     }
 }

@@ -54,6 +54,33 @@
                 </div>
             @endif
 
+            {{-- 1.5. Editor Decision on Revised Manuscript --}}
+            @if(in_array($submission->status, ['accepted', 'rejected']) && $submission->editor_decision_at)
+                <div class="bg-gradient-to-br {{ $submission->status === 'accepted' ? 'from-emerald-600 to-green-500' : 'from-red-600 to-rose-500' }} rounded-[2.5rem] p-1 shadow-2xl {{ $submission->status === 'accepted' ? 'shadow-emerald-100' : 'shadow-red-100' }}">
+                    <div class="bg-white rounded-[2.2rem] p-8">
+                        <div class="flex items-start gap-4 mb-6">
+                            <div class="w-12 h-12 {{ $submission->status === 'accepted' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600' }} rounded-2xl flex items-center justify-center shrink-0 text-xl font-black">
+                                {{ $submission->status === 'accepted' ? '✓' : '✗' }}
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-black {{ $submission->status === 'accepted' ? 'text-emerald-900' : 'text-red-900' }} tracking-tight">
+                                    Editorial Decision: {{ ucfirst($submission->status) }}
+                                </h3>
+                                <p class="text-sm {{ $submission->status === 'accepted' ? 'text-emerald-700' : 'text-red-700' }} font-medium">
+                                    Decided on {{ $submission->editor_decision_at->format('M d, Y') }}
+                                </p>
+                            </div>
+                        </div>
+                        @if($submission->editor_notes)
+                            <div class="{{ $submission->status === 'accepted' ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200' }} rounded-2xl p-6 border">
+                                <p class="text-[10px] font-black {{ $submission->status === 'accepted' ? 'text-emerald-600' : 'text-red-600' }} uppercase tracking-widest mb-2">Editor's Comments</p>
+                                <p class="text-sm {{ $submission->status === 'accepted' ? 'text-emerald-900' : 'text-red-900' }} leading-relaxed font-medium">{{ $submission->editor_notes }}</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @endif
+
             {{-- 2. Abstract Content --}}
             <section class="space-y-4">
                 <div class="flex items-center gap-4">

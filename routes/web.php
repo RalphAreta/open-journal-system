@@ -46,7 +46,9 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/reviewer/pending-assignments', [ReviewController::class, 'pendingReviewerAssignments'])->name('reviewer.pending-assignments');
         Route::post('/reviewer/submissions/{submission}/request-revision', [ReviewController::class, 'reviewerRequestRevision'])->name('reviewer.request-revision');
         Route::post('/reviewer/invitation/{assignment}/accept',  [ReviewController::class, 'acceptInvitation'])->name('reviewer.invitation.accept');
-Route::post('/reviewer/invitation/{assignment}/decline', [ReviewController::class, 'declineInvitation'])->name('reviewer.invitation.decline');
+        Route::post('/reviewer/invitation/{assignment}/decline', [ReviewController::class, 'declineInvitation'])->name('reviewer.invitation.decline');
+        Route::get('/reviews/revision/{revisionReview}/create', [ReviewController::class, 'createRevisionReview'])->name('reviews.revision-create');
+        Route::post('/reviews/revision', [ReviewController::class, 'storeRevisionReview'])->name('reviews.revision-store');
     });
 
     Route::middleware('role:editor')->group(function (): void {
@@ -58,6 +60,8 @@ Route::post('/reviewer/invitation/{assignment}/decline', [ReviewController::clas
         Route::post('/editor/submissions/{submission}/assign-reviewer', [ReviewController::class, 'assignReviewer'])->name('editor.assign-reviewer');
         Route::post('/editor/submissions/{submission}/decision', [ReviewController::class, 'editorDecision'])->name('editor.decision');
         Route::post('/editor/submissions/{submission}/request-revision', [ReviewController::class, 'requestRevision'])->name('editor.request-revision');
+        Route::get('/editor/revision-reviews', [ReviewController::class, 'editorRevisionReviews'])->name('editor.revision-reviews');
+        Route::post('/editor/submissions/{submission}/revision-decision', [ReviewController::class, 'editorRevisionDecision'])->name('editor.revision-decision');
     });
 
     Route::middleware('role:editor-in-chief')->group(function (): void {

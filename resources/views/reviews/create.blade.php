@@ -55,36 +55,4 @@
     </div>
 </form>
 
-<!-- Reviewer: Request Revision -->
-<div class="max-w-2xl mt-8 border-t pt-8">
-    <h2 class="text-lg font-semibold mb-1">Request Revision from Author</h2>
-    <p class="text-sm text-slate-500 mb-4">Optionally request revisions separate from your review submission.</p>
-
-    @if ($assignment->submission->status === 'revisions_requested')
-        <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 text-amber-800 font-semibold">
-            ⚠️ A revision has already been requested for this manuscript.
-        </div>
-    @else
-        <form method="POST" action="{{ route('reviewer.request-revision', $submission) }}" class="space-y-4">
-            @csrf
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Revision Type <span class="text-red-600">*</span></label>
-                <select name="revision_type" required class="block w-full rounded-md border-slate-300 shadow-sm focus:border-red-500 focus:ring-red-500">
-                    <option value="">-- Select --</option>
-                    <option value="minor">Minor Revision</option>
-                    <option value="major">Major Revision</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Reason <span class="text-red-600">*</span></label>
-                <textarea name="revision_reason" rows="4" required
-                    class="block w-full rounded-md border-slate-300 shadow-sm focus:border-red-500 focus:ring-red-500"
-                    placeholder="Explain what the author needs to revise..."></textarea>
-            </div>
-            <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md font-medium transition">
-                🔄 Send Revision Request
-            </button>
-        </form>
-    @endif
-</div>
 @endsection
