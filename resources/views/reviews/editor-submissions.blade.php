@@ -15,16 +15,16 @@
 @endpush
 
 @section('content')
-<div class="font-body">
+<div class="font-body max-w-7xl mx-auto py-10 px-4">
 
     {{--  Flash Messages  --}}
     @if ($errors->any())
     <div class="mb-5 px-4 py-3 bg-red-50 border border-red-200 rounded-[9px] fade-up">
         <div class="flex items-center gap-2 mb-2">
-            <svg class="w-4 h-4 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-            <p class="text-[11px] font-bold uppercase tracking-[.06em] text-red-700">Error</p>
+            <p class="text-[11px] font-bold uppercase tracking-widest text-red-700">Error</p>
         </div>
         <ul class="space-y-1 ml-6 list-disc">
             @foreach ($errors->all() as $error)
@@ -36,49 +36,50 @@
 
     @if (session('success'))
     <div class="mb-5 px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-[9px] flex items-center gap-2 fade-up">
-        <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
         </svg>
         <p class="text-xs font-semibold text-emerald-700">{{ session('success') }}</p>
     </div>
     @endif
 
-    @if (session('error'))
-    <div class="mb-5 px-4 py-3 bg-red-50 border border-red-200 rounded-[9px] flex items-center gap-2 fade-up">
-        <svg class="w-4 h-4 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-        <p class="text-xs font-semibold text-red-700">{{ session('error') }}</p>
-    </div>
-    @endif
-
     {{--  Header  --}}
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-7 fade-up">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 fade-up">
         <div>
-            <h1 class="font-serif-display text-[1.85rem] font-normal text-slate-900 tracking-[-0.015em] leading-tight">
-                Manage Submissions
-            </h1>
-            <p class="text-sm text-slate-500 mt-1">Review, assign, and track manuscript progress</p>
+            <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+                <a href="{{ route('dashboard.editor') }}" class="hover:text-red-600 transition-colors">Admin</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
+                <span class="text-slate-900 tracking-widest">Global Submissions</span>
+            </nav>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">Manage Submissions</h1>
+            <p class="text-slate-500 font-medium mt-3">Review, assign, and track manuscript progress across the system.</p>
         </div>
-        <span class="text-xs font-medium text-slate-400 bg-white border border-slate-200 px-3 py-1.5 rounded-full hidden sm:inline-block">
-            {{ now()->format('D, M j Y') }}
-        </span>
+
+        <div class="flex items-center gap-4">
+            <span class="text-[10px] font-black text-slate-400 bg-white border border-slate-200 px-4 py-2 rounded-xl hidden sm:inline-block uppercase tracking-widest">
+                {{ now()->format('D, M j Y') }}
+            </span>
+            <a href="{{ route('dashboard.editor') }}" class="px-6 py-3 bg-white border border-slate-200 text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 hover:text-slate-600 transition-all active:scale-95 flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back
+            </a>
+        </div>
     </div>
 
     {{--  Table Card  --}}
-    <div class="bg-white border border-slate-200 rounded-[14px] overflow-hidden shadow-sm fade-up-1">
+    <div class="bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-sm fade-up-1">
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
-                        <th class="px-6 py-3.5 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Title</th>
-                        <th class="px-6 py-3.5 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Author</th>
-                        <th class="px-6 py-3.5 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Status</th>
-                        <th class="px-6 py-3.5 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Reviews</th>
-                        <th class="px-6 py-3.5 text-right text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Actions</th>
+                        <th class="px-8 py-5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Title</th>
+                        <th class="px-8 py-5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Author</th>
+                        <th class="px-8 py-5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Status</th>
+                        <th class="px-8 py-5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Reviews</th>
+                        <th class="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-400">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-slate-100">
                     @forelse($submissions as $s)
                     @php
                         $reviews        = $s->reviews()->get();
@@ -99,91 +100,86 @@
                             default                => 'bg-slate-50 border-slate-200 text-slate-600 [&_.dot]:bg-slate-400',
                         };
                     @endphp
-                    <tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50/60 transition-colors group">
-                        <td class="px-6 py-4">
-                            <p class="text-sm font-semibold text-slate-900 group-hover:text-red-600 transition-colors leading-snug">
-                                {{ Str::limit($s->title, 40) }}
+                    <tr class="hover:bg-slate-50/60 transition-colors group">
+                        <td class="px-8 py-6">
+                            <p class="text-sm font-bold text-slate-900 group-hover:text-red-600 transition-colors leading-snug">
+                                {{ Str::limit($s->title, 50) }}
                             </p>
                         </td>
-                        <td class="px-6 py-4">
-                            <p class="text-sm text-slate-500">{{ $s->author->name ?? '' }}</p>
+                        <td class="px-8 py-6">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[8px] font-black text-slate-500">
+                                    {{ substr($s->author->name ?? 'U', 0, 1) }}
+                                </div>
+                                <span class="text-xs font-bold text-slate-600">{{ $s->author->name ?? 'Unknown' }}</span>
+                            </div>
                         </td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-[.04em] {{ $statusCls }}">
+                        <td class="px-8 py-6">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest {{ $statusCls }}">
                                 <span class="dot w-1.5 h-1.5 rounded-full"></span>
-                                {{ ucfirst(str_replace('_', ' ', $s->status)) }}
+                                {{ str_replace('_', ' ', $s->status) }}
                             </span>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-8 py-6">
                             @if ($completed > 0 || $pending > 0)
                             <div class="flex flex-wrap items-center gap-1.5">
                                 @if ($accepts > 0)
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-emerald-700">
-                                         {{ $accepts }}
-                                    </span>
+                                    <span class="px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-[9px] font-black text-emerald-700">{{ $accepts }}A</span>
                                 @endif
                                 @if ($rejects > 0)
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 border border-red-200 text-[10px] font-bold text-red-700">
-                                         {{ $rejects }}
-                                    </span>
+                                    <span class="px-2 py-0.5 rounded-md bg-red-50 border border-red-200 text-[9px] font-black text-red-700">{{ $rejects }}R</span>
                                 @endif
-                                @if ($minorRevisions > 0)
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-[10px] font-bold text-amber-700">
-                                         {{ $minorRevisions }}
-                                    </span>
-                                @endif
-                                @if ($majorRevisions > 0)
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-50 border border-orange-200 text-[10px] font-bold text-orange-700">
-                                         {{ $majorRevisions }}
-                                    </span>
+                                @if ($minorRevisions > 0 || $majorRevisions > 0)
+                                    <span class="px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200 text-[9px] font-black text-amber-700">{{ $minorRevisions + $majorRevisions }}V</span>
                                 @endif
                                 @if ($pending > 0)
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-500">
-                                         {{ $pending }}
-                                    </span>
+                                    <span class="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[9px] font-black text-slate-500">{{ $pending }}P</span>
                                 @endif
                             </div>
                             @else
-                                <span class="text-xs text-slate-400 font-medium">No reviews yet</span>
+                                <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">No Activity</span>
                             @endif
                         </td>
-                        <td class="px-6 py-4 text-right">
+                        <td class="px-8 py-6 text-right">
                             <a href="{{ route('editor.submission.show', $s) }}"
-                               class="inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white
-                                      px-3 py-1.5 rounded-[7px] text-[11px] font-bold uppercase tracking-[.05em]
-                                      transition-all hover:-translate-y-0.5">
+                               class="inline-flex items-center gap-2 bg-slate-900 hover:bg-red-600 text-white
+                                      px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest
+                                      transition-all active:scale-95 shadow-lg shadow-slate-100">
                                 Manage
                             </a>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-16 text-center">
-                            <div class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-3">
+                        <td colspan="5" class="px-8 py-20 text-center">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center mx-auto mb-4">
                                 <svg class="w-6 h-6 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="1.5"/>
+                                    <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2"/>
                                 </svg>
                             </div>
-                            <p class="text-[11px] font-bold uppercase tracking-[.1em] text-slate-300">No submissions found</p>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-300">No submissions found in system</p>
                         </td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        <div class="px-5 py-3 bg-slate-50 border-t border-slate-100">
+        @if($submissions->hasPages())
+        <div class="px-8 py-4 bg-slate-50 border-t border-slate-100">
             {{ $submissions->links() }}
         </div>
+        @endif
     </div>
 
     {{--  Legend  --}}
-    <div class="mt-5 bg-white border border-slate-200 rounded-[14px] px-5 py-4 flex flex-wrap items-center gap-3 fade-up-2">
-        <span class="text-[10px] font-bold uppercase tracking-[.08em] text-slate-400 mr-1">Legend</span>
-        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-emerald-700"> Accept</span>
-        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-50 border border-red-200 text-[10px] font-bold text-red-700"> Reject</span>
-        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-[10px] font-bold text-amber-700"> Minor Revision</span>
-        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-50 border border-orange-200 text-[10px] font-bold text-orange-700"> Major Revision</span>
-        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-500"> Pending</span>
+    <div class="mt-8 bg-white border border-slate-200 rounded-[2rem] px-8 py-5 flex flex-wrap items-center gap-4 fade-up-2">
+        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 mr-2">Review Key</span>
+        <div class="flex items-center gap-4">
+            <span class="flex items-center gap-2 text-[9px] font-black text-emerald-700 uppercase"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Accept</span>
+            <span class="flex items-center gap-2 text-[9px] font-black text-red-700 uppercase"><span class="w-2 h-2 rounded-full bg-red-500"></span> Reject</span>
+            <span class="flex items-center gap-2 text-[9px] font-black text-amber-700 uppercase"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Revisions</span>
+            <span class="flex items-center gap-2 text-[9px] font-black text-slate-500 uppercase"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Pending</span>
+        </div>
     </div>
 
 </div>
