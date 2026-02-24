@@ -49,11 +49,13 @@
     .stat-card.c-slate::before  { background: linear-gradient(135deg,#F8FAFC 0%,transparent 60%); }
     .stat-card.c-blue::before   { background: linear-gradient(135deg,#EFF6FF 0%,transparent 60%); }
     .stat-card.c-amber::before  { background: linear-gradient(135deg,#FFFBEB 0%,transparent 60%); }
+    .stat-card.c-orange::before { background: linear-gradient(135deg,#FFF7ED 0%,transparent 60%); }
     .stat-card.c-red::before    { background: linear-gradient(135deg,#FFF5F5 0%,transparent 60%); }
 
     .stat-card.c-slate:hover  { border-color: #CBD5E1; }
     .stat-card.c-blue:hover   { border-color: #BFDBFE; }
     .stat-card.c-amber:hover  { border-color: #FDE68A; }
+    .stat-card.c-orange:hover { border-color: #FDBA74; }
     .stat-card.c-red:hover    { border-color: #FECACA; }
 
     .stat-label { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #64748B; }
@@ -64,12 +66,14 @@
     .stat-icon-box.c-slate  { background: #F1F5F9; }
     .stat-icon-box.c-blue   { background: #DBEAFE; }
     .stat-icon-box.c-amber  { background: #FEF3C7; }
+    .stat-icon-box.c-orange { background: #FFEDD5; }
     .stat-icon-box.c-red    { background: #FEE2E2; }
 
     .stat-number { font-family: 'Instrument Serif', serif; font-size: 2.4rem; line-height: 1; margin-top: 12px; }
     .stat-number.c-slate  { color: #0F172A; }
     .stat-number.c-blue   { color: #2563EB; }
     .stat-number.c-amber  { color: #D97706; }
+    .stat-number.c-orange { color: #EA580C; }
     .stat-number.c-red    { color: #DC2626; }
     .stat-hint { font-size: .72rem; color: #94A3B8; margin-top: 5px; }
 
@@ -203,15 +207,33 @@
             <p class="stat-number c-amber">{{ $stats['under_review'] }}</p>
             <p class="stat-hint">With reviewers</p>
         </div>
-        <div class="stat-card c-red">
+        <div class="stat-card c-orange">
             <div class="flex items-center justify-between">
-                <span class="stat-label">Decision Pending</span>
-                <div class="stat-icon-box c-red">⏳</div>
+                <span class="stat-label">Revision Pending</span>
+                <div class="stat-icon-box c-orange">🔄</div>
             </div>
-            <p class="stat-number c-red">{{ $stats['decisions_pending'] }}</p>
-            <p class="stat-hint">Awaiting your decision</p>
+            <p class="stat-number c-orange">{{ $stats['revision_under_review'] }}</p>
+            <p class="stat-hint">Awaiting re-review</p>
         </div>
     </div>
+
+    {{-- ── Revision Reviews Alert ── --}}
+    @if ($stats['revision_under_review'] > 0)
+    <div class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-lg p-5 mb-6 fade-up-1.5">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-lg">🔄</div>
+                <div>
+                    <p class="font-semibold text-orange-900">Revision Reviews Pending</p>
+                    <p class="text-sm text-orange-700">{{ $stats['revision_under_review'] }} {{ $stats['revision_under_review'] === 1 ? 'manuscript' : 'manuscripts' }} awaiting your final decision</p>
+                </div>
+            </div>
+            <a href="{{ route('editor.submission.show', $submissions->first()) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-colors">
+                Review Now →
+            </a>
+        </div>
+    </div>
+    @endif
 
     {{-- ── Table Card ── --}}
     <div class="table-card fade-up-2">

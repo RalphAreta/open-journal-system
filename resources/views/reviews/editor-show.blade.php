@@ -272,6 +272,69 @@
             </div>
         </div>
 
+        {{-- ── Revision Re-Review Section ── --}}
+        @if ($submission->status === 'revision_under_review' && $submission->revisionRequests->isNotEmpty())
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 mb-5 shadow-sm fade-up-1">
+                <h2 class="text-[11px] font-bold uppercase tracking-[.08em] text-slate-400 mb-4">
+                    Revision Re-Review Section
+                </h2>
+                
+                @php
+                    $latestRevision = $submission->revisionRequests->last();
+                @endphp
+
+                @if ($latestRevision && $latestRevision->revision_notes)
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
+                        <p class="text-[10px] font-bold uppercase tracking-[.06em] text-blue-700 mb-1">Author's Revision Notes</p>
+                        <p class="text-sm text-blue-900">{{ $latestRevision->revision_notes }}</p>
+                    </div>
+                @endif
+
+                @if ($latestRevision && $latestRevision->revisionReviews->isNotEmpty())
+                    <div class="space-y-3">
+                        <p class="text-[10px] font-bold uppercase tracking-[.06em] text-slate-500">Reviewer Feedback on Revised Manuscript</p>
+                        @foreach ($latestRevision->revisionReviews as $rr)
+                            <div class="bg-slate-50 border border-slate-100 rounded-xl p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-800">
+                                            Reviewer: {{ $rr->reviewer->name ?? 'Anonymous' }}
+                                        </p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5">
+                                            {{ $rr->created_at?->format('M d, Y \a\t h:i A') }}
+                                        </p>
+                                    </div>
+                                    <span class="text-[10px] font-bold uppercase tracking-[.05em] px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600">
+                                        {{ \App\Models\Review::recommendationOptions()[$rr->recommendation] ?? $rr->recommendation }}
+                                    </span>
+                                </div>
+                                
+                                @if ($rr->rating)
+                                    <p class="text-xs text-slate-500 mb-2">
+                                        Rating: <span class="font-bold text-slate-700">{{ $rr->rating }}/5.0</span>
+                                    </p>
+                                @endif
+
+                                @if ($rr->comments_for_author)
+                                    <div class="mb-2">
+                                        <p class="text-xs font-semibold text-slate-600 mb-0.5">Comments for Author:</p>
+                                        <p class="text-sm text-slate-600">{{ $rr->comments_for_author }}</p>
+                                    </div>
+                                @endif
+
+                                @if ($rr->comments_for_editor)
+                                    <div class="mb-2">
+                                        <p class="text-xs font-semibold text-slate-600 mb-0.5 italic">Comments for Editor (Internal):</p>
+                                        <p class="text-sm text-slate-600 italic">{{ $rr->comments_for_editor }}</p>
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        @endif
+
         {{-- ── Reviews ── --}}
         @if ($submission->reviews->isNotEmpty())
             <div

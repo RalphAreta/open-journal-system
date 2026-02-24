@@ -50,12 +50,14 @@
     .stat-card.c-blue::before    { background: linear-gradient(135deg,#EFF6FF 0%,transparent 60%); }
     .stat-card.c-yellow::before  { background: linear-gradient(135deg,#FEFCE8 0%,transparent 60%); }
     .stat-card.c-orange::before  { background: linear-gradient(135deg,#FFF7ED 0%,transparent 60%); }
+    .stat-card.c-amber::before   { background: linear-gradient(135deg,#FFFBEB 0%,transparent 60%); }
     .stat-card.c-emerald::before { background: linear-gradient(135deg,#F0FDF4 0%,transparent 60%); }
     .stat-card.c-red::before     { background: linear-gradient(135deg,#FFF5F5 0%,transparent 60%); }
     .stat-card.c-slate:hover   { border-color: #CBD5E1; }
     .stat-card.c-blue:hover    { border-color: #BFDBFE; }
     .stat-card.c-yellow:hover  { border-color: #FDE68A; }
     .stat-card.c-orange:hover  { border-color: #FDBA74; }
+    .stat-card.c-amber:hover   { border-color: #FCD34D; }
     .stat-card.c-emerald:hover { border-color: #6EE7B7; }
     .stat-card.c-red:hover     { border-color: #FECACA; }
 
@@ -65,6 +67,7 @@
     .stat-number.c-blue    { color: #2563EB; }
     .stat-number.c-yellow  { color: #D97706; }
     .stat-number.c-orange  { color: #EA580C; }
+    .stat-number.c-amber   { color: #B45309; }
     .stat-number.c-emerald { color: #059669; }
     .stat-number.c-red     { color: #DC2626; }
 
@@ -219,14 +222,15 @@
     </div>
 
     {{-- ── Stats Grid ── --}}
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 fade-up-1">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 fade-up-1">
         @foreach([
-            ['label' => 'Total',        'value' => $stats['total'],               'cls' => 'c-slate'],
-            ['label' => 'Submitted',    'value' => $stats['submitted'],           'cls' => 'c-blue'],
-            ['label' => 'Under Review', 'value' => $stats['under_review'],        'cls' => 'c-yellow'],
-            ['label' => 'Revisions',    'value' => $stats['revisions_requested'], 'cls' => 'c-orange'],
-            ['label' => 'Accepted',     'value' => $stats['accepted'],            'cls' => 'c-emerald'],
-            ['label' => 'Rejected',     'value' => $stats['rejected'],            'cls' => 'c-red'],
+            ['label' => 'Total',                'value' => $stats['total'],                   'cls' => 'c-slate'],
+            ['label' => 'Submitted',            'value' => $stats['submitted'],               'cls' => 'c-blue'],
+            ['label' => 'Under Review',         'value' => $stats['under_review'],            'cls' => 'c-yellow'],
+            ['label' => 'Revisions Requested',  'value' => $stats['revisions_requested'],     'cls' => 'c-orange'],
+            ['label' => 'Revision Under Review','value' => $stats['revision_under_review'],   'cls' => 'c-amber'],
+            ['label' => 'Accepted',             'value' => $stats['accepted'],                'cls' => 'c-emerald'],
+            ['label' => 'Rejected',             'value' => $stats['rejected'],                'cls' => 'c-red'],
         ] as $stat)
         <div class="stat-card {{ $stat['cls'] }}">
             <span class="stat-label">{{ $stat['label'] }}</span>
@@ -273,6 +277,42 @@
                     @foreach($revisionsNeeded->take(2) as $rev)
                         <a href="{{ route('submissions.revisions', $rev) }}" class="btn-revise">Revise #{{ $rev->id }}</a>
                     @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- ── Revision Decision Alert ── --}}
+    @php 
+        $revisionDecisions = auth()->user()->submissionsAsAuthor()
+            ->whereIn('status', ['accepted', 'rejected'])
+            ->where(function($query) {
+                $query->where('decision_notes', '!=', null)
+                      ->orWhere('editor_decision_at', '!=', null);
+            })
+            ->get();
+    @endphp
+    @if ($revisionDecisions->count() > 0)
+        @php $latestDecision = $revisionDecisions->first(); @endphp
+        <div class="alert-banner fade-up-2" style="border-color: {{ $latestDecision->status === 'accepted' ? '#86efac' : '#fecaca' }}; background: {{ $latestDecision->status === 'accepted' ? '#f0fdf4' : '#fffbf5' }};">
+            <div class="alert-inner" style="background: {{ $latestDecision->status === 'accepted' ? '#f0fdf4' : '#fffbf5' }};">
+                <div class="flex items-center gap-3">
+                    <div class="alert-icon-box" style="background: {{ $latestDecision->status === 'accepted' ? '#dcfce7' : '#ffedd5' }}; color: {{ $latestDecision->status === 'accepted' ? '#22c55e' : '#ea580c' }}; border-radius: 10px;">
+                        {{ $latestDecision->status === 'accepted' ? '✓' : '!' }}
+                    </div>
+                    <div>
+                        <p class="alert-tag" style="color: {{ $latestDecision->status === 'accepted' ? '#15803d' : '#ea580c' }}; font-size: .68rem;">
+                            {{ $latestDecision->status === 'accepted' ? 'DECISION: ACCEPTED' : 'DECISION: REJECTED' }}
+                        </p>
+                        <p class="alert-desc" style="color: {{ $latestDecision->status === 'accepted' ? '#166534' : '#7c2d12' }};">
+                            The editor has made a final decision on your revised manuscript.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a href="{{ route('submissions.show', $latestDecision) }}" class="btn-revise" style="background: {{ $latestDecision->status === 'accepted' ? '#16a34a' : '#ea580c' }}; border-color: {{ $latestDecision->status === 'accepted' ? '#16a34a' : '#ea580c' }}; color: white !important; text-decoration: none;">
+                        View Details →
+                    </a>
                 </div>
             </div>
         </div>
@@ -354,16 +394,21 @@
                         <td>
                             @php
                                 $cls = match($s->status) {
-                                    'accepted'            => 'accepted',
-                                    'under_review'        => 'under_review',
-                                    'revisions_requested' => 'revisions_requested',
-                                    'rejected'            => 'rejected',
-                                    default               => 'submitted'
+                                    'accepted'              => 'accepted',
+                                    'under_review'          => 'under_review',
+                                    'revision_under_review' => 'under_review',
+                                    'revisions_requested'   => 'revisions_requested',
+                                    'rejected'              => 'rejected',
+                                    default                 => 'submitted'
+                                };
+                                $displayStatus = match($s->status) {
+                                    'revision_under_review' => 'Revision Under Review',
+                                    default                 => str_replace('_', ' ', $s->status)
                                 };
                             @endphp
                             <span class="s-badge {{ $cls }} status-cell">
                                 <span class="dot"></span>
-                                {{ str_replace('_', ' ', $s->status) }}
+                                {{ ucfirst($displayStatus) }}
                             </span>
                         </td>
                         <td class="text-right">

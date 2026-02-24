@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Submission;
 use App\Models\RevisionRequest;
+use App\Models\RevisionReview;
+use App\Services\RevisionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -162,43 +164,14 @@ class SubmissionController extends Controller
         $file = $request->file('file');
         $path = $file->store('submissions/' . $request->user()->id . '/revisions', 'local');
 
-        // Create new submission version or update existing
-        $revisedSubmission = Submission::create([
-            'author_id' => $request->user()->id,
-            'title' => $submission->title,
-            'abstract' => $submission->abstract,
-            'keywords' => $submission->keywords,
-            'research_field' => $submission->research_field,
-            'file_path' => $path,
-            'file_name' => $file->getClientOriginalName(),
-            'status' => Submission::STATUS_UNDER_REVIEW,
-            'assigned_editor_id' => $submission->assigned_editor_id,
-            'submitted_at' => now(),
-        ]);
+        // Use service to process revision
+        RevisionService::processRevisionSubmission(
+            $revisionRequest,
+            $path,
+            $validated['revision_notes']
+        );
 
-        // Update revision request
-        $revisionRequest->update([
-            'revised_submission_id' => $revisedSubmission->id,
-            'revised_at' => now(),
-            'revision_notes' => $validated['revision_notes'],
-        ]);
-
-        // Update original submission status
-        $submission->update([
-            'status' => Submission::STATUS_SUBMITTED,
-        ]);
-
-      // Notify the specific person who requested the revision
-\App\Models\Notification::create([
-    'user_id'         => $revisionRequest->requested_by_user_id,
-    'title'           => '📄 Revised Manuscript Submitted',
-    'message'         => "The author has submitted a revised manuscript for \"{$submission->title}\".\n\nAuthor Notes: {$validated['revision_notes']}",
-    'type'            => 'info',
-    'notifiable_id'   => $submission->id,
-    'notifiable_type' => Submission::class,
-]);
-
-return redirect()->route('submissions.show', $submission)
-    ->with('success', 'Revised manuscript submitted successfully. Awaiting editor review.');
+        return redirect()->route('submissions.show', $submission)
+            ->with('success', 'Revised manuscript submitted successfully. Awaiting review.');
     }
 }

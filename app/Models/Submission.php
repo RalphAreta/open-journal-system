@@ -43,6 +43,7 @@ class Submission extends Model
     public const STATUS_SUBMITTED = 'submitted';
     public const STATUS_UNDER_REVIEW = 'under_review';
     public const STATUS_REVISIONS_REQUESTED = 'revisions_requested';
+    public const STATUS_REVISION_UNDER_REVIEW = 'revision_under_review';
     public const STATUS_ACCEPTED = 'accepted';
     public const STATUS_REJECTED = 'rejected';
 
@@ -56,6 +57,7 @@ class Submission extends Model
             self::STATUS_SUBMITTED => 'Submitted',
             self::STATUS_UNDER_REVIEW => 'Under Review',
             self::STATUS_REVISIONS_REQUESTED => 'Revisions Requested',
+            self::STATUS_REVISION_UNDER_REVIEW => 'Revision Under Review',
             self::STATUS_ACCEPTED => 'Accepted',
             self::STATUS_REJECTED => 'Rejected',
         ];
