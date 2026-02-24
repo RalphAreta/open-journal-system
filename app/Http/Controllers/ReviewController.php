@@ -153,7 +153,7 @@ class ReviewController extends Controller
     $validated = $request->validate([
         'screening_status' => 'required|in:passed,failed,revision',
         'comments'         => 'required|string|max:2000',
-        'revision_type'    => 'required_if:screening_status,revision|in:minor,major',
+       'revision_type' => 'nullable|required_if:screening_status,revision|in:minor,major',
     ]);
 
     if ($validated['screening_status'] === 'revision') {
@@ -262,7 +262,7 @@ class ReviewController extends Controller
         return back()->with('success', 'Reviewer assigned.');
     }
 
-    /**
+/**
      * Editor: make decision on submission.
      */
     public function editorDecision(Request $request, Submission $submission): RedirectResponse
@@ -272,26 +272,26 @@ class ReviewController extends Controller
         }
 
         $validated = $request->validate([
-            'status' => ['required', 'in:accepted,rejected,revisions_requested'],
-            'editor_notes' => ['nullable', 'string'],
-            'revision_type' => ['required_if:status,revisions_requested', 'in:minor,major'],
-            'revision_reason' => ['required_if:status,revisions_requested', 'string'],
+            'status'          => ['required', 'in:accepted,rejected,revisions_requested'],
+            'editor_notes'    => ['nullable', 'string'],
+            'revision_type'   => ['nullable', 'required_if:status,revisions_requested', 'in:minor,major'],
+            'revision_reason' => ['nullable', 'required_if:status,revisions_requested', 'string'],
         ]);
 
         $submission->update([
-            'status' => $validated['status'],
-            'editor_id' => $request->user()->id,
+            'status'             => $validated['status'],
+            'editor_id'          => $request->user()->id,
             'editor_decision_at' => now(),
-            'editor_notes' => $validated['editor_notes'] ?? null,
+            'editor_notes'       => $validated['editor_notes'] ?? null,
         ]);
 
         if ($validated['status'] === Submission::STATUS_REVISIONS_REQUESTED) {
             RevisionRequest::create([
-                'submission_id' => $submission->id,
+                'submission_id'        => $submission->id,
                 'requested_by_user_id' => $request->user()->id,
-                'revision_type' => $validated['revision_type'],
-                'reason' => $validated['revision_reason'],
-                'requested_at' => now(),
+                'revision_type'        => $validated['revision_type'],
+                'reason'               => $validated['revision_reason'],
+                'requested_at'         => now(),
             ]);
 
             return redirect()->route('editor.submissions')
