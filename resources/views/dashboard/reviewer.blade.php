@@ -181,10 +181,15 @@
     {{-- ── Notifications ── --}}
     @if ($notifications->count() > 0)
     <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-6 shadow-sm fade-up-2">
-        <h2 class="text-[10px] font-bold uppercase tracking-[.08em] text-slate-400 mb-4">Notifications</h2>
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-[10px] font-bold uppercase tracking-[.08em] text-slate-400">Notifications</h2>
+            @if($notifications->count() > 3)
+            <span class="text-[10px] font-semibold text-slate-400">{{ $notifications->count() }} total</span>
+            @endif
+        </div>
         <div class="space-y-2">
-            @foreach ($notifications as $notif)
-            <div class="flex items-start gap-3 px-4 py-3 rounded-xl border transition-colors
+            @foreach ($notifications->take(3) as $notif)
+            <div class="notification-item flex items-start gap-3 px-4 py-3 rounded-xl border transition-colors
                 {{ $notif->isUnread() ? 'bg-red-50/60 border-red-100' : 'bg-slate-50 border-slate-100' }}">
                 @if($notif->isUnread())
                 <span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0 mt-1.5"></span>
@@ -212,6 +217,49 @@
                 </div>
             </div>
             @endforeach
+
+            {{-- Hidden additional notifications --}}
+            @if($notifications->count() > 3)
+            <div id="moreNotifications" class="hidden space-y-2">
+                @foreach ($notifications->slice(3) as $notif)
+                <div class="notification-item flex items-start gap-3 px-4 py-3 rounded-xl border transition-colors
+                    {{ $notif->isUnread() ? 'bg-red-50/60 border-red-100' : 'bg-slate-50 border-slate-100' }}">
+                    @if($notif->isUnread())
+                    <span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0 mt-1.5"></span>
+                    @endif
+                    <span class="text-base flex-shrink-0">
+                        @if($notif->type === 'success') ✅
+                        @elseif($notif->type === 'danger') ❌
+                        @elseif($notif->type === 'warning') ⚠️
+                        @else 📋
+                        @endif
+                    </span>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-baseline justify-between gap-2">
+                            <p class="text-sm font-bold text-slate-800 truncate">{{ $notif->title }}</p>
+                            <span class="text-[10px] text-slate-400 whitespace-nowrap">{{ $notif->created_at->diffForHumans() }}</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">{{ $notif->message }}</p>
+                        @if($notif->notifiable_type === \App\Models\Submission::class)
+                        <a href="{{ route('reviewer.pending-assignments') }}"
+                           onclick="markRead({{ $notif->id }})"
+                           class="text-xs font-bold text-red-500 hover:text-red-700 mt-1 inline-block transition-colors">
+                            View Assignments →
+                        </a>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            {{-- See More Button --}}
+            <button type="button" onclick="toggleMoreNotifications()"
+                    class="w-full mt-3 px-4 py-2.5 text-center text-[11px] font-bold uppercase tracking-[.05em] text-slate-600 hover:text-slate-900 
+                           bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-all hover:-translate-y-0.5">
+                <span id="seeMoreText">See More</span>
+                <span id="seeLessText" class="hidden">See Less</span>
+            </button>
+            @endif
         </div>
     </div>
     @endif
@@ -421,6 +469,22 @@ function markRead(id) {
         method: 'POST',
         headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
     });
+}
+
+function toggleMoreNotifications() {
+    const moreContainer = document.getElementById('moreNotifications');
+    const seeMoreText = document.getElementById('seeMoreText');
+    const seeLessText = document.getElementById('seeLessText');
+    
+    if (moreContainer.classList.contains('hidden')) {
+        moreContainer.classList.remove('hidden');
+        seeMoreText.classList.add('hidden');
+        seeLessText.classList.remove('hidden');
+    } else {
+        moreContainer.classList.add('hidden');
+        seeMoreText.classList.remove('hidden');
+        seeLessText.classList.add('hidden');
+    }
 }
 </script>
 @endpush
