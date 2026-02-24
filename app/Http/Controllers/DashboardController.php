@@ -15,7 +15,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        
+
         // Special handling for editor-in-chief
         if ($user?->isEditorInChief()) {
             return redirect()->route('chief-editor.dashboard');
