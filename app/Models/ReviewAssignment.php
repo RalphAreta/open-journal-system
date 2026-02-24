@@ -52,11 +52,6 @@ class ReviewAssignment extends Model
         return $this->hasOne(Review::class);
     }
 
-    public function refereeInvitation(): BelongsTo
-    {
-        return $this->belongsTo(RefereeInvitation::class);
-    }
-
     public function revisionRequest(): HasOneThrough
     {
         return $this->hasOneThrough(

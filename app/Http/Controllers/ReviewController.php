@@ -10,6 +10,7 @@ use App\Models\RevisionReview;
 use App\Services\RevisionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -130,7 +131,7 @@ class ReviewController extends Controller
      */
     public function editorShow(Submission $submission): View
     {
-        if ($submission->assigned_editor_id !== auth()->id()) {
+        if ($submission->assigned_editor_id !== request()->user()->id) {
             abort(403, 'You do not have access to this submission.');
         }
 
@@ -165,7 +166,7 @@ class ReviewController extends Controller
      */
     public function editorInitialScreening(Submission $submission): View
     {
-        if ($submission->assigned_editor_id !== auth()->id()) {
+        if ($submission->assigned_editor_id !== request()->user()->id) {
             abort(403, 'You do not have access to this submission.');
         }
 
@@ -200,7 +201,7 @@ class ReviewController extends Controller
             'status'                     => Submission::STATUS_REVISIONS_REQUESTED,
             'initial_screening_status'   => 'failed',
             'initial_screening_comments' => $validated['comments'],
-            'initial_screening_by'       => auth()->id(),
+            'initial_screening_by'       => $request->user()->id,
             'initial_screening_at'       => now(),
         ]);
 
@@ -222,7 +223,7 @@ class ReviewController extends Controller
     $submission->update([
         'initial_screening_status'   => $validated['screening_status'],
         'initial_screening_comments' => $validated['comments'],
-        'initial_screening_by'       => auth()->id(),
+        'initial_screening_by'       => $request->user()->id,
         'initial_screening_at'       => now(),
     ]);
 
@@ -384,7 +385,7 @@ class ReviewController extends Controller
      */
     public function pendingReviewerAssignments(): View
     {
-        $assignments = ReviewAssignment::where('reviewer_id', auth()->id())
+        $assignments = ReviewAssignment::where('reviewer_id', request()->user()->id)
             ->whereIn('status', ['pending', 'agreed'])
             ->with(['submission.author', 'reviewer', 'editor'])
             ->latest()
@@ -402,8 +403,8 @@ class ReviewController extends Controller
             abort(404, 'File not found.');
         }
 
-        return Storage::disk('local')->download(
-            $submission->file_path,
+        return response()->streamDownload(
+            fn() => Storage::disk('local')->get($submission->file_path),
             $submission->file_name
         );
     }
@@ -525,7 +526,7 @@ public function editorRevisionReviews(Request $request): View
  */
 public function editorRevisionDecision(Request $request, Submission $submission): RedirectResponse
 {
-        \Log::info('editorRevisionDecision called', [
+        Log::info('editorRevisionDecision called', [
             'submission_id' => $submission->id,
             'user_id' => $request->user()->id,
             'assigned_editor_id' => $submission->assigned_editor_id,
@@ -547,7 +548,7 @@ public function editorRevisionDecision(Request $request, Submission $submission)
             'revision_reason' => ['required_if:decision,revisions_requested', 'string'],
         ]);
 
-        \Log::info('Validation passed', ['validated' => $validated]);
+        Log::info('Validation passed', ['validated' => $validated]);
 
         // Map decision to status constant
         $statusMap = [
@@ -557,7 +558,7 @@ public function editorRevisionDecision(Request $request, Submission $submission)
         ];
 
         $mappedStatus = $statusMap[$validated['decision']];
-        \Log::info('Status mapping', [
+        Log::info('Status mapping', [
             'decision' => $validated['decision'],
             'mappedStatus' => $mappedStatus,
         ]);
@@ -569,7 +570,7 @@ public function editorRevisionDecision(Request $request, Submission $submission)
             'editor_notes' => $validated['editor_notes'] ?? null,
         ]);
 
-        \Log::info('Update result', [
+        Log::info('Update result', [
             'updated' => $updated,
             'submission_status_after' => $submission->fresh()->status,
         ]);
