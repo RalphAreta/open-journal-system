@@ -9,10 +9,19 @@
             <h1 class="text-5xl font-bold text-slate-900 mb-2">Manage Editor Expertise</h1>
             <p class="text-lg text-slate-600">Set and update fields of expertise for each editor</p>
         </div>
-        <a href="{{ route('admin.expertise-categories.index') }}"
-           class="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg transition-colors text-sm font-medium">
-            ⚙️ Manage Categories
-        </a>
+        <div class="flex items-center gap-3">
+            {{-- Added Back Button --}}
+            <a href="{{ route('dashboard.admin') }}"
+               class="inline-flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-500 px-4 py-2 rounded-lg transition-colors text-sm font-medium">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back
+            </a>
+
+            <a href="{{ route('admin.expertise-categories.index') }}"
+               class="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg transition-colors text-sm font-medium">
+                ⚙️ Manage Categories
+            </a>
+        </div>
     </div>
 </div>
 

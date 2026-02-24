@@ -5,18 +5,26 @@
 @section('content')
 <div class="max-w-4xl mx-auto py-8 px-4" x-data="{ tab: 'settings' }">
     {{-- Header Section --}}
-    <div class="mb-8">
-        <nav class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
-            <a href="{{ route('dashboard') }}" class="hover:text-red-600 transition-colors">Admin</a>
-            <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
-            <a href="{{ route('admin.roles.index') }}" class="hover:text-red-600 transition-colors">Roles</a>
-            <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3"/></svg>
-            <span class="text-slate-900 tracking-widest uppercase">Editor</span>
-        </nav>
-        <h1 class="text-4xl font-black text-red-600 tracking-tighter uppercase italic">{{ $role->display_name }}</h1>
+    <div class="flex items-start justify-between mb-8">
+        <div>
+            <nav class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
+                <a href="{{ route('dashboard.admin') }}">Admin</a>
+                <span>&gt;</span>
+                <a href="{{ route('admin.roles.index') }}">Roles</a>
+                <span>&gt;</span>
+                <span class="text-slate-900">{{ $role->name }}</span>
+            </nav>
+            <h1 class="text-6xl font-black text-red-600 uppercase italic tracking-tighter">{{ $role->display_name }}</h1>
+        </div>
+
+        {{-- Added Back Button --}}
+        <a href="{{ route('admin.roles.index') }}" class="px-6 py-3 bg-white border border-slate-200 text-slate-500 rounded-2xl text-xs font-bold uppercase tracking-wide hover:bg-slate-50 transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back
+        </a>
     </div>
 
-    {{-- Brutalist Tab Switcher --}}
+    {{-- Tab Switcher --}}
     <div class="flex gap-2 mb-6">
         <button @click="tab = 'settings'"
             :class="tab === 'settings' ? 'bg-red-600 text-white shadow-lg shadow-red-100' : 'bg-white text-slate-400 border border-slate-200'"
@@ -61,20 +69,21 @@
         </div>
 
         {{-- Danger Zone --}}
-        @if($role->name !== 'admin')
         <div class="bg-red-50 border border-red-100 rounded-[2rem] p-8 flex items-center justify-between">
             <div>
                 <p class="text-[10px] font-black text-red-600 uppercase tracking-widest mb-1">Danger Zone</p>
                 <p class="text-xs text-red-400 font-medium">Permanently remove this role from the system.</p>
             </div>
-            <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this role?')">
+
+            <form id="delete-role-form" action="{{ route('admin.roles.destroy', $role) }}" method="POST">
                 @csrf @method('DELETE')
-                <button type="submit" class="text-[10px] font-black text-red-600 uppercase tracking-widest hover:underline">
+                <button type="button"
+                    onclick="confirmRoleDeletion('{{ $role->display_name }}')"
+                    class="text-[10px] font-black text-red-600 uppercase tracking-widest hover:underline">
                     Delete Role
                 </button>
             </form>
         </div>
-        @endif
     </div>
 
     {{-- Tab 2: User List --}}
@@ -96,14 +105,40 @@
                     </a>
                 </div>
             @empty
-                <div class="text-center py-20">
-                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-width="2"/></svg>
-                    </div>
-                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">No Users Found</p>
+                <div class="text-center py-20 text-slate-300 font-black uppercase text-[10px]">
+                    No Users Found
                 </div>
             @endforelse
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function confirmRoleDeletion(roleName) {
+        Swal.fire({
+            title: 'Delete Role?',
+            text: `Are you sure you want to permanently remove the "${roleName}" role?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, Delete it',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+            customClass: {
+                popup: 'rounded-[2.5rem] border border-slate-100 shadow-2xl p-6',
+                title: 'text-2xl font-black tracking-tighter uppercase italic text-slate-900',
+                confirmButton: 'px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest mx-2',
+                cancelButton: 'px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest mx-2'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form
+                document.getElementById('delete-role-form').submit();
+            }
+        });
+    }
+</script>
+@endpush
 @endsection

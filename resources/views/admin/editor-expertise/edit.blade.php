@@ -4,8 +4,21 @@
 
 @section('content')
 <div class="mb-8">
-    <h1 class="text-5xl font-bold text-slate-900 mb-2">Edit {{ $user->name }}'s Expertise</h1>
-    <p class="text-lg text-slate-600">{{ $user->email }}</p>
+    <div class="flex items-start justify-between">
+        <div>
+            <h1 class="text-5xl font-bold text-slate-900 mb-2">Edit {{ $user->name }}'s Expertise</h1>
+            <p class="text-lg text-slate-600">{{ $user->email }}</p>
+        </div>
+
+        {{-- Added Back Button --}}
+        <a href="{{ route('admin.editor-expertise.index') }}"
+           class="inline-flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-500 px-4 py-2 rounded-lg transition-colors text-sm font-medium">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+        </a>
+    </div>
 </div>
 
 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 max-w-4xl">
@@ -72,7 +85,7 @@
             <button type="submit" class="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors font-semibold">
                 ✓ Save Changes
             </button>
-            <a href="{{ route('admin.editor-expertise.show', $user) }}" class="inline-block bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors px-6 py-3 rounded-lg font-semibold">
+            <a href="{{ route('admin.editor-expertise.index') }}" class="inline-block bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors px-6 py-3 rounded-lg font-semibold">
                 Cancel
             </a>
         </div>

@@ -30,7 +30,10 @@ class RoleController extends Controller
         ]);
 
         $role->update($validated);
-        return redirect()->route('admin.roles.index')->with('success', 'Role updated.');
+
+        // Redirecting with success will trigger the SweetAlert in layouts.app
+        return redirect()->route('admin.roles.index')
+            ->with('success', 'Role "' . $role->display_name . '" updated successfully.');
     }
 
     /**
@@ -39,19 +42,24 @@ class RoleController extends Controller
     public function destroy(Role $role): RedirectResponse
     {
         // Safety check: Prevent deleting core system roles
-        $protectedRoles = ['admin', 'author', 'reviewer', 'editor'];
+        // Added 'editor-in-chief' to match common system structures
+        $protectedRoles = ['admin', 'author', 'reviewer', 'editor', 'editor-in-chief'];
 
         if (in_array(strtolower($role->name), $protectedRoles)) {
-            return redirect()->back()->with('error', 'Core system roles cannot be deleted.');
+            return redirect()->back()->with('error', 'The ' . $role->display_name . ' role is a core system requirement and cannot be deleted.');
         }
 
-        // Optional: Check if the role still has users assigned
+        // Check if the role still has users assigned
+        // If users exist, we send an 'error' session which triggers the Red SweetAlert
         if ($role->users()->count() > 0) {
-            return redirect()->back()->with('error', 'Cannot delete role while users are still assigned to it.');
+            return redirect()->back()->with('error', 'Action Denied: There are still ' . $role->users()->count() . ' users assigned to this role.');
         }
 
+        $roleName = $role->display_name;
         $role->delete();
 
-        return redirect()->route('admin.roles.index')->with('success', 'Role deleted successfully.');
+        // This success message will trigger the Green SweetAlert on the index page
+        return redirect()->route('admin.roles.index')
+            ->with('success', 'Role "' . $roleName . '" has been permanently removed.');
     }
 }
