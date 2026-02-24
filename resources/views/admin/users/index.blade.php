@@ -56,16 +56,15 @@
                             </div>
                         </td>
                         <td class="p-6">
-                            {{-- ALIGNED ACTIONS --}}
                             <div class="flex items-center justify-end gap-4">
                                 <a href="{{ route('admin.users.edit', $u) }}" class="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-800 transition-colors">
                                     Edit
                                 </a>
 
                                 @if(!$u->isAdmin() || \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'admin'))->count() > 1)
-                                    <form method="POST" action="{{ route('admin.users.destroy', $u) }}" class="inline-flex" onsubmit="return confirm('Permanently delete this user?');">
+                                    <form id="delete-form-{{ $u->id }}" method="POST" action="{{ route('admin.users.destroy', $u) }}" class="inline-flex">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="text-[10px] font-black uppercase tracking-widest text-red-600 hover:text-red-800 transition-colors">
+                                        <button type="button" onclick="confirmUserDeletion({{ $u->id }}, '{{ $u->name }}')" class="text-[10px] font-black uppercase tracking-widest text-red-600 hover:text-red-800 transition-colors">
                                             Delete
                                         </button>
                                     </form>
@@ -88,4 +87,32 @@
         @endif
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function confirmUserDeletion(userId, userName) {
+        Swal.fire({
+            title: 'Delete user?',
+            text: `Are you sure you want to remove ${userName}? This action cannot be undone.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626', // red-600
+            cancelButtonColor: '#64748b',  // slate-500
+            confirmButtonText: 'Yes, delete permanently',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+            customClass: {
+                popup: 'rounded-3xl border border-slate-100 shadow-2xl',
+                title: 'text-2xl font-black tracking-tighter uppercase',
+                confirmButton: 'px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest',
+                cancelButton: 'px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + userId).submit();
+            }
+        });
+    }
+</script>
+@endpush
 @endsection
