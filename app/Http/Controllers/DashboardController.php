@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ReviewAssignment;
 use App\Models\Submission;
 use App\Models\RevisionReview;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -29,77 +30,68 @@ class DashboardController extends Controller
         return redirect()->route('login');
     }
 
-   public function author(Request $request): View
-{
-    $user = $request->user();
+    public function author(Request $request): View
+    {
+        $user = $request->user();
 
-    $submissions = $user->submissionsAsAuthor()
-    ->with(['reviews' => function($q) {
-        $q->latest();
-    }])
-    ->latest()
-    ->paginate(10);
+        $submissions = $user->submissionsAsAuthor()
+            ->with(['reviews' => function($q) {
+                $q->latest();
+            }])
+            ->latest()
+            ->paginate(10);
 
-    $stats = [
-        'total'                   => $user->submissionsAsAuthor()->count(),
-        'submitted'               => $user->submissionsAsAuthor()->where('status', Submission::STATUS_SUBMITTED)->count(),
-        'under_review'            => $user->submissionsAsAuthor()->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
-        'revisions_requested'     => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REVISIONS_REQUESTED)->count(),
-        'revision_under_review'   => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REVISION_UNDER_REVIEW)->count(),
-        'accepted'                => $user->submissionsAsAuthor()->where('status', Submission::STATUS_ACCEPTED)->count(),
-        'rejected'                => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REJECTED)->count(),
-    ];
+        $stats = [
+            'total'                 => $user->submissionsAsAuthor()->count(),
+            'submitted'             => $user->submissionsAsAuthor()->where('status', Submission::STATUS_SUBMITTED)->count(),
+            'under_review'          => $user->submissionsAsAuthor()->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
+            'revisions_requested'   => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REVISIONS_REQUESTED)->count(),
+            'revision_under_review' => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REVISION_UNDER_REVIEW)->count(),
+            'accepted'              => $user->submissionsAsAuthor()->where('status', Submission::STATUS_ACCEPTED)->count(),
+            'rejected'              => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REJECTED)->count(),
+        ];
 
-    // ✅ DAGDAG LANG ITO
-    $notifications = \App\Models\Notification::where('user_id', $user->id)
-        ->latest()
-        ->take(10)
-        ->get();
+        $notifications = Notification::where('user_id', $user->id)
+            ->latest()
+            ->take(10)
+            ->get();
 
-    return view('dashboard.author', compact('submissions', 'stats', 'notifications')); // ✅ dagdag ang notifications
-}
+        return view('dashboard.author', compact('submissions', 'stats', 'notifications'));
+    }
 
     public function reviewer(Request $request): View
-{
-    $user = $request->user(); // ✅ ideclare muna si $user
+    {
+        $user = $request->user();
 
-    $assignments = $user->reviewAssignments()
-        ->with(['submission.author', 'submission.reviews'])
-        ->latest()
-        ->paginate(10);
+        // 1. Standard Review Assignments
+        $assignments = $user->reviewAssignments()
+            ->with(['submission.author', 'submission.reviews'])
+            ->latest()
+            ->paginate(10);
 
-    // Get pending revision reviews
-    $revisionReviews = RevisionReview::where('reviewer_id', $user->id)
-        ->where('status', RevisionReview::STATUS_ASSIGNED)
-        ->with(['revisionRequest.submission.author'])
-        ->latest()
-        ->get();
+        // 2. Pending Revision Reviews (The new system)
+        $revisionReviews = RevisionReview::where('reviewer_id', $user->id)
+            ->where('status', RevisionReview::STATUS_ASSIGNED)
+            ->with(['revisionRequest.submission.author'])
+            ->latest()
+            ->get();
 
-    $stats = [
-        'pending'               => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_ASSIGNED)->count(),
-        'completed'             => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_COMPLETED)->count(),
-        'pending_revisions'     => $revisionReviews->count(),
-        'completed_revisions'   => RevisionReview::where('reviewer_id', $user->id)->where('status', RevisionReview::STATUS_COMPLETED)->count(),
-    ];
+        // 3. Stats Calculation
+        $stats = [
+            'pending'             => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_ASSIGNED)->count(),
+            'completed'           => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_COMPLETED)->count(),
+            'pending_revisions'   => $revisionReviews->count(),
+            'completed_revisions' => RevisionReview::where('reviewer_id', $user->id)->where('status', RevisionReview::STATUS_COMPLETED)->count(),
+        ];
 
-    $notifications = \App\Models\Notification::where('user_id', $user->id)
-        ->latest()
-        ->take(10)
-        ->get();
-HEAD
-    // Get review assignments for submissions with pending revision requests
-    $revisionReviews = $user->reviewAssignments()
-        ->whereHas('submission.revisionRequests', function ($query) {
-            $query->whereNull('revised_at'); // Only pending revision requests
-        })
-        ->with(['submission.author', 'submission.revisionRequests'])
-        ->latest()
-        ->get();
+        // 4. Notifications
+        $notifications = Notification::where('user_id', $user->id)
+            ->latest()
+            ->take(10)
+            ->get();
 
-    return view('dashboard.reviewer', compact('assignments', 'stats', 'notifications', 'revisionReviews')); // ✅ dagdag ang notifications
-    return view('dashboard.reviewer', compact('assignments', 'revisionReviews', 'stats', 'notifications')); // ✅ dagdag ang notifications
-f305276230e974f2b7f10ac6bf061d61c98e8b24
-}
+        return view('dashboard.reviewer', compact('assignments', 'revisionReviews', 'stats', 'notifications'));
+    }
 
     public function editor(Request $request): View
     {
