@@ -14,9 +14,15 @@
             </nav>
             <h1 class="text-3xl font-black text-slate-900 tracking-tighter uppercase italic">Users</h1>
         </div>
-        <a href="{{ route('admin.users.create') }}" class="px-6 py-3 bg-red-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-lg shadow-red-100 active:scale-95">
-            Add New User
-        </a>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('dashboard.admin') }}" class="px-6 py-3 bg-white border border-slate-200 text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 hover:text-slate-600 transition-all active:scale-95 flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back
+            </a>
+            <a href="{{ route('admin.users.create') }}" class="px-6 py-3 bg-red-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-lg shadow-red-100 active:scale-95">
+                Add New User
+            </a>
+        </div>
     </div>
 
     {{-- Thinner Filter & Search Section --}}

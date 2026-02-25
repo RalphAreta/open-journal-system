@@ -181,10 +181,15 @@
     {{-- ── Notifications ── --}}
     @if ($notifications->count() > 0)
     <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-6 shadow-sm fade-up-2">
-        <h2 class="text-[10px] font-bold uppercase tracking-[.08em] text-slate-400 mb-4">Notifications</h2>
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-[10px] font-bold uppercase tracking-[.08em] text-slate-400">Notifications</h2>
+            @if($notifications->count() > 3)
+            <span class="text-[10px] font-semibold text-slate-400">{{ $notifications->count() }} total</span>
+            @endif
+        </div>
         <div class="space-y-2">
-            @foreach ($notifications as $notif)
-            <div class="flex items-start gap-3 px-4 py-3 rounded-xl border transition-colors
+            @foreach ($notifications->take(3) as $notif)
+            <div class="notification-item flex items-start gap-3 px-4 py-3 rounded-xl border transition-colors
                 {{ $notif->isUnread() ? 'bg-red-50/60 border-red-100' : 'bg-slate-50 border-slate-100' }}">
                 @if($notif->isUnread())
                 <span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0 mt-1.5"></span>
@@ -212,6 +217,142 @@
                 </div>
             </div>
             @endforeach
+
+            {{-- Hidden additional notifications --}}
+            @if($notifications->count() > 3)
+            <div id="moreNotifications" class="hidden space-y-2">
+                @foreach ($notifications->slice(3) as $notif)
+                <div class="notification-item flex items-start gap-3 px-4 py-3 rounded-xl border transition-colors
+                    {{ $notif->isUnread() ? 'bg-red-50/60 border-red-100' : 'bg-slate-50 border-slate-100' }}">
+                    @if($notif->isUnread())
+                    <span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0 mt-1.5"></span>
+                    @endif
+                    <span class="text-base flex-shrink-0">
+                        @if($notif->type === 'success') ✅
+                        @elseif($notif->type === 'danger') ❌
+                        @elseif($notif->type === 'warning') ⚠️
+                        @else 📋
+                        @endif
+                    </span>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-baseline justify-between gap-2">
+                            <p class="text-sm font-bold text-slate-800 truncate">{{ $notif->title }}</p>
+                            <span class="text-[10px] text-slate-400 whitespace-nowrap">{{ $notif->created_at->diffForHumans() }}</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">{{ $notif->message }}</p>
+                        @if($notif->notifiable_type === \App\Models\Submission::class)
+                        <a href="{{ route('reviewer.pending-assignments') }}"
+                           onclick="markRead({{ $notif->id }})"
+                           class="text-xs font-bold text-red-500 hover:text-red-700 mt-1 inline-block transition-colors">
+                            View Assignments →
+                        </a>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            {{-- See More Button --}}
+            <button type="button" onclick="toggleMoreNotifications()"
+                    class="w-full mt-3 px-4 py-2.5 text-center text-[11px] font-bold uppercase tracking-[.05em] text-slate-600 hover:text-slate-900
+                           bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-all hover:-translate-y-0.5">
+                <span id="seeMoreText">See More</span>
+                <span id="seeLessText" class="hidden">See Less</span>
+            </button>
+            @endif
+        </div>
+    </div>
+    @endif
+
+    {{-- ── Revised Manuscripts Section ── --}}
+    @if ($revisionReviews->count() > 0)
+    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm fade-up-2 mb-6">
+        <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-purple-50 to-amber-50 border-b border-slate-100">
+            <div>
+                <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <span class="text-lg">🔄</span>
+                    Revised Manuscripts Awaiting Review
+                </h2>
+                <p class="text-xs text-slate-500 mt-1">Authors have submitted revisions - your feedback is needed</p>
+            </div>
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-purple-600 text-white text-xs font-bold shadow-sm">
+                {{ $revisionReviews->count() }}
+            </span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-slate-100">
+                        <th class="px-6 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Manuscript</th>
+                        <th class="px-6 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Author</th>
+                        <th class="px-6 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Type</th>
+                        <th class="px-6 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Notes</th>
+                        <th class="px-6 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Deadline</th>
+                        <th class="px-6 py-3 text-right text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($revisionReviews as $rr)
+                    @php
+                        $daysLeft = $rr->due_at ? now()->diffInDays($rr->due_at, false) : null;
+                    @endphp
+                    <tr class="border-b border-slate-50 last:border-0 hover:bg-purple-50/40 transition-colors group">
+                        <td class="px-6 py-3.5">
+                            <a href="{{ route('reviews.revision-create', $rr) }}" class="text-sm font-semibold text-slate-800 group-hover:text-purple-600 transition-colors line-clamp-2">
+                                {{ Str::limit($rr->revisionRequest->submission->title, 50) }}
+                            </a>
+                        </td>
+                        <td class="px-6 py-3.5">
+                            <p class="text-sm text-slate-600">{{ $rr->revisionRequest->submission->author->name ?? '—' }}</p>
+                        </td>
+                        <td class="px-6 py-3.5">
+                            @if ($rr->revisionRequest->revision_type === 'minor')
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-yellow-50 border border-yellow-200 text-[10px] font-bold uppercase tracking-[.04em] text-yellow-700">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>Minor
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-50 border border-orange-200 text-[10px] font-bold uppercase tracking-[.04em] text-orange-700">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>Major
+                                </span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-3.5">
+                            @if ($rr->revisionRequest->revision_notes)
+                                <p class="text-sm text-slate-600 truncate" title="{{ $rr->revisionRequest->revision_notes }}">
+                                    {{ Str::limit($rr->revisionRequest->revision_notes, 35, '...') }}
+                                </p>
+                            @else
+                                <span class="text-sm text-slate-400">—</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-3.5">
+                            @if ($rr->due_at)
+                                <div class="text-sm">
+                                    @if ($daysLeft < 0)
+                                        <p class="font-bold text-red-600">{{ abs($daysLeft) }}d overdue</p>
+                                    @elseif ($daysLeft <= 3)
+                                        <p class="font-bold text-amber-600">{{ $daysLeft }}d left</p>
+                                    @else
+                                        <p class="font-semibold text-emerald-600">{{ $daysLeft }}d left</p>
+                                    @endif
+                                    <p class="text-[10px] text-slate-400 mt-0.5">{{ $rr->due_at->format('M d') }}</p>
+                                </div>
+                            @else
+                                <span class="text-sm text-slate-400">—</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-3.5 text-right">
+                            <a href="{{ route('reviews.revision-create', $rr) }}" class="inline-flex items-center gap-1.5 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-[11px] font-bold transition-all hover:-translate-y-0.5 shadow-sm hover:shadow-md">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                                Review
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
     @endif
@@ -328,6 +469,22 @@ function markRead(id) {
         method: 'POST',
         headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
     });
+}
+
+function toggleMoreNotifications() {
+    const moreContainer = document.getElementById('moreNotifications');
+    const seeMoreText = document.getElementById('seeMoreText');
+    const seeLessText = document.getElementById('seeLessText');
+
+    if (moreContainer.classList.contains('hidden')) {
+        moreContainer.classList.remove('hidden');
+        seeMoreText.classList.add('hidden');
+        seeLessText.classList.remove('hidden');
+    } else {
+        moreContainer.classList.add('hidden');
+        seeMoreText.classList.remove('hidden');
+        seeLessText.classList.add('hidden');
+    }
 }
 </script>
 @endpush
