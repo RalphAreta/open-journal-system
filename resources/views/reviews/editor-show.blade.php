@@ -745,18 +745,27 @@
                     @csrf
 
                     <div>
-                        <p
-                            class="text-xs font-bold uppercase tracking-[.07em] text-slate-500 mb-3"
-                        >
-                            @if ($matchedReviewers->count() > 0)
-                                Matched for
-                                <span class="text-blue-600">
-                                    {{ $submission->research_field }}
-                                </span>
-                            @else
-                                    All Reviewers
-                            @endif
-                        </p>
+                        <div class="flex items-center justify-between mb-3">
+                            <p
+                                class="text-xs font-bold uppercase tracking-[.07em] text-slate-500"
+                            >
+                                @if ($matchedReviewers->count() > 0)
+                                    Matched for
+                                    <span class="text-blue-600">
+                                        {{ $submission->research_field }}
+                                    </span>
+                                @else
+                                        All Reviewers
+                                @endif
+                            </p>
+                            <span
+                                id="selected-count"
+                                class="hidden text-[10px] font-bold uppercase tracking-[.05em] bg-red-50 border border-red-200 text-red-600 px-2.5 py-1 rounded-full"
+                            >
+                                <span id="selected-num">0</span>
+                                selected
+                            </span>
+                        </div>
 
                         @if ($matchedReviewers->count() > 0)
                             <div
@@ -764,14 +773,7 @@
                             >
                                 @foreach ($matchedReviewers as $u)
                                     @php
-                                        $colors = [
-                                            'bg-red-500',
-                                            'bg-blue-500',
-                                            'bg-violet-500',
-                                            'bg-emerald-500',
-                                            'bg-amber-500',
-                                            'bg-pink-500',
-                                        ];
+                                        $colors = ['bg-red-500', 'bg-blue-500', 'bg-violet-500', 'bg-emerald-500', 'bg-amber-500', 'bg-pink-500'];
                                         $bg = $colors[$loop->index % count($colors)];
                                     @endphp
 
@@ -783,6 +785,7 @@
                                             type="checkbox"
                                             name="reviewer_ids[]"
                                             value="{{ $u->id }}"
+                                            class="reviewer-checkbox absolute opacity-0 pointer-events-none"
                                         />
                                         <div class="reviewer-avatar {{ $bg }}">
                                             {{ strtoupper(substr($u->name, 0, 1)) }}
@@ -797,6 +800,12 @@
                                                 class="text-xs text-slate-400 truncate"
                                             >
                                                 {{ $u->email }}
+                                            </p>
+                                            <p
+                                                class="text-[10px] font-bold text-slate-400 mt-0.5"
+                                            >
+                                                {{ $u->active_reviews_count }}
+                                                {{ $u->active_reviews_count == 1 ? 'active review' : 'active reviews' }}
                                             </p>
                                         </div>
                                         <div class="reviewer-check">
@@ -831,14 +840,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 @foreach ($otherReviewers as $u)
                                     @php
-                                        $colors = [
-                                            'bg-slate-500',
-                                            'bg-cyan-500',
-                                            'bg-teal-500',
-                                            'bg-indigo-500',
-                                            'bg-rose-500',
-                                            'bg-lime-500',
-                                        ];
+                                        $colors = ['bg-slate-500', 'bg-cyan-500', 'bg-teal-500', 'bg-indigo-500', 'bg-rose-500', 'bg-lime-500'];
                                         $bg = $colors[$loop->index % count($colors)];
                                     @endphp
 
@@ -850,6 +852,7 @@
                                             type="checkbox"
                                             name="reviewer_ids[]"
                                             value="{{ $u->id }}"
+                                            class="reviewer-checkbox absolute opacity-0 pointer-events-none"
                                         />
                                         <div class="reviewer-avatar {{ $bg }}">
                                             {{ strtoupper(substr($u->name, 0, 1)) }}
@@ -864,6 +867,12 @@
                                                 class="text-xs text-slate-400 truncate"
                                             >
                                                 {{ $u->email }}
+                                            </p>
+                                            <p
+                                                class="text-[10px] font-bold text-slate-400 mt-0.5"
+                                            >
+                                                {{ $u->active_reviews_count }}
+                                                {{ $u->active_reviews_count == 1 ? 'active review' : 'active reviews' }}
                                             </p>
                                         </div>
                                         <div class="reviewer-check">
@@ -994,9 +1003,24 @@
 @push('scripts')
     <script>
         function toggleReviewer(card) {
+<<<<<<< HEAD
+            const checkbox = card.querySelector('.reviewer-checkbox');
+            checkbox.checked = !checkbox.checked;
+            card.classList.toggle('selected', checkbox.checked);
+
+            // Update selected count badge
+            const total = document.querySelectorAll(
+                '.reviewer-checkbox:checked',
+            ).length;
+            const badge = document.getElementById('selected-count');
+            const num = document.getElementById('selected-num');
+            num.textContent = total;
+            badge.classList.toggle('hidden', total === 0);
+=======
             const checkbox = card.querySelector('input[type="checkbox"]');
             checkbox.checked = !checkbox.checked;
             card.classList.toggle('selected', checkbox.checked);
+>>>>>>> 8a2425bc7006b227279792be2c9b150bb772bc8b
         }
 
         function updateDueDateHint(input) {
