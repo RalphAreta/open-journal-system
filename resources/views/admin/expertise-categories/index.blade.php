@@ -14,19 +14,6 @@
     </a>
 </div>
 
-{{-- Flash messages --}}
-@if (session('success'))
-    <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if ($errors->any())
-    <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-        {{ $errors->first() }}
-    </div>
-@endif
-
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
     {{-- LEFT: Add new category form --}}
@@ -63,8 +50,6 @@
 
     {{-- RIGHT: Category list --}}
     <div class="lg:col-span-2 space-y-3">
-
-        {{-- Default categories --}}
         <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">
             Default Categories <span class="text-slate-400 font-normal normal-case">(cannot be deleted)</span>
         </h2>
@@ -78,7 +63,6 @@
             @endif
         @endforeach
 
-        {{-- Custom categories --}}
         @php $customCategories = $categories->filter(fn($c) => $c->is_custom); @endphp
 
         @if ($customCategories->count() > 0)
@@ -88,8 +72,6 @@
 
             @foreach ($customCategories as $category)
                 <div class="bg-white border border-red-100 rounded-lg px-4 py-3 flex items-center justify-between gap-4 group">
-
-                    {{-- Inline rename form --}}
                     <form method="POST" action="{{ route('admin.expertise-categories.update', $category) }}"
                           class="flex items-center gap-2 flex-1">
                         @csrf @method('PUT')
@@ -108,10 +90,8 @@
 
                     <div class="flex items-center gap-3 shrink-0">
                         <span class="text-xs text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">Custom</span>
-
-                        {{-- Delete --}}
                         <form method="POST" action="{{ route('admin.expertise-categories.destroy', $category) }}"
-                              onsubmit="return confirm('Delete this category? Existing expertise entries using this name will not be removed.')">
+                              onsubmit="return confirm('Delete this category?')">
                             @csrf @method('DELETE')
                             <button type="submit"
                                 class="text-slate-400 hover:text-red-600 transition-colors text-lg leading-none"

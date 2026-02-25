@@ -50,6 +50,7 @@ class SubmissionController extends Controller
             'research_field' => $validated['research_field'],
             'file_path' => $path,
             'file_name' => $file->getClientOriginalName(),
+            // Ensure these columns exist in DB via migration
             'original_file_path' => $path,
             'original_file_name' => $file->getClientOriginalName(),
             'status' => Submission::STATUS_SUBMITTED,
@@ -129,9 +130,6 @@ class SubmissionController extends Controller
         }
     }
 
-    /**
-     * Show revision requests for a submission (author).
-     */
     public function revisions(Submission $submission): View|RedirectResponse
     {
         if ($submission->author_id !== auth()->id()) {
@@ -142,9 +140,6 @@ class SubmissionController extends Controller
         return view('submissions.revisions', compact('submission'));
     }
 
-    /**
-     * Store revised manuscript (author).
-     */
     public function submitRevision(Request $request, Submission $submission): RedirectResponse
     {
         if ($submission->author_id !== $request->user()->id) {
@@ -167,11 +162,9 @@ class SubmissionController extends Controller
             return back()->with('error', 'Invalid revision request.');
         }
 
-        // Store the revised file
         $file = $request->file('file');
         $path = $file->store('submissions/' . $request->user()->id . '/revisions', 'local');
 
-        // Use service to process revision
         RevisionService::processRevisionSubmission(
             $revisionRequest,
             $path,
