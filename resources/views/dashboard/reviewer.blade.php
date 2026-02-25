@@ -496,7 +496,7 @@ function toggleMoreNotifications() {
 
 function declineInvitation(event, assignmentId, title) {
     event.preventDefault();
-    
+
     // Check if SweetAlert2 is available
     if (typeof Swal !== 'undefined') {
         Swal.fire({
