@@ -139,6 +139,69 @@
                 </section>
             @endif
 
+            {{-- 3.5. Revision Review Feedback --}}
+            @php 
+                $allRevisionReviews = [];
+                foreach($submission->revisionRequests as $rev) {
+                    foreach($rev->revisionReviews as $revRev) {
+                        if($revRev->comments_for_author) {
+                            $allRevisionReviews[] = $revRev;
+                        }
+                    }
+                }
+            @endphp
+            @if(!empty($allRevisionReviews) && (auth()->user()->id === $submission->author_id || auth()->user()->isEditor() || auth()->user()->isAdmin()))
+                <section class="space-y-6">
+                    <div class="flex items-center gap-4">
+                        <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Revision Review Feedback</h2>
+                        <div class="h-px bg-slate-100 flex-1"></div>
+                    </div>
+
+                    <div class="space-y-4">
+                        @foreach($allRevisionReviews as $rr)
+                            <div class="bg-white border border-blue-200 rounded-3xl p-8 hover:border-blue-400 transition-colors shadow-sm bg-gradient-to-br from-blue-50 to-transparent">
+                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-black">
+                                            @if(auth()->user()->id === $submission->author_id)
+                                                R
+                                            @else
+                                                {{ substr($rr->reviewer->name, 0, 1) }}
+                                            @endif
+                                        </div>
+                                        <div>
+                                            @if(auth()->user()->id === $submission->author_id)
+                                                <p class="text-xs font-black text-slate-900 uppercase tracking-widest">Reviewer</p>
+                                            @else
+                                                <p class="text-xs font-black text-slate-900 uppercase tracking-widest">Reviewer: {{ $rr->reviewer->name }}</p>
+                                            @endif
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase">{{ $rr->created_at->format('M d, Y') }}</p>
+                                        </div>
+                                    </div>
+                                    @if($rr->recommendation)
+                                        <span class="px-4 py-1.5 rounded-full bg-blue-100 border border-blue-200 text-[9px] font-black uppercase tracking-widest text-blue-700">
+                                            {{ \App\Models\RevisionReview::recommendationOptions()[$rr->recommendation] ?? $rr->recommendation }}
+                                        </span>
+                                    @endif
+                                </div>
+
+                                @if($rr->comments_for_author)
+                                    <div class="prose prose-sm max-w-none text-slate-600 leading-relaxed font-medium">
+                                        {{ $rr->comments_for_author }}
+                                    </div>
+                                @endif
+
+                                @if($rr->rating)
+                                    <div class="mt-4 pt-4 border-t border-blue-100">
+                                        <p class="text-[10px] font-bold text-slate-500 uppercase">Rating: <span class="text-blue-600 font-black">{{ $rr->rating }}/5.0</span></p>
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+            @endif
+
          {{-- 4. Editorial Feedback --}}
 @if($submission->initial_screening_status !== 'pending' || $submission->initial_screening_comments || $submission->editor_notes)
 <section class="space-y-4">

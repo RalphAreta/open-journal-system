@@ -16,6 +16,8 @@ class Submission extends Model
         'research_field',
         'file_path',
         'file_name',
+        'original_file_path',
+        'original_file_name',
         'status',
         'editor_id',
         'assigned_editor_id',

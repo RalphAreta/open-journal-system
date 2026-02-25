@@ -369,12 +369,12 @@ class ReviewController extends Controller
     /**
      * Download submission file (reviewer or editor access).
      */
-    public function downloadFile(Submission $submission): StreamedResponse
+    public function downloadFile(Submission $submission)
     {
         $user = request()->user();
 
         if ($user->isEditor() || $user->isEditorInChief()) {
-            return $this->serializeFile($submission);
+            return $this->serializeFile($submission->file_path, $submission->file_name);
         }
 
         $isAssignedReviewer = ReviewAssignment::where('submission_id', $submission->id)
@@ -382,11 +382,37 @@ class ReviewController extends Controller
             ->exists();
 
         if ($isAssignedReviewer) {
-            return $this->serializeFile($submission);
+            return $this->serializeFile($submission->file_path, $submission->file_name);
         }
 
         if ($user->isAdmin()) {
-            return $this->serializeFile($submission);
+            return $this->serializeFile($submission->file_path, $submission->file_name);
+        }
+
+        abort(403);
+    }
+
+    /**
+     * Download original submission file (before any revisions).
+     */
+    public function downloadOriginalFile(Submission $submission)
+    {
+        $user = request()->user();
+
+        if ($user->isEditor() || $user->isEditorInChief()) {
+            return $this->serializeFile($submission->original_file_path ?? $submission->file_path, $submission->original_file_name ?? $submission->file_name);
+        }
+
+        $isAssignedReviewer = ReviewAssignment::where('submission_id', $submission->id)
+            ->where('reviewer_id', $user->id)
+            ->exists();
+
+        if ($isAssignedReviewer) {
+            return $this->serializeFile($submission->original_file_path ?? $submission->file_path, $submission->original_file_name ?? $submission->file_name);
+        }
+
+        if ($user->isAdmin()) {
+            return $this->serializeFile($submission->original_file_path ?? $submission->file_path, $submission->original_file_name ?? $submission->file_name);
         }
 
         abort(403);
@@ -409,15 +435,15 @@ class ReviewController extends Controller
     /**
      * Helper method to download file.
      */
-    private function serializeFile(Submission $submission): StreamedResponse
+    private function serializeFile($filePath, $fileName)
     {
-        if (!$submission->file_path || !Storage::disk('local')->exists($submission->file_path)) {
+        if (!$filePath || !Storage::disk('local')->exists($filePath)) {
             abort(404, 'File not found.');
         }
 
-        return response()->streamDownload(
-            fn() => Storage::disk('local')->get($submission->file_path),
-            $submission->file_name
+        return response()->download(
+            Storage::disk('local')->path($filePath),
+            $fileName
         );
     }
 

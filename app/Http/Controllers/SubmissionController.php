@@ -50,6 +50,8 @@ class SubmissionController extends Controller
             'research_field' => $validated['research_field'],
             'file_path' => $path,
             'file_name' => $file->getClientOriginalName(),
+            'original_file_path' => $path,
+            'original_file_name' => $file->getClientOriginalName(),
             'status' => Submission::STATUS_SUBMITTED,
             'submitted_at' => now(),
         ]);
@@ -60,7 +62,12 @@ class SubmissionController extends Controller
     public function show(Submission $submission): View|RedirectResponse
     {
         $this->authorizeView($submission);
-        $submission->load(['author', 'reviews.reviewer', 'reviewAssignments.reviewer']);
+        $submission->load([
+            'author',
+            'reviews.reviewer',
+            'reviewAssignments.reviewer',
+            'revisionRequests.revisionReviews.reviewer'
+        ]);
 
         return view('submissions.show', compact('submission'));
     }

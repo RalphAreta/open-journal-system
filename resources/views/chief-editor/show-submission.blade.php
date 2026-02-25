@@ -62,9 +62,9 @@
                     @if ($submission->file_name)
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Submission File</label>
-                            <a href="{{ route('submissions.download', $submission) }}"
+                            <a href="{{ route('submissions.download-original', $submission) }}"
                             class="inline-flex items-center gap-2 text-red-600 hover:text-red-700 font-semibold">
-                                📥 {{ $submission->file_name }}
+                                📥 {{ $submission->original_file_name ?? $submission->file_name }}
                             </a>
                         </div>
                     @endif

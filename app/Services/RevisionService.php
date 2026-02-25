@@ -67,12 +67,19 @@ class RevisionService
         DB::transaction(function () use ($revisionRequest, $filePath, $revisionNotes) {
             $submission = $revisionRequest->submission;
 
-            // Update submission with revised file
-            $submission->update([
+            // Preserve original file info and update only the file path
+            $updateData = [
                 'file_path' => $filePath,
-                'file_name' => basename($filePath),
+                // Keep the same file_name (don't use basename hash)
                 'status' => Submission::STATUS_REVISION_UNDER_REVIEW,
-            ]);
+            ];
+
+            if (!$submission->original_file_path) {
+                $updateData['original_file_path'] = $submission->file_path;
+                $updateData['original_file_name'] = $submission->file_name;
+            }
+
+            $submission->update($updateData);
 
             // Update revision request
             $revisionRequest->update([
