@@ -39,86 +39,9 @@
 
 @section('content')
     <div class="font-body">
-        {{-- ── Flash Messages ── --}}
-        @if ($errors->any())
-            <div
-                class="mb-5 px-4 py-3 bg-red-50 border border-red-200 rounded-[9px] fade-up"
-            >
-                <div class="flex items-center gap-2 mb-2">
-                    <svg
-                        class="w-4 h-4 text-red-600 shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                    </svg>
-                    <p
-                        class="text-[11px] font-bold uppercase tracking-[.06em] text-red-700"
-                    >
-                        Error
-                    </p>
-                </div>
-                <ul class="space-y-1 ml-6 list-disc">
-                    @foreach ($errors->all() as $error)
-                        <li class="text-xs text-red-600 font-medium">
-                            {{ $error }}
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        @if (session('success'))
-            <div
-                class="mb-5 px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-[9px] flex items-center gap-2 fade-up"
-            >
-                <svg
-                    class="w-4 h-4 text-emerald-600 shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M5 13l4 4L19 7"
-                    />
-                </svg>
-                <p class="text-xs font-semibold text-emerald-700">
-                    {{ session('success') }}
-                </p>
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div
-                class="mb-5 px-4 py-3 bg-red-50 border border-red-200 rounded-[9px] flex items-center gap-2 fade-up"
-            >
-                <svg
-                    class="w-4 h-4 text-red-600 shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M6 18L18 6M6 6l12 12"
-                    />
-                </svg>
-                <p class="text-xs font-semibold text-red-700">
-                    {{ session('error') }}
-                </p>
-            </div>
-        @endif
+        {{-- ── Flash Messages (handled by layout) ── --}}
+        {{-- ── Validation Errors ── --}}
+        <x-validation-errors />
 
         {{-- ── Header ── --}}
         <div
@@ -229,43 +152,23 @@
                                             class="flex flex-wrap items-center gap-1.5"
                                         >
                                             @if ($accepts > 0)
-                                                <span
-                                                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-emerald-700"
-                                                >
-                                                    ✓ {{ $accepts }}
-                                                </span>
+                                                <x-review-status-badge type="accept" :count="$accepts" />
                                             @endif
 
                                             @if ($rejects > 0)
-                                                <span
-                                                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 border border-red-200 text-[10px] font-bold text-red-700"
-                                                >
-                                                    ✗ {{ $rejects }}
-                                                </span>
+                                                <x-review-status-badge type="reject" :count="$rejects" />
                                             @endif
 
                                             @if ($minorRevisions > 0)
-                                                <span
-                                                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-[10px] font-bold text-amber-700"
-                                                >
-                                                    ⚠ {{ $minorRevisions }}
-                                                </span>
+                                                <x-review-status-badge type="minor" :count="$minorRevisions" />
                                             @endif
 
                                             @if ($majorRevisions > 0)
-                                                <span
-                                                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-50 border border-orange-200 text-[10px] font-bold text-orange-700"
-                                                >
-                                                    ● {{ $majorRevisions }}
-                                                </span>
+                                                <x-review-status-badge type="major" :count="$majorRevisions" />
                                             @endif
 
                                             @if ($pending > 0)
-                                                <span
-                                                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-500"
-                                                >
-                                                    ⏳ {{ $pending }}
-                                                </span>
+                                                <x-review-status-badge type="pending" :count="$pending" />
                                             @endif
                                         </div>
                                     @else
@@ -328,31 +231,11 @@
             >
                 Legend
             </span>
-            <span
-                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-emerald-700"
-            >
-                ✓ Accept
-            </span>
-            <span
-                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-50 border border-red-200 text-[10px] font-bold text-red-700"
-            >
-                ✗ Reject
-            </span>
-            <span
-                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-[10px] font-bold text-amber-700"
-            >
-                ⚠ Minor Revision
-            </span>
-            <span
-                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-50 border border-orange-200 text-[10px] font-bold text-orange-700"
-            >
-                ● Major Revision
-            </span>
-            <span
-                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-500"
-            >
-                ⏳ Pending
-            </span>
+            <x-review-status-badge type="accept" />
+            <x-review-status-badge type="reject" />
+            <x-review-status-badge type="minor" />
+            <x-review-status-badge type="major" />
+            <x-review-status-badge type="pending" />
         </div>
     </div>
 @endsection

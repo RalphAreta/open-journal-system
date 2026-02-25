@@ -8,12 +8,6 @@
     <p class="text-lg text-slate-600">{{ $submission->title }}</p>
 </div>
 
-@if (session('success'))
-    <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 text-green-700 font-semibold">
-        ✓ {{ session('success') }}
-    </div>
-@endif
-
 @if ($submission->revisionRequests->count() === 0)
     <div class="bg-blue-50 border border-blue-200 rounded-xl p-8 text-center">
         <p class="text-blue-700">No revision requests yet.</p>

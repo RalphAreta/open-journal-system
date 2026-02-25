@@ -72,21 +72,7 @@
     </nav>
 
     <main class="grow max-w-7xl mx-auto w-full py-8 px-4 sm:px-6 lg:px-8">
-        @if(session('success'))
-            <div class="mb-6 rounded-lg bg-green-50 border-l-4 border-green-500 p-4 text-sm text-green-800 shadow-sm">
-                <div class="flex items-center"><span class="text-lg mr-3">✓</span>{{ session('success') }}</div>
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="mb-6 rounded-lg bg-red-50 border-l-4 border-red-500 p-4 text-sm text-red-800 shadow-sm">
-                <div class="flex items-center"><span class="text-lg mr-3">✕</span>{{ session('error') }}</div>
-            </div>
-        @endif
-        @if(session('info'))
-            <div class="mb-6 rounded-lg bg-blue-50 border-l-4 border-blue-500 p-4 text-sm text-blue-800 shadow-sm">
-                <div class="flex items-center"><span class="text-lg mr-3">ℹ</span>{{ session('info') }}</div>
-            </div>
-        @endif
+        <x-flash-messages />
         @yield('content')
     </main>
 

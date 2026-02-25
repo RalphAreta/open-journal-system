@@ -95,21 +95,7 @@
             </div>
 
             {{-- Errors --}}
-            @if ($errors->any())
-            <div class="mb-6 px-4 py-3 bg-red-50 border border-red-200 rounded-[9px] fade-in-1">
-                <div class="flex items-center gap-2 mb-2">
-                    <svg class="w-4 h-4 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <p class="text-[11px] font-bold uppercase tracking-[.06em] text-red-700">Registration Errors</p>
-                </div>
-                <ul class="space-y-1 ml-6 list-disc">
-                    @foreach ($errors->all() as $error)
-                        <li class="text-xs text-red-600 font-medium">{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
+            <x-validation-errors title="Registration Errors" />
 
             <form method="POST" action="{{ route('register') }}" class="space-y-5">
                 @csrf

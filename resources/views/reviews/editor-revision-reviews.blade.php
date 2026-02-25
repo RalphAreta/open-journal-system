@@ -23,11 +23,15 @@
                                 </div>
                                 <div>
                                     <p class="font-semibold text-slate-900">{{ $completed->title }}</p>
-                                    <p class="text-xs text-slate-600 mt-1">Author: <span class="font-medium">{{ $completed->author->name }}</span> • Decision: {{ $completed->editor_decision_at->format('M d, Y') }}</p>
+                                    <p class="text-xs text-slate-600 mt-1">Author: <span class="font-medium">{{ $completed->author->name }}</span></p>
+                                    <p class="text-xs text-slate-500 mt-0.5">Decision Date: <span class="font-mono">{{ $completed->editor_decision_at->format('M d, Y • g:i A') }}</span></p>
                                 </div>
                             </div>
                             <span class="px-4 py-2 rounded-lg {{ $completed->status === 'accepted' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700' }} text-xs font-semibold whitespace-nowrap">
                                 {{ ucfirst($completed->status) }}
+                                <div class="text-[10px] font-normal mt-1 whitespace-normal">
+                                    {{ $completed->editor_decision_at->format('M d, Y • g:i A') }}
+                                </div>
                             </span>
                         </div>
                     </div>
@@ -51,17 +55,61 @@
                 @endphp
                 @foreach ($revisions as $revision)
                     <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                        {{-- Revision Timeline --}}
+                        <div class="mb-6 pb-6 border-b border-slate-200">
+                            <h3 class="text-sm font-bold text-slate-700 uppercase tracking-widest mb-4">📅 Revision Timeline</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex gap-4">
+                                    <div class="w-32 text-xs text-slate-500 font-semibold">Revision Requested</div>
+                                    <div class="text-slate-900 font-mono">{{ $revision->created_at->format('M d, Y • g:i A') }}</div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-32 text-xs text-slate-500 font-semibold">Author Submitted</div>
+                                    <div class="text-slate-900 font-mono">{{ $revision->revised_at->format('M d, Y • g:i A') }}</div>
+                                    <span class="text-xs text-slate-400">({{ $revision->revised_at->diffForHumans($revision->created_at, ['syntax' => 'short']) }})</span>
+                                </div>
+                                @php
+                                    $earliestReviewCompleted = $revision->revisionReviews
+                                        ->filter(fn($r) => $r->status === \App\Models\RevisionReview::STATUS_COMPLETED)
+                                        ->sortBy('submitted_at')
+                                        ->first();
+                                @endphp
+                                @if ($earliestReviewCompleted)
+                                    <div class="flex gap-4">
+                                        <div class="w-32 text-xs text-slate-500 font-semibold">First Review</div>
+                                        <div class="text-slate-900 font-mono">{{ $earliestReviewCompleted->submitted_at->format('M d, Y • g:i A') }}</div>
+                                        <span class="text-xs text-slate-400">({{ $earliestReviewCompleted->submitted_at->diffForHumans($revision->revised_at, ['syntax' => 'short']) }})</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                             <div>
                                 <h2 class="text-2xl font-bold text-slate-900 mb-2">{{ $submission->title }}</h2>
                                 <p class="text-sm text-slate-600 mb-2">
                                     Author: <span class="font-semibold text-slate-900">{{ $submission->author->name }}</span>
                                 </p>
-                                <div class="flex items-center gap-3">
+                                <div class="flex flex-col gap-2 text-xs text-slate-500">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-semibold">Revision Requested:</span>
+                                        <span class="font-mono">{{ $revision->created_at->format('M d, Y • g:i A') }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-semibold">Revised Submitted:</span>
+                                        <span class="font-mono">{{ $revision->revised_at->format('M d, Y • g:i A') }}</span>
+                                    </div>
+                                    @if ($revision->updated_at && $revision->updated_at->isAfter($revision->revised_at))
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-semibold">Last Updated:</span>
+                                            <span class="font-mono">{{ $revision->updated_at->format('M d, Y • g:i A') }}</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="flex items-center gap-3 mt-3">
                                     <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $revision->revision_type === 'minor' ? 'bg-yellow-100 text-yellow-700' : 'bg-orange-100 text-orange-700' }}">
                                         {{ $revision->revision_type === 'minor' ? '⚡ Minor' : '🔴 Major' }}
                                     </span>
-                                    <span class="text-xs text-slate-500">Revised: {{ $revision->revised_at->format('M d, Y') }}</span>
                                 </div>
                             </div>
                             <div class="text-right">
@@ -73,8 +121,11 @@
 
                         {{-- Author's Revision Notes --}}
                         @if ($revision->revision_notes)
-                            <div class="bg-slate-50 rounded-lg p-4 mb-4">
-                                <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">Author's Revision Notes</p>
+                            <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                                <div class="flex items-center justify-between mb-2">
+                                    <p class="text-xs font-bold text-slate-600 uppercase tracking-widest">Author's Revision Notes</p>
+                                    <p class="text-xs text-slate-500">Submitted: <span class="font-mono">{{ $revision->revised_at->format('M d, Y • g:i A') }}</span></p>
+                                </div>
                                 <p class="text-sm text-slate-700 whitespace-pre-wrap">{{ $revision->revision_notes }}</p>
                             </div>
                         @endif
@@ -92,10 +143,16 @@
                                                     <span class="inline-block mt-1 px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-700">
                                                         ✓ Completed
                                                     </span>
+                                                    @if ($rr->submitted_at)
+                                                        <p class="text-xs text-slate-500 mt-1">Submitted: <span class="font-mono">{{ $rr->submitted_at->format('M d, Y • g:i A') }}</span></p>
+                                                    @endif
                                                 @else
                                                     <span class="inline-block mt-1 px-2 py-1 rounded text-xs font-semibold bg-amber-100 text-amber-700">
                                                         ⏳ Pending
                                                     </span>
+                                                    @if ($rr->created_at)
+                                                        <p class="text-xs text-slate-500 mt-1">Invited: <span class="font-mono">{{ $rr->created_at->format('M d, Y • g:i A') }}</span></p>
+                                                    @endif
                                                 @endif
                                             </div>
                                             @if ($rr->recommendation)
@@ -186,6 +243,12 @@
                                 <a href="{{ route('editor.submissions') }}" class="flex-1 bg-slate-200 text-slate-900 py-3 rounded-lg hover:bg-slate-300 font-semibold transition-colors text-center">
                                     Cancel
                                 </a>
+                            </div>
+                            
+                            <div class="mt-4 pt-4 border-t border-slate-200">
+                                <p class="text-xs text-slate-500 text-center">
+                                    ⏱️ Decision will be recorded as: <span class="font-mono font-semibold">{{ now()->format('M d, Y • g:i A') }}</span>
+                                </p>
                             </div>
                         </form>
                     </div>

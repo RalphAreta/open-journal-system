@@ -88,11 +88,7 @@
             </div>
 
             {{-- Errors --}}
-            @if ($errors->any())
-            <div class="mb-5 px-4 py-3 bg-red-50 border border-red-200 rounded-[9px] text-sm text-red-700 font-medium fade-in-1">
-                {{ $errors->first() }}
-            </div>
-            @endif
+            <x-validation-errors />
 
             <form method="POST" action="{{ route('login') }}" class="space-y-5">
                 @csrf

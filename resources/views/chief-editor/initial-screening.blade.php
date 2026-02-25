@@ -56,16 +56,7 @@
             <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
                 <h2 class="text-xl font-semibold text-slate-900 mb-6">Initial Screening Decision</h2>
 
-                @if ($errors->any())
-                    <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-                        <h3 class="font-semibold text-red-900 mb-2">Validation Errors</h3>
-                        <ul class="text-red-700 text-sm space-y-1">
-                            @foreach ($errors->all() as $error)
-                                <li>• {{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                <x-validation-errors />
 
                 <form action="{{ route('chief-editor.store-initial-screening', $submission) }}" method="POST">
                     @csrf
