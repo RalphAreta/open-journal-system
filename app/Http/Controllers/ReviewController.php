@@ -272,7 +272,7 @@ class ReviewController extends Controller
             $exists = ReviewAssignment::where('submission_id', $submission->id)
                 ->where('reviewer_id', $reviewerId)
                 ->exists();
-            
+
             if ($exists) {
                 $skippedCount++;
                 continue;

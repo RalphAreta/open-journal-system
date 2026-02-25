@@ -278,7 +278,7 @@
                 <h2 class="text-[11px] font-bold uppercase tracking-[.08em] text-slate-400 mb-4">
                     Revision Re-Review Section
                 </h2>
-                
+
                 @php
                     $latestRevision = $submission->revisionRequests->last();
                 @endphp
@@ -308,7 +308,7 @@
                                         {{ \App\Models\Review::recommendationOptions()[$rr->recommendation] ?? $rr->recommendation }}
                                     </span>
                                 </div>
-                                
+
                                 @if ($rr->rating)
                                     <p class="text-xs text-slate-500 mb-2">
                                         Rating: <span class="font-bold text-slate-700">{{ $rr->rating }}/5.0</span>
