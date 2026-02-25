@@ -123,13 +123,13 @@
                         <div class="mt-3">
                             <div class="flex items-center justify-between mb-1.5">
                                 <span class="text-[10px] font-bold uppercase tracking-[.06em] text-slate-400">Review Deadline</span>
-                                <span class="text-xs font-bold {{ $dueCls }}">
+                                <span class="text-xs font-bold font-mono {{ $dueCls }}">
                                     @if($daysLeft < 0)
-                                        Overdue by {{ abs($daysLeft) }}d
+                                        <span class="text-red-600">Overdue</span> ({{ $dueDate->format('M d, Y') }})
                                     @elseif($daysLeft === 0)
-                                        Due today
+                                        <span class="text-amber-600">Due Today</span> · {{ $dueDate->format('g:i A') }}
                                     @else
-                                        {{ $dueDate->format('M d, Y') }} · {{ $daysLeft }}d left
+                                        {{ $dueDate->format('M d, Y • g:i A') }} · <span class="text-blue-600">{{ $daysLeft }}d left</span>
                                     @endif
                                 </span>
                             </div>
@@ -329,13 +329,15 @@
                             @if ($rr->due_at)
                                 <div class="text-sm">
                                     @if ($daysLeft < 0)
-                                        <p class="font-bold text-red-600">{{ abs($daysLeft) }}d overdue</p>
-                                    @elseif ($daysLeft <= 3)
-                                        <p class="font-bold text-amber-600">{{ $daysLeft }}d left</p>
+                                        <p class="font-bold text-red-600">Overdue</p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5 font-mono">{{ $rr->due_at->format('M d, Y • g:i A') }}</p>
+                                    @elseif ($daysLeft === 0)
+                                        <p class="font-bold text-amber-600">Due Today</p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5 font-mono">{{ $rr->due_at->format('g:i A') }}</p>
                                     @else
                                         <p class="font-semibold text-emerald-600">{{ $daysLeft }}d left</p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5 font-mono">{{ $rr->due_at->format('M d, Y • g:i A') }}</p>
                                     @endif
-                                    <p class="text-[10px] text-slate-400 mt-0.5">{{ $rr->due_at->format('M d') }}</p>
                                 </div>
                             @else
                                 <span class="text-sm text-slate-400">—</span>
@@ -398,17 +400,23 @@
                         <td class="px-5 py-3.5">
                             @if($dueDate)
                             <div>
-                                <p class="text-xs font-bold {{ $dueCls }}">
+                                <p class="text-xs font-bold {{ $dueCls }} font-mono">
                                     @if($daysLeft < 0)
-                                        Overdue ({{ $dueDate->format('M d') }})
+                                        <span class="text-red-600">Overdue</span> · {{ $dueDate->format('M d, Y') }}
                                     @elseif($daysLeft === 0)
-                                        Due Today
+                                        <span class="text-amber-600">Due Today</span> · {{ $dueDate->format('g:i A') }}
                                     @else
-                                        {{ $dueDate->format('M d, Y') }}
+                                        {{ $dueDate->format('M d, Y • g:i A') }}
                                     @endif
                                 </p>
-                                @if($daysLeft !== null && $daysLeft >= 0)
-                                <p class="text-[10px] text-slate-400 mt-0.5">{{ $daysLeft }} day{{ $daysLeft != 1 ? 's' : '' }} remaining</p>
+                                @if($daysLeft !== null && $daysLeft > 0)
+                                <p class="text-[10px] text-slate-400 mt-0.5">
+                                    {{ $daysLeft }} day{{ $daysLeft != 1 ? 's' : '' }} remaining
+                                </p>
+                                @elseif($daysLeft < 0)
+                                <p class="text-[10px] text-red-400 mt-0.5">
+                                    {{ abs($daysLeft) }} day{{ abs($daysLeft) != 1 ? 's' : '' }} overdue
+                                </p>
                                 @endif
                             </div>
                             @else
