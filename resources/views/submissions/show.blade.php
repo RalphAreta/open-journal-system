@@ -140,7 +140,7 @@
             @endif
 
             {{-- 3.5. Revision Review Feedback --}}
-            @php 
+            @php
                 $allRevisionReviews = [];
                 foreach($submission->revisionRequests as $rev) {
                     foreach($rev->revisionReviews as $revRev) {
@@ -159,7 +159,7 @@
 
                     <div class="space-y-4">
                         @foreach($allRevisionReviews as $rr)
-                            <div class="bg-white border border-blue-200 rounded-3xl p-8 hover:border-blue-400 transition-colors shadow-sm bg-gradient-to-br from-blue-50 to-transparent">
+                            <div class="bg-white border border-blue-200 rounded-3xl p-8 hover:border-blue-400 transition-colors shadow-sm bg-linear-to-br from-blue-50 to-transparent">
                                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-black">
