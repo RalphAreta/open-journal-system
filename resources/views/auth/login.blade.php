@@ -72,7 +72,7 @@
                 before:absolute before:top-0 before:left-0 before:bottom-0 before:w-px
                 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
 
-        <div class="w-full max-w-[400px]">
+        <div class="w-full max-w-100 relative z-10">
 
             {{-- Logo --}}
             <div class="mb-9 fade-in">
@@ -102,7 +102,7 @@
                     <label for="role" class="block text-[11px] font-bold uppercase tracking-[.09em] text-slate-500 mb-1.5">Sign in as</label>
                     <div class="relative">
                         <select id="role" name="role" required
-                            class="field w-full px-3.5 py-[11px] pr-10 border border-slate-200 rounded-[9px] bg-slate-50 text-sm font-medium text-slate-700 cursor-pointer transition-all">
+                            class="field w-full px-3.5 py-2.75 pr-10 border border-slate-200 rounded-[9px] bg-slate-50 text-sm font-medium text-slate-700 cursor-pointer transition-all">
                             <option value="" disabled {{ old('role') ? '' : 'selected' }}>— Select your role —</option>
                             <option value="author"          {{ old('role') === 'author'          ? 'selected' : '' }}>Author</option>
                             <option value="reviewer"        {{ old('role') === 'reviewer'        ? 'selected' : '' }}>Reviewer</option>
@@ -122,7 +122,7 @@
                 <div class="fade-in-2">
                     <label for="email" class="block text-[11px] font-bold uppercase tracking-[.09em] text-slate-500 mb-1.5">Email Address</label>
                     <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                        class="field w-full px-3.5 py-[11px] border border-slate-200 rounded-[9px] bg-slate-50 text-sm text-slate-900 transition-all placeholder:text-slate-400"
+                        class="field w-full px-3.5 py-2.75 border border-slate-200 rounded-[9px] bg-slate-50 text-sm text-slate-900 transition-all placeholder:text-slate-400"
                         placeholder="name@university.edu.ph">
                 </div>
 
@@ -131,7 +131,7 @@
                     <label for="password" class="block text-[11px] font-bold uppercase tracking-[.09em] text-slate-500 mb-1.5">Password</label>
                     <div class="relative">
                         <input id="password" type="password" name="password" required
-                            class="field w-full px-3.5 py-[11px] pr-11 border border-slate-200 rounded-[9px] bg-slate-50 text-sm text-slate-900 transition-all placeholder:text-slate-400"
+                            class="field w-full px-3.5 py-2.75 pr-11 border border-slate-200 rounded-[9px] bg-slate-50 text-sm text-slate-900 transition-all placeholder:text-slate-400"
                             placeholder="••••••••">
                         <button type="button" onclick="togglePassword('password','eye-icon')"
                             class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-600 transition-colors">

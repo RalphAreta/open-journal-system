@@ -42,7 +42,7 @@
                 <div class="space-y-2">
                     <label for="title" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Article Title *</label>
                     <textarea name="title" id="title" rows="3" required
-                        class="w-full p-4 bg-white border rounded-2xl text-sm font-bold focus:ring-4 focus:ring-red-500/10 focus:border-red-600 transition-all outline-none leading-relaxed @error('title') border-red-500 @else border-slate-200 @enderror"
+                        class="w-full p-4 bg-white border rounded-2xl text-sm font-bold focus:ring-4 focus:ring-red-500/10 focus:border-red-600 transition-all outline-none leading-relaxed @error('title') border-red-500 @else  @enderror"
                         placeholder="Enter title...">{{ old('title', $submission->title) }}</textarea>
                     @error('title')<p class="text-[10px] font-bold text-red-600 uppercase mt-1">{{ $message }}</p>@enderror
                 </div>
@@ -52,7 +52,7 @@
                     <div class="space-y-2">
                         <label for="research_field" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Research Field *</label>
                         <select name="research_field" id="research_field" required
-                            class="w-full p-4 bg-white border rounded-2xl text-sm font-bold focus:ring-4 focus:ring-red-500/10 focus:border-red-600 transition-all outline-none appearance-none @error('research_field') border-red-500 @else border-slate-200 @enderror">
+                            class="w-full p-4 bg-white border rounded-2xl text-sm font-bold focus:ring-4 focus:ring-red-500/10 focus:border-red-600 transition-all outline-none appearance-none @error('research_field') border-red-500 @else  @enderror">
                             <option value="">-- Select Field --</option>
                             @foreach ($fieldOptions as $value => $label)
                                 <option value="{{ $value }}" {{ old('research_field', $submission->research_field) === $value ? 'selected' : '' }}>{{ $label }}</option>
@@ -73,8 +73,8 @@
                 {{-- Abstract --}}
                 <div class="space-y-2">
                     <label for="abstract" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Abstract *</label>
-                    <textarea name="abstract" id="abstract" rows="6" required
-                        class="w-full p-4 bg-white border rounded-2xl text-sm font-medium focus:ring-4 focus:ring-red-500/10 focus:border-red-600 transition-all outline-none leading-relaxed @error('abstract') border-red-500 @else border-slate-200 @enderror">{{ old('abstract', $submission->abstract) }}</textarea>
+                    <textarea name="abstract" id="abstract" rows="6" requiredborder-red-500
+                        class="w-full p-4 bg-white border rounded-2xl text-sm font-medium focus:ring-4 focus:ring-red-500/10 focus:border-red-600 transition-all outline-none leading-relaxed @error('abstract')  @else border-slate-200 @enderror">{{ old('abstract', $submission->abstract) }}</textarea>
                     @error('abstract')<p class="text-[10px] font-bold text-red-600 uppercase mt-1">{{ $message }}</p>@enderror
                 </div>
             </section>
@@ -101,7 +101,7 @@
                 <div class="relative group">
                     <input type="file" name="file" id="file" accept=".pdf,.doc,.docx"
                         class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                    <div class="p-10 border-2 border-dashed rounded-[2.5rem] group-hover:bg-white group-hover:border-red-600 transition-all text-center @error('file') border-red-500 bg-red-50 @else border-slate-200 bg-slate-50 @enderror">
+                    <div class="p-10 border-2 border-dashed rounded-[2.5rem] group-hover:bg-white group-hover:border-red-600 transition-all text-center @error('file')  bg-red-50 @else border-slate-200 @enderror">
                         <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-110 transition-transform">
                             <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>

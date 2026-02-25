@@ -54,7 +54,7 @@
                 <svg class="w-3.5 h-3.5 text-white/50 mr-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <div class="flex flex-col flex-grow">
+                <div class="flex flex-col grow">
                     <span class="text-[6px] font-black text-white/40 uppercase tracking-[0.2em] leading-tight">Filter</span>
                     <span class="text-[10px] font-black uppercase tracking-widest text-white leading-tight" id="filterLabel">All Status</span>
                 </div>

@@ -15,7 +15,7 @@
             <h2 class="text-2xl font-bold text-slate-900 mb-4">✓ Completed Decisions</h2>
             <div class="space-y-4">
                 @foreach ($completedSubmissions as $completed)
-                    <div class="bg-gradient-to-r {{ $completed->status === 'accepted' ? 'from-emerald-50 to-green-50 border-emerald-200' : 'from-red-50 to-rose-50 border-red-200' }} rounded-lg border p-6 shadow-sm">
+                    <div class="bg-linear-to-r {{ $completed->status === 'accepted' ? 'from-emerald-50 to-green-50 border-emerald-200' : 'from-red-50 to-rose-50 border-red-200' }} rounded-lg border p-6 shadow-sm">
                         <div class="flex items-center justify-between">
                             <div class="flex items-start gap-4">
                                 <div class="w-10 h-10 {{ $completed->status === 'accepted' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600' }} rounded-lg flex items-center justify-center text-lg font-bold">

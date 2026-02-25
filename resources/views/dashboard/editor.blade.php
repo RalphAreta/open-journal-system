@@ -219,7 +219,7 @@
 
     {{-- ── Revision Reviews Alert ── --}}
     @if ($stats['revision_under_review'] > 0)
-    <div class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-lg p-5 mb-6 fade-up-1.5">
+    <div class="bg-linear-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-lg p-5 mb-6 fade-up-1.5">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-lg">🔄</div>

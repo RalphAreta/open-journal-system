@@ -104,7 +104,7 @@
         {{-- Editor Expertise --}}
         <div class="bg-white border border-slate-200 rounded-[14px] p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
             <div class="flex items-center gap-4 mb-5">
-                <div class="w-11 h-11 bg-slate-900 text-white rounded-[10px] flex items-center justify-center flex-shrink-0">
+                <div class="w-11 h-11 bg-slate-900 text-white rounded-[10px] flex items-center justify-center shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path d="M12 14l9-5-9-5-9 5 9 5z" stroke-width="2"/>
                         <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" stroke-width="2"/>
@@ -117,7 +117,7 @@
             </div>
             <a href="{{ route('admin.editor-expertise.index') }}"
                class="flex w-full justify-center items-center gap-2 bg-slate-900 hover:bg-slate-800
-                      text-white py-2.5 rounded-[8px] text-xs font-bold uppercase tracking-widest
+                      text-white py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest
                       transition-all hover:-translate-y-0.5 hover:shadow-md">
                 Manage Expertise System
             </a>

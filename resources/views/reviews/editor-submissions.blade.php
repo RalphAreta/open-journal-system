@@ -46,7 +46,7 @@
             >
                 <div class="flex items-center gap-2 mb-2">
                     <svg
-                        class="w-4 h-4 text-red-600 flex-shrink-0"
+                        class="w-4 h-4 text-red-600 shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -79,7 +79,7 @@
                 class="mb-5 px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-[9px] flex items-center gap-2 fade-up"
             >
                 <svg
-                    class="w-4 h-4 text-emerald-600 flex-shrink-0"
+                    class="w-4 h-4 text-emerald-600 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -102,7 +102,7 @@
                 class="mb-5 px-4 py-3 bg-red-50 border border-red-200 rounded-[9px] flex items-center gap-2 fade-up"
             >
                 <svg
-                    class="w-4 h-4 text-red-600 flex-shrink-0"
+                    class="w-4 h-4 text-red-600 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -304,7 +304,7 @@
                                         </svg>
                                     </div>
                                     <p
-                                        class="text-[11px] font-bold uppercase tracking-[.1em] text-slate-300"
+                                        class="text-[11px] font-bold uppercase tracking-widest text-slate-300"
                                     >
                                         No submissions found
                                     </p>

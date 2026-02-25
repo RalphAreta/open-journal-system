@@ -71,7 +71,7 @@
             <p class="text-[10px] font-bold uppercase tracking-[.08em] text-slate-400 mb-2">Submission File</p>
             <div class="flex items-center justify-between px-4 py-3 bg-blue-50 border border-blue-200 rounded-[9px]">
                 <div class="flex items-center gap-2.5">
-                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                     <p class="text-sm font-semibold text-blue-900">{{ $submission->file_name }}</p>
@@ -92,7 +92,7 @@
         @if ($errors->any())
         <div class="mb-5 px-4 py-3 bg-red-50 border border-red-200 rounded-[9px]">
             <div class="flex items-center gap-2 mb-2">
-                <svg class="w-4 h-4 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <p class="text-[11px] font-bold uppercase tracking-[.06em] text-red-700">Validation Errors</p>
@@ -153,7 +153,7 @@
                 </label>
                 <div class="relative max-w-xs">
                     <select name="revision_type" id="revision_type"
-                        class="field w-full px-3.5 py-[11px] pr-10 border border-slate-200 rounded-[9px] bg-slate-50 text-sm font-medium text-slate-700 cursor-pointer transition-all">
+                        class="field w-full px-3.5 py-2.75 pr-10 border border-slate-200 rounded-[9px] bg-slate-50 text-sm font-medium text-slate-700 cursor-pointer transition-all">
                         <option value="">— Select —</option>
                         <option value="minor" {{ old('revision_type') === 'minor' ? 'selected' : '' }}>Minor Revision</option>
                         <option value="major" {{ old('revision_type') === 'major' ? 'selected' : '' }}>Major Revision</option>

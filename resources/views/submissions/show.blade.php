@@ -56,7 +56,7 @@
 
             {{-- 1.5. Editor Decision on Revised Manuscript --}}
             @if(in_array($submission->status, ['accepted', 'rejected']) && $submission->editor_decision_at)
-                <div class="bg-gradient-to-br {{ $submission->status === 'accepted' ? 'from-emerald-600 to-green-500' : 'from-red-600 to-rose-500' }} rounded-[2.5rem] p-1 shadow-2xl {{ $submission->status === 'accepted' ? 'shadow-emerald-100' : 'shadow-red-100' }}">
+                <div class="bg-linear-to-br {{ $submission->status === 'accepted' ? 'from-emerald-600 to-green-500' : 'from-red-600 to-rose-500' }} rounded-[2.5rem] p-1 shadow-2xl {{ $submission->status === 'accepted' ? 'shadow-emerald-100' : 'shadow-red-100' }}">
                     <div class="bg-white rounded-[2.2rem] p-8">
                         <div class="flex items-start gap-4 mb-6">
                             <div class="w-12 h-12 {{ $submission->status === 'accepted' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600' }} rounded-2xl flex items-center justify-center shrink-0 text-xl font-black">

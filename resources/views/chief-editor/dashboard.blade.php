@@ -352,7 +352,7 @@ use App\Models\Submission;
                         <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="1.5"/>
                     </svg>
                 </div>
-                <p class="text-[11px] font-bold uppercase tracking-[.1em] text-slate-300">No assigned submissions yet</p>
+                <p class="text-[11px] font-bold uppercase tracking-widest text-slate-300">No assigned submissions yet</p>
             </div>
             @endif
 

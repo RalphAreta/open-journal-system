@@ -127,7 +127,7 @@
                                 <path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round"/>
                             </svg>
                         </div>
-                        <p class="text-[11px] font-bold uppercase tracking-[.1em] text-slate-300">No manuscripts found</p>
+                        <p class="text-[11px] font-bold uppercase tracking-widest text-slate-300">No manuscripts found</p>
                     </td>
                 </tr>
                 @endforelse

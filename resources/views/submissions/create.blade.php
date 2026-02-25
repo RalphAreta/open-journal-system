@@ -41,7 +41,7 @@
             {{-- Section 01: Core Information --}}
             <div class="bg-white border border-slate-200 rounded-[14px] p-6 shadow-sm fade-up-1">
                 <div class="flex items-center gap-3 mb-6">
-                    <span class="w-7 h-7 rounded-lg bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">01</span>
+                    <span class="w-7 h-7 rounded-lg bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center shrink-0">01</span>
                     <h2 class="text-sm font-bold text-slate-900 uppercase tracking-[.06em]">Core Information</h2>
                     <div class="h-px bg-slate-100 flex-1"></div>
                 </div>
@@ -63,7 +63,7 @@
                             <label for="research_field" class="block text-[11px] font-bold uppercase tracking-[.09em] text-slate-500 mb-1.5">Research Field *</label>
                             <div class="relative">
                                 <select name="research_field" id="research_field" required
-                                    class="field w-full px-3.5 py-[11px] pr-10 border rounded-[9px] bg-slate-50 text-sm font-medium text-slate-700 cursor-pointer transition-all
+                                    class="field w-full px-3.5 py-2.75 pr-10 border rounded-[9px] bg-slate-50 text-sm font-medium text-slate-700 cursor-pointer transition-all
                                            {{ $errors->has('research_field') ? 'border-red-300 bg-red-50/30' : 'border-slate-200' }}">
                                     <option value="">— Select Field —</option>
                                     @foreach ($fieldOptions as $value => $label)
@@ -83,7 +83,7 @@
                         <div>
                             <label for="keywords" class="block text-[11px] font-bold uppercase tracking-[.09em] text-slate-500 mb-1.5">Keywords</label>
                             <input type="text" name="keywords" id="keywords" value="{{ old('keywords') }}"
-                                class="field w-full px-3.5 py-[11px] border border-slate-200 rounded-[9px] bg-slate-50 text-sm text-slate-900 transition-all placeholder:text-slate-400"
+                                class="field w-full px-3.5 py-2.75 border border-slate-200 rounded-[9px] bg-slate-50 text-sm text-slate-900 transition-all placeholder:text-slate-400"
                                 placeholder="Quantum, AI, Physics">
                         </div>
                     </div>
@@ -103,7 +103,7 @@
             {{-- Section 02: File Upload --}}
             <div class="bg-white border border-slate-200 rounded-[14px] p-6 shadow-sm fade-up-2">
                 <div class="flex items-center gap-3 mb-6">
-                    <span class="w-7 h-7 rounded-lg bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">02</span>
+                    <span class="w-7 h-7 rounded-lg bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center shrink-0">02</span>
                     <h2 class="text-sm font-bold text-slate-900 uppercase tracking-[.06em]">Manuscript File</h2>
                     <div class="h-px bg-slate-100 flex-1"></div>
                 </div>
@@ -146,7 +146,7 @@
         {{-- ── RIGHT: Sidebar ── --}}
         <div class="lg:col-span-4 fade-up-1">
             <div class="bg-white border border-slate-200 rounded-[14px] p-6 shadow-sm sticky top-8">
-                <p class="text-[10px] font-bold uppercase tracking-[.1em] text-slate-400 mb-5">Author Checklist</p>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-5">Author Checklist</p>
 
                 <ul class="space-y-4">
                     @foreach([
@@ -155,7 +155,7 @@
                         'Ensure all authors are properly acknowledged.',
                     ] as $item)
                     <li class="flex items-start gap-3">
-                        <div class="mt-0.5 w-4 h-4 rounded-full border-[1.5px] border-red-500 flex items-center justify-center flex-shrink-0">
+                        <div class="mt-0.5 w-4 h-4 rounded-full border-[1.5px] border-red-500 flex items-center justify-center shrink-0">
                             <div class="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
                         </div>
                         <p class="text-xs font-medium text-slate-600 leading-relaxed">{{ $item }}</p>

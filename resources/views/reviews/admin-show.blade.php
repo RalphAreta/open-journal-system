@@ -98,7 +98,7 @@
                                 @endif
                                 @if($r->comments_for_author)
                                     <div>
-                                        <span class="text-[10px] font-bold text-slate-400 uppercase text-indigo-500">Author Feedback:</span>
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase">Author Feedback:</span>
                                         <p class="text-sm text-slate-500 leading-relaxed">{{ Str::limit($r->comments_for_author, 150) }}</p>
                                     </div>
                                 @endif
