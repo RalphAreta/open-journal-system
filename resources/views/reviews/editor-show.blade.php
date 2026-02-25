@@ -127,37 +127,6 @@
 
 @section('content')
     <div class="font-body max-w-4xl">
-        {{-- Alerts --}}
-        @if ($errors->any())
-            <div
-                class="mb-5 bg-red-50 border border-red-200 rounded-xl p-4 fade-up"
-            >
-                <p class="font-semibold text-red-900 text-sm mb-1">
-                    Validation Error
-                </p>
-                <ul class="text-red-700 text-sm space-y-0.5">
-                    @foreach ($errors->all() as $error)
-                        <li>• {{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        @if (session('success'))
-            <div
-                class="mb-5 bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-emerald-700 text-sm font-semibold fade-up"
-            >
-                ✓ {{ session('success') }}
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div
-                class="mb-5 bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm font-semibold fade-up"
-            >
-                ✗ {{ session('error') }}
-            </div>
-        @endif
 
         {{-- Page title --}}
         <div class="mb-6 fade-up">
