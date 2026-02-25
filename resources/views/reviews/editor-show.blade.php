@@ -245,13 +245,49 @@
         @if ($submission->status === 'revision_under_review' && $submission->revisionRequests->isNotEmpty())
             <div class="bg-white border border-slate-200 rounded-2xl p-6 mb-5 shadow-sm fade-up-1">
                 <h2 class="text-[11px] font-bold uppercase tracking-[.08em] text-slate-400 mb-4">
-                    Revision Re-Review Section
+                    Revision Files
                 </h2>
 
                 @php
                     $latestRevision = $submission->revisionRequests->last();
                 @endphp
 
+                {{-- Original vs Revised Files --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    {{-- Original Manuscript --}}
+                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-4">
+                        <p class="text-[10px] font-bold uppercase tracking-[.06em] text-slate-600 mb-3">Original Manuscript</p>
+                        @if ($submission->original_file_path)
+                            <p class="text-sm text-slate-700 mb-3 truncate" title="{{ $submission->original_file_name }}">{{ $submission->original_file_name }}</p>
+                            <a href="{{ route('submissions.download-original', ['submission' => $submission]) }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                                Download
+                            </a>
+                        @else
+                            <p class="text-sm text-slate-500 italic">No original file</p>
+                        @endif
+                    </div>
+
+                    {{-- Revised Manuscript --}}
+                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-4">
+                        <p class="text-[10px] font-bold uppercase tracking-[.06em] text-slate-600 mb-3">Revised Manuscript</p>
+                        @if ($latestRevision && $latestRevision->revised_at && $submission->file_path)
+                            <p class="text-sm text-slate-700 mb-3 truncate" title="{{ $submission->file_name }}">{{ $submission->file_name }}</p>
+                            <a href="{{ route('submissions.download', ['submission' => $submission]) }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                                Download
+                            </a>
+                        @else
+                            <p class="text-sm text-slate-500 italic">No revised manuscript yet</p>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Author's Revision Notes --}}
                 @if ($latestRevision && $latestRevision->revision_notes)
                     <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
                         <p class="text-[10px] font-bold uppercase tracking-[.06em] text-blue-700 mb-1">Author's Revision Notes</p>
