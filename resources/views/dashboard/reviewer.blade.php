@@ -122,13 +122,13 @@
                         <div class="mt-3">
                             <div class="flex items-center justify-between mb-1.5">
                                 <span class="text-[10px] font-bold uppercase tracking-[.06em] text-slate-400">Review Deadline</span>
-                                <span class="text-xs font-bold font-mono {{ $dueCls }}">
+                                <span class="text-xs font-bold font-mono text-slate-600">
                                     @if($daysLeft < 0)
                                         <span class="text-red-600">Overdue</span> ({{ $dueDate->format('M d, Y') }})
                                     @elseif($daysLeft === 0)
-                                        <span class="text-amber-600">Due Today</span> · {{ $dueDate->format('g:i A') }}
+                                        <span class="text-red-600">Due Today</span> · {{ $dueDate->format('g:i A') }}
                                     @else
-                                        {{ $dueDate->format('M d, Y • g:i A') }} · <span class="text-blue-600">{{ $daysLeft }}d left</span>
+                                        {{ $dueDate->format('M d, Y • g:i A') }} · <span class="text-red-600">{{ $daysLeft }}d left</span>
                                     @endif
                                 </span>
                             </div>
@@ -266,7 +266,7 @@
     {{-- ── Revised Manuscripts Section ── --}}
     @if ($revisionReviews->count() > 0)
     <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm fade-up-2 mb-6">
-        <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-purple-50 to-amber-50 border-b border-slate-100">
+        <div class="flex items-center justify-between px-6 py-4 bg-purple-50 border-b border-slate-100">
             <div>
                 <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
                     <span class="text-lg">🔄</span>
