@@ -282,6 +282,7 @@ class ReviewController extends Controller
                 'submission_id' => $submission->id,
                 'reviewer_id' => $reviewerId,
                 'assigned_by' => $request->user()->id,
+                'status' => ReviewAssignment::STATUS_PENDING,
                 'due_at' => $dueAt,
             ]);
 

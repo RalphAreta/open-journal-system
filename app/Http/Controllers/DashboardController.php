@@ -63,34 +63,42 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        // 1. Standard Review Assignments
+        // 1. Pending Invitations (status = 'pending' - awaiting reviewer's accept/decline decision)
+        $pendingInvitations = $user->reviewAssignments()
+            ->where('status', ReviewAssignment::STATUS_PENDING)
+            ->with(['submission.author', 'submission.reviews'])
+            ->latest()
+            ->get();
+
+        // 2. Standard Review Assignments (for main table - accepted/completed)
         $assignments = $user->reviewAssignments()
+            ->whereNotIn('status', [ReviewAssignment::STATUS_PENDING, ReviewAssignment::STATUS_DECLINED])
             ->with(['submission.author', 'submission.reviews'])
             ->latest()
             ->paginate(10);
 
-        // 2. Pending Revision Reviews (The new system)
+        // 3. Pending Revision Reviews (The new system)
         $revisionReviews = RevisionReview::where('reviewer_id', $user->id)
             ->where('status', RevisionReview::STATUS_ASSIGNED)
             ->with(['revisionRequest.submission.author'])
             ->latest()
             ->get();
 
-        // 3. Stats Calculation
+        // 4. Stats Calculation
         $stats = [
-            'pending'             => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_ASSIGNED)->count(),
+            'pending'             => $pendingInvitations->count() + $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_ASSIGNED)->count(),
             'completed'           => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_COMPLETED)->count(),
             'pending_revisions'   => $revisionReviews->count(),
             'completed_revisions' => RevisionReview::where('reviewer_id', $user->id)->where('status', RevisionReview::STATUS_COMPLETED)->count(),
         ];
 
-        // 4. Notifications
+        // 5. Notifications
         $notifications = Notification::where('user_id', $user->id)
             ->latest()
             ->take(10)
             ->get();
 
-        return view('dashboard.reviewer', compact('assignments', 'revisionReviews', 'stats', 'notifications'));
+        return view('dashboard.reviewer', compact('pendingInvitations', 'assignments', 'revisionReviews', 'stats', 'notifications'));
     }
 
     public function editor(Request $request): View

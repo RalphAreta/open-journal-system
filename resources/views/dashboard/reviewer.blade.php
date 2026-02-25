@@ -79,8 +79,7 @@
     </div>
 
     {{-- ── PENDING INVITATIONS ── --}}
-    {{-- These are assignments where status = 'pending' (not yet accepted/declined) --}}
-    @php $pendingInvitations = $assignments->where('status', 'pending'); @endphp
+    {{-- These are assignments where status = 'pending' or 'assigned' (not yet accepted/declined) --}}
     @if($pendingInvitations->count() > 0)
     <div class="mb-6 fade-up-2">
         <div class="flex items-center gap-3 mb-3">
@@ -158,18 +157,18 @@
                         </form>
 
                         {{-- Decline --}}
-                        <form method="POST" action="{{ route('reviewer.invitation.decline', $a) }}">
+                        <form id="decline-form-{{ $a->id }}" method="POST" action="{{ route('reviewer.invitation.decline', $a) }}" style="display: none;">
                             @csrf
-                            <button type="submit"
-                                    onclick="return confirm('Are you sure you want to decline this review invitation?')"
-                                    class="inline-flex items-center gap-1.5 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-300
-                                           text-slate-600 hover:text-red-600 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:-translate-y-0.5 w-full justify-center">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                                Decline
-                            </button>
                         </form>
+                        <button type="button"
+                                onclick="declineInvitation(event, {{ $a->id }}, '{{ addslashes($a->submission->title ?? 'this invitation') }}')"
+                                class="inline-flex items-center gap-1.5 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-300
+                                       text-slate-600 hover:text-red-600 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:-translate-y-0.5 w-full justify-center">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Decline
+                        </button>
                     </div>
                 </div>
             </div>
@@ -382,7 +381,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($assignments->whereNotIn('status', ['pending']) as $a)
+                    @forelse($assignments as $a)
                     @php
                         $dueDate  = $a->due_at ? \Carbon\Carbon::parse($a->due_at) : null;
                         $daysLeft = $dueDate ? (int) now()->diffInDays($dueDate, false) : null;
@@ -428,7 +427,7 @@
                             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold uppercase tracking-[.04em] text-emerald-700">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Completed
                             </span>
-                            @elseif($a->status === 'accepted')
+                            @elseif($a->status === 'assigned')
                             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-[10px] font-bold uppercase tracking-[.04em] text-blue-700">
                                 <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>Accepted
                             </span>
@@ -492,6 +491,34 @@ function toggleMoreNotifications() {
         moreContainer.classList.add('hidden');
         seeMoreText.classList.remove('hidden');
         seeLessText.classList.add('hidden');
+    }
+}
+
+function declineInvitation(event, assignmentId, title) {
+    event.preventDefault();
+    
+    // Check if SweetAlert2 is available
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Decline Review Invitation?',
+            html: `Are you sure you want to decline the review invitation for<br><strong>${title}</strong>?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, Decline',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(`decline-form-${assignmentId}`).submit();
+            }
+        });
+    } else {
+        // Fallback to confirm if SweetAlert2 is not loaded
+        if (confirm('Are you sure you want to decline this review invitation?')) {
+            document.getElementById(`decline-form-${assignmentId}`).submit();
+        }
     }
 }
 </script>
