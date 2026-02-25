@@ -325,7 +325,12 @@
                             @endif
                         </td>
                         <td class="px-6 py-3.5">
-                            @if ($rr->due_at)
+                            @if ($rr->status === 'completed')
+                                <div class="text-sm">
+                                    <p class="font-bold text-emerald-600">Submitted</p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5 font-mono">{{ $rr->completed_at ? $rr->completed_at->format('M d, Y • g:i A') : 'N/A' }}</p>
+                                </div>
+                            @elseif ($rr->due_at)
                                 <div class="text-sm">
                                     @if ($daysLeft < 0)
                                         <p class="font-bold text-red-600">Overdue</p>
@@ -334,7 +339,6 @@
                                         <p class="font-bold text-amber-600">Due Today</p>
                                         <p class="text-[10px] text-slate-400 mt-0.5 font-mono">{{ $rr->due_at->format('g:i A') }}</p>
                                     @else
-
                                         <p class="text-[10px] text-slate-400 mt-0.5 font-mono">{{ $rr->due_at->format('M d, Y • g:i A') }}</p>
                                     @endif
                                 </div>
@@ -397,7 +401,12 @@
                             <p class="text-sm text-slate-500">{{ $a->submission->author->name ?? '—' }}</p>
                         </td>
                         <td class="px-5 py-3.5">
-                            @if($dueDate)
+                            @if($a->status === 'completed')
+                                <div>
+                                    <p class="text-xs font-bold text-emerald-600 font-mono">Submitted</p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">{{ $a->completed_at ? $a->completed_at->format('M d, Y • g:i A') : 'N/A' }}</p>
+                                </div>
+                            @elseif($dueDate)
                             <div>
                                 <p class="text-xs font-bold {{ $dueCls }} font-mono">
                                     @if($daysLeft < 0)
