@@ -1003,31 +1003,31 @@
 @push('scripts')
     <script>
         function toggleReviewer(card) {
-<<<<<<< HEAD
             const checkbox = card.querySelector('.reviewer-checkbox');
+            if (!checkbox) return;
+
+            // Toggle checkbox state
             checkbox.checked = !checkbox.checked;
+
+            // Visual toggle
             card.classList.toggle('selected', checkbox.checked);
 
             // Update selected count badge
-            const total = document.querySelectorAll(
-                '.reviewer-checkbox:checked',
-            ).length;
+            const total = document.querySelectorAll('.reviewer-checkbox:checked').length;
             const badge = document.getElementById('selected-count');
             const num = document.getElementById('selected-num');
-            num.textContent = total;
-            badge.classList.toggle('hidden', total === 0);
-=======
-            const checkbox = card.querySelector('input[type="checkbox"]');
-            checkbox.checked = !checkbox.checked;
-            card.classList.toggle('selected', checkbox.checked);
->>>>>>> 8a2425bc7006b227279792be2c9b150bb772bc8b
+
+            if (badge && num) {
+                num.textContent = total;
+                badge.classList.toggle('hidden', total === 0);
+            }
         }
 
         function updateDueDateHint(input) {
             const hint = document.getElementById('due-hint');
             const daysSpan = document.getElementById('due-days');
-            if (!input.value) {
-                hint.classList.add('hidden');
+            if (!input.value || !hint) {
+                if(hint) hint.classList.add('hidden');
                 return;
             }
             const diff = Math.ceil(
@@ -1036,10 +1036,10 @@
             daysSpan.textContent = diff;
             daysSpan.className =
                 diff <= 7
-                    ? 'font-bold due-soon'
+                    ? 'font-bold text-amber-600'
                     : diff < 0
-                      ? 'font-bold due-overdue'
-                      : 'font-bold due-ok';
+                      ? 'font-bold text-red-600'
+                      : 'font-bold text-emerald-600';
             hint.classList.remove('hidden');
         }
 
@@ -1048,40 +1048,30 @@
         const revisionReason = document.getElementById('revision_reason');
 
         if (decisionForm && revisionFields) {
-            const statusRadios = decisionForm.querySelectorAll(
-                'input[name="status"]',
-            );
-            const revTypeRadios = decisionForm.querySelectorAll(
-                'input[name="revision_type"]',
-            );
+            const statusRadios = decisionForm.querySelectorAll('input[name="status"]');
+            const revTypeRadios = decisionForm.querySelectorAll('input[name="revision_type"]');
 
             function toggleRevision() {
-                const selected = decisionForm.querySelector(
-                    'input[name="status"]:checked',
-                );
+                const selected = decisionForm.querySelector('input[name="status"]:checked');
                 const isRev = selected?.value === 'revisions_requested';
                 revisionFields.classList.toggle('hidden', !isRev);
+
                 revTypeRadios.forEach((r) =>
-                    isRev
-                        ? r.setAttribute('required', '')
-                        : r.removeAttribute('required'),
+                    isRev ? r.setAttribute('required', '') : r.removeAttribute('required')
                 );
-                isRev
-                    ? revisionReason.setAttribute('required', '')
-                    : revisionReason.removeAttribute('required');
+
+                if (revisionReason) {
+                    isRev ? revisionReason.setAttribute('required', '') : revisionReason.removeAttribute('required');
+                }
             }
 
-            statusRadios.forEach((r) =>
-                r.addEventListener('change', toggleRevision),
-            );
+            statusRadios.forEach((r) => r.addEventListener('change', toggleRevision));
 
             decisionForm.addEventListener('submit', () => {
-                const selected = decisionForm.querySelector(
-                    'input[name="status"]:checked',
-                );
+                const selected = decisionForm.querySelector('input[name="status"]:checked');
                 if (selected?.value !== 'revisions_requested') {
                     revTypeRadios.forEach((r) => (r.disabled = true));
-                    revisionReason.disabled = true;
+                    if (revisionReason) revisionReason.disabled = true;
                 }
             });
 
