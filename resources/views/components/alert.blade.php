@@ -48,6 +48,6 @@
     <svg class="w-4 h-4 {$config['iconColor']} shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         {!! $config['icon'] !!}
     </svg>
-    
+
     {{ $slot }}
 </div>

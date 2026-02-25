@@ -12,7 +12,7 @@
 
             <div class="bg-white rounded-lg shadow border border-slate-200 p-6 mb-6">
                 <h2 class="text-xl font-semibold text-slate-900 mb-4">Submission Details</h2>
-                
+
                 <div class="grid grid-cols-2 gap-6 mb-6">
                     <div>
                         <label class="text-sm font-medium text-slate-700">Research Field</label>
@@ -129,7 +129,7 @@
                     </div>
 
                     <div class="flex items-center justify-between pt-6 border-t border-slate-200">
-                        <a 
+                        <a
                             href="{{ route('chief-editor.submission.show', $submission) }}"
                             class="text-slate-700 hover:text-slate-900 font-medium"
                         >

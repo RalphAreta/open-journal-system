@@ -42,7 +42,7 @@
             'label' => 'Pending',
         ],
     ];
-    
+
     $config = $configs[$type] ?? $configs['accept'];
 @endphp
 

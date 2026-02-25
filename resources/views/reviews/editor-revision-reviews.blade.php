@@ -244,7 +244,7 @@
                                     Cancel
                                 </a>
                             </div>
-                            
+
                             <div class="mt-4 pt-4 border-t border-slate-200">
                                 <p class="text-xs text-slate-500 text-center">
                                     ⏱️ Decision will be recorded as: <span class="font-mono font-semibold">{{ now()->format('M d, Y • g:i A') }}</span>
