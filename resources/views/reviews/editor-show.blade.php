@@ -981,6 +981,8 @@
                                 Reviewer will have
                                 <span id="due-days" class="font-bold"></span>
                                 days to complete the review.
+                                <br>
+                                <span id="due-date" class="text-slate-500 font-mono mt-1 inline-block">Deadline: </span>
                             </p>
                         </div>
                         <button
@@ -1062,6 +1064,7 @@
         function updateDueDateHint(input) {
             const hint = document.getElementById('due-hint');
             const daysSpan = document.getElementById('due-days');
+            const dateSpan = document.getElementById('due-date');
             if (!input.value || !hint) {
                 if(hint) hint.classList.add('hidden');
                 return;
@@ -1076,6 +1079,14 @@
                     : diff < 0
                       ? 'font-bold text-red-600'
                       : 'font-bold text-emerald-600';
+            
+            // Format the deadline date with time
+            const dueDate = new Date(input.value);
+            const options = { month: 'short', day: 'numeric', year: 'numeric' };
+            const formattedDate = dueDate.toLocaleDateString('en-US', options);
+            dateSpan.textContent = 'Deadline: ' + formattedDate + ' • 11:59 PM';
+            dateSpan.className = 'text-slate-500 font-mono mt-1 inline-block';
+            
             hint.classList.remove('hidden');
         }
 

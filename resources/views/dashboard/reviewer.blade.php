@@ -335,7 +335,7 @@
                                         <p class="font-bold text-amber-600">Due Today</p>
                                         <p class="text-[10px] text-slate-400 mt-0.5 font-mono">{{ $rr->due_at->format('g:i A') }}</p>
                                     @else
-                                        <p class="font-semibold text-emerald-600">{{ $daysLeft }}d left</p>
+
                                         <p class="text-[10px] text-slate-400 mt-0.5 font-mono">{{ $rr->due_at->format('M d, Y • g:i A') }}</p>
                                     @endif
                                 </div>
