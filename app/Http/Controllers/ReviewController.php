@@ -257,41 +257,53 @@ class ReviewController extends Controller
         }
 
         $validated = $request->validate([
-            'reviewer_id' => ['required', 'exists:users,id'],
+            'reviewer_ids' => ['required', 'array', 'min:1'],
+            'reviewer_ids.*' => ['exists:users,id'],
             'due_at' => ['nullable', 'date'],
         ]);
 
-        $reviewerId = $validated['reviewer_id'];
-        $exists = ReviewAssignment::where('submission_id', $submission->id)
-            ->where('reviewer_id', $reviewerId)
-            ->exists();
-        if ($exists) {
-            return back()->with('error', 'This reviewer is already assigned.');
+        $reviewerIds = $validated['reviewer_ids'];
+        $dueAt = $validated['due_at'] ?? null;
+        $assignedCount = 0;
+        $skippedCount = 0;
+
+        foreach ($reviewerIds as $reviewerId) {
+            // Check if already assigned
+            $exists = ReviewAssignment::where('submission_id', $submission->id)
+                ->where('reviewer_id', $reviewerId)
+                ->exists();
+            
+            if ($exists) {
+                $skippedCount++;
+                continue;
+            }
+
+            ReviewAssignment::create([
+                'submission_id' => $submission->id,
+                'reviewer_id' => $reviewerId,
+                'assigned_by' => $request->user()->id,
+                'due_at' => $dueAt,
+            ]);
+
+            \App\Models\Notification::create([
+                'user_id'         => $reviewerId,
+                'title'           => '📋 New Review Assignment',
+                'message'         => "You have been assigned to review the manuscript \"{$submission->title}\". Please log in to view and submit your review.",
+                'type'            => 'info',
+                'notifiable_id'   => $submission->id,
+                'notifiable_type' => \App\Models\Submission::class,
+            ]);
+
+            $assignedCount++;
         }
 
-        ReviewAssignment::create([
-            'submission_id' => $submission->id,
-            'reviewer_id' => $reviewerId,
-            'assigned_by' => $request->user()->id,
-            'due_at' => $validated['due_at'] ?? null,
-        ]);
-
-        \App\Models\Notification::create([
-            'user_id'         => $reviewerId,
-            'title'           => '📋 New Review Assignment',
-            'message'         => "You have been assigned to review the manuscript \"{$submission->title}\". Please log in to view and submit your review.",
-            'type'            => 'info',
-            'notifiable_id'   => $submission->id,
-            'notifiable_type' => \App\Models\Submission::class,
-        ]);
-
         $submission->update(['status' => Submission::STATUS_UNDER_REVIEW]);
 
-        return back()->with('success', 'Reviewer assigned.');
+        if ($skippedCount > 0) {
+            return back()->with('success', "Assigned reviewers ($assignedCount). Skipped already-assigned reviewers ($skippedCount).");
+        }
 
-        $submission->update(['status' => Submission::STATUS_UNDER_REVIEW]);
-
-        return back()->with('success', 'Reviewer assigned.');
+        return back()->with('success', "Successfully assigned $assignedCount reviewer(s).");
     }
 
     /**

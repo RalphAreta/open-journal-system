@@ -67,7 +67,7 @@
             background: #fff5f5;
             box-shadow: 0 4px 14px rgba(220, 38, 38, 0.15);
         }
-        .reviewer-card input[type='radio'] {
+        .reviewer-card input[type='checkbox'] {
             position: absolute;
             opacity: 0;
             pointer-events: none;
@@ -808,11 +808,11 @@
 
                                     <label
                                         class="reviewer-card"
-                                        onclick="selectReviewer(this)"
+                                        onclick="toggleReviewer(this)"
                                     >
                                         <input
-                                            type="radio"
-                                            name="reviewer_id"
+                                            type="checkbox"
+                                            name="reviewer_ids[]"
                                             value="{{ $u->id }}"
                                         />
                                         <div class="reviewer-avatar {{ $bg }}">
@@ -875,11 +875,11 @@
 
                                     <label
                                         class="reviewer-card"
-                                        onclick="selectReviewer(this)"
+                                        onclick="toggleReviewer(this)"
                                     >
                                         <input
-                                            type="radio"
-                                            name="reviewer_id"
+                                            type="checkbox"
+                                            name="reviewer_ids[]"
                                             value="{{ $u->id }}"
                                         />
                                         <div class="reviewer-avatar {{ $bg }}">
@@ -1024,12 +1024,10 @@
 
 @push('scripts')
     <script>
-        function selectReviewer(card) {
-            document
-                .querySelectorAll('.reviewer-card')
-                .forEach((c) => c.classList.remove('selected'));
-            card.classList.add('selected');
-            card.querySelector('input[type="radio"]').checked = true;
+        function toggleReviewer(card) {
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            card.classList.toggle('selected', checkbox.checked);
         }
 
         function updateDueDateHint(input) {
