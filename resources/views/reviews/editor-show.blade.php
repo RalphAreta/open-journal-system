@@ -67,7 +67,7 @@
             background: #fff5f5;
             box-shadow: 0 4px 14px rgba(220, 38, 38, 0.15);
         }
-        .reviewer-card input[type='radio'] {
+        .reviewer-card input[type='checkbox'] {
             position: absolute;
             opacity: 0;
             pointer-events: none;
@@ -278,7 +278,7 @@
                 <h2 class="text-[11px] font-bold uppercase tracking-[.08em] text-slate-400 mb-4">
                     Revision Re-Review Section
                 </h2>
-                
+
                 @php
                     $latestRevision = $submission->revisionRequests->last();
                 @endphp
@@ -308,7 +308,7 @@
                                         {{ \App\Models\Review::recommendationOptions()[$rr->recommendation] ?? $rr->recommendation }}
                                     </span>
                                 </div>
-                                
+
                                 @if ($rr->rating)
                                     <p class="text-xs text-slate-500 mb-2">
                                         Rating: <span class="font-bold text-slate-700">{{ $rr->rating }}/5.0</span>
@@ -1034,6 +1034,7 @@
 @push('scripts')
     <script>
         function toggleReviewer(card) {
+<<<<<<< HEAD
             const checkbox = card.querySelector('.reviewer-checkbox');
             checkbox.checked = !checkbox.checked;
             card.classList.toggle('selected', checkbox.checked);
@@ -1046,6 +1047,11 @@
             const num = document.getElementById('selected-num');
             num.textContent = total;
             badge.classList.toggle('hidden', total === 0);
+=======
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            card.classList.toggle('selected', checkbox.checked);
+>>>>>>> 8a2425bc7006b227279792be2c9b150bb772bc8b
         }
 
         function updateDueDateHint(input) {

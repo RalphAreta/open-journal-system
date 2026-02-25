@@ -298,7 +298,7 @@
                     @endphp
                     <tr class="border-b border-slate-50 last:border-0 hover:bg-purple-50/40 transition-colors group">
                         <td class="px-6 py-3.5">
-                            <a href="{{ route('reviews.revision-create', $rr) }}" class="text-sm font-semibold text-slate-800 group-hover:text-purple-600 transition-colors line-clamp-2">
+                            <a href="{{ route('reviews.revision-review-create', $rr) }}" class="text-sm font-semibold text-slate-800 group-hover:text-purple-600 transition-colors line-clamp-2">
                                 {{ Str::limit($rr->revisionRequest->submission->title, 50) }}
                             </a>
                         </td>
@@ -342,7 +342,7 @@
                             @endif
                         </td>
                         <td class="px-6 py-3.5 text-right">
-                            <a href="{{ route('reviews.revision-create', $rr) }}" class="inline-flex items-center gap-1.5 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-[11px] font-bold transition-all hover:-translate-y-0.5 shadow-sm hover:shadow-md">
+                            <a href="{{ route('reviews.revision-review-create', $rr) }}" class="inline-flex items-center gap-1.5 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-[11px] font-bold transition-all hover:-translate-y-0.5 shadow-sm hover:shadow-md">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
