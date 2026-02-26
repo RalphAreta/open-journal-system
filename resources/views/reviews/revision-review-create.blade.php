@@ -118,8 +118,8 @@
                 </label>
                 <div class="grid grid-cols-2 gap-3">
                     @foreach (\App\Models\RevisionReview::recommendationOptions() as $value => $label)
-                        <label class="flex items-center p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-red-300 transition-colors {{ old('recommendation') === $value ? 'border-red-600 bg-red-50' : '' }}">
-                            <input type="radio" name="recommendation" value="{{ $value }}" required class="w-4 h-4 mr-3" {{ old('recommendation') === $value ? 'checked' : '' }}>
+                        <label class="flex items-center p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-red-300 transition-colors {{ old('recommendation', $revisionReview->recommendation) === $value ? 'border-red-600 bg-red-50' : '' }}">
+                            <input type="radio" name="recommendation" value="{{ $value }}" class="w-4 h-4 mr-3" {{ old('recommendation', $revisionReview->recommendation) === $value ? 'checked' : '' }}>
                             <span class="text-sm font-medium text-slate-700">{{ $label }}</span>
                         </label>
                     @endforeach
@@ -132,7 +132,7 @@
                 <label class="block text-sm font-semibold text-slate-900 mb-2">
                     Comments for Author <span class="text-slate-500 font-normal text-xs">(These will be visible to author)</span>
                 </label>
-                <textarea name="comments_for_author" rows="5" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Provide constructive feedback...">{{ old('comments_for_author') }}</textarea>
+                <textarea name="comments_for_author" rows="5" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Provide constructive feedback...">{{ old('comments_for_author', $revisionReview->comments_for_author) }}</textarea>
                 @error('comments_for_author') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
             </div>
 
@@ -141,7 +141,7 @@
                 <label class="block text-sm font-semibold text-slate-900 mb-2">
                     Comments for Editor <span class="text-slate-500 font-normal text-xs">(Confidential - not shared with author)</span>
                 </label>
-                <textarea name="comments_for_editor" rows="5" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Any additional notes for the editor...">{{ old('comments_for_editor') }}</textarea>
+                <textarea name="comments_for_editor" rows="5" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Any additional notes for the editor...">{{ old('comments_for_editor', $revisionReview->comments_for_editor) }}</textarea>
                 @error('comments_for_editor') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
             </div>
 
@@ -153,7 +153,7 @@
                 <div class="flex gap-2">
                     @for ($i = 1; $i <= 5; $i++)
                         <label class="flex items-center cursor-pointer">
-                            <input type="radio" name="rating" value="{{ $i }}" class="w-4 h-4" {{ old('rating') == $i ? 'checked' : '' }}>
+                            <input type="radio" name="rating" value="{{ $i }}" class="w-4 h-4" {{ old('rating', $revisionReview->rating) == $i ? 'checked' : '' }}>
                             <span class="ml-2 text-lg">{{ str_repeat('★', $i) . str_repeat('☆', 5 - $i) }}</span>
                         </label>
                     @endfor
@@ -162,13 +162,26 @@
             </div>
 
             {{-- Buttons --}}
-            <div class="flex gap-4 pt-4">
-                <button type="submit" class="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 font-semibold transition-colors">
-                    ✓ Submit Revision Review
-                </button>
-                <a href="{{ route('reviews.index') }}" class="flex-1 bg-slate-200 text-slate-900 py-3 rounded-lg hover:bg-slate-300 font-semibold transition-colors text-center">
+            <div class="flex items-center justify-between pt-6 border-t border-slate-200 gap-3">
+                <a href="{{ route('reviews.index') }}" class="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
                     Cancel
                 </a>
+                <div class="flex items-center gap-3">
+                    <button type="submit" name="action" value="save_draft"
+                        class="bg-slate-400 hover:bg-slate-500 text-white px-6 py-3 rounded-lg
+                               text-sm font-bold uppercase tracking-[.06em]
+                               transition-all duration-200 hover:-translate-y-0.5
+                               shadow-md shadow-slate-200/80 hover:shadow-lg hover:shadow-slate-300/50">
+                        Save & Submit Later
+                    </button>
+                    <button type="submit" name="action" value="submit"
+                        class="bg-slate-900 hover:bg-red-600 text-white px-6 py-3 rounded-lg
+                               text-sm font-bold uppercase tracking-[.06em]
+                               transition-all duration-200 hover:-translate-y-0.5
+                               shadow-md shadow-slate-200/80 hover:shadow-lg hover:shadow-red-200/50">
+                        Submit Revision Review
+                    </button>
+                </div>
             </div>
         </form>
     </div>

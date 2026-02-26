@@ -30,6 +30,7 @@ class Submission extends Model
         'initial_screening_comments',
         'initial_screening_by',
         'initial_screening_at',
+        'editor_decision_draft',
     ];
 
     protected function casts(): array
@@ -39,6 +40,7 @@ class Submission extends Model
             'chief_editor_review_at' => 'datetime',
             'editor_decision_at' => 'datetime',
             'initial_screening_at' => 'datetime',
+            'editor_decision_draft' => 'json',
         ];
     }
 

@@ -185,6 +185,8 @@
                         {{-- Final Decision Form --}}
                         @php
                             $allReviewsCompleted = $revision->revisionReviews->every(fn($r) => $r->status === \App\Models\RevisionReview::STATUS_COMPLETED);
+                            $draftData = $revision->editor_decision_draft ? json_decode(json_encode($revision->editor_decision_draft), true) : [];
+                            $selectedDecision = old('decision', $draftData['decision'] ?? '');
                         @endphp
                         <form method="POST" action="{{ route('editor.revision-decision', $submission) }}" class="space-y-4 pt-4 border-t border-slate-200">
                             @csrf
@@ -195,54 +197,59 @@
                                     Final Editorial Decision <span class="text-red-600">*</span> {{ !$allReviewsCompleted ? '(⚠️ Some reviews pending)' : '' }}
                                 </label>
                                 <div class="grid grid-cols-3 gap-3">
-                                    <label class="flex items-center p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-300 transition-colors">
-                                        <input type="radio" name="decision" value="accepted" required class="w-4 h-4 mr-3">
+                                    <label class="flex items-center p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-300 transition-colors {{ $selectedDecision === 'accepted' ? 'border-green-600 bg-green-50' : '' }}">
+                                        <input type="radio" name="decision" value="accepted" class="w-4 h-4 mr-3" {{ $selectedDecision === 'accepted' ? 'checked' : '' }}>
                                         <span class="text-sm font-medium text-slate-700">✓ Accept</span>
                                     </label>
-                                    <label class="flex items-center p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-300 transition-colors">
-                                        <input type="radio" name="decision" value="rejected" required class="w-4 h-4 mr-3">
+                                    <label class="flex items-center p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-300 transition-colors {{ $selectedDecision === 'rejected' ? 'border-red-600 bg-red-50' : '' }}">
+                                        <input type="radio" name="decision" value="rejected" class="w-4 h-4 mr-3" {{ $selectedDecision === 'rejected' ? 'checked' : '' }}>
                                         <span class="text-sm font-medium text-slate-700">✗ Reject</span>
                                     </label>
-                                    <label class="flex items-center p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-300 transition-colors">
-                                        <input type="radio" name="decision" value="revisions_requested" required class="w-4 h-4 mr-3">
+                                    <label class="flex items-center p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-300 transition-colors {{ $selectedDecision === 'revisions_requested' ? 'border-amber-600 bg-amber-50' : '' }}">
+                                        <input type="radio" name="decision" value="revisions_requested" class="w-4 h-4 mr-3" {{ $selectedDecision === 'revisions_requested' ? 'checked' : '' }}>
                                         <span class="text-sm font-medium text-slate-700">🔄 More Revisions</span>
                                     </label>
                                 </div>
                             </div>
 
                             {{-- Conditional revision fields --}}
-                            <div id="revisionFields" class="hidden space-y-4">
+                            <div id="revisionFields" class="{{ $selectedDecision === 'revisions_requested' ? '' : 'hidden' }} space-y-4">
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-900 mb-2">Revision Type</label>
                                     <div class="flex gap-3">
                                         <label class="flex items-center">
-                                            <input type="radio" name="revision_type" value="minor" class="w-4 h-4 mr-2">
+                                            <input type="radio" name="revision_type" value="minor" class="w-4 h-4 mr-2" {{ old('revision_type', $draftData['revision_type'] ?? '') === 'minor' ? 'checked' : '' }}>
                                             <span class="text-sm font-medium">⚡ Minor Revisions</span>
                                         </label>
                                         <label class="flex items-center">
-                                            <input type="radio" name="revision_type" value="major" class="w-4 h-4 mr-2">
+                                            <input type="radio" name="revision_type" value="major" class="w-4 h-4 mr-2" {{ old('revision_type', $draftData['revision_type'] ?? '') === 'major' ? 'checked' : '' }}>
                                             <span class="text-sm font-medium">🔴 Major Revisions</span>
                                         </label>
                                     </div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-900 mb-2">Reason for Further Revisions</label>
-                                    <textarea name="revision_reason" rows="3" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Explain why further revisions are needed..."></textarea>
+                                    <textarea name="revision_reason" rows="3" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Explain why further revisions are needed...">{{ old('revision_reason', $draftData['revision_reason'] ?? '') }}</textarea>
                                 </div>
                             </div>
 
                             <div>
                                 <label class="block text-sm font-semibold text-slate-900 mb-2">Editor Notes (Optional)</label>
-                                <textarea name="editor_notes" rows="3" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Internal notes about this decision..."></textarea>
+                                <textarea name="editor_notes" rows="3" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Internal notes about this decision...">{{ old('editor_notes', $draftData['editor_notes'] ?? '') }}</textarea>
                             </div>
 
-                            <div class="flex gap-4 pt-4">
-                                <button type="submit" class="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 font-semibold transition-colors">
-                                    ✓ Confirm Final Decision
-                                </button>
-                                <a href="{{ route('editor.submissions') }}" class="flex-1 bg-slate-200 text-slate-900 py-3 rounded-lg hover:bg-slate-300 font-semibold transition-colors text-center">
+                            <div class="flex items-center justify-between gap-3 pt-4">
+                                <a href="{{ route('editor.submissions') }}" class="bg-slate-200 text-slate-900 py-3 px-6 rounded-lg hover:bg-slate-300 font-semibold transition-colors">
                                     Cancel
                                 </a>
+                                <div class="flex items-center gap-3">
+                                    <button type="submit" name="action" value="save_draft" class="bg-slate-400 text-white py-3 px-6 rounded-lg hover:bg-slate-500 font-semibold transition-colors">
+                                        Save & Review Later
+                                    </button>
+                                    <button type="submit" name="action" value="submit" class="bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 font-semibold transition-colors">
+                                        ✓ Confirm Final Decision
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="mt-4 pt-4 border-t border-slate-200">

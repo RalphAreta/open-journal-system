@@ -15,6 +15,7 @@ class RevisionReview extends Model
         'comments_for_author',
         'comments_for_editor',
         'rating',
+        'submission_status',
         'assigned_at',
         'completed_at',
         'due_at',
@@ -32,6 +33,9 @@ class RevisionReview extends Model
     public const STATUS_ASSIGNED = 'assigned';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_DECLINED = 'declined';
+
+    public const SUBMISSION_STATUS_DRAFT = 'draft';
+    public const SUBMISSION_STATUS_SUBMITTED = 'submitted';
 
     public const RECOMMEND_ACCEPT = 'accept';
     public const RECOMMEND_MINOR_REVISIONS = 'minor_revisions';

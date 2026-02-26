@@ -17,6 +17,7 @@ class RevisionRequest extends Model
         'revised_submission_id',
         'revised_at',
         'revision_notes',
+        'editor_decision_draft',
     ];
 
     protected function casts(): array
@@ -24,6 +25,7 @@ class RevisionRequest extends Model
         return [
             'requested_at' => 'datetime',
             'revised_at' => 'datetime',
+            'editor_decision_draft' => 'json',
         ];
     }
 

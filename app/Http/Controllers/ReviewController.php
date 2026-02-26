@@ -45,8 +45,14 @@ class ReviewController extends Controller
 
         $assignment->load('submission.author');
         $submission = $assignment->submission;
+        
+        // Load existing draft if available
+        $existingReview = Review::where('submission_id', $submission->id)
+            ->where('reviewer_id', request()->user()->id)
+            ->where('status', Review::STATUS_DRAFT)
+            ->first();
 
-        return view('reviews.create', compact('assignment', 'submission'));
+        return view('reviews.create', compact('assignment', 'submission', 'existingReview'));
     }
 
     /**
@@ -73,13 +79,25 @@ class ReviewController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        // Check which button was clicked
+        $isSaveDraft = $request->has('action') && $request->input('action') === 'save_draft';
+        
+        // Make recommendation optional when saving as draft
+        $rules = [
             'review_assignment_id' => ['required', 'exists:review_assignments,id'],
-            'recommendation' => ['required', 'in:accept,minor_revisions,major_revisions,reject'],
             'comments_for_author' => ['nullable', 'string'],
             'comments_for_editor' => ['nullable', 'string'],
             'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
-        ]);
+        ];
+        
+        // Recommendation is required only when submitting
+        if (!$isSaveDraft) {
+            $rules['recommendation'] = ['required', 'in:accept,minor_revisions,major_revisions,reject'];
+        } else {
+            $rules['recommendation'] = ['nullable', 'in:accept,minor_revisions,major_revisions,reject'];
+        }
+        
+        $validated = $request->validate($rules);
 
         $assignment = ReviewAssignment::findOrFail($validated['review_assignment_id']);
         if ($assignment->reviewer_id !== $request->user()->id) {
@@ -89,23 +107,51 @@ class ReviewController extends Controller
             return redirect()->route('reviews.index')->with('error', 'Review already submitted.');
         }
 
-        Review::create([
-            'submission_id' => $assignment->submission_id,
-            'reviewer_id' => $request->user()->id,
-            'review_assignment_id' => $assignment->id,
-            'recommendation' => $validated['recommendation'],
-            'comments_for_author' => $validated['comments_for_author'] ?? null,
-            'comments_for_editor' => $validated['comments_for_editor'] ?? null,
-            'rating' => $validated['rating'] ?? null,
-            'submitted_at' => now(),
-        ]);
+        // Check if a draft already exists
+        $review = Review::where('submission_id', $assignment->submission_id)
+            ->where('reviewer_id', $request->user()->id)
+            ->where('status', Review::STATUS_DRAFT)
+            ->first();
 
-        $assignment->update([
-            'status' => ReviewAssignment::STATUS_COMPLETED,
-            'completed_at' => now(),
-        ]);
+        $status = $isSaveDraft ? Review::STATUS_DRAFT : Review::STATUS_SUBMITTED;
+        $submittedAt = !$isSaveDraft ? now() : null;
 
-        return redirect()->route('reviews.index')->with('success', 'Review submitted successfully.');
+        if ($review) {
+            // Update existing draft
+            $review->update([
+                'recommendation' => $validated['recommendation'] ?? null,
+                'comments_for_author' => $validated['comments_for_author'] ?? null,
+                'comments_for_editor' => $validated['comments_for_editor'] ?? null,
+                'rating' => $validated['rating'] ?? null,
+                'status' => $status,
+                'submitted_at' => $submittedAt,
+            ]);
+        } else {
+            // Create new review/draft
+            $review = Review::create([
+                'submission_id' => $assignment->submission_id,
+                'reviewer_id' => $request->user()->id,
+                'review_assignment_id' => $assignment->id,
+                'recommendation' => $validated['recommendation'] ?? null,
+                'comments_for_author' => $validated['comments_for_author'] ?? null,
+                'comments_for_editor' => $validated['comments_for_editor'] ?? null,
+                'rating' => $validated['rating'] ?? null,
+                'status' => $status,
+                'submitted_at' => $submittedAt,
+            ]);
+        }
+
+        // Only update assignment status if actually submitting
+        if (!$isSaveDraft) {
+            $assignment->update([
+                'status' => ReviewAssignment::STATUS_COMPLETED,
+                'completed_at' => now(),
+            ]);
+
+            return redirect()->route('reviews.index')->with('success', 'Review submitted successfully.');
+        } else {
+            return redirect()->route('reviews.index')->with('success', 'Review saved as draft. You can continue editing it later.');
+        }
     }
 
     /**
@@ -316,18 +362,42 @@ class ReviewController extends Controller
             abort(403, 'You do not have access to this submission.');
         }
 
-        $validated = $request->validate([
-            'status' => ['required', 'in:accepted,rejected,revisions_requested'],
+        // Check which button was clicked
+        $isSaveDraft = $request->has('action') && $request->input('action') === 'save_draft';
+        
+        // Make status optional when saving as draft
+        $rules = [
             'editor_notes' => ['nullable', 'string'],
-            'revision_type' => ['required_if:status,revisions_requested', 'in:minor,major'],
-            'revision_reason' => ['required_if:status,revisions_requested', 'string'],
-        ]);
+        ];
+        
+        if (!$isSaveDraft) {
+            $rules['status'] = ['required', 'in:accepted,rejected,revisions_requested'];
+            $rules['revision_type'] = ['required_if:status,revisions_requested', 'in:minor,major'];
+            $rules['revision_reason'] = ['required_if:status,revisions_requested', 'string'];
+        } else {
+            $rules['status'] = ['nullable', 'in:accepted,rejected,revisions_requested'];
+            $rules['revision_type'] = ['nullable', 'in:minor,major'];
+            $rules['revision_reason'] = ['nullable', 'string'];
+        }
 
+        $validated = $request->validate($rules);
+
+        if ($isSaveDraft) {
+            // Save as draft
+            $submission->update([
+                'editor_decision_draft' => $validated,
+            ]);
+            return redirect()->route('editor.submission.show', $submission)
+                ->with('success', 'Decision draft saved. You can continue editing it later.');
+        }
+
+        // Final submission
         $submission->update([
             'status' => $validated['status'],
             'editor_id' => $request->user()->id,
             'editor_decision_at' => now(),
             'editor_notes' => $validated['editor_notes'] ?? null,
+            'editor_decision_draft' => null, // Clear draft
         ]);
 
         if ($validated['status'] === Submission::STATUS_REVISIONS_REQUESTED) {
@@ -496,13 +566,25 @@ public function createRevisionReview(RevisionReview $revisionReview): View|Redir
  */
 public function storeRevisionReview(Request $request): RedirectResponse
 {
-    $validated = $request->validate([
+    // Check which button was clicked
+    $isSaveDraft = $request->has('action') && $request->input('action') === 'save_draft';
+    
+    // Make recommendation optional when saving as draft
+    $rules = [
         'revision_review_id' => ['required', 'exists:revision_reviews,id'],
-        'recommendation' => ['required', 'in:accept,minor_revisions,major_revisions,reject'],
         'comments_for_author' => ['nullable', 'string'],
         'comments_for_editor' => ['nullable', 'string'],
         'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
-    ]);
+    ];
+    
+    // Recommendation is required only when submitting
+    if (!$isSaveDraft) {
+        $rules['recommendation'] = ['required', 'in:accept,minor_revisions,major_revisions,reject'];
+    } else {
+        $rules['recommendation'] = ['nullable', 'in:accept,minor_revisions,major_revisions,reject'];
+    }
+    
+    $validated = $request->validate($rules);
 
     $revisionReview = RevisionReview::findOrFail($validated['revision_review_id']);
     if ($revisionReview->reviewer_id !== $request->user()->id) {
@@ -512,27 +594,41 @@ public function storeRevisionReview(Request $request): RedirectResponse
         return redirect()->route('reviews.index')->with('error', 'Review already submitted.');
     }
 
-    $revisionReview->update([
-        'status' => RevisionReview::STATUS_COMPLETED,
-        'recommendation' => $validated['recommendation'],
+    $submissionStatus = $isSaveDraft ? RevisionReview::SUBMISSION_STATUS_DRAFT : RevisionReview::SUBMISSION_STATUS_SUBMITTED;
+    $completedAt = !$isSaveDraft ? now() : null;
+    
+    $updateData = [
+        'recommendation' => $validated['recommendation'] ?? null,
         'comments_for_author' => $validated['comments_for_author'] ?? null,
         'comments_for_editor' => $validated['comments_for_editor'] ?? null,
         'rating' => $validated['rating'] ?? null,
-        'completed_at' => now(),
-    ]);
+        'submission_status' => $submissionStatus,
+    ];
+    
+    // Only set completion status if actually submitting
+    if (!$isSaveDraft) {
+        $updateData['status'] = RevisionReview::STATUS_COMPLETED;
+        $updateData['completed_at'] = now();
+    }
+    
+    $revisionReview->update($updateData);
 
-    // Notify editor
-    $submission = $revisionReview->revisionRequest->submission;
-    \App\Models\Notification::create([
-        'user_id' => $submission->assigned_editor_id,
-        'title' => '✓ Revision Review Submitted',
-        'message' => "Reviewer has completed re-review for revised manuscript \"{$submission->title}\". Recommendation: " . $validated['recommendation'],
-        'type' => 'info',
-        'notifiable_id' => $submission->id,
-        'notifiable_type' => Submission::class,
-    ]);
+    // Only notify editor if actually submitting
+    if (!$isSaveDraft) {
+        $submission = $revisionReview->revisionRequest->submission;
+        \App\Models\Notification::create([
+            'user_id' => $submission->assigned_editor_id,
+            'title' => '✓ Revision Review Submitted',
+            'message' => "Reviewer has completed re-review for revised manuscript \"{$submission->title}\". Recommendation: " . $validated['recommendation'],
+            'type' => 'info',
+            'notifiable_id' => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
 
-    return redirect()->route('reviews.index')->with('success', 'Revision review submitted successfully.');
+        return redirect()->route('reviews.index')->with('success', 'Revision review submitted successfully.');
+    } else {
+        return redirect()->route('reviews.index')->with('success', 'Revision review saved as draft. You can continue editing it later.');
+    }
 }
 
 /**
@@ -580,14 +676,39 @@ public function editorRevisionDecision(Request $request, Submission $submission)
             return back()->withErrors('This submission is not awaiting your revision decision.');
         }
 
-        $validated = $request->validate([
-            'decision' => ['required', 'in:accepted,rejected,revisions_requested'],
+        // Check which button was clicked
+        $isSaveDraft = $request->has('action') && $request->input('action') === 'save_draft';
+        
+        // Make decision optional when saving as draft
+        $rules = [
             'editor_notes' => ['nullable', 'string'],
-            'revision_type' => ['required_if:decision,revisions_requested', 'in:minor,major'],
-            'revision_reason' => ['required_if:decision,revisions_requested', 'string'],
-        ]);
+        ];
+        
+        if (!$isSaveDraft) {
+            $rules['decision'] = ['required', 'in:accepted,rejected,revisions_requested'];
+            $rules['revision_type'] = ['required_if:decision,revisions_requested', 'in:minor,major'];
+            $rules['revision_reason'] = ['required_if:decision,revisions_requested', 'string'];
+        } else {
+            $rules['decision'] = ['nullable', 'in:accepted,rejected,revisions_requested'];
+            $rules['revision_type'] = ['nullable', 'in:minor,major'];
+            $rules['revision_reason'] = ['nullable', 'string'];
+        }
+
+        $validated = $request->validate($rules);
 
         Log::info('Validation passed', ['validated' => $validated]);
+
+        if ($isSaveDraft) {
+            // Save as draft
+            $revision = $submission->revisionRequests()->latest()->first();
+            if ($revision) {
+                $revision->update([
+                    'editor_decision_draft' => $validated,
+                ]);
+            }
+            return back()
+                ->with('success', 'Revision decision draft saved. You can continue editing it later.');
+        }
 
         // Map decision to status constant
         $statusMap = [
@@ -602,11 +723,18 @@ public function editorRevisionDecision(Request $request, Submission $submission)
             'mappedStatus' => $mappedStatus,
         ]);
 
+        // Clear draft when finalizing
+        $revision = $submission->revisionRequests()->latest()->first();
+        if ($revision) {
+            $revision->update(['editor_decision_draft' => null]);
+        }
+
         $updated = $submission->update([
             'status' => $mappedStatus,
             'editor_id' => $request->user()->id,
             'editor_decision_at' => now(),
             'editor_notes' => $validated['editor_notes'] ?? null,
+            'editor_decision_draft' => null, // Clear draft
         ]);
 
         Log::info('Update result', [
