@@ -176,7 +176,7 @@
 @endpush
 
 @section('content')
-    <div class="font-body max-w-3xl mx-auto">
+    <div class="font-body max-w-7xl mx-auto">
         {{-- ── Back nav ── --}}
         <div class="mb-5 fade-up">
             <a
@@ -419,327 +419,157 @@
             @endif
         </div>
 
-        {{-- ── Peer Reviews ── --}}
-        <div class="fade-up-3">
-            <div class="section-rule mb-5">Peer Reviews</div>
+        {{-- Two-column layout: left = your submitted review, right = peer reviews --}}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-up-3">
 
-            @if (! $allReviewsIn)
-                {{-- ── LOCKED STATE ── --}}
-                <div
-                    class="lock-card border border-slate-200 rounded-2xl p-8 text-center mb-4"
-                >
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center mx-auto mb-4"
-                    >
-                        <svg
-                            class="w-7 h-7 text-slate-400"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="1.5"
-                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                            />
-                        </svg>
-                    </div>
-                    <h3 class="text-sm font-bold text-slate-700 mb-1">
-                        Reviews Are Hidden
-                    </h3>
-                    <p
-                        class="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed"
-                    >
-                        Peer reviews will only be revealed once
-                        <strong>
-                            all {{ $totalAssigned }} assigned reviewers
-                        </strong>
-                        have submitted their feedback. This ensures unbiased,
-                        independent evaluation.
-                    </p>
-                    <div
-                        class="mt-5 inline-flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-500"
-                    >
-                        <span
-                            class="w-2 h-2 rounded-full bg-amber-400 animate-pulse inline-block"
-                        ></span>
-                        Waiting for {{ $totalAssigned - $totalSubmitted }} more
-                        {{ $totalAssigned - $totalSubmitted === 1 ? 'reviewer' : 'reviewers' }}
-                        to submit
-                    </div>
-                </div>
+            {{-- Left: Your submitted review (span 2) --}}
+            <div class="lg:col-span-2">
+                <div class="section-rule mb-5">Your Submitted Review</div>
+                @if ($myReview)
+                    @php
+                        $recMap = [
+                            'accept' => ['label' => 'Accept', 'cls' => 'rec-accept'],
+                            'minor_revisions' => ['label' => 'Minor Revisions', 'cls' => 'rec-minor'],
+                            'major_revisions' => ['label' => 'Major Revisions', 'cls' => 'rec-major'],
+                            'reject' => ['label' => 'Reject', 'cls' => 'rec-reject'],
+                        ];
+                        $myRec = $recMap[$myReview->recommendation] ?? ['label' => $myReview->recommendation ?? '—', 'cls' => 'rec-default'];
+                    @endphp
 
-                {{-- Show placeholder cards for each reviewer ── --}}
-                <div class="space-y-3">
-                    @foreach ($assignments as $i => $a)
-                        @php
-                            $isYou = $a->reviewer_id === auth()->id();
-                        @endphp
-
-                        <div
-                            class="bg-white border border-slate-100 rounded-2xl p-5 opacity-50"
-                        >
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-9 h-9 rounded-full avatar-ring-{{ ($i % 6) + 1 }} flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                                >
-                                    R{{ $i + 1 }}
-                                </div>
-                                <div class="flex-1">
-                                    <div class="flex items-center gap-2">
-                                        <p
-                                            class="text-sm font-bold text-slate-800"
-                                        >
-                                            Reviewer {{ $i + 1 }}
-                                        </p>
-                                        @if ($isYou)
-                                            <span class="you-badge">You</span>
-                                        @endif
-                                    </div>
-                                    <p class="text-xs text-slate-400 mt-0.5">
-                                        @if ($a->status === \App\Models\ReviewAssignment::STATUS_COMPLETED)
-                                            <span
-                                                class="text-emerald-600 font-semibold"
-                                            >
-                                                ✓ Review submitted
-                                            </span>
-                                        @else
-                                                Review pending…
-                                        @endif
-                                    </p>
-                                </div>
-                                <div
-                                    class="w-24 h-5 bg-slate-100 rounded-full"
-                                ></div>
+                    <div class="bg-blue-50 border border-blue-200 rounded-2xl p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-[.08em] text-blue-600 mb-0.5">Your Recommendation</p>
+                                <span class="rec-pill {{ $myRec['cls'] }}">{{ $myRec['label'] }}</span>
                             </div>
-                            <div class="mt-3 space-y-2">
-                                <div
-                                    class="h-3 bg-slate-100 rounded-full w-full"
-                                ></div>
-                                <div
-                                    class="h-3 bg-slate-100 rounded-full w-4/5"
-                                ></div>
-                                <div
-                                    class="h-3 bg-slate-100 rounded-full w-2/3"
-                                ></div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                {{-- ── REVEALED STATE ── --}}
-                <div
-                    class="flex items-start gap-3 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-5"
-                >
-                    <svg
-                        class="w-4 h-4 text-emerald-600 mt-0.5 shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                    </svg>
-                    <p class="text-xs text-emerald-800 leading-relaxed">
-                        All reviewers have submitted their feedback. Reviews are
-                        shown anonymously — reviewer identities are not
-                        disclosed to protect the integrity of the process.
-                    </p>
-                </div>
-
-                <div class="space-y-4">
-                    @foreach ($reviews->values() as $i => $r)
-                        @php
-                            $isYou = $r->reviewer_id === auth()->id();
-                            $ringIdx = ($i % 6) + 1;
-                            $recMap = [
-                                'accept' => ['label' => 'Accept', 'cls' => 'rec-accept'],
-                                'minor_revisions' => ['label' => 'Minor Revisions', 'cls' => 'rec-minor'],
-                                'major_revisions' => ['label' => 'Major Revisions', 'cls' => 'rec-major'],
-                                'reject' => ['label' => 'Reject', 'cls' => 'rec-reject'],
-                            ];
-                            $rec = $recMap[$r->recommendation] ?? ['label' => $r->recommendation ?? '—', 'cls' => 'rec-default'];
-                        @endphp
-
-                        <div
-                            class="bg-white border {{ $isYou ? 'border-blue-200' : 'border-slate-200' }} rounded-2xl p-5 shadow-sm {{ $isYou ? 'ring-1 ring-blue-100' : '' }}"
-                        >
-                            {{-- Card header ── --}}
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-9 h-9 rounded-full avatar-ring-{{ $ringIdx }} flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-sm"
-                                    >
-                                        R{{ $i + 1 }}
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <p
-                                                class="text-sm font-bold text-slate-800"
-                                            >
-                                                Reviewer {{ $i + 1 }}
-                                            </p>
-                                            @if ($isYou)
-                                                <span class="you-badge">
-                                                    You
-                                                </span>
-                                            @endif
-                                        </div>
-                                        @if ($r->submitted_at)
-                                            <p
-                                                class="text-[10px] text-slate-400 mt-0.5"
-                                            >
-                                                Submitted
-                                                {{ $r->submitted_at->format('M d, Y') }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-                                <span class="rec-pill {{ $rec['cls'] }}">
-                                    {{ $rec['label'] }}
-                                </span>
-                            </div>
-
-                            {{-- Rating ── --}}
-                            @if ($r->rating)
-                                <div
-                                    class="flex items-center gap-2 mb-4 pb-4 border-b border-slate-100"
-                                >
-                                    <span
-                                        class="text-[10px] font-bold uppercase tracking-[.07em] text-slate-400"
-                                    >
-                                        Rating
-                                    </span>
-                                    <div class="flex gap-0.5">
+                            @if ($myReview->rating)
+                                <div class="text-right">
+                                    <p class="text-[10px] font-bold uppercase tracking-[.07em] text-blue-500 mb-1">Your Rating</p>
+                                    <div class="flex gap-0.5 justify-end">
                                         @for ($s = 1; $s <= 5; $s++)
-                                            <span
-                                                class="star {{ $s <= $r->rating ? 'filled' : '' }}"
-                                            >
-                                                ★
-                                            </span>
+                                            <span class="star {{ $s <= $myReview->rating ? 'filled' : '' }}">★</span>
                                         @endfor
                                     </div>
-                                    <span
-                                        class="text-xs font-bold text-slate-600 ml-1"
-                                    >
-                                        {{ $r->rating }}/5
-                                    </span>
                                 </div>
                             @endif
-
-                            {{-- Comments for author ── --}}
-
-                            @if ($r->comments_for_author)
-                                <div class="mb-3">
-                                    <p
-                                        class="text-[10px] font-bold uppercase tracking-[.07em] text-slate-400 mb-1.5"
-                                    >
-                                        Comments
-                                    </p>
-                                    <p
-                                        class="text-sm text-slate-700 leading-relaxed"
-                                    >
-                                        {{ $r->comments_for_author }}
-                                    </p>
-                                </div>
-                            @else
-                                <p class="text-sm text-slate-400 italic">
-                                    No written comments provided.
-                                </p>
-                            @endif
                         </div>
-                    @endforeach
-                </div>
-            @endif
-        </div>
 
-        {{-- ── Your own review summary (always visible) ── --}}
-        @if ($myReview)
-            <div class="mt-6 fade-up-4">
-                <div class="section-rule mb-5">Your Submitted Review</div>
-                @php
-                    $recMap = [
-                        'accept' => ['label' => 'Accept', 'cls' => 'rec-accept'],
-                        'minor_revisions' => ['label' => 'Minor Revisions', 'cls' => 'rec-minor'],
-                        'major_revisions' => ['label' => 'Major Revisions', 'cls' => 'rec-major'],
-                        'reject' => ['label' => 'Reject', 'cls' => 'rec-reject'],
-                    ];
-                    $myRec = $recMap[$myReview->recommendation] ?? ['label' => $myReview->recommendation ?? '—', 'cls' => 'rec-default'];
-                @endphp
-
-                <div class="bg-blue-50 border border-blue-200 rounded-2xl p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <p
-                                class="text-[10px] font-bold uppercase tracking-[.08em] text-blue-600 mb-0.5"
-                            >
-                                Your Recommendation
-                            </p>
-                            <span class="rec-pill {{ $myRec['cls'] }}">
-                                {{ $myRec['label'] }}
-                            </span>
-                        </div>
-                        @if ($myReview->rating)
-                            <div class="text-right">
-                                <p
-                                    class="text-[10px] font-bold uppercase tracking-[.07em] text-blue-500 mb-1"
-                                >
-                                    Your Rating
-                                </p>
-                                <div class="flex gap-0.5 justify-end">
-                                    @for ($s = 1; $s <= 5; $s++)
-                                        <span
-                                            class="star {{ $s <= $myReview->rating ? 'filled' : '' }}"
-                                        >
-                                            ★
-                                        </span>
-                                    @endfor
-                                </div>
+                        @if ($myReview->comments_for_author)
+                            <div class="mb-3 pt-3 border-t border-blue-200">
+                                <p class="text-[10px] font-bold uppercase tracking-[.07em] text-blue-500 mb-1.5">Your Comments for Author</p>
+                                <p class="text-sm text-blue-900 leading-relaxed">{{ $myReview->comments_for_author }}</p>
                             </div>
                         @endif
+
+                        @if ($myReview->comments_for_editor)
+                            <div class="pt-3 border-t border-blue-200">
+                                <p class="text-[10px] font-bold uppercase tracking-[.07em] text-blue-500 mb-1.5">Your Comments for Editor (Internal)</p>
+                                <p class="text-sm text-blue-900 leading-relaxed italic">{{ $myReview->comments_for_editor }}</p>
+                            </div>
+                        @endif
+
+                        @if ($myReview->submitted_at)
+                            <p class="text-[10px] text-blue-400 mt-3 font-mono">Submitted {{ $myReview->submitted_at->format('M d, Y \a\t g:i A') }}</p>
+                        @endif
+                    </div>
+                @else
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-600">
+                        You have not submitted a review for this manuscript yet. <a href="{{ route('reviews.create', ['assignment' => $assignments->firstWhere('reviewer_id', auth()->id())]) }}" class="text-blue-600 hover:underline">Open review form</a>
+                    </div>
+                @endif
+            </div>
+
+            {{-- Right: Peer reviews (span 1) --}}
+            <div class="lg:col-span-1">
+                <div class="section-rule mb-5">Peer Reviews</div>
+
+                @if (! $allReviewsIn)
+                    <div class="lock-card border border-slate-200 rounded-2xl p-6 text-center mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-700 mb-1">Reviews Are Hidden</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Peer reviews will only be revealed once <strong>all {{ $totalAssigned }} assigned reviewers</strong> have submitted their feedback.</p>
+                        <div class="mt-4 inline-flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-500">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse inline-block"></span>
+                            Waiting for {{ $totalAssigned - $totalSubmitted }} more
+                        </div>
                     </div>
 
-                    @if ($myReview->comments_for_author)
-                        <div class="mb-3 pt-3 border-t border-blue-200">
-                            <p
-                                class="text-[10px] font-bold uppercase tracking-[.07em] text-blue-500 mb-1.5"
-                            >
-                                Your Comments for Author
-                            </p>
-                            <p class="text-sm text-blue-900 leading-relaxed">
-                                {{ $myReview->comments_for_author }}
-                            </p>
-                        </div>
-                    @endif
+                    <div class="space-y-3">
+                        @foreach ($assignments as $i => $a)
+                            @php $isYou = $a->reviewer_id === auth()->id(); @endphp
+                            <div class="bg-white border border-slate-100 rounded-xl p-4 opacity-60">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full avatar-ring-{{ ($i % 6) + 1 }} flex items-center justify-center text-white text-xs font-bold">R{{ $i + 1 }}</div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-sm font-bold text-slate-800">Reviewer {{ $i + 1 }}</p>
+                                            @if ($isYou) <span class="you-badge">You</span> @endif
+                                        </div>
+                                        <p class="text-xs text-slate-400">@if ($a->status === \App\Models\ReviewAssignment::STATUS_COMPLETED) <span class="text-emerald-600 font-semibold">✓ Review submitted</span> @else Review pending… @endif</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="space-y-4">
+                        @foreach ($reviews->values() as $i => $r)
+                            @php
+                                $isYou = $r->reviewer_id === auth()->id();
+                                $ringIdx = ($i % 6) + 1;
+                                $recMap = [
+                                    'accept' => ['label' => 'Accept', 'cls' => 'rec-accept'],
+                                    'minor_revisions' => ['label' => 'Minor Revisions', 'cls' => 'rec-minor'],
+                                    'major_revisions' => ['label' => 'Major Revisions', 'cls' => 'rec-major'],
+                                    'reject' => ['label' => 'Reject', 'cls' => 'rec-reject'],
+                                ];
+                                $rec = $recMap[$r->recommendation] ?? ['label' => $r->recommendation ?? '—', 'cls' => 'rec-default'];
+                            @endphp
 
-                    @if ($myReview->comments_for_editor)
-                        <div class="pt-3 border-t border-blue-200">
-                            <p
-                                class="text-[10px] font-bold uppercase tracking-[.07em] text-blue-500 mb-1.5"
-                            >
-                                Your Comments for Editor (Internal)
-                            </p>
-                            <p
-                                class="text-sm text-blue-900 leading-relaxed italic"
-                            >
-                                {{ $myReview->comments_for_editor }}
-                            </p>
-                        </div>
-                    @endif
+                            <div class="bg-white border {{ $isYou ? 'border-blue-200' : 'border-slate-200' }} rounded-2xl p-4 shadow-sm {{ $isYou ? 'ring-1 ring-blue-100' : '' }}">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full avatar-ring-{{ $ringIdx }} flex items-center justify-center text-white text-xs font-bold">R{{ $i + 1 }}</div>
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <p class="text-sm font-bold text-slate-800">Reviewer {{ $i + 1 }}</p>
+                                                @if ($isYou) <span class="you-badge">You</span> @endif
+                                            </div>
+                                            @if ($r->submitted_at)
+                                                <p class="text-[10px] text-slate-400 mt-0.5">Submitted {{ $r->submitted_at->format('M d, Y') }}</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <span class="rec-pill {{ $rec['cls'] }}">{{ $rec['label'] }}</span>
+                                </div>
 
-                    @if ($myReview->submitted_at)
-                        <p class="text-[10px] text-blue-400 mt-3 font-mono">
-                            Submitted
-                            {{ $myReview->submitted_at->format('M d, Y \a\t g:i A') }}
-                        </p>
-                    @endif
-                </div>
+                                @if ($r->rating)
+                                    <div class="flex items-center gap-2 mb-3 pb-3 border-b border-slate-100">
+                                        <span class="text-[10px] font-bold uppercase tracking-[.07em] text-slate-400">Rating</span>
+                                        <div class="flex gap-0.5">
+                                            @for ($s = 1; $s <= 5; $s++)
+                                                <span class="star {{ $s <= $r->rating ? 'filled' : '' }}">★</span>
+                                            @endfor
+                                        </div>
+                                        <span class="text-xs font-bold text-slate-600 ml-1">{{ $r->rating }}/5</span>
+                                    </div>
+                                @endif
+
+                                @if ($r->comments_for_author)
+                                    <div class="mt-3 text-sm text-slate-700">{{ $r->comments_for_author }}</div>
+                                @else
+                                    <p class="text-sm text-slate-400 italic">No written comments provided.</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
-        @endif
+        </div>
+        {{-- end two-column layout --}}
     </div>
 @endsection
