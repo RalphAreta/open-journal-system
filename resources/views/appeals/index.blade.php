@@ -40,8 +40,8 @@
                         <p class="text-sm text-slate-600">By <span class="font-semibold">{{ $appeal->author->name }}</span></p>
                         <p class="text-xs text-slate-400 mt-1">Submitted on {{ $appeal->created_at->format('M d, Y \a\t g:i A') }}</p>
                     </div>
-                    
-                    <div class="flex-shrink-0">
+
+                    <div class="shrink-0">
                         <a href="{{ route('appeals.show', $appeal) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-semibold hover:bg-slate-800 transition-colors">
                             <span>Review</span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

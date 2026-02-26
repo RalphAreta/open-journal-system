@@ -30,7 +30,7 @@
                         id="name" type="text" name="name"
                         value="{{ old('name') }}"
                         placeholder="e.g. Nanotechnology"
-                        class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm shadow-sm
+                        class="w-full px-3 py-2 rounded-lg border text-sm shadow-sm
                                focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
                                @error('name') border-red-500 @enderror"
                     />

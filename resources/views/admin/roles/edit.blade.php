@@ -69,7 +69,7 @@
         </div>
 
         {{-- Danger Zone --}}
-        <div class="bg-red-50 border border-red-100 rounded-[2rem] p-8 flex items-center justify-between">
+        <div class="bg-red-50 border border-red-100 rounded-4xl p-8 flex items-center justify-between">
             <div>
                 <p class="text-[10px] font-black text-red-600 uppercase tracking-widest mb-1">Danger Zone</p>
                 <p class="text-xs text-red-400 font-medium">Permanently remove this role from the system.</p>
