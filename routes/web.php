@@ -29,6 +29,7 @@ Route::middleware('guest')->group(function (): void {
 Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/switch-role/{role}', [DashboardController::class, 'switchRole'])->name('dashboard.switch-role');
     Route::get('/submissions/{submission}/download', [ReviewController::class, 'downloadFile'])->name('submissions.download');
     Route::get('/submissions/{submission}/download-original', [ReviewController::class, 'downloadOriginalFile'])->name('submissions.download-original');
 

@@ -99,18 +99,22 @@
                             @php
                                 /*
                                  * Determine the ONE active role to show nav links for.
-                                 * Priority: session('preferred_dashboard') → primaryRole → first role.
+                                 * Priority: session('active_role') → session('preferred_dashboard') → primaryRole → first role.
                                  * This prevents multi-role users from seeing all nav links at once.
                                  */
-                                $preferred = session('preferred_dashboard');
-                                $user = auth()->user();
-
-                                if ($preferred) {
-                                    $activeRole = $preferred;
-                                } elseif (method_exists($user, 'primaryRole') && $user->primaryRole()) {
-                                    $activeRole = $user->primaryRole()->name;
-                                } else {
-                                    $activeRole = optional($user->roles->first())->name ?? 'author';
+                                $activeRole = session('active_role');
+                                if (!$activeRole) {
+                                    $preferred = session('preferred_dashboard');
+                                    if ($preferred) {
+                                        $activeRole = $preferred;
+                                    } else {
+                                        $user = auth()->user();
+                                        if (method_exists($user, 'primaryRole') && $user->primaryRole()) {
+                                            $activeRole = $user->primaryRole()->name;
+                                        } else {
+                                            $activeRole = optional($user->roles->first())->name ?? 'author';
+                                        }
+                                    }
                                 }
 
                                 $linkBase = 'px-4 py-2 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-300 ';
@@ -209,19 +213,45 @@
 
                     <div class="flex items-center gap-4">
                         @auth
-                            <div
-                                class="hidden lg:flex flex-col items-end mr-2 text-right"
-                            >
-                                <span
-                                    class="text-[9px] font-bold text-[#f0d678] uppercase tracking-widest leading-none mb-1"
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="hidden lg:flex flex-col items-end mr-2 text-right"
                                 >
-                                    Authenticated
-                                </span>
-                                <span
-                                    class="text-sm font-medium text-white/95 truncate max-w-[150px]"
-                                >
-                                    {{ auth()->user()->name }}
-                                </span>
+                                    <span
+                                        class="text-[9px] font-bold text-[#f0d678] uppercase tracking-widest leading-none mb-1"
+                                    >
+                                        Authenticated
+                                    </span>
+                                    <span
+                                        class="text-sm font-medium text-white/95 truncate max-w-[150px]"
+                                    >
+                                        {{ auth()->user()->name }}
+                                    </span>
+                                </div>
+
+                                @php
+                                    $userRoles = auth()->user()->roles()->pluck('name')->toArray();
+                                @endphp
+
+                                @if (count($userRoles) > 1)
+                                    <div class="relative group">
+                                        <button
+                                            class="px-3 py-2 bg-white/10 text-white text-[11px] font-bold tracking-widest rounded-lg hover:bg-white/20 transition-all uppercase border border-white/20"
+                                        >
+                                            {{ ucfirst(str_replace('-', ' ', session('active_role', 'Switch Role'))) }} ▼
+                                        </button>
+                                        <div class="absolute right-0 mt-2 w-48 bg-[#1a4d46] border border-white/20 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                                            @foreach ($userRoles as $role)
+                                                <a
+                                                    href="{{ route('dashboard.switch-role', $role) }}"
+                                                    class="block px-4 py-2 text-white text-sm {{ session('active_role') === $role ? 'bg-white/20 font-bold text-[#f0d678]' : 'hover:bg-white/10' }} {{ $loop->first ? 'rounded-t-lg' : '' }} {{ $loop->last ? 'rounded-b-lg' : '' }}"
+                                                >
+                                                    {{ str_replace('-', ' ', ucfirst($role)) }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
 
                             <form

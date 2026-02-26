@@ -12,26 +12,40 @@ use Illuminate\View\View;
 class DashboardController extends Controller
 {
     /**
-     * Redirect to role-specific dashboard.
+     * Redirect to role-specific dashboard based on active_role set during login.
      */
     public function index(Request $request)
     {
         $user = $request->user();
 
-        // Special handling for editor-in-chief
-        if ($user?->isEditorInChief()) {
-            return redirect()->route('chief-editor.dashboard');
-        }
-        // If the user has a last-preferred dashboard stored in session, and they still have that role, prefer it.
-        $preferred = $request->session()->get('preferred_dashboard');
-        if ($preferred && $user && $user->hasRole($preferred)) {
-            return redirect()->route("dashboard.{$preferred}");
+        if (!$user) {
+            return redirect()->route('login');
         }
 
-        $role = $user?->primaryRole();
-        if ($role) {
-            return redirect()->route("dashboard.{$role->name}");
+        // PRIMARY: Use the active_role that was set during login
+        $activeRole = $request->session()->get('active_role');
+        if ($activeRole && $user->hasRole($activeRole)) {
+            return $activeRole === 'editor-in-chief' 
+                ? redirect()->route('chief-editor.dashboard')
+                : redirect()->route("dashboard.{$activeRole}");
         }
+
+        // FALLBACK: If no active_role, try preferred_dashboard from previous visit
+        $preferred = $request->session()->get('preferred_dashboard');
+        if ($preferred && $user->hasRole($preferred)) {
+            return $preferred === 'editor-in-chief'
+                ? redirect()->route('chief-editor.dashboard')
+                : redirect()->route("dashboard.{$preferred}");
+        }
+
+        // LAST RESORT: Use primary role if nothing else is available
+        $role = $user->primaryRole();
+        if ($role) {
+            return $role->name === 'editor-in-chief'
+                ? redirect()->route('chief-editor.dashboard')
+                : redirect()->route("dashboard.{$role->name}");
+        }
+
         return redirect()->route('login');
     }
 
@@ -156,4 +170,30 @@ class DashboardController extends Controller
             'roleCount' => $roleCount,
         ]);
     }
+
+    /**
+     * Switch to a different role (for users with multiple roles).
+     */
+    public function switchRole(Request $request, string $role)
+    {
+        $user = $request->user();
+
+        if (!$user || !$user->hasRole($role)) {
+            abort(403, 'You do not have permission to switch to this role.');
+        }
+
+        // Validate the role name
+        if (!in_array($role, ['author', 'reviewer', 'editor', 'editor-in-chief', 'admin'])) {
+            abort(400, 'Invalid role.');
+        }
+
+        // Update the active role in session
+        $request->session()->put('active_role', $role);
+
+        // Redirect to the appropriate dashboard
+        return $role === 'editor-in-chief'
+            ? redirect()->route('chief-editor.dashboard')
+            : redirect()->route("dashboard.{$role}");
+    }
 }
+
