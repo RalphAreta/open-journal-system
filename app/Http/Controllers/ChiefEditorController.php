@@ -14,8 +14,11 @@ use Illuminate\Support\Facades\Auth;
 
 class ChiefEditorController extends Controller
 {
-    public function dashboard()
+    public function dashboard(\Illuminate\Http\Request $request)
     {
+        // remember that chief editor dashboard was visited last
+        $request->session()->put('preferred_dashboard', 'editor-in-chief');
+
         $pendingSubmissions = Submission::where('status', Submission::STATUS_SUBMITTED)
             ->whereNull('assigned_editor_id')
             ->with('author')
