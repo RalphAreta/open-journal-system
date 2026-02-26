@@ -48,9 +48,55 @@
         {{-- Content --}}
         <div class="relative z-10 max-w-105 px-12 py-16 slide-in">
 
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-9">
+            @php
+                $visitorCount = null;
+                try {
+                    $day = date('Y-m-d');
+                    $dir = storage_path('app/visitors');
+                    if (! is_dir($dir)) {
+                        mkdir($dir, 0755, true);
+                    }
+                    $path = $dir . DIRECTORY_SEPARATOR . $day . '.count';
+
+                    if (! file_exists($path)) {
+                        file_put_contents($path, '1');
+                        $visitorCount = 1;
+                    } else {
+                        $fp = fopen($path, 'c+');
+                        if ($fp) {
+                            if (flock($fp, LOCK_EX)) {
+                                $contents = stream_get_contents($fp);
+                                $current = (int) trim($contents);
+                                if ($current < 0) $current = 0;
+                                $current++;
+                                ftruncate($fp, 0);
+                                rewind($fp);
+                                fwrite($fp, (string) $current);
+                                fflush($fp);
+                                flock($fp, LOCK_UN);
+                                $visitorCount = $current;
+                            } else {
+                                $visitorCount = (int) file_get_contents($path);
+                            }
+                            fclose($fp);
+                        } else {
+                            $visitorCount = (int) file_get_contents($path) + 1;
+                            file_put_contents($path, (string) $visitorCount);
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    $visitorCount = null;
+                }
+            @endphp
+
+            <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-9">
                 <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-red-400"></span>
-                <span class="text-[10px] font-bold uppercase tracking-[.12em] text-white/90">Official Research Portal</span>
+                <div class="flex items-center gap-3">
+                    <span class="text-[10px] font-bold uppercase tracking-[.12em] text-white/90">Official Research Portal</span>
+                    @if ($visitorCount !== null)
+                        <span class="text-[10px] text-white/80">Today's visitors: <strong class="ml-1">{{ $visitorCount }}</strong></span>
+                    @endif
+                </div>
             </div>
 
             <h2 class="font-serif-display text-[3.4rem] leading-[1.1] font-normal text-white tracking-[-0.02em] mb-5">
