@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -35,7 +36,7 @@ class LoginController extends Controller
         $user         = Auth::user();
         $selectedRole = $request->input('role');
 
-        if (! $user->hasRole($selectedRole)) {
+        if (! $user || ! ($user instanceof User) || ! $user->hasRole($selectedRole)) {
             Auth::logout();
             return back()
                 ->withInput($request->only('email', 'role'))
