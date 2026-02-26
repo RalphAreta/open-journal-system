@@ -45,6 +45,8 @@ class DashboardController extends Controller
         $submissions = $user->submissionsAsAuthor()
             ->with(['reviews' => function($q) {
                 $q->latest();
+            }, 'appeals' => function($q) {
+                $q->latest();
             }])
             ->latest()
             ->paginate(10);
