@@ -258,7 +258,7 @@
 
     {{-- ── Revision Alert ── --}}
     @if ($stats['revisions_requested'] > 0)
-        @php $revisionsNeeded = auth()->user()->submissionsAsAuthor()->where('status', 'revisions_requested')->get(); @endphp
+        @php $revisionsNeeded = auth()->user()->submissionsAsAuthor()->where('status', 'revisions_requested')->orderBy('updated_at', 'desc')->get(); @endphp
         <div class="alert-banner fade-up-2">
             <div class="alert-inner">
                 <div class="flex items-center gap-3">
@@ -274,7 +274,7 @@
                 </div>
                 <div class="flex gap-2 flex-wrap">
                     @foreach($revisionsNeeded->take(2) as $rev)
-                        <a href="{{ route('submissions.revisions', $rev) }}" class="btn-revise">Revise #{{ $rev->id }}</a>
+                        <a href="{{ route('submissions.show', $rev) }}" class="btn-revise">View #{{ $rev->id }}</a>
                     @endforeach
                 </div>
             </div>
@@ -289,6 +289,7 @@
                 $query->where('decision_notes', '!=', null)
                       ->orWhere('editor_decision_at', '!=', null);
             })
+            ->orderBy('updated_at', 'desc')
             ->get();
     @endphp
     @if ($revisionDecisions->count() > 0)
@@ -432,24 +433,6 @@
             </table>
         </div>
     </div>
-
-    {{-- ── Activity Stream ── --}}
-    @if($notifications->count() > 0)
-    <div class="fade-up-4">
-        <p class="activity-title">Live Activity Stream</p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            @foreach($notifications->take(3) as $notif)
-            <div class="activity-card">
-                <span class="activity-dot {{ $notif->isUnread() ? 'bg-red-500 animate-pulse' : 'bg-slate-200' }}"></span>
-                <div class="flex-1">
-                    <p class="activity-name">{{ $notif->title }}</p>
-                    <p class="activity-time">{{ $notif->created_at->diffForHumans() }}</p>
-                </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-    @endif
 
 </div>
 @endsection

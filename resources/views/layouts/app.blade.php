@@ -32,6 +32,9 @@
                             @if(auth()->user()->isEditor())
                                 <a href="{{ route('editor.submissions') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Submissions</a>
                             @endif
+                            @if(auth()->user()->isEditorInChief())
+                                <a href="{{ route('appeals.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Appeals</a>
+                            @endif
                             @if(auth()->user()->isAdmin())
                                 <a href="{{ route('admin.users.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Users</a>
                                 <a href="{{ route('admin.roles.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Roles</a>

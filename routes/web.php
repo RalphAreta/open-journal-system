@@ -11,6 +11,7 @@ use App\Http\Controllers\ChiefEditorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\AppealController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth; // Make sure this is at the top of the file
 
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('submissions', SubmissionController::class)->except('destroy');
         Route::get('/submissions/{submission}/revisions', [SubmissionController::class, 'revisions'])->name('submissions.revisions');
         Route::post('/submissions/{submission}/submit-revision', [SubmissionController::class, 'submitRevision'])->name('submissions.submit-revision');
+        Route::post('/submissions/{submission}/appeal', [AppealController::class, 'store'])->name('appeals.store');
     });
 
     Route::middleware('role:reviewer')->group(function (): void {
@@ -74,6 +76,9 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/chief-editor/submissions/{submission}/reassign', [ChiefEditorController::class, 'reassignSubmission'])->name('chief-editor.reassign');
         Route::post('/chief-editor/submissions/{submission}/review', [ChiefEditorController::class, 'reviewSubmission'])->name('chief-editor.review');
         Route::post('/chief-editor/submissions/{submission}/request-revision', [ChiefEditorController::class, 'requestRevision'])->name('chief-editor.request-revision');
+        Route::get('/chief-editor/appeals', [AppealController::class, 'index'])->name('appeals.index');
+        Route::get('/chief-editor/appeals/{appeal}', [AppealController::class, 'show'])->name('appeals.show');
+        Route::put('/chief-editor/appeals/{appeal}', [AppealController::class, 'update'])->name('appeals.update');
     });
 
     Route::middleware('role:admin')->group(function (): void {

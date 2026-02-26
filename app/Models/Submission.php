@@ -114,6 +114,11 @@ class Submission extends Model
         return $this->hasMany(RevisionRequest::class);
     }
 
+    public function appeals(): HasMany
+    {
+        return $this->hasMany(Appeal::class);
+    }
+
     public function isEditableByAuthor(): bool
     {
         return in_array($this->status, [self::STATUS_SUBMITTED, self::STATUS_REVISIONS_REQUESTED]);

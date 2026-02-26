@@ -6,6 +6,7 @@ use App\Models\Submission;
 use App\Models\SubmissionAssignment;
 use App\Models\User;
 use App\Models\EditorExpertise;
+use App\Models\Appeal;
 use App\Services\RevisionService;
 use Illuminate\Http\Request;
 use App\Models\RevisionRequest;
@@ -25,6 +26,11 @@ class ChiefEditorController extends Controller
             ->latest('chief_editor_review_at')
             ->paginate(10, ['*'], 'assigned');
 
+        $pendingAppeals = Appeal::where('status', Appeal::STATUS_PENDING)
+            ->with(['submission', 'author'])
+            ->latest('created_at')
+            ->paginate(10, ['*'], 'appeals');
+
         $stats = [
             'total_submissions'      => Submission::count(),
             'pending_assignments'    => Submission::where('status', Submission::STATUS_SUBMITTED)
@@ -37,9 +43,10 @@ class ChiefEditorController extends Controller
                 Submission::STATUS_ACCEPTED,
                 Submission::STATUS_REJECTED,
             ])->count(),
+            'pending_appeals'        => Appeal::where('status', Appeal::STATUS_PENDING)->count(),
         ];
 
-        return view('chief-editor.dashboard', compact('pendingSubmissions', 'assignedSubmissions', 'stats'));
+        return view('chief-editor.dashboard', compact('pendingSubmissions', 'assignedSubmissions', 'pendingAppeals', 'stats'));
     }
 
     public function showSubmission(Submission $submission)

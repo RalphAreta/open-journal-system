@@ -127,6 +127,12 @@ use App\Models\Submission;
                     {{ $assignedSubmissions->total() }}
                 </span>
             </button>
+            <button class="tab-btn" data-tab="appeals" onclick="switchTab('appeals', this)">
+                Appeals
+                <span class="ml-1.5 inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-100 text-amber-600 text-[10px] font-bold">
+                    {{ $stats['pending_appeals'] }}
+                </span>
+            </button>
         </div>
 
         {{-- ── PENDING TAB ── --}}
@@ -357,6 +363,93 @@ use App\Models\Submission;
             @endif
 
         </div>{{-- /tab-assigned --}}
+
+        {{-- ── APPEALS TAB ── --}}
+        <div id="tab-appeals" class="tab-panel">
+
+            {{-- Search bar --}}
+            <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                <div class="search-wrap relative flex-1">
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/>
+                    </svg>
+                    <input type="text"
+                           id="appeals-search"
+                           placeholder="Search by title or author…"
+                           oninput="filterTable('appeals-tbody', this.value)"
+                           class="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:border-red-300 transition-colors placeholder:text-slate-400">
+                </div>
+            </div>
+
+            @if ($pendingAppeals->count() > 0)
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50 border-b border-slate-100">
+                            <tr>
+                                <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Manuscript</th>
+                                <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Author</th>
+                                <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Submitted</th>
+                                <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Status</th>
+                                <th class="px-5 py-3 text-right text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appeals-tbody">
+                            @foreach ($pendingAppeals as $appeal)
+                            <tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50/70 transition-colors group"
+                                data-title="{{ strtolower($appeal->submission->title) }}"
+                                data-author="{{ strtolower($appeal->author->name) }}">
+                                <td class="px-5 py-3.5">
+                                    <p class="text-sm font-semibold text-slate-800 group-hover:text-red-600 transition-colors leading-snug">
+                                        {{ Str::limit($appeal->submission->title, 45) }}
+                                    </p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">#{{ str_pad($appeal->submission->id, 5, '0', STR_PAD_LEFT) }}</p>
+                                </td>
+                                <td class="px-5 py-3.5">
+                                    <p class="text-sm text-slate-600 font-medium">{{ $appeal->author->name }}</p>
+                                    <p class="text-[10px] text-slate-400">{{ $appeal->author->email }}</p>
+                                </td>
+                                <td class="px-5 py-3.5">
+                                    <p class="text-sm text-slate-600">{{ $appeal->created_at->format('M d, Y') }}</p>
+                                </td>
+                                <td class="px-5 py-3.5">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-100 text-[10px] font-bold uppercase tracking-[.04em] text-amber-700">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                                        Pending
+                                    </span>
+                                </td>
+                                <td class="px-5 py-3.5 text-right">
+                                    <a href="{{ route('appeals.show', $appeal) }}"
+                                       class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round"/>
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-3 flex items-center justify-between text-[11px] text-slate-400">
+                <span>Showing {{ $pendingAppeals->firstItem() }}–{{ $pendingAppeals->lastItem() }} of {{ $pendingAppeals->total() }}</span>
+                <div>{{ $pendingAppeals->links('pagination::tailwind') }}</div>
+            </div>
+
+            @else
+            <div class="bg-white border border-emerald-200 rounded-2xl px-6 py-10 text-center shadow-sm">
+                <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <p class="text-sm font-semibold text-emerald-700">No pending appeals to review!</p>
+            </div>
+            @endif
+
+        </div>{{-- /tab-appeals --}}
 
     </div>{{-- /tabbed section --}}
 

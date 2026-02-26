@@ -94,6 +94,9 @@
                 </div>
             </section>
 
+            {{-- 2.5. Appeal Section for Authors with Failed Initial Screening --}}
+            @include('submissions.partials.appeal-section')
+
             {{-- 3. Reviewer Feedback (Conditional) --}}
             @if($submission->reviews->isNotEmpty() && (auth()->user()->id === $submission->author_id || auth()->user()->isEditor() || auth()->user()->isAdmin()))
                 <section class="space-y-6">
