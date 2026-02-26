@@ -68,7 +68,7 @@
                         <p class="text-xs text-slate-500">Submitted on {{ $submission->created_at->format('M d, Y') }}</p>
                     </div>
                 </div>
-                <a href="{{ route('submissions.download-original', $submission) }}" 
+                <a href="{{ route('submissions.download-original', $submission) }}"
                    class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -90,7 +90,7 @@
                         <p class="text-xs text-slate-500">Revised on {{ $revisionReview->revisionRequest->revised_at->format('M d, Y') }}</p>
                     </div>
                 </div>
-                <a href="{{ route('submissions.download', $submission) }}" 
+                <a href="{{ route('submissions.download', $submission) }}"
                    class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>

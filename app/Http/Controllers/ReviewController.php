@@ -45,7 +45,7 @@ class ReviewController extends Controller
 
         $assignment->load('submission.author');
         $submission = $assignment->submission;
-        
+
         // Load existing draft if available
         $existingReview = Review::where('submission_id', $submission->id)
             ->where('reviewer_id', request()->user()->id)
@@ -81,7 +81,7 @@ class ReviewController extends Controller
     {
         // Check which button was clicked
         $isSaveDraft = $request->has('action') && $request->input('action') === 'save_draft';
-        
+
         // Make recommendation optional when saving as draft
         $rules = [
             'review_assignment_id' => ['required', 'exists:review_assignments,id'],
@@ -89,14 +89,14 @@ class ReviewController extends Controller
             'comments_for_editor' => ['nullable', 'string'],
             'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
         ];
-        
+
         // Recommendation is required only when submitting
         if (!$isSaveDraft) {
             $rules['recommendation'] = ['required', 'in:accept,minor_revisions,major_revisions,reject'];
         } else {
             $rules['recommendation'] = ['nullable', 'in:accept,minor_revisions,major_revisions,reject'];
         }
-        
+
         $validated = $request->validate($rules);
 
         $assignment = ReviewAssignment::findOrFail($validated['review_assignment_id']);
@@ -364,12 +364,12 @@ class ReviewController extends Controller
 
         // Check which button was clicked
         $isSaveDraft = $request->has('action') && $request->input('action') === 'save_draft';
-        
+
         // Make status optional when saving as draft
         $rules = [
             'editor_notes' => ['nullable', 'string'],
         ];
-        
+
         if (!$isSaveDraft) {
             $rules['status'] = ['required', 'in:accepted,rejected,revisions_requested'];
             $rules['revision_type'] = ['required_if:status,revisions_requested', 'in:minor,major'];
@@ -568,7 +568,7 @@ public function storeRevisionReview(Request $request): RedirectResponse
 {
     // Check which button was clicked
     $isSaveDraft = $request->has('action') && $request->input('action') === 'save_draft';
-    
+
     // Make recommendation optional when saving as draft
     $rules = [
         'revision_review_id' => ['required', 'exists:revision_reviews,id'],
@@ -576,14 +576,14 @@ public function storeRevisionReview(Request $request): RedirectResponse
         'comments_for_editor' => ['nullable', 'string'],
         'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
     ];
-    
+
     // Recommendation is required only when submitting
     if (!$isSaveDraft) {
         $rules['recommendation'] = ['required', 'in:accept,minor_revisions,major_revisions,reject'];
     } else {
         $rules['recommendation'] = ['nullable', 'in:accept,minor_revisions,major_revisions,reject'];
     }
-    
+
     $validated = $request->validate($rules);
 
     $revisionReview = RevisionReview::findOrFail($validated['revision_review_id']);
@@ -596,7 +596,7 @@ public function storeRevisionReview(Request $request): RedirectResponse
 
     $submissionStatus = $isSaveDraft ? RevisionReview::SUBMISSION_STATUS_DRAFT : RevisionReview::SUBMISSION_STATUS_SUBMITTED;
     $completedAt = !$isSaveDraft ? now() : null;
-    
+
     $updateData = [
         'recommendation' => $validated['recommendation'] ?? null,
         'comments_for_author' => $validated['comments_for_author'] ?? null,
@@ -604,13 +604,13 @@ public function storeRevisionReview(Request $request): RedirectResponse
         'rating' => $validated['rating'] ?? null,
         'submission_status' => $submissionStatus,
     ];
-    
+
     // Only set completion status if actually submitting
     if (!$isSaveDraft) {
         $updateData['status'] = RevisionReview::STATUS_COMPLETED;
         $updateData['completed_at'] = now();
     }
-    
+
     $revisionReview->update($updateData);
 
     // Only notify editor if actually submitting
@@ -678,12 +678,12 @@ public function editorRevisionDecision(Request $request, Submission $submission)
 
         // Check which button was clicked
         $isSaveDraft = $request->has('action') && $request->input('action') === 'save_draft';
-        
+
         // Make decision optional when saving as draft
         $rules = [
             'editor_notes' => ['nullable', 'string'],
         ];
-        
+
         if (!$isSaveDraft) {
             $rules['decision'] = ['required', 'in:accepted,rejected,revisions_requested'];
             $rules['revision_type'] = ['required_if:decision,revisions_requested', 'in:minor,major'];
