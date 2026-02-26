@@ -22,6 +22,11 @@ class DashboardController extends Controller
         if ($user?->isEditorInChief()) {
             return redirect()->route('chief-editor.dashboard');
         }
+        // If the user has a last-preferred dashboard stored in session, and they still have that role, prefer it.
+        $preferred = $request->session()->get('preferred_dashboard');
+        if ($preferred && $user && $user->hasRole($preferred)) {
+            return redirect()->route("dashboard.{$preferred}");
+        }
 
         $role = $user?->primaryRole();
         if ($role) {
@@ -32,6 +37,9 @@ class DashboardController extends Controller
 
     public function author(Request $request): View
     {
+        // remember that author dashboard was visited last
+        $request->session()->put('preferred_dashboard', 'author');
+
         $user = $request->user();
 
         $submissions = $user->submissionsAsAuthor()
@@ -61,6 +69,9 @@ class DashboardController extends Controller
 
     public function reviewer(Request $request): View
     {
+        // remember that reviewer dashboard was visited last
+        $request->session()->put('preferred_dashboard', 'reviewer');
+
         $user = $request->user();
 
         // 1. Pending Invitations (status = 'pending' - awaiting reviewer's accept/decline decision)
@@ -103,6 +114,9 @@ class DashboardController extends Controller
 
     public function editor(Request $request): View
     {
+        // remember that editor dashboard was visited last
+        $request->session()->put('preferred_dashboard', 'editor');
+
         $userId = $request->user()->id;
 
         $submissions = Submission::where('assigned_editor_id', $userId)
@@ -127,6 +141,9 @@ class DashboardController extends Controller
 
     public function admin(Request $request): View
     {
+        // remember that admin dashboard was visited last
+        $request->session()->put('preferred_dashboard', 'admin');
+
         $userCount = \App\Models\User::count();
         $submissionCount = Submission::count();
         $roleCount = \App\Models\Role::count();
