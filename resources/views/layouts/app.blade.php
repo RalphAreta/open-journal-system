@@ -96,15 +96,31 @@
                         </a>
 
                         @auth
+                            @php
+                                /*
+                                 * Determine the ONE active role to show nav links for.
+                                 * Priority: session('preferred_dashboard') → primaryRole → first role.
+                                 * This prevents multi-role users from seeing all nav links at once.
+                                 */
+                                $preferred = session('preferred_dashboard');
+                                $user = auth()->user();
+
+                                if ($preferred) {
+                                    $activeRole = $preferred;
+                                } elseif (method_exists($user, 'primaryRole') && $user->primaryRole()) {
+                                    $activeRole = $user->primaryRole()->name;
+                                } else {
+                                    $activeRole = optional($user->roles->first())->name ?? 'author';
+                                }
+
+                                $linkBase = 'px-4 py-2 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-300 ';
+                                $inactive = 'text-white/80 hover:text-[#f0d678] hover:bg-black/10';
+                            @endphp
+
                             <div
                                 class="hidden md:flex items-center space-x-1 ml-6 border-l border-white/10 pl-6"
                             >
-                                @php
-                                    $linkBase =
-                                        'px-4 py-2 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-300 ';
-                                    $inactive = 'text-white/80 hover:text-[#f0d678] hover:bg-black/10';
-                                @endphp
-
+                                {{-- Dashboard is always shown --}}
                                 <a
                                     href="{{ route('dashboard') }}"
                                     class="{{ $linkBase . $inactive }}"
@@ -112,7 +128,8 @@
                                     DASHBOARD
                                 </a>
 
-                                @if (auth()->user()->isAuthor())
+                                {{-- Author links --}}
+                                @if ($activeRole === 'author')
                                     <a
                                         href="{{ route('submissions.index') }}"
                                         class="{{ $linkBase . $inactive }}"
@@ -121,7 +138,8 @@
                                     </a>
                                 @endif
 
-                                @if (auth()->user()->isReviewer())
+                                {{-- Reviewer links --}}
+                                @if ($activeRole === 'reviewer')
                                     <a
                                         href="{{ route('reviews.index') }}"
                                         class="{{ $linkBase . $inactive }}"
@@ -130,7 +148,8 @@
                                     </a>
                                 @endif
 
-                                @if (auth()->user()->isEditor())
+                                {{-- Editor links --}}
+                                @if ($activeRole === 'editor')
                                     <a
                                         href="{{ route('editor.submissions') }}"
                                         class="{{ $linkBase . $inactive }}"
@@ -139,7 +158,26 @@
                                     </a>
                                 @endif
 
-                                @if (auth()->user()->isAdmin())
+                                {{-- Editor-in-chief links --}}
+                                @if ($activeRole === 'editor-in-chief')
+                                    <a
+                                        href="{{ route('editor.submissions') }}"
+                                        class="{{ $linkBase . $inactive }}"
+                                    >
+                                        EDITORIAL
+                                    </a>
+                                    @if (Route::has('appeals.index'))
+                                        <a
+                                            href="{{ route('appeals.index') }}"
+                                            class="{{ $linkBase . $inactive }}"
+                                        >
+                                            APPEALS
+                                        </a>
+                                    @endif
+                                @endif
+
+                                {{-- Admin links --}}
+                                @if ($activeRole === 'admin')
                                     <a
                                         href="{{ route('admin.users.index') }}"
                                         class="{{ $linkBase . $inactive }}"
@@ -147,6 +185,24 @@
                                         MANAGEMENT
                                     </a>
                                 @endif
+
+                                {{-- Role badge — shows the active role so multi-role users know which context they're in --}}
+                                @php
+                                    $roleColors = [
+                                        'author' => 'bg-blue-500/20 text-blue-200 border-blue-400/30',
+                                        'reviewer' => 'bg-violet-500/20 text-violet-200 border-violet-400/30',
+                                        'editor' => 'bg-amber-500/20 text-amber-200 border-amber-400/30',
+                                        'editor-in-chief' => 'bg-orange-500/20 text-orange-200 border-orange-400/30',
+                                        'admin' => 'bg-red-500/20 text-red-200 border-red-400/30',
+                                    ];
+                                    $badgeCls = $roleColors[$activeRole] ?? 'bg-white/10 text-white/60 border-white/20';
+                                @endphp
+
+                                <span
+                                    class="ml-2 px-2.5 py-1 rounded-full border text-[9px] font-bold uppercase tracking-[.12em] {{ $badgeCls }}"
+                                >
+                                    {{ str_replace('-', ' ', $activeRole) }}
+                                </span>
                             </div>
                         @endauth
                     </div>
