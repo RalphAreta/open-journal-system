@@ -76,15 +76,6 @@
             </label>
         </div>
         <div class="flex items-center">
-            <input type="radio" id="revision" name="screening_status" value="revision"
-                class="h-4 w-4 text-amber-500 cursor-pointer screening-radio"
-                {{ old('screening_status') === 'revision' ? 'checked' : '' }}>
-            <label for="revision" class="ml-3 cursor-pointer">
-                <span class="text-sm font-medium text-slate-900">REQUEST REVISION</span>
-                <span class="text-sm text-slate-600"> — Ask author to revise before proceeding</span>
-            </label>
-        </div>
-        <div class="flex items-center">
             <input type="radio" id="failed" name="screening_status" value="failed"
                 class="h-4 w-4 text-red-600 cursor-pointer screening-radio"
                 {{ old('screening_status') === 'failed' ? 'checked' : '' }}>
@@ -111,21 +102,21 @@
 
                     <div class="mb-6">
                         <label for="comments" class="block text-sm font-semibold text-slate-900 mb-2">
-                            Screening Comments <span class="text-red-600">*</span>
+                            Screening Comments
                         </label>
                         <p class="text-sm text-slate-600 mb-3">
                             These comments will be sent to the author to explain the screening decision.
                         </p>
+
                         <textarea
                             id="comments"
                             name="comments"
-                            required
                             rows="6"
                             maxlength="2000"
                             class="w-full rounded-lg border border-slate-300 shadow-sm p-3 text-slate-900"
                             placeholder="Provide detailed feedback about the screening decision. Include specific reasons for passing or failing the manuscript..."
                         >{{ old('comments') }}</textarea>
-                        <p class="text-xs text-slate-500 mt-1">Maximum 2000 characters</p>
+                        <p class="text-xs text-slate-500 mt-1"><span id="char-count">0</span>/2000 characters</p>
                     </div>
 
                     <div class="flex items-center justify-between pt-6 border-t border-slate-200">
@@ -145,17 +136,50 @@
 
                     <script>
     const screeningRadios = document.querySelectorAll('.screening-radio');
-    const revisionTypeField = document.getElementById('revision-type-field');
-    const revisionTypeSelect = document.getElementById('revision_type');
+    const commentsTextarea = document.getElementById('comments');
+    const charCountSpan = document.getElementById('char-count');
 
-    function toggleRevisionType() {
-        const isRevision = document.getElementById('revision').checked;
-        revisionTypeField.style.display = isRevision ? 'block' : 'none';
-        revisionTypeSelect.required = isRevision;
+    const autoComments = {
+        passed: `Thank you for submitting your manuscript to our journal. This manuscript has successfully passed our initial screening review and meets the criteria for further consideration.
+
+Your manuscript will now be assigned to our peer review process. We will keep you updated on the progress of your submission.
+
+We appreciate your interest in our journal.`,
+
+        failed: `Thank you for submitting your manuscript to our journal. After careful initial screening, we regret to inform you that your manuscript does not meet our journal's criteria at this time.
+
+Key reasons for this decision:
+- [Please specify reasons]
+
+We encourage you to address these concerns and consider resubmitting your work in the future.
+
+Best regards,
+Editorial Office`
+    };
+
+    function updateCommentAutomatically() {
+        const screeningStatus = document.querySelector('input[name="screening_status"]:checked')?.value;
+        
+        if (screeningStatus === 'passed') {
+            commentsTextarea.value = autoComments.passed;
+        } else if (screeningStatus === 'failed') {
+            commentsTextarea.value = autoComments.failed;
+        }
+        
+        updateCharCount();
     }
 
-    screeningRadios.forEach(r => r.addEventListener('change', toggleRevisionType));
-    toggleRevisionType();
+    function updateCharCount() {
+        charCountSpan.textContent = commentsTextarea.value.length;
+    }
+
+    commentsTextarea.addEventListener('input', updateCharCount);
+
+    screeningRadios.forEach(r => r.addEventListener('change', updateCommentAutomatically));
+    
+    // Initialize on page load
+    updateCommentAutomatically();
+    updateCharCount();
 </script>
                 </form>
             </div>

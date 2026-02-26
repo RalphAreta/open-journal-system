@@ -73,12 +73,6 @@
                 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
 
         <div class="w-full max-w-100 relative z-10">
-
-            {{-- Logo --}}
-            <div class="mb-9 fade-in">
-                <a href="/"><img src="{{ asset('images/batstateu-logo.png') }}" class="h-12 hover:scale-105 transition-transform duration-200" alt="BatStateU"></a>
-            </div>
-
             {{-- Heading --}}
             <div class="mb-7 fade-in-1">
                 <h1 class="font-serif-display text-[1.9rem] font-normal text-slate-900 tracking-[-0.015em] leading-tight mb-1.5">

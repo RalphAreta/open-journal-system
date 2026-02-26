@@ -47,6 +47,11 @@ class ReviewAssignment extends Model
         return $this->belongsTo(User::class, 'assigned_by');
     }
 
+    public function editor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_by');
+    }
+
     public function review(): HasOne
     {
         return $this->hasOne(Review::class);
@@ -62,5 +67,14 @@ class ReviewAssignment extends Model
             'submission_id',
             'id'
         );
+    }
+
+    public function daysUntilDue(): ?int
+    {
+        if (!$this->due_at) {
+            return null;
+        }
+
+        return $this->due_at->diffInDays(now(), absolute: false);
     }
 }

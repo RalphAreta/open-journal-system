@@ -222,9 +222,8 @@
     </div>
 
     {{-- ── Stats Grid ── --}}
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 fade-up-1">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 fade-up-1">
         @foreach([
-            ['label' => 'Total',                'value' => $stats['total'],                   'cls' => 'c-slate'],
             ['label' => 'Submitted',            'value' => $stats['submitted'],               'cls' => 'c-blue'],
             ['label' => 'Under Review',         'value' => $stats['under_review'],            'cls' => 'c-yellow'],
             ['label' => 'Revisions Requested',  'value' => $stats['revisions_requested'],     'cls' => 'c-orange'],
@@ -283,7 +282,7 @@
     @endif
 
     {{-- ── Revision Decision Alert ── --}}
-    @php 
+    @php
         $revisionDecisions = auth()->user()->submissionsAsAuthor()
             ->whereIn('status', ['accepted', 'rejected'])
             ->where(function($query) {
