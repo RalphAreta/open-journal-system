@@ -301,8 +301,8 @@
                                     Editor
                                 </option>
                                 <option
-                                    value="editor_in_chief"
-                                    @selected(old('role') == 'editor_in_chief')
+                                    value="editor-in-chief"
+                                    @selected(old('role') == 'editor-in-chief')
                                 >
                                     Editor in Chief
                                 </option>
