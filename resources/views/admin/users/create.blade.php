@@ -78,10 +78,10 @@
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">System Roles</label>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                     @foreach($roles as $role)
-                        <label class="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition-colors border-2 border-transparent has-[:checked]:border-red-600 has-[:checked]:bg-white group">
+                        <label class="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition-colors border-2 border-transparent has-checked:border-red-600 has-checked:bg-white group">
                             <input type="checkbox" name="roles[]" value="{{ $role->id }}" {{ in_array($role->id, old('roles', [])) ? 'checked' : '' }}
                                 class="w-4 h-4 text-red-600 rounded border-slate-300 focus:ring-red-600">
-                            <span class="text-[10px] font-black uppercase tracking-tight text-slate-600 group-has-[:checked]:text-red-600 transition-colors">
+                            <span class="text-[10px] font-black uppercase tracking-tight text-slate-600 group-has-checked:text-red-600 transition-colors">
                                 {{ $role->display_name }}
                             </span>
                         </label>

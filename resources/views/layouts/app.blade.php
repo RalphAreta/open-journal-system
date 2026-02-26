@@ -21,11 +21,48 @@
     </style>
     @stack('styles')
 </head>
+<<<<<<< HEAD
 <body class="min-h-screen bg-[#f5f0e8] text-[#0d1628] font-source antialiased flex flex-col">
 
     <div class="h-[3px] w-full nav-shimmer sticky top-0 z-[60]"></div>
 
     <nav class="bg-[#2D8176] shadow-xl sticky top-[3px] z-50 border-b border-white/10">
+=======
+<body class="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 text-slate-900 font-sans antialiased flex flex-col">
+@php
+    $dashboardRoute = 'dashboard';
+    if (auth()->check()) {
+        $preferred = session('preferred_dashboard');
+        if ($preferred) {
+            if ($preferred === 'editor-in-chief') {
+                $dashboardRoute = 'chief-editor.dashboard';
+            } elseif ($preferred === 'author') {
+                $dashboardRoute = 'dashboard.author';
+            } elseif ($preferred === 'reviewer') {
+                $dashboardRoute = 'dashboard.reviewer';
+            } elseif ($preferred === 'editor') {
+                $dashboardRoute = 'dashboard.editor';
+            } elseif ($preferred === 'admin') {
+                $dashboardRoute = 'dashboard.admin';
+            }
+        } else {
+            $primary = auth()->user()->primaryRole()?->name ?? null;
+            if ($primary === 'editor-in-chief') {
+                $dashboardRoute = 'chief-editor.dashboard';
+            } elseif ($primary === 'author') {
+                $dashboardRoute = 'dashboard.author';
+            } elseif ($primary === 'reviewer') {
+                $dashboardRoute = 'dashboard.reviewer';
+            } elseif ($primary === 'editor') {
+                $dashboardRoute = 'dashboard.editor';
+            } elseif ($primary === 'admin') {
+                $dashboardRoute = 'dashboard.admin';
+            }
+        }
+    }
+@endphp
+    <nav class="bg-white border-b-4 border-red-600 shadow-lg sticky top-0 z-50">
+>>>>>>> 66275644bfe910057a5eabdb829b677db35dd029
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
                 
@@ -41,6 +78,7 @@
                             <span class="text-[9px] font-bold text-[#f0d678] tracking-[0.2em] uppercase opacity-90">Academic Publishing Portal</span>
                         </div>
                     </a>
+<<<<<<< HEAD
 
                     @auth
                         <div class="hidden md:flex items-center space-x-1 ml-6 border-l border-white/10 pl-6">
@@ -65,6 +103,35 @@
 
                             @if(auth()->user()->isAdmin())
                                 <a href="{{ route('admin.users.index') }}" class="{{ $linkBase . $inactive }}">MANAGEMENT</a>
+=======
+                    @auth
+                        @php
+                            $preferred = session('preferred_dashboard');
+                            $showAuthor = $preferred ? ($preferred === 'author') : auth()->user()->isAuthor();
+                            $showReviewer = $preferred ? ($preferred === 'reviewer') : auth()->user()->isReviewer();
+                            $showEditor = $preferred ? ($preferred === 'editor') : auth()->user()->isEditor();
+                            $showChief = $preferred ? ($preferred === 'editor-in-chief') : auth()->user()->isEditorInChief();
+                            $showAdmin = $preferred ? ($preferred === 'admin') : auth()->user()->isAdmin();
+                        @endphp
+
+                        <div class="hidden md:flex md:space-x-1">
+                            <a href="{{ route($dashboardRoute) }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Dashboard</a>
+                            @if($showAuthor)
+                                <a href="{{ route('submissions.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Submissions</a>
+                            @endif
+                            @if($showReviewer)
+                                <a href="{{ route('reviews.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Reviews</a>
+                            @endif
+                            @if($showEditor)
+                                <a href="{{ route('editor.submissions') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Submissions</a>
+                            @endif
+                            @if($showChief)
+                                <a href="{{ route('appeals.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Appeals</a>
+                            @endif
+                            @if($showAdmin)
+                                <a href="{{ route('admin.users.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Users</a>
+                                <a href="{{ route('admin.roles.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Roles</a>
+>>>>>>> 66275644bfe910057a5eabdb829b677db35dd029
                             @endif
                         </div>
                     @endauth
@@ -112,8 +179,14 @@
                     </p>
                 </div>
                 <div>
+<<<<<<< HEAD
                     <h4 class="text-[11px] font-bold text-[#f0d678] uppercase tracking-[0.2em] mb-6">Portal Links</h4>
                     <ul class="space-y-3 text-sm">
+=======
+                    <h4 class="text-sm font-semibold text-white mb-3">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="{{ route($dashboardRoute) }}" class="hover:text-white transition-colors">Dashboard</a></li>
+>>>>>>> 66275644bfe910057a5eabdb829b677db35dd029
                         <li><a href="{{ url('/') }}" class="hover:text-white transition-colors">Home</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">Journal Guidelines</a></li>
                     </ul>

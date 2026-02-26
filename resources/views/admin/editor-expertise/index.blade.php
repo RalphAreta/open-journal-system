@@ -45,7 +45,7 @@
                 <a href="{{ route('admin.editor-expertise.edit', $editor) }}"
                    class="inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white
                           px-3 py-1.5 rounded-[7px] text-[11px] font-bold uppercase tracking-[.05em]
-                          transition-all hover:-translate-y-0.5 flex-shrink-0">
+                          transition-all hover:-translate-y-0.5 shrink-0">
                     ✏️ Manage
                 </a>
             </div>
@@ -74,7 +74,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
             </svg>
         </div>
-        <p class="text-[11px] font-bold uppercase tracking-[.1em] text-slate-300">No editors found</p>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-slate-300">No editors found</p>
         <p class="text-xs text-slate-400 mt-1">Please create editor accounts first.</p>
     </div>
     @endif

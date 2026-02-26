@@ -227,16 +227,6 @@
                 <p class="text-xs font-black text-slate-900 uppercase tracking-widest">Editor-in-Chief</p>
                 <p class="text-[10px] text-slate-400 font-medium">Initial Screening Decision</p>
             </div>
-            {{-- Status Badge --}}
-            @if($submission->initial_screening_status === 'passed')
-                <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-full text-[9px] font-black text-emerald-700 uppercase tracking-widest">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Passed
-                </span>
-            @elseif($submission->initial_screening_status === 'failed')
-                <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 border border-red-100 rounded-full text-[9px] font-black text-red-700 uppercase tracking-widest">
-                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Failed
-                </span>
-            @endif
         </div>
 
         {{-- Comments --}}
@@ -275,6 +265,54 @@
             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Notes</p>
             <p class="text-sm text-slate-600 leading-relaxed font-medium">{{ $submission->editor_notes }}</p>
         </div>
+    </div>
+    @endif
+
+    {{-- Appeal Block --}}
+    @php $appeal = $submission->appeals()->latest()->first(); @endphp
+    @if($appeal)
+    <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm space-y-4">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-2xl {{ $appeal->status === 'approved' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600' }} flex items-center justify-center">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    @if($appeal->status === 'approved')
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    @else
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    @endif
+                </svg>
+            </div>
+            <div>
+                <p class="text-xs font-black text-slate-900 uppercase tracking-widest">Editor-in-Chief</p>
+                <p class="text-[10px] text-slate-400 font-medium">Appeal Decision</p>
+            </div>
+            {{-- Appeal Status Badge --}}
+            @if($appeal->status === 'approved')
+                <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-full text-[9px] font-black text-emerald-700 uppercase tracking-widest">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Approved
+                </span>
+            @elseif($appeal->status === 'rejected')
+                <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 border border-red-100 rounded-full text-[9px] font-black text-red-700 uppercase tracking-widest">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Rejected
+                </span>
+            @else
+                <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-100 rounded-full text-[9px] font-black text-amber-700 uppercase tracking-widest">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Pending
+                </span>
+            @endif
+        </div>
+
+        {{-- Appeal Response --}}
+        @if($appeal->editor_response)
+        <div class="bg-slate-50 rounded-2xl px-5 py-4 border border-slate-100">
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Editor's Response</p>
+            <p class="text-sm text-slate-600 leading-relaxed font-medium">{{ $appeal->editor_response }}</p>
+        </div>
+        @elseif($appeal->isPending())
+        <div class="bg-amber-50 rounded-2xl px-5 py-4 border border-amber-100">
+            <p class="text-sm text-amber-700 leading-relaxed font-medium">Awaiting editor-in-chief review...</p>
+        </div>
+        @endif
     </div>
     @endif
 

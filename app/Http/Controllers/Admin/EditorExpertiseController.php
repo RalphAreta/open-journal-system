@@ -9,8 +9,11 @@ use App\Http\Controllers\Controller;
 
 class EditorExpertiseController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
+        // remember admin dashboard area visited
+        $request->session()->put('preferred_dashboard', 'admin');
+
         $editors = User::whereHas('roles', function ($query) {
             $query->where('name', 'editor');
         })->with('editorExpertise')->paginate(10);

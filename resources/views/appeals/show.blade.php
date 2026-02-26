@@ -48,7 +48,7 @@
             @if($appeal->isPending())
                 <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
                     <h3 class="text-lg font-bold text-slate-900 mb-4">Review Appeal</h3>
-                    
+
                     <form action="{{ route('appeals.update', $appeal) }}" method="POST" class="space-y-4">
                         @csrf
                         @method('PUT')
@@ -74,12 +74,12 @@
                         {{-- Response --}}
                         <div>
                             <label for="editor_response" class="block text-sm font-bold text-slate-900 mb-2">Your Response</label>
-                            <textarea 
-                                name="editor_response" 
+                            <textarea
+                                name="editor_response"
                                 id="editor_response"
                                 rows="6"
                                 placeholder="Provide detailed feedback on the appeal decision..."
-                                class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all @error('editor_response') border-red-500 @enderror"
+                                class="w-full px-4 py-3 border  rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all @error('editor_response') border-red-500 @enderror"
                                 required>{{ old('editor_response') }}</textarea>
                             <p class="text-xs text-slate-500 mt-1">Minimum 10 characters required</p>
                             @error('editor_response')
@@ -102,7 +102,7 @@
                 {{-- Decision Already Made --}}
                 <div class="bg-white border-2 {{ $appeal->isApproved() ? 'border-emerald-200 bg-emerald-50' : 'border-red-200 bg-red-50' }} rounded-2xl p-6 shadow-sm">
                     <div class="flex items-start gap-4 mb-4">
-                        <div class="w-12 h-12 {{ $appeal->isApproved() ? 'bg-emerald-200 text-emerald-700' : 'bg-red-200 text-red-700' }} rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div class="w-12 h-12 {{ $appeal->isApproved() ? 'bg-emerald-200 text-emerald-700' : 'bg-red-200 text-red-700' }} rounded-lg flex items-center justify-center shrink-0">
                             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                                 @if($appeal->isApproved())
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>

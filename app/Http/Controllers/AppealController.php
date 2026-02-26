@@ -45,6 +45,7 @@ class AppealController extends Controller
             'submission_id' => $submission->id,
             'author_id' => auth()->id(),
             'reason' => $validated['reason'],
+            'status' => Appeal::STATUS_PENDING,
         ]);
 
         return redirect()->route('submissions.show', $submission)
@@ -101,7 +102,6 @@ class AppealController extends Controller
         if ($validated['status'] === Appeal::STATUS_APPROVED) {
             $appeal->submission->update([
                 'initial_screening_status' => Submission::SCREENING_STATUS_PASSED,
-                'initial_screening_comments' => 'Appeal approved. Manuscript moved to review stage.',
             ]);
             
             $message = 'Appeal approved. The submission will now proceed to the review stage.';

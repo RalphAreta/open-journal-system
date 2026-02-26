@@ -147,10 +147,14 @@
     }
     .comment-chip.purple { background: #FAF5FF; border-color: #E9D5FF; }
     .comment-chip.blue   { background: #EFF6FF; border-color: #BFDBFE; }
+    .comment-chip.emerald { background: #F0FDF4; border-color: #86EFAC; }
+    .comment-chip.red   { background: #FEF2F2; border-color: #FECACA; }
     .comment-chip svg { flex-shrink: 0; margin-top: 1px; }
     .comment-tag  { font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 2px; }
     .comment-tag.purple { color: #7C3AED; }
     .comment-tag.blue   { color: #1D4ED8; }
+    .comment-tag.emerald { color: #059669; }
+    .comment-tag.red { color: #DC2626; }
     .comment-text {
         font-size: .75rem; color: #475569; line-height: 1.5;
         display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
@@ -384,6 +388,26 @@
                                     <div>
                                         <p class="comment-tag blue">Editor's Note</p>
                                         <p class="comment-text">{{ $s->editor_notes }}</p>
+                                    </div>
+                                </div>
+                                @endif
+
+                                {{-- Appeal Decision --}}
+                                @php $appeal = $s->appeals()->latest()->first(); @endphp
+                                @if($appeal)
+                                <div class="comment-chip {{ $appeal->status === 'approved' ? 'emerald' : 'red' }}">
+                                    <svg class="w-3 h-3 {{ $appeal->status === 'approved' ? 'text-emerald-400' : 'text-red-400' }}" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v7a2 2 0 01-2 2H6l-4 4V5z"/>
+                                    </svg>
+                                    <div>
+                                        <p class="comment-tag {{ $appeal->status === 'approved' ? 'emerald' : 'red' }}">
+                                            Appeal {{ ucfirst($appeal->status) }}
+                                        </p>
+                                        @if($appeal->editor_response)
+                                            <p class="comment-text">{{ $appeal->editor_response }}</p>
+                                        @else
+                                            <p class="comment-text text-gray-500">Awaiting editor-in-chief review...</p>
+                                        @endif
                                     </div>
                                 </div>
                                 @endif

@@ -10,8 +10,11 @@ use Illuminate\View\View;
 
 class RoleController extends Controller
 {
-    public function index(): View
+    public function index(\Illuminate\Http\Request $request): View
     {
+        // remember admin dashboard area visited
+        $request->session()->put('preferred_dashboard', 'admin');
+
         $roles = Role::withCount('users')->orderBy('name')->get();
         return view('admin.roles.index', compact('roles'));
     }
