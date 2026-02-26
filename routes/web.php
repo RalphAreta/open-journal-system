@@ -26,9 +26,24 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/register', [RegisterController::class, 'register']);
 });
 
+use App\Http\Controllers\Auth\OtpController;
+
+Route::get('/email/verify', [OtpController::class, 'show'])
+    ->middleware('auth')
+   ->name('verification.notice');
+
+Route::post('/email/verify', [OtpController::class, 'verify'])
+    ->middleware('auth')
+    ->name('otp.verify.submit');
+
+Route::post('/email/resend', [OtpController::class, 'resend'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('otp.resend');
+
+
 Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('verified')->name('dashboard');
     Route::get('/dashboard/switch-role/{role}', [DashboardController::class, 'switchRole'])->name('dashboard.switch-role');
     Route::get('/submissions/{submission}/download', [ReviewController::class, 'downloadFile'])->name('submissions.download');
     Route::get('/submissions/{submission}/download-original', [ReviewController::class, 'downloadOriginalFile'])->name('submissions.download-original');
