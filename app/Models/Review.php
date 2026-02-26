@@ -16,6 +16,7 @@ class Review extends Model
         'comments_for_author',
         'comments_for_editor',
         'rating',
+        'status',
         'submitted_at',
     ];
 
@@ -25,6 +26,9 @@ class Review extends Model
             'submitted_at' => 'datetime',
         ];
     }
+
+    public const STATUS_DRAFT = 'draft';
+    public const STATUS_SUBMITTED = 'submitted';
 
     public const RECOMMEND_ACCEPT = 'accept';
     public const RECOMMEND_MINOR_REVISIONS = 'minor_revisions';

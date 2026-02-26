@@ -553,6 +553,10 @@
                                 <span class="text-red-600">*</span>
                             </p>
                             <div class="grid grid-cols-3 gap-2">
+                                @php
+                                    $draftData = $submission->editor_decision_draft ? json_decode(json_encode($submission->editor_decision_draft), true) : [];
+                                    $selectedStatus = old('status', $draftData['status'] ?? '');
+                                @endphp
                                 <label class="relative block cursor-pointer">
                                     <input
                                         type="radio"
@@ -560,7 +564,7 @@
                                         value="accepted"
                                         id="dec_accepted"
                                         class="peer sr-only"
-                                        required
+                                        {{ $selectedStatus === 'accepted' ? 'checked' : '' }}
                                     />
                                     <div
                                         class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-emerald-400 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:shadow-sm"
@@ -584,6 +588,7 @@
                                         value="rejected"
                                         id="dec_rejected"
                                         class="peer sr-only"
+                                        {{ $selectedStatus === 'rejected' ? 'checked' : '' }}
                                     />
                                     <div
                                         class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-red-400 peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:shadow-sm"
@@ -607,6 +612,7 @@
                                         value="revisions_requested"
                                         id="dec_revisions"
                                         class="peer sr-only revision-option"
+                                        {{ $selectedStatus === 'revisions_requested' ? 'checked' : '' }}
                                     />
                                     <div
                                         class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-500 peer-checked:bg-amber-50 peer-checked:shadow-sm"
@@ -628,7 +634,7 @@
 
                         <div
                             id="revision-fields"
-                            class="hidden border-t border-slate-100 pt-5 space-y-4"
+                            class="{{ $selectedStatus === 'revisions_requested' ? '' : 'hidden' }} border-t border-slate-100 pt-5 space-y-4"
                         >
                             <div>
                                 <label
@@ -647,6 +653,7 @@
                                             value="minor"
                                             id="rt_minor"
                                             class="peer sr-only"
+                                            {{ old('revision_type', $draftData['revision_type'] ?? '') === 'minor' ? 'checked' : '' }}
                                         />
                                         <div
                                             class="border-2 border-slate-200 rounded-xl p-3 transition-all hover:border-amber-400 peer-checked:border-amber-500 peer-checked:bg-amber-50 peer-checked:shadow-sm"
@@ -672,6 +679,7 @@
                                             value="major"
                                             id="rt_major"
                                             class="peer sr-only"
+                                            {{ old('revision_type', $draftData['revision_type'] ?? '') === 'major' ? 'checked' : '' }}
                                         />
                                         <div
                                             class="border-2 border-slate-200 rounded-xl p-3 transition-all hover:border-orange-400 peer-checked:border-orange-500 peer-checked:bg-orange-50 peer-checked:shadow-sm"
@@ -703,7 +711,7 @@
                                     rows="3"
                                     placeholder="Explain what revisions are needed…"
                                     class="block w-full rounded-xl border border-slate-200 text-sm px-3 py-2.5 bg-slate-50 focus:outline-none focus:border-red-400 transition-colors resize-none"
-                                ></textarea>
+                                >{{ old('revision_reason', $draftData['revision_reason'] ?? '') }}</textarea>
                             </div>
                         </div>
 
@@ -723,18 +731,31 @@
                                 maxlength="2000"
                                 placeholder="Additional notes for the author…"
                                 class="block w-full rounded-xl border border-slate-200 text-sm px-3 py-2.5 bg-slate-50 focus:outline-none focus:border-red-400 transition-colors resize-none"
-                            ></textarea>
+                            >{{ old('editor_notes', $draftData['editor_notes'] ?? '') }}</textarea>
                         </div>
 
                         <div
-                            class="pt-4 border-t border-slate-100 flex justify-end"
+                            class="pt-4 border-t border-slate-100 flex items-center justify-between gap-3"
                         >
-                            <button
-                                type="submit"
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
-                            >
-                                Record Decision
-                            </button>
+                            <div></div>
+                            <div class="flex items-center gap-3">
+                                <button
+                                    type="submit"
+                                    name="action"
+                                    value="save_draft"
+                                    class="bg-slate-400 hover:bg-slate-500 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
+                                >
+                                    Save & Review Later
+                                </button>
+                                <button
+                                    type="submit"
+                                    name="action"
+                                    value="submit"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
+                                >
+                                    Record Decision
+                                </button>
+                            </div>
                         </div>
                     </form>
                 @endif

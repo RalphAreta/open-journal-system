@@ -72,11 +72,11 @@
                 <label class="block text-sm font-semibold text-slate-900 mb-3">
                     Recommendation <span class="text-red-600">*</span>
                 </label>
-                <select id="recommendation" name="recommendation" required
+                <select id="recommendation" name="recommendation"
                     class="w-full px-4 py-2.5 border border-slate-300 rounded-lg bg-white text-slate-900 font-medium focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all">
                     <option value="">— Select Recommendation —</option>
                     @foreach(\App\Models\Review::recommendationOptions() as $value => $label)
-                        <option value="{{ $value }}" {{ old('recommendation') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                        <option value="{{ $value }}" {{ old('recommendation', $existingReview?->recommendation) === $value ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
                 @error('recommendation') <p class="text-red-600 text-xs font-medium mt-1">{{ $message }}</p> @enderror
@@ -89,7 +89,7 @@
                 </label>
                 <textarea id="comments_for_author" name="comments_for_author" rows="5"
                     class="w-full px-4 py-3 border border-slate-300 rounded-lg text-slate-900 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all resize-none"
-                    placeholder="Provide constructive feedback for the author...">{{ old('comments_for_author') }}</textarea>
+                    placeholder="Provide constructive feedback for the author...">{{ old('comments_for_author', $existingReview?->comments_for_author) }}</textarea>
                 @error('comments_for_author') <p class="text-red-600 text-xs font-medium mt-1">{{ $message }}</p> @enderror
             </div>
 
@@ -100,7 +100,7 @@
                 </label>
                 <textarea id="comments_for_editor" name="comments_for_editor" rows="5"
                     class="w-full px-4 py-3 border border-slate-300 rounded-lg text-slate-900 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all resize-none"
-                    placeholder="Share any confidential notes with the editor...">{{ old('comments_for_editor') }}</textarea>
+                    placeholder="Share any confidential notes with the editor...">{{ old('comments_for_editor', $existingReview?->comments_for_editor) }}</textarea>
                 @error('comments_for_editor') <p class="text-red-600 text-xs font-medium mt-1">{{ $message }}</p> @enderror
             </div>
 
@@ -110,7 +110,7 @@
                     Rating <span class="text-slate-500 font-normal text-xs">(1-5, optional)</span>
                 </label>
                 <div class="flex items-center gap-3">
-                    <input id="rating" type="number" name="rating" min="1" max="5" value="{{ old('rating') }}"
+                    <input id="rating" type="number" name="rating" min="1" max="5" value="{{ old('rating', $existingReview?->rating) }}"
                         class="w-20 px-4 py-2.5 border border-slate-300 rounded-lg text-slate-900 font-medium focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all">
                     <span class="text-xs text-slate-500">out of 5 stars</span>
                 </div>
@@ -118,17 +118,26 @@
             </div>
 
             {{-- Actions --}}
-            <div class="flex items-center justify-between pt-6 border-t border-slate-200">
+            <div class="flex items-center justify-between pt-6 border-t border-slate-200 gap-3">
                 <a href="{{ route('reviews.index') }}" class="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
                     Cancel
                 </a>
-                <button type="submit"
-                    class="bg-slate-900 hover:bg-red-600 text-white px-8 py-3 rounded-lg
-                           text-sm font-bold uppercase tracking-[.06em]
-                           transition-all duration-200 hover:-translate-y-0.5
-                           shadow-md shadow-slate-200/80 hover:shadow-lg hover:shadow-red-200/50">
-                    Submit Review
-                </button>
+                <div class="flex items-center gap-3">
+                    <button type="submit" name="action" value="save_draft"
+                        class="bg-slate-400 hover:bg-slate-500 text-white px-6 py-3 rounded-lg
+                               text-sm font-bold uppercase tracking-[.06em]
+                               transition-all duration-200 hover:-translate-y-0.5
+                               shadow-md shadow-slate-200/80 hover:shadow-lg hover:shadow-slate-300/50">
+                        Save & Submit Later
+                    </button>
+                    <button type="submit" name="action" value="submit"
+                        class="bg-slate-900 hover:bg-red-600 text-white px-6 py-3 rounded-lg
+                               text-sm font-bold uppercase tracking-[.06em]
+                               transition-all duration-200 hover:-translate-y-0.5
+                               shadow-md shadow-slate-200/80 hover:shadow-lg hover:shadow-red-200/50">
+                        Submit Review
+                    </button>
+                </div>
             </div>
         </form>
     </div>
