@@ -10,8 +10,11 @@ use Illuminate\View\View;
 
 class SystemSettingController extends Controller
 {
-    public function index(): View
+    public function index(\Illuminate\Http\Request $request): View
     {
+        // remember admin dashboard area visited
+        $request->session()->put('preferred_dashboard', 'admin');
+
         $settings = SystemSetting::orderBy('group')->orderBy('key')->get()->groupBy('group');
         return view('admin.settings.index', compact('settings'));
     }

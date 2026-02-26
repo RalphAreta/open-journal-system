@@ -15,6 +15,9 @@ class UserController extends Controller
 {
     public function index(Request $request): View
     {
+        // remember admin dashboard area visited
+        $request->session()->put('preferred_dashboard', 'admin');
+
         $users = User::with('roles')->latest()->paginate(15);
         return view('admin.users.index', compact('users'));
     }
