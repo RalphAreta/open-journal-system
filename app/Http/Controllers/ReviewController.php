@@ -387,7 +387,7 @@ class ReviewController extends Controller
             $submission->update([
                 'editor_decision_draft' => $validated,
             ]);
-            return redirect()->route('editor.submission.show', $submission)
+            return redirect()->route('editor.submissions')
                 ->with('success', 'Decision draft saved. You can continue editing it later.');
         }
 
@@ -706,7 +706,7 @@ public function editorRevisionDecision(Request $request, Submission $submission)
                     'editor_decision_draft' => $validated,
                 ]);
             }
-            return back()
+            return redirect()->route('editor.submissions')
                 ->with('success', 'Revision decision draft saved. You can continue editing it later.');
         }
 
