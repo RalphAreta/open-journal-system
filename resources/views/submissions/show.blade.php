@@ -123,9 +123,11 @@
                                             <p class="text-[10px] font-bold text-slate-400 uppercase">{{ $r->created_at->format('M d, Y') }}</p>
                                         </div>
                                     </div>
-                                    <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 text-[9px] font-black uppercase tracking-widest text-slate-600">
-                                        {{ \App\Models\Review::recommendationOptions()[$r->recommendation] ?? $r->recommendation }}
-                                    </span>
+                                    @if(auth()->user()->id !== $submission->author_id)
+                                        <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 text-[9px] font-black uppercase tracking-widest text-slate-600">
+                                            {{ \App\Models\Review::recommendationOptions()[$r->recommendation] ?? $r->recommendation }}
+                                        </span>
+                                    @endif
                                 </div>
 
                                 @if($r->comments_for_author)
@@ -178,7 +180,7 @@
                                             <p class="text-[10px] font-bold text-slate-400 uppercase">{{ $rr->created_at->format('M d, Y') }}</p>
                                         </div>
                                     </div>
-                                    @if($rr->recommendation)
+                                    @if($rr->recommendation && auth()->user()->id !== $submission->author_id)
                                         <span class="px-4 py-1.5 rounded-full bg-blue-100 border border-blue-200 text-[9px] font-black uppercase tracking-widest text-blue-700">
                                             {{ \App\Models\RevisionReview::recommendationOptions()[$rr->recommendation] ?? $rr->recommendation }}
                                         </span>
