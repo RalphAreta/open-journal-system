@@ -159,13 +159,13 @@ Editorial Office`
 
     function updateCommentAutomatically() {
         const screeningStatus = document.querySelector('input[name="screening_status"]:checked')?.value;
-        
+
         if (screeningStatus === 'passed') {
             commentsTextarea.value = autoComments.passed;
         } else if (screeningStatus === 'failed') {
             commentsTextarea.value = autoComments.failed;
         }
-        
+
         updateCharCount();
     }
 
@@ -176,7 +176,7 @@ Editorial Office`
     commentsTextarea.addEventListener('input', updateCharCount);
 
     screeningRadios.forEach(r => r.addEventListener('change', updateCommentAutomatically));
-    
+
     // Initialize on page load
     updateCommentAutomatically();
     updateCharCount();
