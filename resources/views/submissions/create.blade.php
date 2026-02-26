@@ -49,7 +49,7 @@
                 <div class="space-y-5">
                     {{-- Title --}}
                     <div>
-                        <label for="title" class="block text-[11px] font-bold uppercase tracking-[.09em] text-slate-500 mb-1.5">Article Title *</label>
+                        <label for="title" class="block text-[11px] font-bold uppercase tracking-[.09em] text-slate-500 mb-1.5">Manuscript Title *</label>
                         <textarea name="title" id="title" rows="3" required
                             class="field w-full px-3.5 py-3 border rounded-[9px] bg-slate-50 text-sm text-slate-900 leading-relaxed transition-all resize-none
                                    {{ $errors->has('title') ? 'border-red-300 bg-red-50/30' : 'border-slate-200' }}"

@@ -12,126 +12,99 @@
 </div>
 
 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="bg-slate-800 text-white">
-                    <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Action</th>
-                    <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">My Reviewer Number</th>
-                    <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Manuscript Number</th>
-                    <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Article Type</th>
-                    <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Article Title</th>
-                    <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Date Reviewer Invited</th>
-                    <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Date Reviewer Agreed</th>
-                    <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Date Review Due</th>
-                    <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Days Until Review Due</th>
-                    <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Editor's Name</th>
-                    <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Corr. Author</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-200">
-                @forelse ($assignments as $assignment)
-                    <tr class="hover:bg-slate-50 transition-colors align-top">
+    <div class="space-y-4">
+        @forelse ($assignments as $assignment)
+            @php
+                $review = $assignment->submission->reviews->firstWhere('reviewer_id', auth()->id());
+                $days = $assignment->daysUntilDue();
+            @endphp
 
-                        {{-- Action Column --}}
-                        <td class="px-4 py-4 whitespace-nowrap">
-                            <div class="flex flex-col gap-1">
-                                <a href="{{ route('submissions.show', $assignment->submission) }}"
-                                   class="text-blue-600 hover:underline text-xs">View Submission</a>
-                                <a href="{{ route('reviews.create', ['assignment' => $assignment]) }}"
-                                   class="text-blue-600 hover:underline text-xs">Submit Recommendation</a>
-                                <button onclick="alert('Manuscript Analysis')"
-                                   class="text-blue-600 hover:underline text-xs text-left">Manuscript Analysis</button>
-                                <button onclick="alert('Services')"
-                                   class="text-blue-600 hover:underline text-xs text-left">Services</button>
-                                <button onclick="alert('Linked References')"
-                                   class="text-blue-600 hover:underline text-xs text-left">View Linked References</button>
-                                <button onclick="alert('Reviewer Comments')"
-                                   class="text-blue-600 hover:underline text-xs text-left">View Reviewer Comments</button>
-                                <button onclick="alert('Decision Letter')"
-                                   class="text-blue-600 hover:underline text-xs text-left">View Decision Letter</button>
-                                <a href="mailto:{{ $assignment->editor->email }}"
-                                   class="text-blue-600 hover:underline text-xs">Send E-mail</a>
+            <div class="p-5 md:p-6 border-b border-slate-100">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Left / Main column (span 2) -->
+                    <div class="md:col-span-2">
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <p class="text-xs text-slate-500 font-semibold">Manuscript</p>
+                                <p class="text-sm font-mono text-slate-500 mt-1">#{{ str_pad($assignment->submission_id, 5, '0', STR_PAD_LEFT) }}</p>
+                                <h3 class="text-lg font-semibold text-slate-900 mt-2">{{ $assignment->submission->title }}</h3>
+                                <p class="text-sm text-slate-600 mt-2 max-w-2xl">{{ Str::limit($assignment->submission->abstract ?? 'No abstract available.', 250) }}</p>
                             </div>
-                        </td>
+                            <div class="text-right hidden md:block">
+                                <p class="text-xs text-slate-400">Reviewer #</p>
+                                <p class="text-sm font-mono text-slate-700">{{ $assignment->reviewer_number ?? '—' }}</p>
+                                <p class="text-xs text-slate-400 mt-3">Assigned by</p>
+                                <p class="text-sm text-slate-700">{{ $assignment->editor->name ?? '—' }}</p>
+                            </div>
+                        </div>
 
-                        {{-- Reviewer Number --}}
-                        <td class="px-4 py-4 text-slate-700 whitespace-nowrap">
-                            {{ $assignment->reviewer_number ?? '—' }}
-                        </td>
+                        <div class="mt-4 flex flex-wrap items-center gap-3 text-xs">
+                            <a href="{{ route('submissions.show', $assignment->submission) }}" class="text-blue-600 hover:underline">View Submission</a>
+                            <a href="{{ route('reviews.create', ['assignment' => $assignment]) }}" class="text-blue-600 hover:underline">Submit Recommendation</a>
+                            <a href="mailto:{{ $assignment->editor->email }}" class="text-blue-600 hover:underline">Email Editor</a>
+                            <button onclick="alert('Linked References')" class="text-slate-500">Linked References</button>
+                            <button onclick="alert('Decision Letter')" class="text-slate-500">Decision Letter</button>
+                        </div>
 
-                        {{-- Manuscript Number --}}
-                        <td class="px-4 py-4 text-slate-700 whitespace-nowrap font-mono text-xs">
-                            #{{ str_pad($assignment->submission_id, 5, '0', STR_PAD_LEFT) }}
-                        </td>
+                        <div class="mt-4 flex flex-wrap gap-4 text-sm text-slate-600">
+                            <div>Invited: <span class="font-medium text-slate-700">{{ $assignment->invited_at?->format('M d, Y') ?? '—' }}</span></div>
+                            <div>Agreed: <span class="font-medium text-slate-700">{{ $assignment->agreed_at?->format('M d, Y') ?? 'Pending' }}</span></div>
+                            <div>Due: <span class="font-medium text-slate-700">{{ $assignment->review_due_at?->format('M d, Y') ?? '—' }}</span></div>
+                            <div>
+                                <span class="font-medium">
+                                    @if ($days === null)
+                                        —
+                                    @elseif ($days < 0)
+                                        <span class="text-red-600">{{ abs($days) }}d overdue</span>
+                                    @elseif ($days <= 3)
+                                        <span class="text-amber-600">{{ $days }}d left</span>
+                                    @else
+                                        <span class="text-green-700">{{ $days }}d left</span>
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
+                    </div>
 
-                        {{-- Article Type --}}
-                        <td class="px-4 py-4 text-slate-700 whitespace-nowrap">
-                            {{ $assignment->article_type ?? 'Research Article' }}
-                        </td>
+                    <!-- Right / Comments column -->
+                    <div class="md:col-span-1">
+                        <div class="h-full bg-slate-50 border border-slate-100 rounded-lg p-4 flex flex-col">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-semibold text-slate-800">Comments & Notes</h4>
+                                @if($review)
+                                    <span class="text-xs text-green-700 font-semibold">Draft saved</span>
+                                @endif
+                            </div>
+                            <div class="mt-3 text-sm text-slate-700 overflow-auto" style="max-height:180px">
+                                @if($review && ($review->comments_for_author || $review->comments_for_editor))
+                                    @if($review->comments_for_author)
+                                        <p class="font-semibold text-xs text-slate-600">Comments for Author</p>
+                                        <p class="text-sm whitespace-pre-wrap mb-3">{{ Str::limit($review->comments_for_author, 800) }}</p>
+                                    @endif
+                                    @if($review->comments_for_editor)
+                                        <p class="font-semibold text-xs text-slate-600">Comments for Editor</p>
+                                        <p class="text-sm italic whitespace-pre-wrap">{{ Str::limit($review->comments_for_editor, 800) }}</p>
+                                    @endif
+                                @else
+                                    <p class="text-sm text-slate-500">No reviewer comments saved yet. See manuscript abstract or open the review form to add feedback.</p>
+                                @endif
+                            </div>
 
-                        {{-- Article Title --}}
-                        <td class="px-4 py-4 text-slate-900 font-medium max-w-xs">
-                            <span title="{{ $assignment->submission->title }}">
-                                {{ Str::limit($assignment->submission->title, 50) }}
-                            </span>
-                        </td>
+                            <div class="mt-4 pt-3 border-t border-slate-100">
+                                <a href="{{ route('reviews.create', ['assignment' => $assignment]) }}" class="block text-center bg-red-600 text-white px-3 py-2 rounded-md text-sm font-semibold">Open Review</a>
+                                <a href="{{ route('submissions.show', $assignment->submission) }}" class="block text-center text-xs text-slate-600 mt-2 hover:underline">View full submission</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="p-6 text-center text-slate-500">No pending reviewer assignments found.</div>
+        @endforelse
 
-                        {{-- Date Reviewer Invited --}}
-                        <td class="px-4 py-4 text-slate-600 whitespace-nowrap">
-                            {{ $assignment->invited_at?->format('M d, Y') ?? '—' }}
-                        </td>
-
-                        {{-- Date Reviewer Agreed --}}
-                        <td class="px-4 py-4 whitespace-nowrap">
-                            @if ($assignment->agreed_at)
-                                <span class="text-green-700 font-medium">{{ $assignment->agreed_at->format('M d, Y') }}</span>
-                            @else
-                                <span class="text-amber-600 text-xs font-semibold">Pending</span>
-                            @endif
-                        </td>
-
-                        {{-- Date Review Due --}}
-                        <td class="px-4 py-4 text-slate-600 whitespace-nowrap">
-                            {{ $assignment->review_due_at?->format('M d, Y') ?? '—' }}
-                        </td>
-
-                        {{-- Days Until Review Due --}}
-                        <td class="px-4 py-4 whitespace-nowrap">
-                            @php $days = $assignment->daysUntilDue(); @endphp
-                            @if ($days === null)
-                                <span class="text-slate-400">—</span>
-                            @elseif ($days < 0)
-                                <span class="text-red-600 font-bold">{{ abs($days) }}d overdue</span>
-                            @elseif ($days <= 3)
-                                <span class="text-amber-600 font-bold">{{ $days }}d left</span>
-                            @else
-                                <span class="text-green-700 font-semibold">{{ $days }}d left</span>
-                            @endif
-                        </td>
-
-                        {{-- Editor's Name --}}
-                        <td class="px-4 py-4 text-slate-700 whitespace-nowrap">
-                            {{ $assignment->editor->name ?? '—' }}
-                        </td>
-
-                        {{-- Corr. Author --}}
-                        <td class="px-4 py-4 text-slate-700 whitespace-nowrap">
-                            {{ $assignment->submission->author->name ?? '—' }}
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="11" class="px-6 py-16 text-center text-slate-500">
-                            No pending reviewer assignments found.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-    <div class="border-t border-slate-200 px-6 py-3 bg-slate-50">
-        {{ $assignments->links() }}
+        <div class="border-t border-slate-200 px-6 py-3 bg-slate-50">
+            {{ $assignments->links() }}
+        </div>
     </div>
 </div>
 @endsection
