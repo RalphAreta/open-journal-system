@@ -71,7 +71,8 @@ class SubmissionController extends Controller
             'author',
             'reviews.reviewer',
             'reviewAssignments.reviewer',
-            'revisionRequests.revisionReviews.reviewer'
+            'revisionRequests.revisionReviews.reviewer',
+            'appeals'
         ]);
 
         return view('submissions.show', compact('submission'));
