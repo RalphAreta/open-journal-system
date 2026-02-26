@@ -4,118 +4,139 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', config('app.name')) - IRJIEST</title>
+    <title>@yield('title', config('app.name')) - Journal System</title>
+    
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        @keyframes lpShimmer { 0%{background-position:-100% 0} 100%{background-position:100% 0} }
+        .nav-shimmer { background: linear-gradient(90deg,transparent,#c9a84c,#f0d678,#c9a84c,transparent); background-size: 200% 100%; animation: lpShimmer 3s linear infinite; }
+        .font-libre { font-family: 'Libre Baskerville', serif; }
+        .font-source { font-family: 'Source Sans 3', sans-serif; }
+        .nav-link-active { background: rgba(255, 255, 255, 0.15); border-bottom: 2px solid #f0d678; }
+    </style>
     @stack('styles')
 </head>
-<body class="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 text-slate-900 font-sans antialiased flex flex-col">
-    <nav class="bg-white border-b-4 border-red-600 shadow-lg sticky top-0 z-50">
+<body class="min-h-screen bg-[#f5f0e8] text-[#0d1628] font-source antialiased flex flex-col">
+
+    <div class="h-[3px] w-full nav-shimmer sticky top-0 z-[60]"></div>
+
+    <nav class="bg-[#2D8176] shadow-xl sticky top-[3px] z-50 border-b border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
-                <div class="flex items-center gap-8">
-                    <a href="{{ url('/') }}" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-                        <img src="{{ asset('images/batstateu-logo.png') }}" alt="Batangas State University Logo" class="h-12 w-auto">
-                        <span class="text-4xl font-bold bg-linear-to-r from-red-600 to-red-700 bg-clip-text text-transparent">IRJIEST</span>
+                
+                <div class="flex items-center gap-6">
+                    <a href="{{ url('/') }}" class="flex items-center space-x-3 group transition-all">
+                        <div class="relative w-12 h-12 flex items-center justify-center bg-gradient-to-br from-[#c9a84c] to-[#a07830] rounded-full border-2 border-white/30 shadow-inner group-hover:rotate-12 transition-transform duration-500">
+                            <svg class="text-white w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-libre text-2xl font-bold text-white leading-none tracking-tight">Journal System</span>
+                            <span class="text-[9px] font-bold text-[#f0d678] tracking-[0.2em] uppercase opacity-90">Academic Publishing Portal</span>
+                        </div>
                     </a>
-                    @auth
-                        <div class="hidden md:flex md:space-x-1">
-                            <a href="{{ route('dashboard') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Dashboard</a>
-                            @if(auth()->user()->isAuthor())
-                                <a href="{{ route('submissions.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Submissions</a>
-                            @endif
-                            @if(auth()->user()->isReviewer())
-                                <a href="{{ route('reviews.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Reviews</a>
-                            @endif
-                            @if(auth()->user()->isEditor())
-                                <a href="{{ route('editor.submissions') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Submissions</a>
-                            @endif
-                            @if(auth()->user()->isEditorInChief())
-                                <a href="{{ route('appeals.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Appeals</a>
-                            @endif
-                            @if(auth()->user()->isAdmin())
-                                <a href="{{ route('admin.users.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Users</a>
-                                <a href="{{ route('admin.roles.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200">Roles</a>
 
+                    @auth
+                        <div class="hidden md:flex items-center space-x-1 ml-6 border-l border-white/10 pl-6">
+                            @php
+                                $linkBase = "px-4 py-2 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-300 ";
+                                $inactive = "text-white/80 hover:text-[#f0d678] hover:bg-black/10";
+                            @endphp
+                            
+                            <a href="{{ route('dashboard') }}" class="{{ $linkBase . $inactive }}">DASHBOARD</a>
+                            
+                            @if(auth()->user()->isAuthor())
+                                <a href="{{ route('submissions.index') }}" class="{{ $linkBase . $inactive }}">SUBMISSIONS</a>
+                            @endif
+                            
+                            @if(auth()->user()->isReviewer())
+                                <a href="{{ route('reviews.index') }}" class="{{ $linkBase . $inactive }}">REVIEWS</a>
+                            @endif
+                            
+                            @if(auth()->user()->isEditor())
+                                <a href="{{ route('editor.submissions') }}" class="{{ $linkBase . $inactive }}">EDITORIAL</a>
+                            @endif
+
+                            @if(auth()->user()->isAdmin())
+                                <a href="{{ route('admin.users.index') }}" class="{{ $linkBase . $inactive }}">MANAGEMENT</a>
                             @endif
                         </div>
                     @endauth
                 </div>
-                <div class="flex items-center space-x-4">
+
+                <div class="flex items-center gap-4">
                     @auth
-                        <div class="hidden sm:flex items-center space-x-3">
-                            <span class="text-sm text-slate-900 font-medium bg-slate-100 px-3 py-1 rounded-full">{{ auth()->user()->name }}</span>
-                          <form method="POST" action="{{ route('logout') }}" class="inline" id="logout-form">
-                            @csrf
-                            <button type="button" onclick="confirmLogout()" class="text-sm font-medium text-white bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg transition-colors duration-200">Logout</button>
-                        </form>
-                                                                                </div>
-                        <div class="sm:hidden">
-                            <form method="POST" action="{{ route('logout') }}" class="inline">
-                            @csrf
-                            <button type="button" onclick="confirmLogout()" class="text-sm font-medium text-red-600 hover:text-red-700">Logout</button>
-                        </form>
+                        <div class="hidden lg:flex flex-col items-end mr-2 text-right">
+                            <span class="text-[9px] font-bold text-[#f0d678] uppercase tracking-widest leading-none mb-1">Authenticated</span>
+                            <span class="text-sm font-medium text-white/95 truncate max-w-[150px]">{{ auth()->user()->name }}</span>
                         </div>
-                   @else
-    <a href="{{ url('/') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-red-600 transition-colors group">
-        <svg class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
-        </svg>
-        Home
-    </a>
-    <span class="text-slate-200">|</span>
-    <a href="{{ route('login') }}" class="text-sm font-medium text-slate-700 hover:text-red-600 transition-colors">Login</a>
-    <a href="{{ route('register') }}" class="text-sm font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">Register</a>
-@endauth
+
+                        <form method="POST" action="{{ route('logout') }}" id="logout-form">
+                            @csrf
+                            <button type="button" onclick="confirmLogout()" 
+                                class="px-5 py-2 bg-gradient-to-br from-[#c9a84c] to-[#a07830] text-white text-[11px] font-bold tracking-widest rounded-full shadow-lg hover:shadow-[#a07830]/40 transition-all active:scale-95 uppercase border border-white/20">
+                                Logout
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ url('/') }}" class="text-sm font-bold text-white/90 hover:text-[#f0d678] transition-colors uppercase tracking-wider mr-4">Home</a>
+                        <a href="{{ route('login') }}" class="text-sm font-bold text-white/90 hover:text-[#f0d678] transition-colors uppercase tracking-wider mr-4">Login</a>
+                        <a href="{{ route('register') }}" 
+                            class="px-6 py-2.5 bg-gradient-to-br from-[#c9a84c] to-[#a07830] text-white text-sm font-bold tracking-wide rounded-xl shadow-lg hover:-translate-y-0.5 transition-all active:translate-y-0 border border-white/10">
+                            REGISTER →
+                        </a>
+                    @endauth
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="grow max-w-7xl mx-auto w-full py-8 px-4 sm:px-6 lg:px-8">
+    <main class="grow max-w-7xl mx-auto w-full py-12 px-4 sm:px-6 lg:px-8">
         <x-flash-messages />
         @yield('content')
     </main>
 
-    <footer class="bg-slate-900 text-slate-100 border-t border-slate-800 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                <div>
-                    <h3 class="text-lg font-bold text-white mb-3">IRJIEST</h3>
-                    <p class="text-sm text-slate-400">International Research Journal of Information Systems & Engineering Technology</p>
+    <footer class="bg-[#1a4d46] text-white/70 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div class="md:col-span-2">
+                    <h3 class="font-libre text-2xl font-bold text-white mb-4">Journal System</h3>
+                    <p class="text-sm leading-relaxed max-w-md">
+                        A centralized platform for scholarly publishing and academic peer review. 
+                    </p>
                 </div>
                 <div>
-                    <h4 class="text-sm font-semibold text-white mb-3">Quick Links</h4>
-                    <ul class="space-y-2 text-sm text-slate-400">
-                        <li><a href="{{ route('dashboard') }}" class="hover:text-white transition-colors">Dashboard</a></li>
+                    <h4 class="text-[11px] font-bold text-[#f0d678] uppercase tracking-[0.2em] mb-6">Portal Links</h4>
+                    <ul class="space-y-3 text-sm">
                         <li><a href="{{ url('/') }}" class="hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Journal Guidelines</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-sm font-semibold text-white mb-3">Institution</h4>
-                    <p class="text-sm text-slate-400">Batangas State University</p>
-                    <p class="text-sm text-slate-500 mt-1">© 2026 | All rights reserved</p>
+                    <h4 class="text-[11px] font-bold text-[#f0d678] uppercase tracking-[0.2em] mb-6">Publication Info</h4>
+                    <p class="text-[10px] uppercase tracking-tighter">© 2026 | All Rights Reserved</p>
                 </div>
-            </div>
-            <div class="border-t border-slate-800 pt-6 text-center text-sm text-slate-500">
-                <p>Leading Innovations, Transforming Lives, Building the Nation</p>
             </div>
         </div>
     </footer>
 
-      <script>
+    <script>
         function confirmLogout() {
             Swal.fire({
-                title: 'Logging out?',
-                text: 'Are you sure you want to sign out?',
+                title: '<span class="font-libre text-[#2D8176]">Confirm Sign Out</span>',
+                text: 'Are you sure you want to logout?',
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#dc2626',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: 'Yes, log me out',
-                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#2D8176',
+                cancelButtonColor: '#a07830',
+                confirmButtonText: 'Yes, Sign Out',
+                cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
                     document.getElementById('logout-form').submit();
