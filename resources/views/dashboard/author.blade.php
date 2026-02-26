@@ -505,7 +505,6 @@
                 ->submissionsAsAuthor()
                 ->whereIn('status', ['accepted', 'rejected'])
                 ->where(function ($q) {
-                    $q->where('decision_notes', '!=', null)->orWhere('editor_decision_at', '!=', null);
                     $q->where('editor_notes', '!=', null)->orWhere('editor_decision_at', '!=', null);
                 })
                 ->orderBy('updated_at', 'desc')
