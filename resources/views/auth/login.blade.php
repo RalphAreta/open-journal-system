@@ -48,12 +48,9 @@
         {{-- Content --}}
         <div class="relative z-10 max-w-105 px-12 py-16 slide-in">
 
-            <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-9">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-9">
                 <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-red-400"></span>
-                <div class="flex flex-col">
-                    <span class="text-[10px] font-bold uppercase tracking-[.12em] text-white/90">Official Research Portal</span>
-                    <span class="text-[11px] text-white/70">Today: {{ number_format($dailyVisitorsCount ?? 0) }} visitor{{ ($dailyVisitorsCount ?? 0) == 1 ? '' : 's' }}</span>
-                </div>
+                <span class="text-[10px] font-bold uppercase tracking-[.12em] text-white/90">Official Research Portal</span>
             </div>
 
             <h2 class="font-serif-display text-[3.4rem] leading-[1.1] font-normal text-white tracking-[-0.02em] mb-5">
