@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Submission;
 use App\Models\RevisionRequest;
 use App\Models\RevisionReview;
+use App\Models\User; // Added for type hinting
 use App\Services\RevisionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // Added for direct ID access
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -15,8 +17,10 @@ class SubmissionController extends Controller
 {
     public function index(Request $request): View
     {
-        $submissions = $request->user()
-            ->submissionsAsAuthor()
+        /** @var User $user */
+        $user = $request->user();
+
+        $submissions = $user->submissionsAsAuthor()
             ->latest()
             ->paginate(15);
 
@@ -40,17 +44,17 @@ class SubmissionController extends Controller
         ]);
 
         $file = $request->file('file');
-        $path = $file->store('submissions/' . $request->user()->id, 'local');
+        // Using Auth::id() prevents the 'Undefined method id' error
+        $path = $file->store('submissions/' . Auth::id(), 'local');
 
         Submission::create([
-            'author_id' => $request->user()->id,
+            'author_id' => Auth::id(),
             'title' => $validated['title'],
             'abstract' => $validated['abstract'],
             'keywords' => $validated['keywords'] ?? null,
             'research_field' => $validated['research_field'],
             'file_path' => $path,
             'file_name' => $file->getClientOriginalName(),
-            // Ensure these columns exist in DB via migration
             'original_file_path' => $path,
             'original_file_name' => $file->getClientOriginalName(),
             'status' => Submission::STATUS_SUBMITTED,
@@ -113,7 +117,7 @@ class SubmissionController extends Controller
                 Storage::disk('local')->delete($submission->file_path);
             }
             $file = $request->file('file');
-            $data['file_path'] = $file->store('submissions/' . $request->user()->id, 'local');
+            $data['file_path'] = $file->store('submissions/' . Auth::id(), 'local');
             $data['file_name'] = $file->getClientOriginalName();
         }
 
@@ -124,7 +128,9 @@ class SubmissionController extends Controller
 
     private function authorizeView(Submission $submission): void
     {
-        $user = request()->user();
+        /** @var User $user */
+        $user = Auth::user();
+
         if ($submission->author_id !== $user->id && ! $user->isEditor() && ! $user->isAdmin()) {
             abort(403);
         }
@@ -132,7 +138,7 @@ class SubmissionController extends Controller
 
     public function revisions(Submission $submission): View|RedirectResponse
     {
-        if ($submission->author_id !== auth()->id()) {
+        if ($submission->author_id !== Auth::id()) {
             abort(403, 'Unauthorized');
         }
 
@@ -142,7 +148,7 @@ class SubmissionController extends Controller
 
     public function submitRevision(Request $request, Submission $submission): RedirectResponse
     {
-        if ($submission->author_id !== $request->user()->id) {
+        if ($submission->author_id !== Auth::id()) {
             abort(403, 'Unauthorized');
         }
 
@@ -163,7 +169,7 @@ class SubmissionController extends Controller
         }
 
         $file = $request->file('file');
-        $path = $file->store('submissions/' . $request->user()->id . '/revisions', 'local');
+        $path = $file->store('submissions/' . Auth::id() . '/revisions', 'local');
 
         RevisionService::processRevisionSubmission(
             $revisionRequest,

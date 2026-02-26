@@ -32,7 +32,7 @@
         {{-- BG --}}
         <div class="absolute inset-0">
             <img src="{{ asset('images/homepage-webslider-1.jpg') }}"
-                 class="w-full h-full object-cover scale-105 hover:scale-100 transition-transform duration-[12000ms]" alt="">
+                 class="w-full h-full object-cover scale-105 hover:scale-100 transition-transform duration-12000" alt="">
             <div class="absolute inset-0" style="background:linear-gradient(145deg,rgba(127,7,7,.92) 0%,rgba(30,10,10,.75) 50%,rgba(15,23,42,.88) 100%);"></div>
         </div>
 
@@ -40,13 +40,13 @@
         <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);"></div>
 
         {{-- Decorative rings --}}
-        <div class="absolute bottom-[-80px] right-[-80px] w-80 h-80 rounded-full border border-white/[.08] pointer-events-none">
-            <div class="absolute inset-10 rounded-full border border-white/[.05]"></div>
-            <div class="absolute inset-20 rounded-full border border-white/[.04]"></div>
+        <div class="absolute bottom-20 right-20 w-80 h-80 rounded-full border border-white/8 pointer-events-none">
+            <div class="absolute inset-10 rounded-full border border-white/5"></div>
+            <div class="absolute inset-20 rounded-full border border-white/4"></div>
         </div>
 
         {{-- Content --}}
-        <div class="relative z-10 max-w-[420px] px-12 py-16 slide-in">
+        <div class="relative z-10 max-w-105 px-12 py-16 slide-in">
 
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-9">
                 <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-red-400"></span>
@@ -70,7 +70,7 @@
     {{-- ── RIGHT: Form ── --}}
     <div class="w-full md:w-2/5 flex items-center justify-center bg-white px-8 sm:px-12 py-12 relative
                 before:absolute before:top-0 before:left-0 before:bottom-0 before:w-px
-                before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
+                before:bg-linear-to-b before:from-transparent before:via-slate-200 before:to-transparent">
 
         <div class="w-full max-w-100 relative z-10">
             {{-- Heading --}}

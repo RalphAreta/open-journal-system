@@ -191,9 +191,9 @@
             <div class="notification-item flex items-start gap-3 px-4 py-3 rounded-xl border transition-colors
                 {{ $notif->isUnread() ? 'bg-red-50/60 border-red-100' : 'bg-slate-50 border-slate-100' }}">
                 @if($notif->isUnread())
-                <span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0 mt-1.5"></span>
+                <span class="w-2 h-2 rounded-full bg-red-500 shrink-0 mt-1.5"></span>
                 @endif
-                <span class="text-base flex-shrink-0">
+                <span class="text-base shrink-0">
                     @if($notif->type === 'success') ✅
                     @elseif($notif->type === 'danger') ❌
                     @elseif($notif->type === 'warning') ⚠️
@@ -224,9 +224,9 @@
                 <div class="notification-item flex items-start gap-3 px-4 py-3 rounded-xl border transition-colors
                     {{ $notif->isUnread() ? 'bg-red-50/60 border-red-100' : 'bg-slate-50 border-slate-100' }}">
                     @if($notif->isUnread())
-                    <span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0 mt-1.5"></span>
+                    <span class="w-2 h-2 rounded-full bg-red-500 shrink-0 mt-1.5"></span>
                     @endif
-                    <span class="text-base flex-shrink-0">
+                    <span class="text-base shrink-0">
                         @if($notif->type === 'success') ✅
                         @elseif($notif->type === 'danger') ❌
                         @elseif($notif->type === 'warning') ⚠️
@@ -462,7 +462,7 @@
                     @empty
                     <tr>
                         <td colspan="5" class="px-5 py-14 text-center">
-                            <p class="text-[11px] font-bold uppercase tracking-[.1em] text-slate-300">No active assignments</p>
+                            <p class="text-[11px] font-bold uppercase tracking-widest text-slate-300">No active assignments</p>
                         </td>
                     </tr>
                     @endforelse
