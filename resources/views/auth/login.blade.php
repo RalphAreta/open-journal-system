@@ -110,81 +110,50 @@
                 class="absolute top-0 left-0 right-0 h-[2px] z-20 animate-lp-shimmer"
             ></div>
 
-<<<<<<< HEAD
-    {{-- LEFT SIDE: THE TEAL SIDE --}}
-    <div class="relative flex-none md:w-1/2 flex flex-col justify-center px-8 py-12 md:p-16 lg:p-20 overflow-hidden bg-[#2D8176] z-10">
-        <div class="absolute inset-0 z-0 bg-black/15"></div>
-        <div class="absolute inset-0 z-0" 
-             style="background-image: radial-gradient(ellipse 80% 60% at 75% 20%, rgba(201,168,76,.2) 0%, transparent 60%), 
-                                     radial-gradient(ellipse 60% 70% at 5% 85%, rgba(0,0,0,.25) 0%, transparent 50%);">
-        </div>
-        <div class="absolute inset-0 z-0 opacity-[0.05]" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 28px 28px;"></div>
-        <div class="absolute top-0 left-0 right-0 h-[2px] z-20 animate-lp-shimmer"></div>
-
-        {{-- Top shimmer line --}}
-        <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);"></div>
-
-        {{-- Decorative rings --}}
-        <div class="absolute bottom-20 right-20 w-80 h-80 rounded-full border border-white/8 pointer-events-none">
-            <div class="absolute inset-10 rounded-full border border-white/5"></div>
-            <div class="absolute inset-20 rounded-full border border-white/4"></div>
-        </div>
-
-        {{-- Content (merged): visitor counter + label --}}
-        <div class="relative z-20 max-w-[420px] md:max-w-105 px-12 py-16 slide-in">
-
-            @php
-                $visitorCount = null;
-                try {
-                    $day = date('Y-m-d');
-                    $dir = storage_path('app/visitors');
-                    if (! is_dir($dir)) {
-                        mkdir($dir, 0755, true);
-                    }
-                    $path = $dir . DIRECTORY_SEPARATOR . $day . '.count';
-
-                    if (! file_exists($path)) {
-                        file_put_contents($path, '1');
-                        $visitorCount = 1;
-                    } else {
-                        $fp = fopen($path, 'c+');
-                        if ($fp) {
-                            if (flock($fp, LOCK_EX)) {
-                                $contents = stream_get_contents($fp);
-                                $current = (int) trim($contents);
-                                if ($current < 0) $current = 0;
-                                $current++;
-                                ftruncate($fp, 0);
-                                rewind($fp);
-                                fwrite($fp, (string) $current);
-                                fflush($fp);
-                                flock($fp, LOCK_UN);
-                                $visitorCount = $current;
-                            } else {
-                                $visitorCount = (int) file_get_contents($path);
+            <div class="relative z-20 max-w-[420px]">
+                @php
+                    if (! isset($visitorCount)) {
+                        $visitorCount = null;
+                        try {
+                            $day = date('Y-m-d');
+                            $dir = storage_path('app/visitors');
+                            if (! is_dir($dir)) {
+                                mkdir($dir, 0755, true);
                             }
-                            fclose($fp);
-                        } else {
-                            $visitorCount = (int) file_get_contents($path) + 1;
-                            file_put_contents($path, (string) $visitorCount);
+                            $path = $dir . DIRECTORY_SEPARATOR . $day . '.count';
+
+                            if (! file_exists($path)) {
+                                file_put_contents($path, '1');
+                                $visitorCount = 1;
+                            } else {
+                                $fp = fopen($path, 'c+');
+                                if ($fp) {
+                                    if (flock($fp, LOCK_EX)) {
+                                        $contents = stream_get_contents($fp);
+                                        $current = (int) trim($contents);
+                                        if ($current < 0) $current = 0;
+                                        $current++;
+                                        ftruncate($fp, 0);
+                                        rewind($fp);
+                                        fwrite($fp, (string) $current);
+                                        fflush($fp);
+                                        flock($fp, LOCK_UN);
+                                        $visitorCount = $current;
+                                    } else {
+                                        $visitorCount = (int) file_get_contents($path);
+                                    }
+                                    fclose($fp);
+                                } else {
+                                    $visitorCount = (int) file_get_contents($path) + 1;
+                                    file_put_contents($path, (string) $visitorCount);
+                                }
+                            }
+                        } catch (\Throwable $e) {
+                            $visitorCount = null;
                         }
                     }
-                } catch (\Throwable $e) {
-                    $visitorCount = null;
-                }
-            @endphp
+                @endphp
 
-            <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-9">
-                <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-red-400"></span>
-                <div class="flex items-center gap-3">
-                    <span class="text-[10px] font-bold uppercase tracking-[.12em] text-white/90">Official Research Portal</span>
-                    @if ($visitorCount !== null)
-                        <span class="text-[10px] text-white/80">Today's visitors: <strong class="ml-1">{{ $visitorCount }}</strong></span>
-                    @endif
-                </div>
-            </div>
-=======
-            <div class="relative z-20 max-w-[420px]">
                 <div
                     class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-white/30 bg-black/20 text-[10px] tracking-widest uppercase text-[#f0d678] font-semibold mb-7 animate-lp-up [animation-delay:80ms]"
                 >
@@ -192,7 +161,9 @@
                         class="w-1.5 h-1.5 rounded-full bg-[#c9a84c] shadow-[0_0_8px_rgba(201,168,76,0.8)]"
                         style="animation: lpBlink 2s ease-in-out infinite"
                     ></span>
-                    Official Research Portal
+                    @if ($visitorCount !== null)
+                        <span class="text-[10px] text-white/80 ml-2">Today's visitors: <strong class="ml-1">{{ $visitorCount }}</strong></span>
+                    @endif
                 </div>
                 <h1
                     class="readable-text font-['Libre_Baskerville'] text-4xl lg:text-5xl font-bold leading-[1.15] text-white mb-6 animate-lp-up [animation-delay:200ms]"
@@ -229,7 +200,6 @@
                         the purpose of this platform.
                     </p>
                 </div>
->>>>>>> 3e34d8ab5c49dc6a428f18c189a2c182ac30e451
             </div>
         </div>
 
