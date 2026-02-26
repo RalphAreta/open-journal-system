@@ -112,58 +112,31 @@
 
             <div class="relative z-20 max-w-[420px]">
                 @php
-                    if (! isset($visitorCount)) {
-                        $visitorCount = null;
-                        try {
-                            $day = date('Y-m-d');
-                            $dir = storage_path('app/visitors');
-                            if (! is_dir($dir)) {
-                                mkdir($dir, 0755, true);
-                            }
-                            $path = $dir . DIRECTORY_SEPARATOR . $day . '.count';
-
-                            if (! file_exists($path)) {
-                                file_put_contents($path, '1');
-                                $visitorCount = 1;
-                            } else {
-                                $fp = fopen($path, 'c+');
-                                if ($fp) {
-                                    if (flock($fp, LOCK_EX)) {
-                                        $contents = stream_get_contents($fp);
-                                        $current = (int) trim($contents);
-                                        if ($current < 0) $current = 0;
-                                        $current++;
-                                        ftruncate($fp, 0);
-                                        rewind($fp);
-                                        fwrite($fp, (string) $current);
-                                        fflush($fp);
-                                        flock($fp, LOCK_UN);
-                                        $visitorCount = $current;
-                                    } else {
-                                        $visitorCount = (int) file_get_contents($path);
-                                    }
-                                    fclose($fp);
-                                } else {
-                                    $visitorCount = (int) file_get_contents($path) + 1;
-                                    file_put_contents($path, (string) $visitorCount);
-                                }
-                            }
-                        } catch (\Throwable $e) {
-                            $visitorCount = null;
+                    $visitorCount = null;
+                    try {
+                        $day = date('Y-m-d');
+                        $path = storage_path('app/visitors') . DIRECTORY_SEPARATOR . $day . '.count';
+                        if (file_exists($path)) {
+                            $visitorCount = (int) @file_get_contents($path);
                         }
+                    } catch (\Throwable $_) {
+                        $visitorCount = null;
                     }
                 @endphp
 
                 <div
-                    class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-white/30 bg-black/20 text-[10px] tracking-widest uppercase text-[#f0d678] font-semibold mb-7 animate-lp-up [animation-delay:80ms]"
+                    class="inline-flex items-center gap-3 px-3.5 py-1 rounded-full border border-white/30 bg-black/20 text-[10px] tracking-widest uppercase text-[#f0d678] font-semibold mb-7 animate-lp-up [animation-delay:80ms]"
                 >
                     <span
                         class="w-1.5 h-1.5 rounded-full bg-[#c9a84c] shadow-[0_0_8px_rgba(201,168,76,0.8)]"
                         style="animation: lpBlink 2s ease-in-out infinite"
                     ></span>
-                    @if ($visitorCount !== null)
-                        <span class="text-[10px] text-white/80 ml-2">Today's visitors: <strong class="ml-1">{{ $visitorCount }}</strong></span>
-                    @endif
+                    <div class="flex items-center gap-3">
+                        <span>Official Research Portal</span>
+                        @if ($visitorCount !== null)
+                            <span class="text-[10px] text-white/80">Today's visitors: <strong class="ml-1">{{ $visitorCount }}</strong></span>
+                        @endif
+                    </div>
                 </div>
                 <h1
                     class="readable-text font-['Libre_Baskerville'] text-4xl lg:text-5xl font-bold leading-[1.15] text-white mb-6 animate-lp-up [animation-delay:200ms]"
@@ -301,8 +274,8 @@
                                     Editor
                                 </option>
                                 <option
-                                    value="editor-in-chief"
-                                    @selected(old('role') == 'editor-in-chief')
+                                    value="editor_in_chief"
+                                    @selected(old('role') == 'editor_in_chief')
                                 >
                                     Editor in Chief
                                 </option>

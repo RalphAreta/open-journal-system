@@ -45,6 +45,80 @@ class LoginController extends Controller
         $request->session()->regenerate();
         session(['active_role' => $selectedRole]);
 
+        // Increment per-user daily login counter (file-based) and store in session
+        try {
+            $day = date('Y-m-d');
+            $dir = storage_path('app/visitors');
+            if (! is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            $uid = $user->id ?? preg_replace('/[^a-z0-9_\-]/i', '_', ($user->email ?? 'guest'));
+            $path = $dir . DIRECTORY_SEPARATOR . $day . '.user.' . $uid . '.count';
+
+            if (! file_exists($path)) {
+                file_put_contents($path, '1');
+                $userCount = 1;
+            } else {
+                $fp = fopen($path, 'c+');
+                if ($fp) {
+                    if (flock($fp, LOCK_EX)) {
+                        $contents = stream_get_contents($fp);
+                        $current = (int) trim($contents);
+                        if ($current < 0) $current = 0;
+                        $current++;
+                        ftruncate($fp, 0);
+                        rewind($fp);
+                        fwrite($fp, (string) $current);
+                        fflush($fp);
+                        flock($fp, LOCK_UN);
+                        $userCount = $current;
+                    } else {
+                        $userCount = (int) file_get_contents($path);
+                    }
+                    fclose($fp);
+                } else {
+                    $userCount = (int) file_get_contents($path) + 1;
+                    file_put_contents($path, (string) $userCount);
+                }
+            }
+        } catch (\Throwable $e) {
+            $userCount = null;
+        }
+
+        if (isset($userCount)) {
+            session(['user_daily_logins' => $userCount]);
+        }
+        // Increment aggregate daily visitor counter (file-based)
+        try {
+            $day = date('Y-m-d');
+            $dir = storage_path('app/visitors');
+            if (! is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            $aggPath = $dir . DIRECTORY_SEPARATOR . $day . '.count';
+
+            if (! file_exists($aggPath)) {
+                file_put_contents($aggPath, '1');
+            } else {
+                $fp2 = fopen($aggPath, 'c+');
+                if ($fp2) {
+                    if (flock($fp2, LOCK_EX)) {
+                        $contents2 = stream_get_contents($fp2);
+                        $current2 = (int) trim($contents2);
+                        if ($current2 < 0) $current2 = 0;
+                        $current2++;
+                        ftruncate($fp2, 0);
+                        rewind($fp2);
+                        fwrite($fp2, (string) $current2);
+                        fflush($fp2);
+                        flock($fp2, LOCK_UN);
+                    }
+                    fclose($fp2);
+                }
+            }
+        } catch (\Throwable $_) {
+            // ignore aggregate counter errors
+        }
         return match($selectedRole) {
             'admin'           => redirect()->route('dashboard.admin'),
             'editor-in-chief' => redirect()->route('chief-editor.dashboard'),
