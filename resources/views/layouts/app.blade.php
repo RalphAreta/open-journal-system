@@ -59,6 +59,7 @@
         >
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-20">
+                    {{-- Left: Logo + Nav links --}}
                     <div class="flex items-center gap-6">
                         <a
                             href="{{ url('/') }}"
@@ -97,13 +98,8 @@
 
                         @auth
                             @php
-                                /*
-                                 * Determine the ONE active role to show nav links for.
-                                 * Priority: session('active_role') → session('preferred_dashboard') → primaryRole → first role.
-                                 * This prevents multi-role users from seeing all nav links at once.
-                                 */
                                 $activeRole = session('active_role');
-                                if (!$activeRole) {
+                                if (! $activeRole) {
                                     $preferred = session('preferred_dashboard');
                                     if ($preferred) {
                                         $activeRole = $preferred;
@@ -116,7 +112,6 @@
                                         }
                                     }
                                 }
-
                                 $linkBase = 'px-4 py-2 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-300 ';
                                 $inactive = 'text-white/80 hover:text-[#f0d678] hover:bg-black/10';
                             @endphp
@@ -124,7 +119,6 @@
                             <div
                                 class="hidden md:flex items-center space-x-1 ml-6 border-l border-white/10 pl-6"
                             >
-                                {{-- Dashboard is always shown --}}
                                 <a
                                     href="{{ route('dashboard') }}"
                                     class="{{ $linkBase . $inactive }}"
@@ -132,7 +126,6 @@
                                     DASHBOARD
                                 </a>
 
-                                {{-- Author links --}}
                                 @if ($activeRole === 'author')
                                     <a
                                         href="{{ route('submissions.index') }}"
@@ -142,7 +135,6 @@
                                     </a>
                                 @endif
 
-                                {{-- Reviewer links --}}
                                 @if ($activeRole === 'reviewer')
                                     <a
                                         href="{{ route('reviews.index') }}"
@@ -152,7 +144,6 @@
                                     </a>
                                 @endif
 
-                                {{-- Editor links --}}
                                 @if ($activeRole === 'editor')
                                     <a
                                         href="{{ route('editor.submissions') }}"
@@ -162,7 +153,6 @@
                                     </a>
                                 @endif
 
-                                {{-- Editor-in-chief links --}}
                                 @if ($activeRole === 'editor-in-chief')
                                     <a
                                         href="{{ route('editor.submissions') }}"
@@ -180,7 +170,6 @@
                                     @endif
                                 @endif
 
-                                {{-- Admin links --}}
                                 @if ($activeRole === 'admin')
                                     <a
                                         href="{{ route('admin.users.index') }}"
@@ -189,28 +178,11 @@
                                         MANAGEMENT
                                     </a>
                                 @endif
-
-                                {{-- Role badge — shows the active role so multi-role users know which context they're in --}}
-                                @php
-                                    $roleColors = [
-                                        'author' => 'bg-blue-500/20 text-blue-200 border-blue-400/30',
-                                        'reviewer' => 'bg-violet-500/20 text-violet-200 border-violet-400/30',
-                                        'editor' => 'bg-amber-500/20 text-amber-200 border-amber-400/30',
-                                        'editor-in-chief' => 'bg-orange-500/20 text-orange-200 border-orange-400/30',
-                                        'admin' => 'bg-red-500/20 text-red-200 border-red-400/30',
-                                    ];
-                                    $badgeCls = $roleColors[$activeRole] ?? 'bg-white/10 text-white/60 border-white/20';
-                                @endphp
-
-                                <span
-                                    class="ml-2 px-2.5 py-1 rounded-full border text-[9px] font-bold uppercase tracking-[.12em] {{ $badgeCls }}"
-                                >
-                                    {{ str_replace('-', ' ', $activeRole) }}
-                                </span>
                             </div>
                         @endauth
                     </div>
 
+                    {{-- Right: User info + Switch role + Logout --}}
                     <div class="flex items-center gap-4">
                         @auth
                             <div class="flex items-center gap-3">
@@ -230,7 +202,11 @@
                                 </div>
 
                                 @php
-                                    $userRoles = auth()->user()->roles()->pluck('name')->toArray();
+                                    $userRoles = auth()
+                                        ->user()
+                                        ->roles()
+                                        ->pluck('name')
+                                        ->toArray();
                                 @endphp
 
                                 @if (count($userRoles) > 1)
@@ -238,9 +214,12 @@
                                         <button
                                             class="px-3 py-2 bg-white/10 text-white text-[11px] font-bold tracking-widest rounded-lg hover:bg-white/20 transition-all uppercase border border-white/20"
                                         >
-                                            {{ ucfirst(str_replace('-', ' ', session('active_role', 'Switch Role'))) }} ▼
+                                            {{ ucfirst(str_replace('-', ' ', $activeRole)) }}
+                                            ▼
                                         </button>
-                                        <div class="absolute right-0 mt-2 w-48 bg-[#1a4d46] border border-white/20 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                                        <div
+                                            class="absolute right-0 mt-2 w-48 bg-[#1a4d46] border border-white/20 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50"
+                                        >
                                             @foreach ($userRoles as $role)
                                                 <a
                                                     href="{{ route('dashboard.switch-role', $role) }}"
