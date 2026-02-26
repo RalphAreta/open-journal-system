@@ -25,7 +25,7 @@ class DashboardController extends Controller
         // PRIMARY: Use the active_role that was set during login
         $activeRole = $request->session()->get('active_role');
         if ($activeRole && $user->hasRole($activeRole)) {
-            return $activeRole === 'editor-in-chief' 
+            return $activeRole === 'editor-in-chief'
                 ? redirect()->route('chief-editor.dashboard')
                 : redirect()->route("dashboard.{$activeRole}");
         }
