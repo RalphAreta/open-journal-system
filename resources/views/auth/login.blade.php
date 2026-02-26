@@ -327,42 +327,47 @@
                     </div>
 
                     <div>
-                        <label
-                            class="block text-[10px] font-semibold tracking-wider uppercase text-[#6a7890] mb-1.5"
-                            for="password"
-                        >
-                            Password
-                        </label>
-                        <div class="relative">
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                class="w-full pl-4 pr-10 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] focus:ring-4 focus:ring-[#c9a84c]/10 transition-all"
-                                placeholder="••••••••"
-                                required
-                            />
-                            <svg
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-[#c8b888]"
-                                width="15"
-                                height="15"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                viewBox="0 0 24 24"
-                            >
-                                <rect
-                                    x="3"
-                                    y="11"
-                                    width="18"
-                                    height="11"
-                                    rx="2"
-                                    ry="2"
-                                />
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                            </svg>
-                        </div>
-                    </div>
+    <label
+        class="block text-[10px] font-semibold tracking-wider uppercase text-[#6a7890] mb-1.5"
+        for="password"
+    >
+        Password
+    </label>
+
+    <div class="relative">
+        <input
+            id="password"
+            name="password"
+            type="password"
+            class="w-full pl-4 pr-12 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] focus:ring-4 focus:ring-[#c9a84c]/10 transition-all"
+            placeholder="••••••••"
+            required
+        />
+
+        <!-- Toggle Button -->
+        <button
+            type="button"
+            onclick="togglePassword()"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-[#c8b888] hover:text-[#a07830] transition-colors"
+        >
+            <!-- Eye Icon -->
+            <svg
+                id="eyeIcon"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"
+                />
+                <circle cx="12" cy="12" r="3" />
+            </svg>
+        </button>
+    </div>
+</div>
 
                     <label
                         class="flex items-center gap-2.5 cursor-pointer text-[13px] text-[#6a7890]"
@@ -408,4 +413,16 @@
             </div>
         </div>
     </div>
+    <script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+        } else {
+            passwordInput.type = 'password';
+        }
+    }
+</script>
 @endsection

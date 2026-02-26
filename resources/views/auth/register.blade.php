@@ -318,34 +318,64 @@
                     </div>
 
                     {{-- Password Section --}}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label
-                                class="block text-[10px] font-semibold tracking-wider uppercase text-[#6a7890] mb-1.5"
-                            >
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                name="password"
-                                required
-                                class="w-full px-4 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] transition-all"
-                            />
-                        </div>
-                        <div>
-                            <label
-                                class="block text-[10px] font-semibold tracking-wider uppercase text-[#6a7890] mb-1.5"
-                            >
-                                Confirm Password
-                            </label>
-                            <input
-                                type="password"
-                                name="password_confirmation"
-                                required
-                                class="w-full px-4 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] transition-all"
-                            />
-                        </div>
-                    </div>
+                    {{-- Password Section --}}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+    {{-- Password --}}
+    <div>
+        <label
+            class="block text-[10px] font-semibold tracking-wider uppercase text-[#6a7890] mb-1.5"
+        >
+            Password
+        </label>
+
+        <div class="relative">
+            <input
+                id="password"
+                type="password"
+                name="password"
+                required
+                class="w-full px-4 pr-12 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] transition-all"
+            />
+
+            <button
+                type="button"
+                onclick="togglePassword('password', this)"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors"
+            >
+                👁
+            </button>
+        </div>
+    </div>
+
+    {{-- Confirm Password --}}
+    <div>
+        <label
+            class="block text-[10px] font-semibold tracking-wider uppercase text-[#6a7890] mb-1.5"
+        >
+            Confirm Password
+        </label>
+
+        <div class="relative">
+            <input
+                id="password_confirmation"
+                type="password"
+                name="password_confirmation"
+                required
+                class="w-full px-4 pr-12 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] transition-all"
+            />
+
+            <button
+                type="button"
+                onclick="togglePassword('password_confirmation', this)"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors"
+            >
+                👁
+            </button>
+        </div>
+    </div>
+
+</div>
 
                     {{-- Submit --}}
                     <button
@@ -396,5 +426,18 @@
             );
             toggleExpertise();
         });
+    </script>
+    <script>
+    function togglePassword(fieldId, button) {
+        const input = document.getElementById(fieldId);
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            button.innerText = '🙈';
+        } else {
+            input.type = 'password';
+            button.innerText = '👁';
+        }
+    }
     </script>
 @endsection
