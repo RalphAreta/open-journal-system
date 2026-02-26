@@ -227,16 +227,6 @@
                 <p class="text-xs font-black text-slate-900 uppercase tracking-widest">Editor-in-Chief</p>
                 <p class="text-[10px] text-slate-400 font-medium">Initial Screening Decision</p>
             </div>
-            {{-- Status Badge --}}
-            @if($submission->initial_screening_status === 'passed')
-                <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-full text-[9px] font-black text-emerald-700 uppercase tracking-widest">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Passed
-                </span>
-            @elseif($submission->initial_screening_status === 'failed')
-                <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 border border-red-100 rounded-full text-[9px] font-black text-red-700 uppercase tracking-widest">
-                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Failed
-                </span>
-            @endif
         </div>
 
         {{-- Comments --}}
