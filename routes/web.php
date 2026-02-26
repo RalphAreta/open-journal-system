@@ -52,6 +52,10 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/reviewer/invitation/{assignment}/decline', [ReviewController::class, 'declineInvitation'])->name('reviewer.invitation.decline');
         Route::get('/reviews/revision/{revisionReview}/create', [ReviewController::class, 'createRevisionReview'])->name('reviews.revision-review-create');
         Route::post('/reviews/revision', [ReviewController::class, 'storeRevisionReview'])->name('reviews.revision-store');
+        Route::get(
+    '/reviews/submission/{submission}/peer-reviews',
+    [ReviewController::class, 'peerReviews']
+)->name('reviews.peer-reviews');
     });
 
     Route::middleware('role:editor')->group(function (): void {
