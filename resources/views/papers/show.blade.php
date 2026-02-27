@@ -95,7 +95,7 @@
                     <p class="mb-6 text-lg">
                         Download the full paper to read the complete research.
                     </p>
-                    <a href="{{ route('papers.download', ['submission' => $paper['id']]) }}" 
+                    <a href="{{ route('papers.download', ['submission' => $paper['id']]) }}"
                        class="inline-block bg-white text-[#2D8176] px-8 py-3 rounded-lg font-bold hover:bg-[#f9f7f2] transition-colors">
                         📥 Download PDF
                     </a>

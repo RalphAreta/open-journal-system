@@ -19,7 +19,7 @@ class HomeController extends Controller
         $activeReviewersCount = User::whereHas('roles', function ($query) {
             $query->where('name', 'reviewer');
         })->count();
-        
+
         // Calculate average review days
         $completedReviews = Review::where('status', Review::STATUS_SUBMITTED)
             ->whereHas('submission', function ($query) {
@@ -27,7 +27,7 @@ class HomeController extends Controller
             })
             ->with('submission')
             ->get();
-        
+
         $avgReviewDays = 12; // default
         if ($completedReviews->count() > 0) {
             $totalDays = 0;
@@ -37,16 +37,16 @@ class HomeController extends Controller
             }
             $avgReviewDays = round($totalDays / $completedReviews->count());
         }
-        
+
         // Calculate acceptance rate
         $totalSubmissions = Submission::where('status', '!=', Submission::STATUS_SUBMITTED)->count();
-        $acceptanceRate = $totalSubmissions > 0 
+        $acceptanceRate = $totalSubmissions > 0
             ? round(($publishedPapersCount / $totalSubmissions) * 100)
             : 37;
 
         // LIVE RESEARCH ACTIVITY - Last 4 activities (mixed: submissions, reviews, publications)
         $activities = collect();
-        
+
         // Get recent submissions
         $recentSubmissions = Submission::where('status', '!=', Submission::STATUS_SUBMITTED)
             ->latest('submitted_at')
@@ -63,7 +63,7 @@ class HomeController extends Controller
                     'timestamp' => $submission->submitted_at,
                 ];
             });
-        
+
         // Get recent reviews
         $recentReviews = Review::where('status', Review::STATUS_SUBMITTED)
             ->latest('submitted_at')
@@ -80,7 +80,7 @@ class HomeController extends Controller
                     'timestamp' => $review->submitted_at,
                 ];
             });
-        
+
         // Get recently accepted papers
         $recentlyAccepted = Submission::where('status', Submission::STATUS_ACCEPTED)
             ->latest('editor_decision_at')
@@ -96,7 +96,7 @@ class HomeController extends Controller
                     'timestamp' => $submission->editor_decision_at,
                 ];
             });
-        
+
         // Merge and sort by timestamp (newest first), take 4
         $liveActivities = collect()
             ->merge($recentSubmissions)
@@ -144,7 +144,7 @@ class HomeController extends Controller
                 $reviewCount = Review::where('submission_id', $submission->id)
                     ->where('status', Review::STATUS_SUBMITTED)
                     ->count();
-                
+
                 return [
                     'id' => $submission->id,
                     'title' => $submission->title,
@@ -171,15 +171,15 @@ class HomeController extends Controller
             $submittedCount = Review::where('submission_id', $trackedManuscript->id)
                 ->where('status', Review::STATUS_SUBMITTED)
                 ->count();
-            
+
             $daysSinceSubmit = $trackedManuscript->submitted_at->diffInDays(now());
-            
+
             // Calculate progress
             $progress = 30; // submitted
             if ($trackedManuscript->initial_screening_status === 'passed') $progress = 45;
             if ($reviewsCount > 0) $progress = 65;
             if ($submittedCount >= $reviewsCount && $reviewsCount > 0) $progress = 85;
-            
+
             $manuscriptTracking = [
                 'id' => $trackedManuscript->id,
                 'title' => substr($trackedManuscript->title, 0, 50),
