@@ -75,7 +75,7 @@
             <div class="bg-white rounded-xl p-6 border border-[#e0d8cc]">
                 <h2 class="font-bold text-lg text-[#2D8176] mb-4">📥 Original File</h2>
                 <p class="text-sm text-[#6a7890] mb-4">Download the file from the editor and make layout adjustments.</p>
-                <a href="{{ route('layout-editor.download', ['layoutEditorAssignment' => $assignment->id]) }}"
+                <a href="{{ route('layout-editor.download', $assignment->id) }}"
                    class="block w-full px-4 py-3 bg-[#2D8176] text-white rounded-lg font-bold text-center hover:bg-[#1f5d54] transition-colors">
                     Download Original File
                 </a>
@@ -93,7 +93,7 @@
                 </p>
 
                 @if ($assignment->status !== 'completed')
-                    <form action="{{ route('layout-editor.upload', ['layoutEditorAssignment' => $assignment->id]) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('layout-editor.upload', $assignment->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="mb-4">
@@ -122,7 +122,7 @@
                 @else
                     <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
                         <p class="text-sm text-green-700 font-bold mb-2">✓ Layout file uploaded on {{ $assignment->completed_at->format('M d, Y') }}</p>
-                        <a href="{{ route('layout-editor.download-layout', ['layoutEditorAssignment' => $assignment->id]) }}"
+                        <a href="{{ route('layout-editor.download-layout', $assignment->id) }}"
                            class="text-green-600 hover:text-green-700 font-bold text-sm">
                             Download your layout file
                         </a>

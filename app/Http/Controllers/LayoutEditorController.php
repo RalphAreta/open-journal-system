@@ -49,12 +49,26 @@ class LayoutEditorController extends Controller
     /**
      * Show a specific layout assignment details
      */
-    public function show(LayoutEditorAssignment $assignment, Request $request): View
+    public function show($id, Request $request): View
     {
         $user = $request->user();
+        $assignment = LayoutEditorAssignment::findOrFail($id);
+
+        // Log for debugging
+        Log::info('LayoutEditorController::show() called', [
+            'user_id' => $user->id ?? null,
+            'user_name' => $user->name ?? null,
+            'assignment_id' => $assignment->id,
+            'assignment.layout_editor_id' => $assignment->layout_editor_id,
+            'match' => ($assignment->layout_editor_id === $user->id),
+        ]);
 
         // Check if this layout assignment belongs to the user
         if ($assignment->layout_editor_id !== $user->id) {
+            Log::error('Authorization failed', [
+                'expected_editor_id' => $assignment->layout_editor_id,
+                'actual_user_id' => $user->id,
+            ]);
             abort(403, 'You are not authorized to view this assignment.');
         }
 
@@ -76,9 +90,10 @@ class LayoutEditorController extends Controller
     /**
      * Download the file from editor
      */
-    public function downloadFile(LayoutEditorAssignment $assignment, Request $request)
+    public function downloadFile($id, Request $request)
     {
         $user = $request->user();
+        $assignment = LayoutEditorAssignment::findOrFail($id);
 
         if ($assignment->layout_editor_id !== $user->id) {
             abort(403, 'You are not authorized to download this file.');
@@ -122,9 +137,10 @@ class LayoutEditorController extends Controller
     /**
      * Upload edited file
      */
-    public function uploadFile(Request $request, LayoutEditorAssignment $assignment): RedirectResponse
+    public function uploadFile(Request $request, $id): RedirectResponse
     {
         $user = $request->user();
+        $assignment = LayoutEditorAssignment::findOrFail($id);
 
         if ($assignment->layout_editor_id !== $user->id) {
             abort(403);
@@ -161,9 +177,10 @@ class LayoutEditorController extends Controller
     /**
      * Download the layout file created by layout editor
      */
-    public function downloadLayoutFile(LayoutEditorAssignment $assignment, Request $request)
+    public function downloadLayoutFile($id, Request $request)
     {
         $user = $request->user();
+        $assignment = LayoutEditorAssignment::findOrFail($id);
 
         // Editor can download the layout file
         $submission = $assignment->submission;

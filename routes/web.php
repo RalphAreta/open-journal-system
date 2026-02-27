@@ -85,10 +85,10 @@ Route::middleware('auth')->group(function (): void {
 
     Route::middleware('role:layout-editor')->group(function (): void {
         Route::get('/layout-editor/dashboard', [LayoutEditorController::class, 'dashboard'])->name('layout-editor.dashboard');
-        Route::get('/layout-editor/assignment/{layoutEditorAssignment}', [LayoutEditorController::class, 'show'])->name('layout-editor.show');
-        Route::get('/layout-editor/assignment/{layoutEditorAssignment}/download', [LayoutEditorController::class, 'downloadFile'])->name('layout-editor.download');
-        Route::post('/layout-editor/assignment/{layoutEditorAssignment}/upload', [LayoutEditorController::class, 'uploadFile'])->name('layout-editor.upload');
-        Route::get('/layout-editor/assignment/{layoutEditorAssignment}/download-layout', [LayoutEditorController::class, 'downloadLayoutFile'])->name('layout-editor.download-layout');
+        Route::get('/layout-editor/assignment/{id}', [LayoutEditorController::class, 'show'])->name('layout-editor.show');
+        Route::get('/layout-editor/assignment/{id}/download', [LayoutEditorController::class, 'downloadFile'])->name('layout-editor.download');
+        Route::post('/layout-editor/assignment/{id}/upload', [LayoutEditorController::class, 'uploadFile'])->name('layout-editor.upload');
+        Route::get('/layout-editor/assignment/{id}/download-layout', [LayoutEditorController::class, 'downloadLayoutFile'])->name('layout-editor.download-layout');
     });
 
     Route::middleware('role:editor')->group(function (): void {
