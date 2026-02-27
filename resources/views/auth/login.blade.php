@@ -134,7 +134,12 @@
                     <div class="flex items-center gap-3">
                         <span>Official Research Portal</span>
                         @if ($visitorCount !== null)
-                            <span class="text-[10px] text-white/80">Today's visitors: <strong class="ml-1">{{ $visitorCount }}</strong></span>
+                            <span class="text-[10px] text-white/80">
+                                Today's visitors:
+                                <strong class="ml-1">
+                                    {{ $visitorCount }}
+                                </strong>
+                            </span>
                         @endif
                     </div>
                 </div>
@@ -285,6 +290,12 @@
                                 >
                                     Admin
                                 </option>
+                                <option
+                                    value="layout_editor"
+                                    @selected(old('role') == 'layout_editor')
+                                >
+                                    Layout Editor
+                                </option>
                             </select>
                             <div
                                 class="absolute right-4 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] border-t-[#b8aa88] pointer-events-none"
@@ -327,47 +338,47 @@
                     </div>
 
                     <div>
-    <label
-        class="block text-[10px] font-semibold tracking-wider uppercase text-[#6a7890] mb-1.5"
-        for="password"
-    >
-        Password
-    </label>
+                        <label
+                            class="block text-[10px] font-semibold tracking-wider uppercase text-[#6a7890] mb-1.5"
+                            for="password"
+                        >
+                            Password
+                        </label>
 
-    <div class="relative">
-        <input
-            id="password"
-            name="password"
-            type="password"
-            class="w-full pl-4 pr-12 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] focus:ring-4 focus:ring-[#c9a84c]/10 transition-all"
-            placeholder="••••••••"
-            required
-        />
+                        <div class="relative">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                class="w-full pl-4 pr-12 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] focus:ring-4 focus:ring-[#c9a84c]/10 transition-all"
+                                placeholder="••••••••"
+                                required
+                            />
 
-        <!-- Toggle Button -->
-        <button
-            type="button"
-            onclick="togglePassword()"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-[#c8b888] hover:text-[#a07830] transition-colors"
-        >
-            <!-- Eye Icon -->
-            <svg
-                id="eyeIcon"
-                width="18"
-                height="18"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"
-                />
-                <circle cx="12" cy="12" r="3" />
-            </svg>
-        </button>
-    </div>
-</div>
+                            <!-- Toggle Button -->
+                            <button
+                                type="button"
+                                onclick="togglePassword()"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-[#c8b888] hover:text-[#a07830] transition-colors"
+                            >
+                                <!-- Eye Icon -->
+                                <svg
+                                    id="eyeIcon"
+                                    width="18"
+                                    height="18"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"
+                                    />
+                                    <circle cx="12" cy="12" r="3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
 
                     <label
                         class="flex items-center gap-2.5 cursor-pointer text-[13px] text-[#6a7890]"
@@ -414,15 +425,15 @@
         </div>
     </div>
     <script>
-    function togglePassword() {
-        const passwordInput = document.getElementById('password');
-        const eyeIcon = document.getElementById('eyeIcon');
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
 
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-        } else {
-            passwordInput.type = 'password';
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+            }
         }
-    }
-</script>
+    </script>
 @endsection
