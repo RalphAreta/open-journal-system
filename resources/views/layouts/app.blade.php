@@ -233,6 +233,107 @@
                                 @endif
                             </div>
 
+                            {{-- Notification Bell --}}
+                            @php
+                                $unreadNotifs = \App\Models\Notification::where('user_id', auth()->id())
+                                    ->whereNull('read_at')
+                                    ->latest()
+                                    ->take(5)
+                                    ->get();
+                                $unreadCount = $unreadNotifs->count();
+                            @endphp
+
+                            <div class="relative group">
+                                <button
+                                    class="relative p-2 text-white/80 hover:text-white transition-colors"
+                                >
+                                    <svg
+                                        class="w-6 h-6"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                                        />
+                                    </svg>
+                                    @if ($unreadCount > 0)
+                                        <span
+                                            class="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center"
+                                        >
+                                            {{ $unreadCount }}
+                                        </span>
+                                    @endif
+                                </button>
+
+                                {{-- Dropdown --}}
+                                <div
+                                    class="absolute right-0 mt-2 w-80 bg-white border border-[#ede8e0] rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden"
+                                >
+                                    <div
+                                        class="px-4 py-3 border-b border-[#ede8e0] bg-[#faf8f5] flex items-center justify-between"
+                                    >
+                                        <p
+                                            class="text-[10px] font-black uppercase tracking-widest text-[#2D8176]"
+                                        >
+                                            Notifications
+                                        </p>
+                                        @if ($unreadCount > 0)
+                                            <a
+                                                href="{{ route('notifications.markAllRead') }}"
+                                                class="text-[9px] font-bold text-[#b0aaa0] hover:text-[#2D8176] uppercase tracking-wider transition-colors"
+                                            >
+                                                Mark all read
+                                            </a>
+                                        @endif
+                                    </div>
+
+                                    @forelse ($unreadNotifs as $notif)
+                                        <div
+                                            class="px-4 py-3 border-b border-[#f0ece6] hover:bg-[#faf8f5] transition-colors {{ is_null($notif->read_at) ? 'bg-blue-50/50' : '' }}"
+                                        >
+                                            <p
+                                                class="text-[12px] font-bold text-[#0d1628]"
+                                            >
+                                                {{ $notif->title }}
+                                            </p>
+                                            <p
+                                                class="text-[11px] text-[#6a7890] mt-0.5 leading-relaxed"
+                                            >
+                                                {{ Str::limit($notif->message, 80) }}
+                                            </p>
+                                            <p
+                                                class="text-[9px] text-[#b0aaa0] mt-1"
+                                            >
+                                                {{ $notif->created_at->diffForHumans() }}
+                                            </p>
+                                        </div>
+                                    @empty
+                                        <div class="px-4 py-8 text-center">
+                                            <p
+                                                class="text-[12px] text-[#b0aaa0]"
+                                            >
+                                                No new notifications
+                                            </p>
+                                        </div>
+                                    @endforelse
+
+                                    <div
+                                        class="px-4 py-2.5 bg-[#faf8f5] text-center"
+                                    >
+                                        <a
+                                            href="{{ route('notifications.index') }}"
+                                            class="text-[10px] font-black uppercase tracking-widest text-[#2D8176] hover:text-[#1f5d54] transition-colors"
+                                        >
+                                            View All →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
                             <form
                                 method="POST"
                                 action="{{ route('logout') }}"
