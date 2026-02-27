@@ -280,8 +280,6 @@
                             Papers assigned to you will appear here.
                         </p>
                     </div>
-
-                    {{--
                         Uncomment when you have data:
                         <table class="w-full text-sm">
                         <thead>
@@ -307,7 +305,7 @@
                         @endforeach
                         </tbody>
                         </table>
-                    --}}
+
                 </div>
             </div>
 
@@ -323,3 +321,4 @@
         </div>
     </div>
 @endsection
+x
