@@ -104,18 +104,7 @@
                             class="mt-0.5 h-4 w-4 text-emerald-600 cursor-pointer screening-radio accent-emerald-600"
                             {{ old('screening_status') === 'passed' ? 'checked' : '' }} required>
                         <div>
-                            <span class="text-sm font-bold text-slate-900">✓ Passed</span>
-                            <span class="text-sm text-slate-500"> — Meets criteria, proceed to editor assignment</span>
-                        </div>
-                    </label>
-
-                    <label class="flex items-start gap-3 p-3.5 rounded-[9px] border border-slate-200 bg-slate-50 cursor-pointer hover:border-amber-300 hover:bg-amber-50/30 transition-all group">
-                        <input type="radio" id="revision" name="screening_status" value="revision"
-                            class="mt-0.5 h-4 w-4 cursor-pointer screening-radio accent-amber-500"
-                            {{ old('screening_status') === 'revision' ? 'checked' : '' }}>
-                        <div>
-                            <span class="text-sm font-bold text-slate-900">🔄 Request Revision</span>
-                            <span class="text-sm text-slate-500"> — Ask author to revise before proceeding</span>
+                            <span class="text-sm font-bold text-slate-900">Passed</span>
                         </div>
                     </label>
 
@@ -124,31 +113,10 @@
                             class="mt-0.5 h-4 w-4 text-red-600 cursor-pointer screening-radio accent-red-600"
                             {{ old('screening_status') === 'failed' ? 'checked' : '' }}>
                         <div>
-                            <span class="text-sm font-bold text-slate-900">✗ Failed</span>
-                            <span class="text-sm text-slate-500"> — Does not meet initial criteria</span>
+                            <span class="text-sm font-bold text-slate-900">Failed</span>
                         </div>
                     </label>
 
-                </div>
-            </div>
-
-            {{-- Revision Type ── --}}
-            <div id="revision-type-field" class="{{ old('screening_status') === 'revision' ? '' : 'hidden' }}">
-                <label class="block text-[11px] font-bold uppercase tracking-[.09em] text-slate-500 mb-1.5">
-                    Revision Type <span class="text-red-500">*</span>
-                </label>
-                <div class="relative max-w-xs">
-                    <select name="revision_type" id="revision_type"
-                        class="field w-full px-3.5 py-2.75 pr-10 border border-slate-200 rounded-[9px] bg-slate-50 text-sm font-medium text-slate-700 cursor-pointer transition-all">
-                        <option value="">— Select —</option>
-                        <option value="minor" {{ old('revision_type') === 'minor' ? 'selected' : '' }}>Minor Revision</option>
-                        <option value="major" {{ old('revision_type') === 'major' ? 'selected' : '' }}>Major Revision</option>
-                    </select>
-                    <span class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </span>
                 </div>
             </div>
 
