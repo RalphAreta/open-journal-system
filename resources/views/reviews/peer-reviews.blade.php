@@ -285,7 +285,7 @@
         {{-- ── Page header ── --}}
         <div class="mb-6 fade-up">
             <p
-                class="text-[10px] font-bold uppercase tracking-[.1em] text-red-500 mb-1"
+                class="text-[10px] font-bold uppercase tracking-widest text-red-500 mb-1"
             >
                 Peer Review Results
             </p>

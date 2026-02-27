@@ -52,10 +52,10 @@
     <body
         class="min-h-screen bg-[#f5f0e8] text-[#0d1628] font-source antialiased flex flex-col"
     >
-        <div class="h-[3px] w-full nav-shimmer sticky top-0 z-[60]"></div>
+        <div class="h-0.75 w-full nav-shimmer sticky top-0 z-60"></div>
 
         <nav
-            class="bg-[#2D8176] shadow-xl sticky top-[3px] z-50 border-b border-white/10"
+            class="bg-[#2D8176] shadow-xl sticky top-0.75 z-50 border-b border-white/10"
         >
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-20">
@@ -66,7 +66,7 @@
                             class="flex items-center space-x-3 group transition-all"
                         >
                             <div
-                                class="relative w-12 h-12 flex items-center justify-center bg-gradient-to-br from-[#c9a84c] to-[#a07830] rounded-full border-2 border-white/30 shadow-inner group-hover:rotate-12 transition-transform duration-500"
+                                class="relative w-12 h-12 flex items-center justify-center bg-linear-to-br from-[#c9a84c] to-[#a07830] rounded-full border-2 border-white/30 shadow-inner group-hover:rotate-12 transition-transform duration-500"
                             >
                                 <svg
                                     class="text-white w-7 h-7"
@@ -195,7 +195,7 @@
                                         Authenticated
                                     </span>
                                     <span
-                                        class="text-sm font-medium text-white/95 truncate max-w-[150px]"
+                                        class="text-sm font-medium text-white/95 truncate max-w-37.5"
                                     >
                                         {{ auth()->user()->name }}
                                     </span>
@@ -242,7 +242,7 @@
                                 <button
                                     type="button"
                                     onclick="confirmLogout()"
-                                    class="px-5 py-2 bg-gradient-to-br from-[#c9a84c] to-[#a07830] text-white text-[11px] font-bold tracking-widest rounded-full shadow-lg hover:shadow-[#a07830]/40 transition-all active:scale-95 uppercase border border-white/20"
+                                    class="px-5 py-2 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white text-[11px] font-bold tracking-widest rounded-full shadow-lg hover:shadow-[#a07830]/40 transition-all active:scale-95 uppercase border border-white/20"
                                 >
                                     Logout
                                 </button>
@@ -262,7 +262,7 @@
                             </a>
                             <a
                                 href="{{ route('register') }}"
-                                class="px-6 py-2.5 bg-gradient-to-br from-[#c9a84c] to-[#a07830] text-white text-sm font-bold tracking-wide rounded-xl shadow-lg hover:-translate-y-0.5 transition-all active:translate-y-0 border border-white/10"
+                                class="px-6 py-2.5 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white text-sm font-bold tracking-wide rounded-xl shadow-lg hover:-translate-y-0.5 transition-all active:translate-y-0 border border-white/10"
                             >
                                 REGISTER →
                             </a>

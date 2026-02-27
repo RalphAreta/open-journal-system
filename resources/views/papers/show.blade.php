@@ -91,7 +91,7 @@
             <!-- Download Section -->
             <section class="mb-12">
                 <h2 class="font-libre text-2xl font-bold text-[#2D8176] mb-4">Access Paper</h2>
-                <div class="bg-gradient-to-r from-[#2D8176] to-[#1f5d54] rounded-xl p-8 text-white">
+                <div class="bg-linear-to-r from-[#2D8176] to-[#1f5d54] rounded-xl p-8 text-white">
                     <p class="mb-6 text-lg">
                         Download the full paper to read the complete research.
                     </p>

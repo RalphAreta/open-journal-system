@@ -304,10 +304,10 @@
         </style>
     </head>
     <body class="bg-[#f5f0e8] text-[#0d1628] antialiased overflow-x-hidden">
-        <div class="h-[3px] w-full nav-shimmer sticky top-0 z-[60]"></div>
+        <div class="h-0.75 w-full nav-shimmer sticky top-0 z-60"></div>
 
         <nav
-            class="bg-white/90 backdrop-blur-md border-b border-[#c9a84c]/20 sticky top-[3px] z-50"
+            class="bg-white/90 backdrop-blur-md border-b border-[#c9a84c]/20 sticky top-0.75 z-50"
         >
             <div
                 class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center"
@@ -350,7 +350,7 @@
                     </a>
                     <a
                         href="/register"
-                        class="bg-gradient-to-br from-[#c9a84c] to-[#a07830] text-white px-7 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-[#a07830]/20 hover:-translate-y-0.5 transition-all"
+                        class="bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white px-7 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-[#a07830]/20 hover:-translate-y-0.5 transition-all"
                     >
                         Register
                     </a>
@@ -387,7 +387,7 @@
                 <div class="flex flex-wrap justify-center gap-5">
                     <a
                         href="/register"
-                        class="px-10 py-4 bg-gradient-to-br from-[#c9a84c] to-[#a07830] text-white rounded-2xl font-bold uppercase tracking-widest text-xs shadow-2xl shadow-black/20 hover:-translate-y-1 transition-all"
+                        class="px-10 py-4 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white rounded-2xl font-bold uppercase tracking-widest text-xs shadow-2xl shadow-black/20 hover:-translate-y-1 transition-all"
                     >
                         Begin Submission
                     </a>
@@ -415,7 +415,7 @@
         </section>
 
         <!-- RESEARCH METRICS DASHBOARD (Public Stats Bar) -->
-        <section class="py-16 bg-gradient-to-r from-[#2D8176] to-[#1a4d46] px-6 border-b border-[#2D8176]">
+        <section class="py-16 bg-linear-to-r from-[#2D8176] to-[#1a4d46] px-6 border-b border-[#2D8176]">
             <div class="max-w-7xl mx-auto">
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 text-center">
                     <div class="stat-number">
@@ -610,7 +610,7 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Author Path -->
-                <div class="card-hover-depth bg-gradient-to-br from-[#2D8176] to-[#1a4d46] rounded-2xl p-9 text-white border border-[#c9a84c]/30 shadow-lg group">
+                <div class="card-hover-depth bg-linear-to-br from-[#2D8176] to-[#1a4d46] rounded-2xl p-9 text-white border border-[#c9a84c]/30 shadow-lg group">
                     <div class="text-5xl mb-4">✍️</div>
                     <h3 class="font-libre text-2xl font-bold mb-3">I'm an Author</h3>
                     <p class="text-white/85 text-sm mb-6 leading-relaxed">
@@ -636,7 +636,7 @@
                 </div>
 
                 <!-- Reviewer Path -->
-                <div class="card-hover-depth bg-gradient-to-br from-[#c9a84c] to-[#a07830] rounded-2xl p-9 text-white border border-[#2D8176]/30 shadow-lg group">
+                <div class="card-hover-depth bg-linear-to-br from-[#c9a84c] to-[#a07830] rounded-2xl p-9 text-white border border-[#2D8176]/30 shadow-lg group">
                     <div class="text-5xl mb-4">👓</div>
                     <h3 class="font-libre text-2xl font-bold mb-3">I'm a Reviewer</h3>
                     <p class="text-white/85 text-sm mb-6 leading-relaxed">
@@ -675,7 +675,7 @@
                     @forelse($editorialBoard as $member)
                     <!-- Board Member -->
                     <div class="card-hover-depth bg-white rounded-xl overflow-hidden border border-[#e0d8cc] shadow-sm group">
-                        <div class="h-32 bg-gradient-to-br from-[#2D8176]/20 to-[#c9a84c]/20 flex items-center justify-center overflow-hidden">
+                        <div class="h-32 bg-linear-to-br from-[#2D8176]/20 to-[#c9a84c]/20 flex items-center justify-center overflow-hidden">
                             <div class="text-5xl group-hover:scale-105 transition-transform">{{ $loop->iteration % 4 == 1 ? '👨‍🎓' : ($loop->iteration % 4 == 2 ? '👩‍🎓' : ($loop->iteration % 4 == 3 ? '👨‍🏫' : '👩‍💼')) }}</div>
                         </div>
                         <div class="p-4">
@@ -688,7 +688,7 @@
                     @empty
                     <!-- Default Board Member 1 -->
                     <div class="card-hover-depth bg-white rounded-xl overflow-hidden border border-[#e0d8cc] shadow-sm group">
-                        <div class="h-32 bg-gradient-to-br from-[#2D8176]/20 to-[#c9a84c]/20 flex items-center justify-center overflow-hidden">
+                        <div class="h-32 bg-linear-to-br from-[#2D8176]/20 to-[#c9a84c]/20 flex items-center justify-center overflow-hidden">
                             <div class="text-5xl group-hover:scale-105 transition-transform">👨‍🎓</div>
                         </div>
                         <div class="p-4">
@@ -701,7 +701,7 @@
 
                     <!-- Default Board Member 2 -->
                     <div class="card-hover-depth bg-white rounded-xl overflow-hidden border border-[#e0d8cc] shadow-sm group">
-                        <div class="h-32 bg-gradient-to-br from-[#2D8176]/20 to-[#c9a84c]/20 flex items-center justify-center overflow-hidden">
+                        <div class="h-32 bg-linear-to-br from-[#2D8176]/20 to-[#c9a84c]/20 flex items-center justify-center overflow-hidden">
                             <div class="text-5xl group-hover:scale-105 transition-transform">👩‍🎓</div>
                         </div>
                         <div class="p-4">
@@ -714,7 +714,7 @@
 
                     <!-- Default Board Member 3 -->
                     <div class="card-hover-depth bg-white rounded-xl overflow-hidden border border-[#e0d8cc] shadow-sm group">
-                        <div class="h-32 bg-gradient-to-br from-[#2D8176]/20 to-[#c9a84c]/20 flex items-center justify-center overflow-hidden">
+                        <div class="h-32 bg-linear-to-br from-[#2D8176]/20 to-[#c9a84c]/20 flex items-center justify-center overflow-hidden">
                             <div class="text-5xl group-hover:scale-105 transition-transform">👨‍🏫</div>
                         </div>
                         <div class="p-4">
@@ -727,7 +727,7 @@
 
                     <!-- Default Board Member 4 -->
                     <div class="card-hover-depth bg-white rounded-xl overflow-hidden border border-[#e0d8cc] shadow-sm group">
-                        <div class="h-32 bg-gradient-to-br from-[#2D8176]/20 to-[#c9a84c]/20 flex items-center justify-center overflow-hidden">
+                        <div class="h-32 bg-linear-to-br from-[#2D8176]/20 to-[#c9a84c]/20 flex items-center justify-center overflow-hidden">
                             <div class="text-5xl group-hover:scale-105 transition-transform">👩‍💼</div>
                         </div>
                         <div class="p-4">
@@ -753,7 +753,7 @@
                 @forelse($featuredResearch as $paper)
                 <!-- Spotlight -->
                 <div class="card-hover-depth bg-white rounded-xl overflow-hidden border border-[#c9a84c] shadow-lg">
-                    <div class="h-40 bg-gradient-to-br from-[#2D8176]/30 to-[#c9a84c]/20 flex items-center justify-center">
+                    <div class="h-40 bg-linear-to-br from-[#2D8176]/30 to-[#c9a84c]/20 flex items-center justify-center">
                         <div class="text-7xl">{{ $loop->iteration == 1 ? '🧬' : '♻️' }}</div>
                     </div>
                     <div class="p-7">
@@ -783,7 +783,7 @@
                 @empty
                 <!-- Default Spotlight 1 -->
                 <div class="card-hover-depth bg-white rounded-xl overflow-hidden border border-[#c9a84c] shadow-lg">
-                    <div class="h-40 bg-gradient-to-br from-[#2D8176]/30 to-[#c9a84c]/20 flex items-center justify-center">
+                    <div class="h-40 bg-linear-to-br from-[#2D8176]/30 to-[#c9a84c]/20 flex items-center justify-center">
                         <div class="text-7xl">🧬</div>
                     </div>
                     <div class="p-7">
@@ -813,7 +813,7 @@
 
                 <!-- Default Spotlight 2 -->
                 <div class="card-hover-depth bg-white rounded-xl overflow-hidden border border-[#c9a84c] shadow-lg">
-                    <div class="h-40 bg-gradient-to-br from-[#2D8176]/30 to-[#c9a84c]/20 flex items-center justify-center">
+                    <div class="h-40 bg-linear-to-br from-[#2D8176]/30 to-[#c9a84c]/20 flex items-center justify-center">
                         <div class="text-7xl">♻️</div>
                     </div>
                     <div class="p-7">
@@ -841,96 +841,6 @@
                     </div>
                 </div>
                 @endforelse
-            </div>
-        </section>
-
-        <!-- SUBMISSION PROGRESS DEMO (Live Tracking) -->
-        <section class="py-20 bg-[#f9f7f2] px-6 border-b border-[#ede5d5]">
-            <div class="max-w-4xl mx-auto">
-                <div class="text-center mb-12">
-                    <h2 class="font-libre text-4xl font-bold text-[#2D8176] mb-2">Real-Time Manuscript Tracking</h2>
-                    <p class="text-sm text-[#6a7890]">See how we provide transparency at every stage</p>
-                </div>
-
-                <div class="bg-white rounded-2xl p-8 border border-[#e0d8cc] shadow-lg">
-                    @if($manuscriptTracking)
-                    <!-- Demo Manuscript -->
-                    <div class="mb-8 pb-8 border-b border-[#e0d8cc]">
-                        <div class="flex items-center justify-between mb-5">
-                            <div>
-                                <h3 class="font-libre text-lg font-bold text-[#2D8176] mb-0.5">Manuscript ID: {{ $manuscriptTracking['id'] }}</h3>
-                                <p class="text-xs text-[#6a7890]">{{ $manuscriptTracking['title'] }}</p>
-                            </div>
-                            <div class="px-3 py-1 bg-[#2D8176]/10 rounded-full text-[#2D8176] font-bold text-xs uppercase tracking-wider">
-                                {{ $manuscriptTracking['status'] }}
-                            </div>
-                        </div>
-
-                        <!-- Progress Bar -->
-                        <div class="mb-3">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-[#6a7890]">Overall Progress</span>
-                                <span class="text-[11px] font-bold text-[#2D8176]">{{ $manuscriptTracking['progress'] }}%</span>
-                            </div>
-                            <div class="w-full h-2.5 bg-[#e0d8cc] rounded-full overflow-hidden border border-[#d5ccc0]">
-                                <div class="progress-bar h-full bg-gradient-to-r from-[#2D8176] to-[#c9a84c] rounded-full" style="width: {{ $manuscriptTracking['progress'] }}%; animation: none;"></div>
-                            </div>
-                        </div>
-
-                        <!-- Status Timeline -->
-                        <div class="space-y-3">
-                            <div class="flex items-start gap-3">
-                                <div class="w-5 h-5 bg-[#2D8176] rounded-full flex items-center justify-center text-white text-[10px] font-bold mt-0.5 shrink-0">✓</div>
-                                <div>
-                                    <p class="font-bold text-[#2D8176] text-xs">Submission Received</p>
-                                    <p class="text-[10px] text-[#a7b1c7]">{{ $manuscriptTracking['submittedAt']->format('M d, Y') }}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <div class="w-5 h-5 bg-[#2D8176] rounded-full flex items-center justify-center text-white text-[10px] font-bold mt-0.5 shrink-0">✓</div>
-                                <div>
-                                    <p class="font-bold text-[#2D8176] text-xs">Initial Screening Passed</p>
-                                    <p class="text-[10px] text-[#a7b1c7]">{{ $manuscriptTracking['submittedAt']->addDays(1)->format('M d, Y') }}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <div class="w-5 h-5 bg-[#2D8176] rounded-full flex items-center justify-center text-white text-[10px] font-bold mt-0.5 shrink-0">✓</div>
-                                <div>
-                                    <p class="font-bold text-[#2D8176] text-xs">Reviewers Assigned</p>
-                                    <p class="text-[10px] text-[#a7b1c7]">{{ $manuscriptTracking['submittedAt']->addDays(2)->format('M d, Y') }}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <div class="w-5 h-5 bg-[#c9a84c]/30 rounded-full flex items-center justify-center text-[#a07830] text-[10px] font-bold mt-0.5 shrink-0">⏳</div>
-                                <div>
-                                    <p class="font-bold text-[#6a7890] text-xs">Peer Review In Progress</p>
-                                    <p class="text-[10px] text-[#a7b1c7]">Expected: {{ $manuscriptTracking['submittedAt']->addDays(14)->format('M d, Y') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Stats -->
-                    <div class="grid grid-cols-3 gap-5 text-center">
-                        <div>
-                            <div class="text-lg font-bold text-[#2D8176] mb-1">{{ $manuscriptTracking['reviewsReceived'] }}/{{ $manuscriptTracking['reviewsExpected'] }}</div>
-                            <p class="text-[10px] font-bold uppercase tracking-wider text-[#6a7890]">Reviews Received</p>
-                        </div>
-                        <div>
-                            <div class="text-lg font-bold text-[#2D8176] mb-1">{{ $manuscriptTracking['daysSince'] }} Days</div>
-                            <p class="text-[10px] font-bold uppercase tracking-wider text-[#6a7890]">Since Submission</p>
-                        </div>
-                        <div>
-                            <div class="text-lg font-bold text-[#2D8176] mb-1">{{ $manuscriptTracking['avgResponseDays'] }} Days</div>
-                            <p class="text-[10px] font-bold uppercase tracking-wider text-[#6a7890]">Avg. Response</p>
-                        </div>
-                    </div>
-                    @else
-                    <div class="text-center py-12">
-                        <p class="text-[#6a7890] text-sm">No manuscripts currently in review. Submit one to see tracking in real-time!</p>
-                    </div>
-                    @endif
-                </div>
             </div>
         </section>
 
