@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ChiefEditorController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\AppealController;
@@ -16,8 +17,12 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth; // Make sure this is at the top of the file
 
 Route::get('/', function () {
-    return Auth::check() ? redirect()->route('dashboard') : view('welcome');
+    return Auth::check() ? redirect()->route('dashboard') : app(HomeController::class)->index();
 });
+
+// Public routes for viewing published papers
+Route::get('/papers/{submission}', [HomeController::class, 'showPublicPaper'])->name('papers.show');
+Route::get('/papers/{submission}/download', [HomeController::class, 'downloadPublicPaper'])->name('papers.download');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
