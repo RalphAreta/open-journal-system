@@ -3,303 +3,749 @@
 @section('title', 'Editor Dashboard')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<style>
-    .editor-wrap { font-family: 'DM Sans', sans-serif; }
+    <link
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet"
+    />
+    <style>
+        :root {
+            --teal: #2d8176;
+            --teal-d: #236860;
+            --gold: #c9a84c;
+            --gold-l: #f0d678;
+            --ink: #0d1628;
+            --mist: #f5f0e8;
+            --red: #dc2626;
+        }
 
-    /* ── Page Header ── */
-    .page-title {
-        font-family: 'Instrument Serif', serif;
-        font-size: 1.85rem;
-        font-weight: 400;
-        color: #0F172A;
-        letter-spacing: -.015em;
-        line-height: 1.2;
-    }
-    .page-subtitle {
-        font-size: .875rem;
-        color: #64748B;
-        margin-top: 4px;
-    }
-    .page-date-badge {
-        font-size: .72rem; font-weight: 500;
-        color: #94A3B8; background: #fff;
-        border: 1px solid #E2E8F0;
-        padding: 5px 12px; border-radius: 20px;
-        white-space: nowrap;
-    }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        @keyframes pulse-teal {
+            0% {
+                box-shadow: 0 0 0 0 rgba(45, 129, 118, 0.5);
+            }
+            70% {
+                box-shadow: 0 0 0 6px rgba(45, 129, 118, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(45, 129, 118, 0);
+            }
+        }
 
-    /* ── Stat Cards ── */
-    .stat-card {
-        background: #fff;
-        border: 1.5px solid #E2E8F0;
-        border-radius: 14px;
-        padding: 22px 24px;
-        box-shadow: 0 1px 3px rgba(15,23,42,.05);
-        transition: box-shadow .2s, transform .2s, border-color .2s;
-        position: relative; overflow: hidden;
-    }
-    .stat-card::before {
-        content: ''; position: absolute; inset: 0;
-        opacity: 0; transition: opacity .2s; pointer-events: none;
-    }
-    .stat-card:hover { box-shadow: 0 6px 20px rgba(15,23,42,.09); transform: translateY(-2px); }
-    .stat-card:hover::before { opacity: 1; }
+        .fade-up {
+            opacity: 0;
+            animation: fadeUp 0.5s cubic-bezier(0.22, 0.68, 0, 1.2) forwards;
+        }
+        .fade-up-1 {
+            opacity: 0;
+            animation: fadeUp 0.5s 0.08s cubic-bezier(0.22, 0.68, 0, 1.2)
+                forwards;
+        }
+        .fade-up-2 {
+            opacity: 0;
+            animation: fadeUp 0.5s 0.16s cubic-bezier(0.22, 0.68, 0, 1.2)
+                forwards;
+        }
+        .fade-up-3 {
+            opacity: 0;
+            animation: fadeUp 0.5s 0.24s cubic-bezier(0.22, 0.68, 0, 1.2)
+                forwards;
+        }
 
-    .stat-card.c-slate::before  { background: linear-gradient(135deg,#F8FAFC 0%,transparent 60%); }
-    .stat-card.c-blue::before   { background: linear-gradient(135deg,#EFF6FF 0%,transparent 60%); }
-    .stat-card.c-amber::before  { background: linear-gradient(135deg,#FFFBEB 0%,transparent 60%); }
-    .stat-card.c-orange::before { background: linear-gradient(135deg,#FFF7ED 0%,transparent 60%); }
-    .stat-card.c-red::before    { background: linear-gradient(135deg,#FFF5F5 0%,transparent 60%); }
+        .shimmer-bar {
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--gold),
+                var(--gold-l),
+                var(--gold),
+                transparent
+            );
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+        .pulse-dot {
+            animation: pulse-teal 2s infinite;
+        }
 
-    .stat-card.c-slate:hover  { border-color: #CBD5E1; }
-    .stat-card.c-blue:hover   { border-color: #BFDBFE; }
-    .stat-card.c-amber:hover  { border-color: #FDE68A; }
-    .stat-card.c-orange:hover { border-color: #FDBA74; }
-    .stat-card.c-red:hover    { border-color: #FECACA; }
+        /* Stat cards */
+        .stat-card {
+            background: #fff;
+            border: 1.5px solid #ede8e0;
+            border-radius: 20px;
+            padding: 22px 24px;
+            transition:
+                border-color 0.2s,
+                transform 0.15s,
+                box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 0 20px 0 80px;
+            opacity: 0.06;
+            transition: opacity 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(13, 22, 40, 0.1);
+        }
+        .stat-card:hover::after {
+            opacity: 0.1;
+        }
 
-    .stat-label { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #64748B; }
-    .stat-icon-box {
-        width: 40px; height: 40px; border-radius: 10px;
-        display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
-    }
-    .stat-icon-box.c-slate  { background: #F1F5F9; }
-    .stat-icon-box.c-blue   { background: #DBEAFE; }
-    .stat-icon-box.c-amber  { background: #FEF3C7; }
-    .stat-icon-box.c-orange { background: #FFEDD5; }
-    .stat-icon-box.c-red    { background: #FEE2E2; }
+        .stat-card.c-teal {
+            border-color: #ede8e0;
+        }
+        .stat-card.c-teal:hover {
+            border-color: var(--teal);
+        }
+        .stat-card.c-teal::after {
+            background: var(--teal);
+        }
+        .stat-card.c-blue {
+            border-color: #ede8e0;
+        }
+        .stat-card.c-blue:hover {
+            border-color: #3b82f6;
+        }
+        .stat-card.c-blue::after {
+            background: #3b82f6;
+        }
+        .stat-card.c-amber {
+            border-color: #ede8e0;
+        }
+        .stat-card.c-amber:hover {
+            border-color: #d97706;
+        }
+        .stat-card.c-amber::after {
+            background: #d97706;
+        }
+        .stat-card.c-orange {
+            border-color: #ede8e0;
+        }
+        .stat-card.c-orange:hover {
+            border-color: #ea580c;
+        }
+        .stat-card.c-orange::after {
+            background: #ea580c;
+        }
 
-    .stat-number { font-family: 'Instrument Serif', serif; font-size: 2.4rem; line-height: 1; margin-top: 12px; }
-    .stat-number.c-slate  { color: #0F172A; }
-    .stat-number.c-blue   { color: #2563EB; }
-    .stat-number.c-amber  { color: #D97706; }
-    .stat-number.c-orange { color: #EA580C; }
-    .stat-number.c-red    { color: #DC2626; }
-    .stat-hint { font-size: .72rem; color: #94A3B8; margin-top: 5px; }
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .stat-icon.c-teal {
+            background: rgba(45, 129, 118, 0.1);
+        }
+        .stat-icon.c-blue {
+            background: #dbeafe;
+        }
+        .stat-icon.c-amber {
+            background: #fef3c7;
+        }
+        .stat-icon.c-orange {
+            background: #ffedd5;
+        }
 
-    /* ── Table Card ── */
-    .table-card {
-        background: #fff; border: 1.5px solid #E2E8F0;
-        border-radius: 14px; overflow: hidden;
-        box-shadow: 0 1px 3px rgba(15,23,42,.05);
-    }
-    .table-card-header {
-        padding: 16px 24px; border-bottom: 1.5px solid #E2E8F0;
-        background: #FAFBFC; display: flex; align-items: center; justify-content: space-between;
-    }
-    .table-card-title { font-size: .9rem; font-weight: 700; color: #0F172A; letter-spacing: -.01em; }
-    .btn-view-all {
-        display: inline-flex; align-items: center; gap: 6px;
-        background: #1E293B; color: #fff;
-        font-size: .76rem; font-weight: 600;
-        padding: 8px 16px; border-radius: 8px;
-        text-decoration: none;
-        transition: background .15s, transform .1s, box-shadow .15s;
-        letter-spacing: .01em;
-    }
-    .btn-view-all:hover {
-        background: #0F172A; transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(15,23,42,.18);
-    }
+        .stat-number {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2.6rem;
+            line-height: 1;
+            font-weight: 700;
+            margin-top: 14px;
+        }
+        .stat-number.c-teal {
+            color: var(--teal);
+        }
+        .stat-number.c-blue {
+            color: #2563eb;
+        }
+        .stat-number.c-amber {
+            color: #d97706;
+        }
+        .stat-number.c-orange {
+            color: #ea580c;
+        }
 
-    .tbl-editor thead tr { background: #FAFBFC; }
-    .tbl-editor th {
-        padding: 11px 22px; text-align: left;
-        font-size: .67rem; font-weight: 800; letter-spacing: .1em;
-        text-transform: uppercase; color: #94A3B8;
-        border-bottom: 1.5px solid #E2E8F0;
-    }
-    .tbl-editor th:last-child { text-align: right; }
-    .tbl-editor td { padding: 14px 22px; font-size: .82rem; border-bottom: 1px solid #F1F5F9; color: #0F172A; }
-    .tbl-editor tbody tr:last-child td { border-bottom: none; }
-    .tbl-editor tbody tr { transition: background .12s; }
-    .tbl-editor tbody tr:hover td { background: #F8FAFC; }
-    .tbl-editor tbody tr:hover .ms-title { color: #DC2626; }
+        /* Alert banner */
+        .alert-banner {
+            border-radius: 18px;
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            border: 1.5px solid #fed7aa;
+            background: linear-gradient(135deg, #fff7ed 0%, #fffbeb 100%);
+            box-shadow: 0 4px 20px rgba(234, 88, 12, 0.08);
+        }
 
-    .ms-title  { font-size: .83rem; font-weight: 600; color: #0F172A; transition: color .12s; }
-    .ms-author { font-size: .82rem; color: #475569; }
-    .ms-actions { text-align: right; }
+        /* Table card */
+        .card {
+            background: #fff;
+            border: 1.5px solid #ede8e0;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(13, 22, 40, 0.06);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 22px;
+            border-bottom: 1px solid #ede8e0;
+            background: linear-gradient(to right, #faf8f5, #f5f0e8);
+        }
 
-    /* Status badges */
-    .s-badge {
-        display: inline-flex; align-items: center; gap: 6px;
-        padding: 4px 11px; border-radius: 20px;
-        font-size: .68rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-        border: 1px solid transparent;
-    }
-    .s-badge .dot { width: 6px; height: 6px; border-radius: 50%; }
-    .s-badge.submitted         { background:#EFF6FF; border-color:#BFDBFE; color:#1D4ED8; }
-    .s-badge.submitted .dot    { background:#2563EB; }
-    .s-badge.under_review      { background:#FFFBEB; border-color:#FDE68A; color:#B45309; }
-    .s-badge.under_review .dot { background:#D97706; }
-    .s-badge.accepted          { background:#F0FDF4; border-color:#BBF7D0; color:#15803D; }
-    .s-badge.accepted .dot     { background:#16A34A; }
-    .s-badge.rejected          { background:#FFF5F5; border-color:#FECACA; color:#B91C1C; }
-    .s-badge.rejected .dot     { background:#DC2626; }
-    .s-badge.default           { background:#F8FAFC; border-color:#E2E8F0; color:#475569; }
-    .s-badge.default .dot      { background:#64748B; }
+        /* Table */
+        .ed-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .ed-table thead tr {
+            background: linear-gradient(to right, #faf8f5, #f5f0e8);
+            border-bottom: 1.5px solid #ede8e0;
+        }
+        .ed-table thead th {
+            padding: 13px 22px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: #b0aaa0;
+            text-align: left;
+        }
+        .ed-table thead th:last-child {
+            text-align: right;
+        }
+        .ed-table tbody tr {
+            border-bottom: 1px solid #f0ece6;
+            transition: background 0.15s;
+        }
+        .ed-table tbody tr:last-child {
+            border-bottom: none;
+        }
+        .ed-table tbody tr:hover {
+            background: #faf8f5;
+        }
+        .ed-table tbody tr:hover .ms-title {
+            color: var(--teal);
+        }
+        .ed-table td {
+            padding: 15px 22px;
+            vertical-align: middle;
+        }
 
-    .btn-manage {
-        display: inline-flex; align-items: center; gap: 5px;
-        background: #DC2626; color: #fff;
-        font-size: .75rem; font-weight: 600;
-        padding: 7px 14px; border-radius: 7px; text-decoration: none;
-        transition: background .15s, transform .1s;
-    }
-    .btn-manage:hover { background: #B91C1C; transform: translateY(-1px); }
+        .ms-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--ink);
+            transition: color 0.15s;
+            line-height: 1.4;
+        }
+        .ms-author {
+            font-size: 0.82rem;
+            color: #6a7890;
+        }
 
-    /* Empty State */
-    .empty-state-wrap { padding: 56px 24px; text-align: center; }
-    .empty-icon {
-        width: 52px; height: 52px; border-radius: 50%;
-        background: #F8FAFC; display: flex; align-items: center; justify-content: center;
-        margin: 0 auto 12px;
-    }
-    .empty-label { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #CBD5E1; }
+        /* Status badges */
+        .s-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 1px solid transparent;
+        }
+        .s-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .s-badge.submitted {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+        .s-badge.submitted .dot {
+            background: #2563eb;
+        }
+        .s-badge.under_review {
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #b45309;
+        }
+        .s-badge.under_review .dot {
+            background: #d97706;
+        }
+        .s-badge.accepted {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #15803d;
+        }
+        .s-badge.accepted .dot {
+            background: #16a34a;
+        }
+        .s-badge.rejected {
+            background: #fff5f5;
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+        .s-badge.rejected .dot {
+            background: #dc2626;
+        }
+        .s-badge.revision {
+            background: #fff7ed;
+            border-color: #fed7aa;
+            color: #c2410c;
+        }
+        .s-badge.revision .dot {
+            background: #ea580c;
+        }
+        .s-badge.default {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #475569;
+        }
+        .s-badge.default .dot {
+            background: #94a3b8;
+        }
 
-    /* ── Animations ── */
-    .fade-up   { animation: fadeUp .4s ease both; }
-    .fade-up-1 { animation: fadeUp .4s .07s ease both; }
-    .fade-up-2 { animation: fadeUp .4s .14s ease both; }
-    .fade-up-3 { animation: fadeUp .4s .21s ease both; }
-    @keyframes fadeUp {
-        from { opacity:0; transform:translateY(12px); }
-        to   { opacity:1; transform:translateY(0); }
-    }
-</style>
+        /* Buttons */
+        .btn-manage {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 16px;
+            border-radius: 10px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: var(--teal);
+            color: #fff;
+            text-decoration: none;
+            transition:
+                background 0.15s,
+                transform 0.12s,
+                box-shadow 0.15s;
+            box-shadow: 0 4px 12px rgba(45, 129, 118, 0.2);
+        }
+        .btn-manage:hover {
+            background: var(--teal-d);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(45, 129, 118, 0.3);
+        }
+
+        .btn-view-all {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 12px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            background: var(--ink);
+            color: #fff;
+            text-decoration: none;
+            transition:
+                background 0.15s,
+                transform 0.12s;
+        }
+        .btn-view-all:hover {
+            background: var(--teal);
+            transform: translateY(-1px);
+        }
+
+        .btn-review-now {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            border-radius: 12px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: #ea580c;
+            color: #fff;
+            text-decoration: none;
+            white-space: nowrap;
+            transition:
+                background 0.15s,
+                transform 0.12s;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+        }
+        .btn-review-now:hover {
+            background: #c2410c;
+            transform: translateY(-1px);
+        }
+
+        /* Empty state */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 24px;
+            text-align: center;
+        }
+        .empty-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: #f5f0e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+        }
+    </style>
 @endpush
 
 @section('content')
-<div class="editor-wrap">
+    <div
+        class="min-h-screen font-['Source_Sans_3']"
+        style="
+            background: linear-gradient(
+                135deg,
+                #f5f0e8 0%,
+                #ede5d5 50%,
+                #e8e0f0 100%
+            );
+        "
+    >
+        <div class="fixed top-0 left-0 right-0 h-[2px] shimmer-bar z-50"></div>
 
-    {{-- ── Page Header ── --}}
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-7 fade-up">
-        <div>
-            <h1 class="page-title">Editor Dashboard</h1>
-            <p class="page-subtitle">Review and manage submissions</p>
-        </div>
-        <span class="page-date-badge hidden sm:inline-block">{{ now()->format('D, M j Y') }}</span>
-    </div>
-
-    {{-- ── Stats Grid ── --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 fade-up-1">
-        <div class="stat-card c-slate">
-            <div class="flex items-center justify-between">
-                <span class="stat-label">Total Submissions</span>
-                <div class="stat-icon-box c-slate">📊</div>
-            </div>
-            <p class="stat-number c-slate">{{ $stats['total'] }}</p>
-            <p class="stat-hint">All submissions</p>
-        </div>
-        <div class="stat-card c-blue">
-            <div class="flex items-center justify-between">
-                <span class="stat-label">New (Submitted)</span>
-                <div class="stat-icon-box c-blue">📥</div>
-            </div>
-            <p class="stat-number c-blue">{{ $stats['submitted'] }}</p>
-            <p class="stat-hint">Awaiting distribution</p>
-        </div>
-        <div class="stat-card c-amber">
-            <div class="flex items-center justify-between">
-                <span class="stat-label">Under Review</span>
-                <div class="stat-icon-box c-amber">📋</div>
-            </div>
-            <p class="stat-number c-amber">{{ $stats['under_review'] }}</p>
-            <p class="stat-hint">With reviewers</p>
-        </div>
-        <div class="stat-card c-orange">
-            <div class="flex items-center justify-between">
-                <span class="stat-label">Revision Pending</span>
-                <div class="stat-icon-box c-orange">🔄</div>
-            </div>
-            <p class="stat-number c-orange">{{ $stats['revision_under_review'] }}</p>
-            <p class="stat-hint">Awaiting re-review</p>
-        </div>
-    </div>
-
-    {{-- ── Revision Reviews Alert ── --}}
-    @if ($stats['revision_under_review'] > 0)
-    <div class="bg-linear-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-lg p-5 mb-6 fade-up-1.5">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-lg">🔄</div>
+        <div class="max-w-6xl mx-auto py-10 px-4 space-y-6">
+            {{-- ── Header ── --}}
+            <div
+                class="fade-up flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
+            >
                 <div>
-                    <p class="font-semibold text-orange-900">Revision Reviews Pending</p>
-                    <p class="text-sm text-orange-700">{{ $stats['revision_under_review'] }} {{ $stats['revision_under_review'] === 1 ? 'manuscript' : 'manuscripts' }} awaiting your final decision</p>
+                    <p
+                        class="text-[10px] font-black uppercase tracking-[.2em] text-[var(--teal)] mb-1 flex items-center gap-2"
+                    >
+                        <span
+                            class="w-1.5 h-1.5 rounded-full bg-[var(--teal)] pulse-dot"
+                        ></span>
+                        Journal System · Editor Portal
+                    </p>
+                    <h1
+                        class="font-['Libre_Baskerville'] text-4xl font-bold text-[var(--ink)] leading-tight"
+                    >
+                        Editor
+                        <em
+                            class="not-italic bg-gradient-to-r from-[var(--teal)] to-[#1a6b62] bg-clip-text text-transparent"
+                        >
+                            Dashboard
+                        </em>
+                    </h1>
+                    <p class="text-sm text-[#8a96a8] mt-1">
+                        Review and manage submissions
+                    </p>
+                </div>
+                <span
+                    class="px-4 py-2 bg-white/80 border border-[#ddd8ce] rounded-xl text-[11px] font-bold text-[#9ea8b8] uppercase tracking-widest backdrop-blur-sm hidden sm:inline-block"
+                >
+                    {{ now()->format('D, M j Y') }}
+                </span>
+            </div>
+
+            {{-- ── Stats Grid ── --}}
+            <div class="fade-up-1 grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="stat-card c-teal">
+                    <div class="flex items-center justify-between">
+                        <span
+                            class="text-[9px] font-black uppercase tracking-[.15em] text-[#b0aaa0]"
+                        >
+                            Total
+                        </span>
+                        <div class="stat-icon c-teal">📊</div>
+                    </div>
+                    <p class="stat-number c-teal">{{ $stats['total'] }}</p>
+                    <p class="text-[11px] text-[#b0aaa0] mt-1.5">
+                        All submissions
+                    </p>
+                    <div
+                        class="mt-3 h-[3px] rounded-full bg-[rgba(45,129,118,.1)]"
+                    >
+                        <div
+                            class="h-full rounded-full bg-[var(--teal)]"
+                            style="width: 100%"
+                        ></div>
+                    </div>
+                </div>
+                <div class="stat-card c-blue">
+                    <div class="flex items-center justify-between">
+                        <span
+                            class="text-[9px] font-black uppercase tracking-[.15em] text-[#b0aaa0]"
+                        >
+                            New
+                        </span>
+                        <div class="stat-icon c-blue">📥</div>
+                    </div>
+                    <p class="stat-number c-blue">{{ $stats['submitted'] }}</p>
+                    <p class="text-[11px] text-[#b0aaa0] mt-1.5">
+                        Awaiting distribution
+                    </p>
+                    <div class="mt-3 h-[3px] rounded-full bg-blue-100">
+                        <div
+                            class="h-full rounded-full bg-blue-500"
+                            style="
+                                width: {{ $stats['total'] ? min(100, ($stats['submitted'] / $stats['total']) * 100) : 0 }}%;
+                            "
+                        ></div>
+                    </div>
+                </div>
+                <div class="stat-card c-amber">
+                    <div class="flex items-center justify-between">
+                        <span
+                            class="text-[9px] font-black uppercase tracking-[.15em] text-[#b0aaa0]"
+                        >
+                            Under Review
+                        </span>
+                        <div class="stat-icon c-amber">📋</div>
+                    </div>
+                    <p class="stat-number c-amber">
+                        {{ $stats['under_review'] }}
+                    </p>
+                    <p class="text-[11px] text-[#b0aaa0] mt-1.5">
+                        With reviewers
+                    </p>
+                    <div class="mt-3 h-[3px] rounded-full bg-amber-100">
+                        <div
+                            class="h-full rounded-full bg-amber-500"
+                            style="
+                                width: {{ $stats['total'] ? min(100, ($stats['under_review'] / $stats['total']) * 100) : 0 }}%;
+                            "
+                        ></div>
+                    </div>
+                </div>
+                <div class="stat-card c-orange">
+                    <div class="flex items-center justify-between">
+                        <span
+                            class="text-[9px] font-black uppercase tracking-[.15em] text-[#b0aaa0]"
+                        >
+                            Revisions
+                        </span>
+                        <div class="stat-icon c-orange">🔄</div>
+                    </div>
+                    <p class="stat-number c-orange">
+                        {{ $stats['revision_under_review'] }}
+                    </p>
+                    <p class="text-[11px] text-[#b0aaa0] mt-1.5">
+                        Awaiting re-review
+                    </p>
+                    <div class="mt-3 h-[3px] rounded-full bg-orange-100">
+                        <div
+                            class="h-full rounded-full bg-orange-500"
+                            style="
+                                width: {{ $stats['total'] ? min(100, ($stats['revision_under_review'] / $stats['total']) * 100) : 0 }}%;
+                            "
+                        ></div>
+                    </div>
                 </div>
             </div>
-            <a href="{{ route('editor.submission.show', $submissions->first()) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-colors">
-                Review Now →
-            </a>
+
+            {{-- ── Revision Alert ── --}}
+            @if ($stats['revision_under_review'] > 0)
+                <div class="fade-up-2 alert-banner">
+                    <div class="flex items-center gap-4 min-w-0">
+                        <div
+                            class="w-11 h-11 rounded-xl bg-orange-100 border border-orange-200 flex items-center justify-center text-xl flex-shrink-0"
+                        >
+                            🔄
+                        </div>
+                        <div class="min-w-0">
+                            <p
+                                class="font-['Libre_Baskerville'] font-bold text-[#7c2d12] text-base"
+                            >
+                                Revision Reviews Pending
+                            </p>
+                            <p class="text-sm text-orange-700 mt-0.5">
+                                {{ $stats['revision_under_review'] }}
+                                {{ $stats['revision_under_review'] === 1 ? 'manuscript' : 'manuscripts' }}
+                                awaiting your final decision
+                            </p>
+                        </div>
+                    </div>
+                    @if ($submissions->first())
+                        <a
+                            href="{{ route('editor.submission.show', $submissions->first()) }}"
+                            class="btn-review-now flex-shrink-0"
+                        >
+                            Review Now →
+                        </a>
+                    @endif
+                </div>
+            @endif
+
+            {{-- ── Table Card ── --}}
+            <div class="fade-up-3 card">
+                <div class="card-header">
+                    <div>
+                        <p
+                            class="text-[9px] font-black uppercase tracking-[.18em] text-[#b0aaa0]"
+                        >
+                            Submissions
+                        </p>
+                        <h2
+                            class="font-['Libre_Baskerville'] text-base font-bold text-[var(--ink)]"
+                        >
+                            Recent Submissions
+                        </h2>
+                    </div>
+                    <a
+                        href="{{ route('editor.submissions') }}"
+                        class="btn-view-all"
+                    >
+                        View All →
+                    </a>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="ed-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 45%">Title</th>
+                                <th>Author</th>
+                                <th>Status</th>
+                                <th style="text-align: right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($submissions as $s)
+                                <tr class="group">
+                                    <td>
+                                        <p class="ms-title">
+                                            {{ Str::limit($s->title, 48) }}
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <span class="ms-author">
+                                            {{ $s->author->name ?? '—' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @php
+                                            $cls = match ($s->status) {
+                                                'submitted' => 'submitted',
+                                                'under_review' => 'under_review',
+                                                'accepted' => 'accepted',
+                                                'rejected' => 'rejected',
+                                                'revision' => 'revision',
+                                                default => 'default',
+                                            };
+                                        @endphp
+
+                                        <span class="s-badge {{ $cls }}">
+                                            <span class="dot"></span>
+                                            {{ ucfirst(str_replace('_', ' ', $s->status)) }}
+                                        </span>
+                                    </td>
+                                    <td style="text-align: right">
+                                        <a
+                                            href="{{ route('editor.submission.show', $s) }}"
+                                            class="btn-manage"
+                                        >
+                                            <svg
+                                                class="w-3 h-3"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2.5"
+                                                    d="M9 5l7 7-7 7"
+                                                />
+                                            </svg>
+                                            Manage
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="empty-state">
+                                            <div class="empty-icon">📄</div>
+                                            <p
+                                                class="font-['Libre_Baskerville'] font-bold text-[var(--ink)] text-sm"
+                                            >
+                                                No submissions yet
+                                            </p>
+                                            <p
+                                                class="text-[12px] text-[#b0aaa0] mt-1"
+                                            >
+                                                Submissions will appear here
+                                                once received.
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <div
+                    class="px-5 py-3 border-t border-[#ede8e0] bg-[#faf8f5] flex items-center justify-between"
+                >
+                    <div class="text-sm text-[#b0aaa0]">
+                        {{ $submissions->links() }}
+                    </div>
+                    <p
+                        class="text-[10px] text-[#c0b8b0] uppercase tracking-widest"
+                    >
+                        BatStateU · BIRJISE
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
-    @endif
-
-    {{-- ── Table Card ── --}}
-    <div class="table-card fade-up-2">
-        <div class="table-card-header">
-            <span class="table-card-title">Recent Submissions</span>
-            <a href="{{ route('editor.submissions') }}" class="btn-view-all">
-                View All →
-            </a>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="w-full tbl-editor">
-                <thead>
-                    <tr>
-                        <th class="w-1/2">Title</th>
-                        <th>Author</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($submissions as $s)
-                    <tr>
-                        <td><p class="ms-title">{{ Str::limit($s->title, 45) }}</p></td>
-                        <td><span class="ms-author">{{ $s->author->name ?? '-' }}</span></td>
-                        <td>
-                            @php
-                                $cls = match($s->status) {
-                                    'submitted'    => 'submitted',
-                                    'under_review' => 'under_review',
-                                    'accepted'     => 'accepted',
-                                    'rejected'     => 'rejected',
-                                    default        => 'default'
-                                };
-                            @endphp
-                            <span class="s-badge {{ $cls }}">
-                                <span class="dot"></span>
-                                {{ ucfirst(str_replace('_', ' ', $s->status)) }}
-                            </span>
-                        </td>
-                        <td class="ms-actions">
-                            <a href="{{ route('editor.submission.show', $s) }}" class="btn-manage">
-                                Manage
-                            </a>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4">
-                            <div class="empty-state-wrap">
-                                <div class="empty-icon">
-                                    <svg class="w-7 h-7 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="1.5"/>
-                                    </svg>
-                                </div>
-                                <p class="empty-label">No submissions available</p>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        <div class="px-5 py-3 bg-slate-50 border-t border-slate-100 text-sm text-slate-400">
-            {{ $submissions->links() }}
-        </div>
-    </div>
-
-</div>
 @endsection

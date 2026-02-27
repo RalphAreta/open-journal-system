@@ -1,5 +1,5 @@
 @php
-use App\Models\Submission;
+    use App\Models\Submission;
 @endphp
 
 @extends('layouts.app')
@@ -7,593 +7,1462 @@ use App\Models\Submission;
 @section('title', 'Chief Editor Dashboard')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<style>
-    .font-serif-display { font-family: 'Instrument Serif', serif; }
-    .font-body          { font-family: 'DM Sans', sans-serif; }
+    <link
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet"
+    />
+    <style>
+        :root {
+            --teal: #2d8176;
+            --teal-d: #236860;
+            --gold: #c9a84c;
+            --gold-l: #f0d678;
+            --ink: #0d1628;
+            --mist: #f5f0e8;
+            --red: #dc2626;
+        }
 
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(10px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-    .fade-up   { animation: fadeUp .35s ease both; }
-    .fade-up-1 { animation: fadeUp .35s .06s ease both; }
-    .fade-up-2 { animation: fadeUp .35s .12s ease both; }
-    .fade-up-3 { animation: fadeUp .35s .18s ease both; }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        @keyframes pulse-teal {
+            0% {
+                box-shadow: 0 0 0 0 rgba(45, 129, 118, 0.5);
+            }
+            70% {
+                box-shadow: 0 0 0 6px rgba(45, 129, 118, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(45, 129, 118, 0);
+            }
+        }
 
-    /* Tab underline */
-    .tab-btn {
-        position: relative;
-        padding-bottom: 10px;
-        color: #94a3b8;
-        font-size: .75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .08em;
-        transition: color .2s;
-        white-space: nowrap;
-    }
-    .tab-btn::after {
-        content: '';
-        position: absolute;
-        bottom: 0; left: 0; right: 0;
-        height: 2px;
-        border-radius: 2px;
-        background: #dc2626;
-        transform: scaleX(0);
-        transition: transform .22s ease;
-    }
-    .tab-btn.active { color: #0f172a; }
-    .tab-btn.active::after { transform: scaleX(1); }
-    .tab-btn:hover:not(.active) { color: #475569; }
+        .fade-up {
+            opacity: 0;
+            animation: fadeUp 0.5s cubic-bezier(0.22, 0.68, 0, 1.2) forwards;
+        }
+        .fade-up-1 {
+            opacity: 0;
+            animation: fadeUp 0.5s 0.08s cubic-bezier(0.22, 0.68, 0, 1.2)
+                forwards;
+        }
+        .fade-up-2 {
+            opacity: 0;
+            animation: fadeUp 0.5s 0.16s cubic-bezier(0.22, 0.68, 0, 1.2)
+                forwards;
+        }
+        .fade-up-3 {
+            opacity: 0;
+            animation: fadeUp 0.5s 0.24s cubic-bezier(0.22, 0.68, 0, 1.2)
+                forwards;
+        }
 
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
+        .shimmer-bar {
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--gold),
+                var(--gold-l),
+                var(--gold),
+                transparent
+            );
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+        .pulse-dot {
+            animation: pulse-teal 2s infinite;
+        }
 
-    /* Sortable TH */
-    th.sortable { cursor: pointer; user-select: none; }
-    th.sortable:hover .sort-icon { opacity: 1; }
-    .sort-icon { opacity: .35; transition: opacity .15s; margin-left: 3px; }
+        /* Stat cards */
+        .stat-card {
+            background: #fff;
+            border: 1.5px solid #ede8e0;
+            border-radius: 20px;
+            padding: 22px 24px;
+            position: relative;
+            overflow: hidden;
+            transition:
+                border-color 0.2s,
+                transform 0.15s,
+                box-shadow 0.2s;
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 72px;
+            height: 72px;
+            border-radius: 0 20px 0 72px;
+            opacity: 0.07;
+            transition: opacity 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(13, 22, 40, 0.1);
+        }
+        .stat-card:hover::after {
+            opacity: 0.13;
+        }
 
-    /* Search input */
-    .search-wrap input:focus { outline: none; box-shadow: 0 0 0 3px rgba(220,38,38,.12); }
+        .stat-card.c-teal {
+        }
+        .stat-card.c-teal:hover {
+            border-color: var(--teal);
+        }
+        .stat-card.c-teal::after {
+            background: var(--teal);
+        }
+        .stat-card.c-red {
+        }
+        .stat-card.c-red:hover {
+            border-color: var(--red);
+        }
+        .stat-card.c-red::after {
+            background: var(--red);
+        }
+        .stat-card.c-blue {
+        }
+        .stat-card.c-blue:hover {
+            border-color: #3b82f6;
+        }
+        .stat-card.c-blue::after {
+            background: #3b82f6;
+        }
+        .stat-card.c-emerald {
+        }
+        .stat-card.c-emerald:hover {
+            border-color: #10b981;
+        }
+        .stat-card.c-emerald::after {
+            background: #10b981;
+        }
 
-    /* Compact row */
-    tbody tr { animation: fadeUp .25s ease both; }
-</style>
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .stat-icon.c-teal {
+            background: rgba(45, 129, 118, 0.1);
+        }
+        .stat-icon.c-red {
+            background: #fee2e2;
+        }
+        .stat-icon.c-blue {
+            background: #dbeafe;
+        }
+        .stat-icon.c-emerald {
+            background: #d1fae5;
+        }
+
+        .stat-number {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2.6rem;
+            line-height: 1;
+            font-weight: 700;
+            margin-top: 14px;
+        }
+        .stat-number.c-teal {
+            color: var(--teal);
+        }
+        .stat-number.c-red {
+            color: var(--red);
+        }
+        .stat-number.c-blue {
+            color: #2563eb;
+        }
+        .stat-number.c-emerald {
+            color: #059669;
+        }
+
+        /* Tab bar */
+        .tab-bar {
+            display: flex;
+            align-items: flex-end;
+            gap: 0;
+            border-bottom: 1.5px solid #ede8e0;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            position: relative;
+            padding: 12px 20px 14px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #b0aaa0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: color 0.2s;
+        }
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -1.5px;
+            left: 0;
+            right: 0;
+            height: 2.5px;
+            border-radius: 2px;
+            background: var(--teal);
+            transform: scaleX(0);
+            transition: transform 0.22s ease;
+        }
+        .tab-btn.active {
+            color: var(--ink);
+        }
+        .tab-btn.active::after {
+            transform: scaleX(1);
+        }
+        .tab-btn:hover:not(.active) {
+            color: #6a7890;
+        }
+
+        .tab-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 9px;
+            font-weight: 900;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+        .tab-count.red {
+            background: #fee2e2;
+            color: var(--red);
+        }
+        .tab-count.slate {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        .tab-count.amber {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Search + filter */
+        .search-wrap {
+            position: relative;
+            background: #fff;
+            border: 1.5px solid #e2ddd4;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            transition:
+                border-color 0.2s,
+                box-shadow 0.2s;
+        }
+        .search-wrap:focus-within {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 4px rgba(45, 129, 118, 0.1);
+        }
+        .search-wrap input {
+            flex: 1;
+            padding: 11px 10px;
+            border: none;
+            background: transparent;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ink);
+            outline: none;
+        }
+        .search-wrap input::placeholder {
+            color: #b8b0a4;
+        }
+
+        .filter-select {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6a7890;
+            background: #fff;
+            border: 1.5px solid #e2ddd4;
+            border-radius: 14px;
+            padding: 11px 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .filter-select:focus {
+            border-color: var(--teal);
+        }
+
+        /* Table card */
+        .card {
+            background: #fff;
+            border: 1.5px solid #ede8e0;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(13, 22, 40, 0.06);
+        }
+
+        /* Tables */
+        .ce-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .ce-table thead tr {
+            background: linear-gradient(to right, #faf8f5, #f5f0e8);
+            border-bottom: 1.5px solid #ede8e0;
+        }
+        .ce-table thead th {
+            padding: 13px 20px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: #b0aaa0;
+            text-align: left;
+            white-space: nowrap;
+        }
+        .ce-table thead th.sortable {
+            cursor: pointer;
+        }
+        .ce-table thead th.sortable:hover {
+            color: var(--teal);
+        }
+        .ce-table thead th:last-child {
+            text-align: right;
+        }
+        .sort-icon {
+            opacity: 0.35;
+            margin-left: 3px;
+            font-size: 10px;
+            transition: opacity 0.15s;
+        }
+        .ce-table thead th.sortable:hover .sort-icon {
+            opacity: 1;
+        }
+
+        .ce-table tbody tr {
+            border-bottom: 1px solid #f0ece6;
+            transition: background 0.15s;
+        }
+        .ce-table tbody tr:last-child {
+            border-bottom: none;
+        }
+        .ce-table tbody tr:hover {
+            background: #faf8f5;
+        }
+        .ce-table tbody tr:hover .row-title {
+            color: var(--teal);
+        }
+        .ce-table td {
+            padding: 15px 20px;
+            vertical-align: middle;
+        }
+
+        .row-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--ink);
+            transition: color 0.15s;
+            line-height: 1.4;
+        }
+
+        /* Status badges */
+        .s-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 1px solid transparent;
+        }
+        .s-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .s-badge.accepted {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #15803d;
+        }
+        .s-badge.accepted .dot {
+            background: #16a34a;
+        }
+        .s-badge.rejected {
+            background: #fff5f5;
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+        .s-badge.rejected .dot {
+            background: #dc2626;
+        }
+        .s-badge.under_review {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+        .s-badge.under_review .dot {
+            background: #2563eb;
+        }
+        .s-badge.revisions {
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #b45309;
+        }
+        .s-badge.revisions .dot {
+            background: #d97706;
+        }
+        .s-badge.pending {
+            background: #fef3c7;
+            border-color: #fde68a;
+            color: #d97706;
+        }
+        .s-badge.pending .dot {
+            background: #f59e0b;
+        }
+        .s-badge.approved {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #15803d;
+        }
+        .s-badge.approved .dot {
+            background: #16a34a;
+        }
+        .s-badge.default {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #475569;
+        }
+        .s-badge.default .dot {
+            background: #94a3b8;
+        }
+
+        /* Field badge */
+        .field-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 9px;
+            border-radius: 100px;
+            background: rgba(45, 129, 118, 0.08);
+            border: 1px solid rgba(45, 129, 118, 0.15);
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--teal);
+        }
+
+        /* Buttons */
+        .btn-assign {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 16px;
+            border-radius: 10px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: var(--teal);
+            color: #fff;
+            text-decoration: none;
+            transition:
+                background 0.15s,
+                transform 0.12s,
+                box-shadow 0.15s;
+            box-shadow: 0 4px 12px rgba(45, 129, 118, 0.2);
+        }
+        .btn-assign:hover {
+            background: var(--teal-d);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(45, 129, 118, 0.3);
+        }
+
+        .btn-view {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--teal);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+        .btn-view:hover {
+            color: var(--teal-d);
+        }
+
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: rgba(45, 129, 118, 0.08);
+            color: var(--teal);
+            transition: background 0.15s;
+            text-decoration: none;
+        }
+        .btn-icon:hover {
+            background: rgba(45, 129, 118, 0.18);
+        }
+        .btn-icon.slate {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        .btn-icon.slate:hover {
+            background: #e2e8f0;
+        }
+
+        /* Empty / success states */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 56px 24px;
+            text-align: center;
+        }
+        .empty-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        /* Pagination area */
+        .table-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-top: 1px solid #ede8e0;
+            background: #faf8f5;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 11px;
+            color: #b0aaa0;
+        }
+
+        /* Section sub-heading */
+        .sub-heading {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #b0aaa0;
+            margin-bottom: 14px;
+        }
+    </style>
 @endpush
 
 @section('content')
-<div class="font-body">
+    <div
+        class="min-h-screen font-['Source_Sans_3']"
+        style="
+            background: linear-gradient(
+                135deg,
+                #f5f0e8 0%,
+                #ede5d5 50%,
+                #e8e0f0 100%
+            );
+        "
+    >
+        <div class="fixed top-0 left-0 right-0 h-[2px] shimmer-bar z-50"></div>
 
-    {{-- ── Header ── --}}
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6 fade-up">
-        <div>
-            <h1 class="font-serif-display text-[1.75rem] font-normal text-slate-900 tracking-[-0.015em] leading-tight">
-                Chief Editor Dashboard
-            </h1>
-            <p class="text-[13px] text-slate-400 mt-0.5">Manage submissions and assign editors</p>
-        </div>
-        <span class="text-[11px] font-semibold text-slate-400 bg-white border border-slate-200 px-3 py-1.5 rounded-full hidden sm:inline-block">
-            {{ now()->format('D, M j Y') }}
-        </span>
-    </div>
-
-    {{-- ── Stats Grid ── --}}
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-7 fade-up-1">
-
-        @php
-        $stats_cards = [
-            ['label' => 'Total Submissions', 'value' => $stats['total_submissions'], 'icon' => '📄', 'color' => 'slate'],
-            ['label' => 'Pending Assignment', 'value' => $stats['pending_assignments'], 'icon' => '⏳', 'color' => 'red'],
-            ['label' => 'Under Review',       'value' => $stats['under_review'],       'icon' => '👁️', 'color' => 'blue'],
-            ['label' => 'Completed',          'value' => $stats['completed'],          'icon' => '✓',  'color' => 'emerald'],
-        ];
-        $colorMap = [
-            'slate'   => ['border' => 'border-slate-200',   'hover' => 'hover:border-slate-300',   'bg' => 'bg-slate-100',   'text' => 'text-slate-900'],
-            'red'     => ['border' => 'border-slate-200',   'hover' => 'hover:border-red-200',     'bg' => 'bg-red-50',      'text' => 'text-red-600'],
-            'blue'    => ['border' => 'border-slate-200',   'hover' => 'hover:border-blue-200',    'bg' => 'bg-blue-50',     'text' => 'text-blue-600'],
-            'emerald' => ['border' => 'border-slate-200',   'hover' => 'hover:border-emerald-200', 'bg' => 'bg-emerald-50',  'text' => 'text-emerald-600'],
-        ];
-        @endphp
-
-        @foreach ($stats_cards as $card)
-        @php $c = $colorMap[$card['color']]; @endphp
-        <div class="bg-white border {{ $c['border'] }} {{ $c['hover'] }} rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">{{ $card['label'] }}</span>
-                <div class="w-8 h-8 rounded-lg {{ $c['bg'] }} flex items-center justify-center text-sm">{{ $card['icon'] }}</div>
-            </div>
-            <p class="font-serif-display text-[2rem] leading-none {{ $c['text'] }}">{{ $card['value'] }}</p>
-        </div>
-        @endforeach
-
-    </div>
-
-    {{-- ── Tabbed Tables ── --}}
-    <div class="fade-up-2">
-
-        {{-- Tab Bar --}}
-        <div class="flex items-end gap-6 border-b border-slate-200 mb-5">
-            <button class="tab-btn active" data-tab="pending" onclick="switchTab('pending', this)">
-                Pending Assignment
-                <span class="ml-1.5 inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-100 text-red-600 text-[10px] font-bold">
-                    {{ $stats['pending_assignments'] }}
+        <div class="max-w-6xl mx-auto py-10 px-4 space-y-6">
+            {{-- ── Header ── --}}
+            <div
+                class="fade-up flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4"
+            >
+                <div>
+                    <p
+                        class="text-[10px] font-black uppercase tracking-[.2em] text-[var(--teal)] mb-1 flex items-center gap-2"
+                    >
+                        <span
+                            class="w-1.5 h-1.5 rounded-full bg-[var(--teal)] pulse-dot"
+                        ></span>
+                        Journal System · Chief Editor Portal
+                    </p>
+                    <h1
+                        class="font-['Libre_Baskerville'] text-4xl font-bold text-[var(--ink)] leading-tight"
+                    >
+                        Chief Editor
+                        <em
+                            class="not-italic bg-gradient-to-r from-[var(--teal)] to-[#1a6b62] bg-clip-text text-transparent"
+                        >
+                            Dashboard
+                        </em>
+                    </h1>
+                    <p class="text-sm text-[#8a96a8] mt-1">
+                        Manage submissions and assign editors
+                    </p>
+                </div>
+                <span
+                    class="px-4 py-2 bg-white/80 border border-[#ddd8ce] rounded-xl text-[11px] font-bold text-[#9ea8b8] uppercase tracking-widest backdrop-blur-sm hidden sm:block"
+                >
+                    {{ now()->format('D, M j Y') }}
                 </span>
-            </button>
-            <button class="tab-btn" data-tab="assigned" onclick="switchTab('assigned', this)">
-                Assigned Submissions
-                <span class="ml-1.5 inline-flex items-center justify-center w-5 h-5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold">
-                    {{ $assignedSubmissions->total() }}
-                </span>
-            </button>
-            <button class="tab-btn" data-tab="appeals" onclick="switchTab('appeals', this)">
-                Appeals
-                <span class="ml-1.5 inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-100 text-amber-600 text-[10px] font-bold">
-                    {{ $stats['pending_appeals'] }}
-                </span>
-            </button>
-        </div>
-
-        {{-- ── PENDING TAB ── --}}
-        <div id="tab-pending" class="tab-panel active">
-
-            {{-- Search + Filter bar --}}
-            <div class="flex flex-col sm:flex-row gap-3 mb-4">
-                <div class="search-wrap relative flex-1">
-                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/>
-                    </svg>
-                    <input type="text"
-                           id="pending-search"
-                           placeholder="Search by title or author…"
-                           oninput="filterTable('pending-tbody', this.value)"
-                           class="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:border-red-300 transition-colors placeholder:text-slate-400">
-                </div>
-                <select id="pending-field-filter"
-                        onchange="filterTable('pending-tbody', document.getElementById('pending-search').value)"
-                        class="text-sm bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-600 focus:outline-none focus:border-red-300 transition-colors">
-                    <option value="">All Research Fields</option>
-                    @foreach ($pendingSubmissions->unique('research_field')->pluck('research_field')->filter() as $field)
-                    <option value="{{ $field }}">{{ $field }}</option>
-                    @endforeach
-                </select>
             </div>
 
-            @if ($pendingSubmissions->count() > 0)
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="overflow-x-auto">
-                    <table class="w-full" id="pending-table">
-                        <thead class="bg-slate-50 border-b border-slate-100">
-                            <tr>
-                                <th class="sortable px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400"
-                                    onclick="sortTable('pending-tbody', 0, this)">
-                                    Title <span class="sort-icon">↕</span>
-                                </th>
-                                <th class="sortable px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400"
-                                    onclick="sortTable('pending-tbody', 1, this)">
-                                    Author <span class="sort-icon">↕</span>
-                                </th>
-                                <th class="sortable px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400"
-                                    onclick="sortTable('pending-tbody', 2, this)">
-                                    Research Field <span class="sort-icon">↕</span>
-                                </th>
-                                <th class="sortable px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400"
-                                    onclick="sortTable('pending-tbody', 3, this)">
-                                    Submitted <span class="sort-icon">↕</span>
-                                </th>
-                                <th class="px-5 py-3 text-right text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pending-tbody">
-                            @foreach ($pendingSubmissions as $submission)
-                            <tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50/70 transition-colors group"
-                                data-title="{{ strtolower($submission->title) }}"
-                                data-author="{{ strtolower($submission->author->name) }}"
-                                data-field="{{ strtolower($submission->research_field ?? '') }}">
-                                <td class="px-5 py-3.5">
-                                    <p class="text-sm font-semibold text-slate-800 group-hover:text-red-600 transition-colors leading-snug">
-                                        {{ Str::limit($submission->title, 45) }}
-                                    </p>
-                                </td>
-                                <td class="px-5 py-3.5">
-                                    <p class="text-sm text-slate-500">{{ $submission->author->name }}</p>
-                                </td>
-                                <td class="px-5 py-3.5">
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-100 text-[10px] font-bold uppercase tracking-[.04em] text-blue-700">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                                        {{ $submission->research_field ?? 'N/A' }}
-                                    </span>
-                                </td>
-                                <td class="px-5 py-3.5">
-                                    <p class="text-[11px] font-medium text-slate-400">{{ $submission->submitted_at->format('M d, Y') }}</p>
-                                </td>
-                                <td class="px-5 py-3.5 text-right">
-                                    <a href="{{ route('chief-editor.submission.show', $submission) }}"
-                                       class="inline-flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white
-                                              px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-[.05em]
-                                              transition-all hover:-translate-y-0.5">
-                                        Review &amp; Assign
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {{-- ── Stats Grid ── --}}
+            <div class="fade-up-1 grid grid-cols-2 lg:grid-cols-4 gap-4">
+                @php
+                    $cards = [
+                        ['label' => 'Total Submissions', 'value' => $stats['total_submissions'], 'icon' => '📄', 'c' => 'c-teal'],
+                        ['label' => 'Pending Assignment', 'value' => $stats['pending_assignments'], 'icon' => '⏳', 'c' => 'c-red'],
+                        ['label' => 'Under Review', 'value' => $stats['under_review'], 'icon' => '👁️', 'c' => 'c-blue'],
+                        ['label' => 'Completed', 'value' => $stats['completed'], 'icon' => '✓', 'c' => 'c-emerald'],
+                    ];
+                @endphp
 
-            {{-- Pagination --}}
-            <div class="mt-3 flex items-center justify-between text-[11px] text-slate-400">
-                <span>Showing {{ $pendingSubmissions->firstItem() }}–{{ $pendingSubmissions->lastItem() }} of {{ $pendingSubmissions->total() }}</span>
-                <div>{{ $pendingSubmissions->links() }}</div>
-            </div>
-
-            @else
-            <div class="bg-white border border-emerald-200 rounded-2xl px-6 py-10 text-center shadow-sm">
-                <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-3">
-                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
-                </div>
-                <p class="text-sm font-semibold text-emerald-700">All submissions have been assigned!</p>
-            </div>
-            @endif
-
-        </div>{{-- /tab-pending --}}
-
-        {{-- ── ASSIGNED TAB ── --}}
-        <div id="tab-assigned" class="tab-panel">
-
-            {{-- Search + Status filter --}}
-            <div class="flex flex-col sm:flex-row gap-3 mb-4">
-                <div class="search-wrap relative flex-1">
-                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/>
-                    </svg>
-                    <input type="text"
-                           id="assigned-search"
-                           placeholder="Search by title or editor…"
-                           oninput="filterTable('assigned-tbody', this.value)"
-                           class="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:border-red-300 transition-colors placeholder:text-slate-400">
-                </div>
-                <select id="assigned-status-filter"
-                        onchange="filterTable('assigned-tbody', document.getElementById('assigned-search').value)"
-                        class="text-sm bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-600 focus:outline-none focus:border-red-300 transition-colors">
-                    <option value="">All Statuses</option>
-                    @foreach (Submission::statusOptions() as $key => $label)
-                    <option value="{{ $key }}">{{ $label }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            @if ($assignedSubmissions->count() > 0)
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-slate-50 border-b border-slate-100">
-                            <tr>
-                                <th class="sortable px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400"
-                                    onclick="sortTable('assigned-tbody', 0, this)">
-                                    Title <span class="sort-icon">↕</span>
-                                </th>
-                                <th class="sortable px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400"
-                                    onclick="sortTable('assigned-tbody', 1, this)">
-                                    Assigned Editor <span class="sort-icon">↕</span>
-                                </th>
-                                <th class="sortable px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400"
-                                    onclick="sortTable('assigned-tbody', 2, this)">
-                                    Status <span class="sort-icon">↕</span>
-                                </th>
-                                <th class="sortable px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400"
-                                    onclick="sortTable('assigned-tbody', 3, this)">
-                                    Assigned Date <span class="sort-icon">↕</span>
-                                </th>
-                                <th class="px-5 py-3 text-right text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="assigned-tbody">
-                            @foreach ($assignedSubmissions as $submission)
-                            @php
-                                $cls = match($submission->status) {
-                                    'accepted'            => 'bg-emerald-50 border-emerald-200 text-emerald-700 dot-emerald',
-                                    'rejected'            => 'bg-red-50 border-red-200 text-red-700 dot-red',
-                                    'under_review'        => 'bg-blue-50 border-blue-200 text-blue-700 dot-blue',
-                                    'revisions_requested' => 'bg-amber-50 border-amber-200 text-amber-700 dot-amber',
-                                    default               => 'bg-slate-50 border-slate-200 text-slate-600 dot-slate',
-                                };
-                                $dotColor = match($submission->status) {
-                                    'accepted'            => 'bg-emerald-500',
-                                    'rejected'            => 'bg-red-500',
-                                    'under_review'        => 'bg-blue-500',
-                                    'revisions_requested' => 'bg-amber-500',
-                                    default               => 'bg-slate-400',
-                                };
-                            @endphp
-                            <tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50/70 transition-colors group"
-                                data-title="{{ strtolower($submission->title) }}"
-                                data-editor="{{ strtolower($submission->assignedEditor->name ?? '') }}"
-                                data-status="{{ $submission->status }}">
-                                <td class="px-5 py-3.5">
-                                    <p class="text-sm font-semibold text-slate-800 group-hover:text-red-600 transition-colors leading-snug">
-                                        {{ Str::limit($submission->title, 45) }}
-                                    </p>
-                                </td>
-                                <td class="px-5 py-3.5">
-                                    <p class="text-sm text-slate-500">{{ $submission->assignedEditor->name ?? '—' }}</p>
-                                </td>
-                                <td class="px-5 py-3.5">
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-[.04em] {{ $cls }}">
-                                        <span class="w-1.5 h-1.5 rounded-full {{ $dotColor }}"></span>
-                                        {{ Submission::statusOptions()[$submission->status] ?? $submission->status }}
-                                    </span>
-                                </td>
-                                <td class="px-5 py-3.5">
-                                    <p class="text-[11px] font-medium text-slate-400">
-                                        {{ $submission->chief_editor_review_at?->format('M d, Y') ?? '—' }}
-                                    </p>
-                                </td>
-                                <td class="px-5 py-3.5 text-right">
-                                    <a href="{{ route('chief-editor.submission.show', $submission) }}"
-                                       class="text-[11px] font-bold uppercase tracking-[.06em] text-red-500 hover:text-red-700 transition-colors">
-                                        View →
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="mt-3 flex items-center justify-between text-[11px] text-slate-400">
-                <span>Showing {{ $assignedSubmissions->firstItem() }}–{{ $assignedSubmissions->lastItem() }} of {{ $assignedSubmissions->total() }}</span>
-                <div>{{ $assignedSubmissions->links('pagination::tailwind') }}</div>
-            </div>
-
-            @else
-            <div class="bg-white border border-slate-200 rounded-2xl px-6 py-10 text-center shadow-sm">
-                <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-3">
-                    <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="1.5"/>
-                    </svg>
-                </div>
-                <p class="text-[11px] font-bold uppercase tracking-widest text-slate-300">No assigned submissions yet</p>
-            </div>
-            @endif
-
-        </div>{{-- /tab-assigned --}}
-
-        {{-- ── APPEALS TAB ── --}}
-        <div id="tab-appeals" class="tab-panel">
-
-            {{-- Search bar --}}
-            <div class="flex flex-col sm:flex-row gap-3 mb-4">
-                <div class="search-wrap relative flex-1">
-                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/>
-                    </svg>
-                    <input type="text"
-                           id="appeals-search"
-                           placeholder="Search by title or author…"
-                           oninput="filterTable('appeals-tbody', this.value)"
-                           class="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:border-red-300 transition-colors placeholder:text-slate-400">
-                </div>
-            </div>
-
-            @if ($pendingAppeals->count() > 0)
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-slate-50 border-b border-slate-100">
-                            <tr>
-                                <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Manuscript</th>
-                                <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Author</th>
-                                <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Submitted</th>
-                                <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Status</th>
-                                <th class="px-5 py-3 text-right text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="appeals-tbody">
-                            @foreach ($pendingAppeals as $appeal)
-                            <tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50/70 transition-colors group"
-                                data-title="{{ strtolower($appeal->submission->title) }}"
-                                data-author="{{ strtolower($appeal->author->name) }}">
-                                <td class="px-5 py-3.5">
-                                    <p class="text-sm font-semibold text-slate-800 group-hover:text-red-600 transition-colors leading-snug">
-                                        {{ Str::limit($appeal->submission->title, 45) }}
-                                    </p>
-                                    <p class="text-[10px] text-slate-400 mt-0.5">#{{ str_pad($appeal->submission->id, 5, '0', STR_PAD_LEFT) }}</p>
-                                </td>
-                                <td class="px-5 py-3.5">
-                                    <p class="text-sm text-slate-600 font-medium">{{ $appeal->author->name }}</p>
-                                    <p class="text-[10px] text-slate-400">{{ $appeal->author->email }}</p>
-                                </td>
-                                <td class="px-5 py-3.5">
-                                    <p class="text-sm text-slate-600">{{ $appeal->created_at->format('M d, Y') }}</p>
-                                </td>
-                                <td class="px-5 py-3.5">
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-100 text-[10px] font-bold uppercase tracking-[.04em] text-amber-700">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                                        Pending
-                                    </span>
-                                </td>
-                                <td class="px-5 py-3.5 text-right">
-                                    <a href="{{ route('appeals.show', $appeal) }}"
-                                       class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round"/>
-                                        </svg>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="mt-3 flex items-center justify-between text-[11px] text-slate-400">
-                <span>Showing {{ $pendingAppeals->firstItem() }}–{{ $pendingAppeals->lastItem() }} of {{ $pendingAppeals->total() }}</span>
-                <div>{{ $pendingAppeals->links('pagination::tailwind') }}</div>
-            </div>
-
-            @else
-            <div class="bg-white border border-emerald-200 rounded-2xl px-6 py-10 text-center shadow-sm">
-                <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-3">
-                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
-                </div>
-                <p class="text-sm font-semibold text-emerald-700">No pending appeals to review!</p>
-            </div>
-            @endif
-
-            {{-- Completed Appeals Section --}}
-            @if ($completedAppeals->count() > 0)
-            <div class="mt-8 pt-6 border-t border-slate-200">
-                <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Completed Appeals</h3>
-                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-slate-50 border-b border-slate-100">
-                                <tr>
-                                    <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Manuscript</th>
-                                    <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Author</th>
-                                    <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Decision</th>
-                                    <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Reviewed</th>
-                                    <th class="px-5 py-3 text-right text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="completed-appeals-tbody">
-                                @foreach ($completedAppeals as $appeal)
-                                <tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50/70 transition-colors group"
-                                    data-title="{{ strtolower($appeal->submission->title) }}"
-                                    data-author="{{ strtolower($appeal->author->name) }}">
-                                    <td class="px-5 py-3.5">
-                                        <p class="text-sm font-semibold text-slate-800 group-hover:text-red-600 transition-colors leading-snug">
-                                            {{ Str::limit($appeal->submission->title, 45) }}
-                                        </p>
-                                        <p class="text-[10px] text-slate-400 mt-0.5">#{{ str_pad($appeal->submission->id, 5, '0', STR_PAD_LEFT) }}</p>
-                                    </td>
-                                    <td class="px-5 py-3.5">
-                                        <p class="text-sm text-slate-600 font-medium">{{ $appeal->author->name }}</p>
-                                        <p class="text-[10px] text-slate-400">{{ $appeal->author->email }}</p>
-                                    </td>
-                                    <td class="px-5 py-3.5">
-                                        @if ($appeal->status === 'approved')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-100 text-[10px] font-bold uppercase tracking-[.04em] text-emerald-700">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                            Approved
-                                        </span>
-                                        @else
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-50 border border-red-100 text-[10px] font-bold uppercase tracking-[.04em] text-red-700">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
-                                            Rejected
-                                        </span>
-                                        @endif
-                                    </td>
-                                    <td class="px-5 py-3.5">
-                                        <p class="text-sm text-slate-600">{{ $appeal->reviewed_at->format('M d, Y') }}</p>
-                                        <p class="text-[10px] text-slate-400">by {{ $appeal->reviewedBy->name ?? 'System' }}</p>
-                                    </td>
-                                    <td class="px-5 py-3.5 text-right">
-                                        <a href="{{ route('appeals.show', $appeal) }}"
-                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round"/>
-                                            </svg>
-                                        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                @foreach ($cards as $card)
+                    <div class="stat-card {{ $card['c'] }}">
+                        <div class="flex items-center justify-between">
+                            <span
+                                class="text-[9px] font-black uppercase tracking-[.15em] text-[#b0aaa0]"
+                            >
+                                {{ $card['label'] }}
+                            </span>
+                            <div class="stat-icon {{ $card['c'] }}">
+                                {{ $card['icon'] }}
+                            </div>
+                        </div>
+                        <p class="stat-number {{ $card['c'] }}">
+                            {{ $card['value'] }}
+                        </p>
+                        <div class="mt-3 h-[3px] rounded-full bg-[#f0ece6]">
+                            <div
+                                class="h-full rounded-full {{ $card['c'] === 'c-teal' ? 'bg-[var(--teal)]' : ($card['c'] === 'c-red' ? 'bg-[var(--red)]' : ($card['c'] === 'c-blue' ? 'bg-blue-500' : 'bg-emerald-500')) }}"
+                                style="
+                                    width: {{ $stats['total_submissions'] ? min(100, ($card['value'] / $stats['total_submissions']) * 100) : 0 }}%;
+                                "
+                            ></div>
+                        </div>
                     </div>
+                @endforeach
+            </div>
+
+            {{-- ── Tabbed Section ── --}}
+            <div class="fade-up-2">
+                {{-- Tab Bar --}}
+                <div class="tab-bar">
+                    <button
+                        class="tab-btn active"
+                        onclick="switchTab('pending', this)"
+                    >
+                        Pending Assignment
+                        <span class="tab-count red">
+                            {{ $stats['pending_assignments'] }}
+                        </span>
+                    </button>
+                    <button
+                        class="tab-btn"
+                        onclick="switchTab('assigned', this)"
+                    >
+                        Assigned
+                        <span class="tab-count slate">
+                            {{ $assignedSubmissions->total() }}
+                        </span>
+                    </button>
+                    <button
+                        class="tab-btn"
+                        onclick="switchTab('appeals', this)"
+                    >
+                        Appeals
+                        <span class="tab-count amber">
+                            {{ $stats['pending_appeals'] }}
+                        </span>
+                    </button>
                 </div>
 
-                <div class="mt-3 flex items-center justify-between text-[11px] text-slate-400">
-                    <span>Showing {{ $completedAppeals->firstItem() }}–{{ $completedAppeals->lastItem() }} of {{ $completedAppeals->total() }}</span>
-                    <div>{{ $completedAppeals->links('pagination::tailwind') }}</div>
+                {{-- ── PENDING TAB ── --}}
+                <div id="tab-pending" class="tab-panel active">
+                    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                        <div class="search-wrap flex-1">
+                            <svg
+                                class="w-4 h-4 text-[#c0b8b0] flex-shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle cx="11" cy="11" r="8" />
+                                <path
+                                    d="m21 21-4.35-4.35"
+                                    stroke-linecap="round"
+                                />
+                            </svg>
+                            <input
+                                type="text"
+                                id="pending-search"
+                                placeholder="Search by title or author…"
+                                oninput="
+                                    filterTable('pending-tbody', this.value)
+                                "
+                            />
+                        </div>
+                        <select
+                            id="pending-field-filter"
+                            class="filter-select"
+                            onchange="
+                                filterTable(
+                                    'pending-tbody',
+                                    document.getElementById('pending-search')
+                                        .value,
+                                )
+                            "
+                        >
+                            <option value="">All Research Fields</option>
+                            @foreach ($pendingSubmissions->unique('research_field')->pluck('research_field')->filter() as $field)
+                                <option value="{{ $field }}">
+                                    {{ $field }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    @if ($pendingSubmissions->count() > 0)
+                        <div class="card">
+                            <div class="overflow-x-auto">
+                                <table class="ce-table">
+                                    <thead>
+                                        <tr>
+                                            <th
+                                                class="sortable"
+                                                onclick="
+                                                    sortTable(
+                                                        'pending-tbody',
+                                                        0,
+                                                        this,
+                                                    )
+                                                "
+                                            >
+                                                Title
+                                                <span class="sort-icon">↕</span>
+                                            </th>
+                                            <th
+                                                class="sortable"
+                                                onclick="
+                                                    sortTable(
+                                                        'pending-tbody',
+                                                        1,
+                                                        this,
+                                                    )
+                                                "
+                                            >
+                                                Author
+                                                <span class="sort-icon">↕</span>
+                                            </th>
+                                            <th
+                                                class="sortable"
+                                                onclick="
+                                                    sortTable(
+                                                        'pending-tbody',
+                                                        2,
+                                                        this,
+                                                    )
+                                                "
+                                            >
+                                                Research Field
+                                                <span class="sort-icon">↕</span>
+                                            </th>
+                                            <th
+                                                class="sortable"
+                                                onclick="
+                                                    sortTable(
+                                                        'pending-tbody',
+                                                        3,
+                                                        this,
+                                                    )
+                                                "
+                                            >
+                                                Submitted
+                                                <span class="sort-icon">↕</span>
+                                            </th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pending-tbody">
+                                        @foreach ($pendingSubmissions as $s)
+                                            <tr
+                                                data-title="{{ strtolower($s->title) }}"
+                                                data-author="{{ strtolower($s->author->name) }}"
+                                                data-field="{{ strtolower($s->research_field ?? '') }}"
+                                            >
+                                                <td>
+                                                    <p class="row-title">
+                                                        {{ Str::limit($s->title, 48) }}
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="text-sm text-[#6a7890]"
+                                                    >
+                                                        {{ $s->author->name }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="field-badge">
+                                                        <span
+                                                            class="w-1.5 h-1.5 rounded-full bg-[var(--teal)]"
+                                                        ></span>
+                                                        {{ $s->research_field ?? 'N/A' }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="text-[11px] text-[#b0aaa0] font-mono"
+                                                    >
+                                                        {{ $s->submitted_at->format('M d, Y') }}
+                                                    </span>
+                                                </td>
+                                                <td style="text-align: right">
+                                                    <a
+                                                        href="{{ route('chief-editor.submission.show', $s) }}"
+                                                        class="btn-assign"
+                                                    >
+                                                        <svg
+                                                            class="w-3 h-3"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path
+                                                                stroke-linecap="round"
+                                                                stroke-linejoin="round"
+                                                                stroke-width="2.5"
+                                                                d="M9 5l7 7-7 7"
+                                                            />
+                                                        </svg>
+                                                        Review & Assign
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-foot">
+                                <span>
+                                    Showing
+                                    {{ $pendingSubmissions->firstItem() }}–{{ $pendingSubmissions->lastItem() }}
+                                    of {{ $pendingSubmissions->total() }}
+                                </span>
+                                <div>{{ $pendingSubmissions->links() }}</div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="card">
+                            <div class="empty-state">
+                                <div class="empty-icon bg-emerald-50">✅</div>
+                                <p
+                                    class="font-['Libre_Baskerville'] font-bold text-[var(--ink)] text-sm"
+                                >
+                                    All submissions assigned!
+                                </p>
+                                <p class="text-[12px] text-[#b0aaa0] mt-1">
+                                    No pending submissions at this time.
+                                </p>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- ── ASSIGNED TAB ── --}}
+                <div id="tab-assigned" class="tab-panel">
+                    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                        <div class="search-wrap flex-1">
+                            <svg
+                                class="w-4 h-4 text-[#c0b8b0] flex-shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle cx="11" cy="11" r="8" />
+                                <path
+                                    d="m21 21-4.35-4.35"
+                                    stroke-linecap="round"
+                                />
+                            </svg>
+                            <input
+                                type="text"
+                                id="assigned-search"
+                                placeholder="Search by title or editor…"
+                                oninput="
+                                    filterTable('assigned-tbody', this.value)
+                                "
+                            />
+                        </div>
+                        <select
+                            id="assigned-status-filter"
+                            class="filter-select"
+                            onchange="
+                                filterTable(
+                                    'assigned-tbody',
+                                    document.getElementById('assigned-search')
+                                        .value,
+                                )
+                            "
+                        >
+                            <option value="">All Statuses</option>
+                            @foreach (Submission::statusOptions() as $key => $label)
+                                <option value="{{ $key }}">
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    @if ($assignedSubmissions->count() > 0)
+                        <div class="card">
+                            <div class="overflow-x-auto">
+                                <table class="ce-table">
+                                    <thead>
+                                        <tr>
+                                            <th
+                                                class="sortable"
+                                                onclick="
+                                                    sortTable(
+                                                        'assigned-tbody',
+                                                        0,
+                                                        this,
+                                                    )
+                                                "
+                                            >
+                                                Title
+                                                <span class="sort-icon">↕</span>
+                                            </th>
+                                            <th
+                                                class="sortable"
+                                                onclick="
+                                                    sortTable(
+                                                        'assigned-tbody',
+                                                        1,
+                                                        this,
+                                                    )
+                                                "
+                                            >
+                                                Assigned Editor
+                                                <span class="sort-icon">↕</span>
+                                            </th>
+                                            <th
+                                                class="sortable"
+                                                onclick="
+                                                    sortTable(
+                                                        'assigned-tbody',
+                                                        2,
+                                                        this,
+                                                    )
+                                                "
+                                            >
+                                                Status
+                                                <span class="sort-icon">↕</span>
+                                            </th>
+                                            <th
+                                                class="sortable"
+                                                onclick="
+                                                    sortTable(
+                                                        'assigned-tbody',
+                                                        3,
+                                                        this,
+                                                    )
+                                                "
+                                            >
+                                                Assigned Date
+                                                <span class="sort-icon">↕</span>
+                                            </th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="assigned-tbody">
+                                        @foreach ($assignedSubmissions as $s)
+                                            @php
+                                                $sc = match ($s->status) {
+                                                    'accepted' => 'accepted',
+                                                    'rejected' => 'rejected',
+                                                    'under_review' => 'under_review',
+                                                    'revisions_requested' => 'revisions',
+                                                    default => 'default',
+                                                };
+                                            @endphp
+
+                                            <tr
+                                                data-title="{{ strtolower($s->title) }}"
+                                                data-editor="{{ strtolower($s->assignedEditor->name ?? '') }}"
+                                                data-status="{{ $s->status }}"
+                                            >
+                                                <td>
+                                                    <p class="row-title">
+                                                        {{ Str::limit($s->title, 48) }}
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="text-sm text-[#6a7890]"
+                                                    >
+                                                        {{ $s->assignedEditor->name ?? '—' }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="s-badge {{ $sc }}"
+                                                    >
+                                                        <span
+                                                            class="dot"
+                                                        ></span>
+                                                        {{ Submission::statusOptions()[$s->status] ?? $s->status }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="text-[11px] text-[#b0aaa0] font-mono"
+                                                    >
+                                                        {{ $s->chief_editor_review_at?->format('M d, Y') ?? '—' }}
+                                                    </span>
+                                                </td>
+                                                <td style="text-align: right">
+                                                    <a
+                                                        href="{{ route('chief-editor.submission.show', $s) }}"
+                                                        class="btn-view"
+                                                    >
+                                                        View
+                                                        <svg
+                                                            class="w-3 h-3"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path
+                                                                stroke-linecap="round"
+                                                                stroke-linejoin="round"
+                                                                stroke-width="2.5"
+                                                                d="M9 5l7 7-7 7"
+                                                            />
+                                                        </svg>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-foot">
+                                <span>
+                                    Showing
+                                    {{ $assignedSubmissions->firstItem() }}–{{ $assignedSubmissions->lastItem() }}
+                                    of {{ $assignedSubmissions->total() }}
+                                </span>
+                                <div>
+                                    {{ $assignedSubmissions->links('pagination::tailwind') }}
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="card">
+                            <div class="empty-state">
+                                <div class="empty-icon bg-[#f5f0e8]">📄</div>
+                                <p
+                                    class="font-['Libre_Baskerville'] font-bold text-[var(--ink)] text-sm"
+                                >
+                                    No assigned submissions yet
+                                </p>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- ── APPEALS TAB ── --}}
+                <div id="tab-appeals" class="tab-panel">
+                    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                        <div class="search-wrap flex-1">
+                            <svg
+                                class="w-4 h-4 text-[#c0b8b0] flex-shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle cx="11" cy="11" r="8" />
+                                <path
+                                    d="m21 21-4.35-4.35"
+                                    stroke-linecap="round"
+                                />
+                            </svg>
+                            <input
+                                type="text"
+                                id="appeals-search"
+                                placeholder="Search by title or author…"
+                                oninput="
+                                    filterTable('appeals-tbody', this.value)
+                                "
+                            />
+                        </div>
+                    </div>
+
+                    @if ($pendingAppeals->count() > 0)
+                        <div class="card mb-6">
+                            <div class="overflow-x-auto">
+                                <table class="ce-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Manuscript</th>
+                                            <th>Author</th>
+                                            <th>Submitted</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="appeals-tbody">
+                                        @foreach ($pendingAppeals as $appeal)
+                                            <tr
+                                                data-title="{{ strtolower($appeal->submission->title) }}"
+                                                data-author="{{ strtolower($appeal->author->name) }}"
+                                            >
+                                                <td>
+                                                    <p class="row-title">
+                                                        {{ Str::limit($appeal->submission->title, 48) }}
+                                                    </p>
+                                                    <p
+                                                        class="text-[10px] text-[#b0aaa0] mt-0.5 font-mono"
+                                                    >
+                                                        #{{ str_pad($appeal->submission->id, 5, '0', STR_PAD_LEFT) }}
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <p
+                                                        class="text-sm font-semibold text-[#6a7890]"
+                                                    >
+                                                        {{ $appeal->author->name }}
+                                                    </p>
+                                                    <p
+                                                        class="text-[10px] text-[#b0aaa0]"
+                                                    >
+                                                        {{ $appeal->author->email }}
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="text-sm text-[#6a7890]"
+                                                    >
+                                                        {{ $appeal->created_at->format('M d, Y') }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="s-badge pending"
+                                                    >
+                                                        <span
+                                                            class="dot"
+                                                        ></span>
+                                                        Pending
+                                                    </span>
+                                                </td>
+                                                <td style="text-align: right">
+                                                    <a
+                                                        href="{{ route('appeals.show', $appeal) }}"
+                                                        class="btn-icon"
+                                                    >
+                                                        <svg
+                                                            class="w-4 h-4"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path
+                                                                d="M9 5l7 7-7 7"
+                                                                stroke-width="2"
+                                                                stroke-linecap="round"
+                                                            />
+                                                        </svg>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-foot">
+                                <span>
+                                    Showing
+                                    {{ $pendingAppeals->firstItem() }}–{{ $pendingAppeals->lastItem() }}
+                                    of {{ $pendingAppeals->total() }}
+                                </span>
+                                <div>
+                                    {{ $pendingAppeals->links('pagination::tailwind') }}
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="card mb-6">
+                            <div class="empty-state">
+                                <div class="empty-icon bg-emerald-50">✅</div>
+                                <p
+                                    class="font-['Libre_Baskerville'] font-bold text-[var(--ink)] text-sm"
+                                >
+                                    No pending appeals!
+                                </p>
+                                <p class="text-[12px] text-[#b0aaa0] mt-1">
+                                    All appeals have been reviewed.
+                                </p>
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Completed Appeals --}}
+                    @if ($completedAppeals->count() > 0)
+                        <div class="mt-2">
+                            <p class="sub-heading">Completed Appeals</p>
+                            <div class="card">
+                                <div class="overflow-x-auto">
+                                    <table class="ce-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Manuscript</th>
+                                                <th>Author</th>
+                                                <th>Decision</th>
+                                                <th>Reviewed</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="completed-appeals-tbody">
+                                            @foreach ($completedAppeals as $appeal)
+                                                <tr
+                                                    data-title="{{ strtolower($appeal->submission->title) }}"
+                                                    data-author="{{ strtolower($appeal->author->name) }}"
+                                                >
+                                                    <td>
+                                                        <p class="row-title">
+                                                            {{ Str::limit($appeal->submission->title, 48) }}
+                                                        </p>
+                                                        <p
+                                                            class="text-[10px] text-[#b0aaa0] mt-0.5 font-mono"
+                                                        >
+                                                            #{{ str_pad($appeal->submission->id, 5, '0', STR_PAD_LEFT) }}
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <p
+                                                            class="text-sm font-semibold text-[#6a7890]"
+                                                        >
+                                                            {{ $appeal->author->name }}
+                                                        </p>
+                                                        <p
+                                                            class="text-[10px] text-[#b0aaa0]"
+                                                        >
+                                                            {{ $appeal->author->email }}
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        @if ($appeal->status === 'approved')
+                                                            <span
+                                                                class="s-badge approved"
+                                                            >
+                                                                <span
+                                                                    class="dot"
+                                                                ></span>
+                                                                Approved
+                                                            </span>
+                                                        @else
+                                                            <span
+                                                                class="s-badge rejected"
+                                                            >
+                                                                <span
+                                                                    class="dot"
+                                                                ></span>
+                                                                Rejected
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <p
+                                                            class="text-sm text-[#6a7890]"
+                                                        >
+                                                            {{ $appeal->reviewed_at->format('M d, Y') }}
+                                                        </p>
+                                                        <p
+                                                            class="text-[10px] text-[#b0aaa0]"
+                                                        >
+                                                            by
+                                                            {{ $appeal->reviewedBy->name ?? 'System' }}
+                                                        </p>
+                                                    </td>
+                                                    <td
+                                                        style="
+                                                            text-align: right;
+                                                        "
+                                                    >
+                                                        <a
+                                                            href="{{ route('appeals.show', $appeal) }}"
+                                                            class="btn-icon slate"
+                                                        >
+                                                            <svg
+                                                                class="w-4 h-4"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <path
+                                                                    d="M9 5l7 7-7 7"
+                                                                    stroke-width="2"
+                                                                    stroke-linecap="round"
+                                                                />
+                                                            </svg>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="table-foot">
+                                    <span>
+                                        Showing
+                                        {{ $completedAppeals->firstItem() }}–{{ $completedAppeals->lastItem() }}
+                                        of {{ $completedAppeals->total() }}
+                                    </span>
+                                    <div>
+                                        {{ $completedAppeals->links('pagination::tailwind') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
-            @endif
+            {{-- /tabbed section --}}
 
-        </div>{{-- /tab-appeals --}}
-
-    </div>{{-- /tabbed section --}}
-
-</div>
+            <p
+                class="text-center text-[10px] text-[#c0b8b0] uppercase tracking-widest fade-up-3"
+            >
+                BatStateU · BIRJISE Journal System
+            </p>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
-<script>
-// ── Tab switching ──────────────────────────────────────────
-function switchTab(name, btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + name).classList.add('active');
-}
+    <script>
+        function switchTab(name, btn) {
+            document
+                .querySelectorAll('.tab-btn')
+                .forEach((b) => b.classList.remove('active'));
+            document
+                .querySelectorAll('.tab-panel')
+                .forEach((p) => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-' + name).classList.add('active');
+        }
 
-// ── Client-side search + filter ───────────────────────────
-function filterTable(tbodyId, searchVal) {
-    const tbody  = document.getElementById(tbodyId);
-    const rows   = tbody.querySelectorAll('tr');
-    const search = searchVal.toLowerCase().trim();
+        function filterTable(tbodyId, searchVal) {
+            const tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
+            const rows = tbody.querySelectorAll('tr');
+            const search = searchVal.toLowerCase().trim();
 
-    // Determine extra filter (field or status)
-    let extraFilter = '';
-    if (tbodyId === 'pending-tbody') {
-        extraFilter = document.getElementById('pending-field-filter')?.value.toLowerCase() ?? '';
-    } else {
-        extraFilter = document.getElementById('assigned-status-filter')?.value.toLowerCase() ?? '';
-    }
+            let extraFilter = '';
+            if (tbodyId === 'pending-tbody')
+                extraFilter =
+                    document
+                        .getElementById('pending-field-filter')
+                        ?.value.toLowerCase() ?? '';
+            if (tbodyId === 'assigned-tbody')
+                extraFilter =
+                    document
+                        .getElementById('assigned-status-filter')
+                        ?.value.toLowerCase() ?? '';
 
-    rows.forEach(row => {
-        const title  = row.dataset.title  ?? '';
-        const author = row.dataset.author ?? '';
-        const editor = row.dataset.editor ?? '';
-        const field  = row.dataset.field  ?? '';
-        const status = row.dataset.status ?? '';
+            rows.forEach((row) => {
+                const title = row.dataset.title ?? '';
+                const author = row.dataset.author ?? '';
+                const editor = row.dataset.editor ?? '';
+                const field = row.dataset.field ?? '';
+                const status = row.dataset.status ?? '';
 
-        const matchSearch = !search ||
-            title.includes(search) ||
-            author.includes(search) ||
-            editor.includes(search) ||
-            field.includes(search);
+                const matchSearch =
+                    !search ||
+                    title.includes(search) ||
+                    author.includes(search) ||
+                    editor.includes(search) ||
+                    field.includes(search);
+                const matchExtra =
+                    !extraFilter ||
+                    field.includes(extraFilter) ||
+                    status === extraFilter;
 
-        const matchExtra = !extraFilter ||
-            field.includes(extraFilter) ||
-            status === extraFilter;
+                row.style.display = matchSearch && matchExtra ? '' : 'none';
+            });
+        }
 
-        row.style.display = (matchSearch && matchExtra) ? '' : 'none';
-    });
-}
+        const sortState = {};
+        function sortTable(tbodyId, colIndex, th) {
+            const tbody = document.getElementById(tbodyId);
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const key = tbodyId + '-' + colIndex;
 
-// ── Client-side column sort ───────────────────────────────
-const sortState = {};
+            sortState[key] = sortState[key] === 'asc' ? 'desc' : 'asc';
+            const asc = sortState[key] === 'asc';
 
-function sortTable(tbodyId, colIndex, th) {
-    const tbody = document.getElementById(tbodyId);
-    const rows  = Array.from(tbody.querySelectorAll('tr'));
-    const key   = tbodyId + '-' + colIndex;
+            th.closest('thead')
+                .querySelectorAll('.sort-icon')
+                .forEach((el) => (el.textContent = '↕'));
+            th.querySelector('.sort-icon').textContent = asc ? '↑' : '↓';
 
-    // Toggle direction
-    sortState[key] = sortState[key] === 'asc' ? 'desc' : 'asc';
-    const asc = sortState[key] === 'asc';
-
-    // Update icons
-    th.closest('thead').querySelectorAll('.sort-icon').forEach(el => el.textContent = '↕');
-    th.querySelector('.sort-icon').textContent = asc ? '↑' : '↓';
-
-    rows.sort((a, b) => {
-        const aText = a.cells[colIndex]?.innerText.trim().toLowerCase() ?? '';
-        const bText = b.cells[colIndex]?.innerText.trim().toLowerCase() ?? '';
-        return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
-    });
-
-    rows.forEach(r => tbody.appendChild(r));
-}
-</script>
+            rows.sort((a, b) => {
+                const aText =
+                    a.cells[colIndex]?.innerText.trim().toLowerCase() ?? '';
+                const bText =
+                    b.cells[colIndex]?.innerText.trim().toLowerCase() ?? '';
+                return asc
+                    ? aText.localeCompare(bText)
+                    : bText.localeCompare(aText);
+            });
+            rows.forEach((r) => tbody.appendChild(r));
+        }
+    </script>
 @endpush
