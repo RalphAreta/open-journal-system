@@ -16,7 +16,7 @@
             <!-- Paper Details Card -->
             <div class="col-span-2 bg-white rounded-xl p-6 border border-[#e0d8cc]">
                 <h2 class="font-bold text-lg text-[#2D8176] mb-4">Paper Details</h2>
-                
+
                 <div class="space-y-4">
                     <div>
                         <p class="text-xs text-[#6a7890] uppercase tracking-wider mb-1">Title</p>
@@ -40,7 +40,7 @@
             <!-- Status Card -->
             <div class="bg-white rounded-xl p-6 border border-[#e0d8cc]">
                 <h2 class="font-bold text-lg text-[#2D8176] mb-4">Assignment Status</h2>
-                
+
                 <div class="space-y-4">
                     <div>
                         <p class="text-xs text-[#6a7890] uppercase tracking-wider mb-1">Status</p>
@@ -91,11 +91,11 @@
                         Upload your edited layout file after making adjustments.
                     @endif
                 </p>
-                
+
                 @if ($assignment->status !== 'completed')
                     <form action="{{ route('layout-editor.upload', ['layoutEditorAssignment' => $assignment->id]) }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        
+
                         <div class="mb-4">
                             <label class="block text-xs text-[#6a7890] uppercase tracking-wider font-bold mb-2">Upload File</label>
                             <input type="file" name="file" accept=".pdf,.doc,.docx" required
@@ -127,7 +127,7 @@
                             Download your layout file
                         </a>
                     </div>
-                    
+
                     @if ($assignment->notes)
                     <div class="mt-4 p-4 bg-[#f9f7f2] border border-[#e0d8cc] rounded-lg">
                         <p class="text-xs text-[#6a7890] uppercase tracking-wider font-bold mb-2">Your Notes</p>

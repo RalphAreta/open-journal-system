@@ -316,14 +316,14 @@ class ReviewController extends Controller
 
         $reviewerIds = $validated['reviewer_ids'];
         $dueAt = $validated['due_at'] ?? null;
-        
+
         // Check if this is a revised manuscript review
         $isRevisionReview = $submission->status === Submission::STATUS_REVISION_UNDER_REVIEW;
 
         if ($isRevisionReview) {
             // Handle revised manuscript review assignment
             $latestRevision = $submission->revisionRequests()->latest()->first();
-            
+
             if (!$latestRevision) {
                 return back()->withErrors('No revision request found for this submission.');
             }
@@ -699,7 +699,7 @@ class ReviewController extends Controller
     /**
      * Editor: forward revised manuscript to original reviewers
      * NEW WORKFLOW: Editor reviews revision first, then decides to forward to reviewers
-     * 
+     *
      * Route: POST /editor/submissions/{submission}/forward-revision-to-reviewers
      */
     public function forwardRevisionToReviewers(Request $request, Submission $submission): RedirectResponse

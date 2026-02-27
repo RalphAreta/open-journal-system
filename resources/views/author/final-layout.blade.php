@@ -13,7 +13,7 @@
             <!-- Paper Details Card -->
             <div class="col-span-2 bg-white rounded-xl p-6 border border-[#e0d8cc]">
                 <h2 class="font-bold text-lg text-[#2D8176] mb-4">Paper Details</h2>
-                
+
                 <div class="space-y-4">
                     <div>
                         <p class="text-xs text-[#6a7890] uppercase tracking-wider mb-1">Title</p>
@@ -37,7 +37,7 @@
             <!-- Status Card -->
             <div class="bg-white rounded-xl p-6 border border-[#e0d8cc]">
                 <h2 class="font-bold text-lg text-[#2D8176] mb-4">Status</h2>
-                
+
                 <div class="space-y-4">
                     <div>
                         <p class="text-xs text-[#6a7890] uppercase tracking-wider mb-1">Current Status</p>
@@ -62,7 +62,7 @@
         <div class="bg-white rounded-xl p-6 border border-[#e0d8cc] mb-8">
             <h2 class="font-bold text-lg text-[#2D8176] mb-4">📄 Review Final Layout</h2>
             <p class="text-sm text-[#6a7890] mb-6">The layout editor has prepared the final version of your paper. Please review it before publication.</p>
-            
+
             @if ($layoutAssignment && $layoutAssignment->layout_file_path)
                 <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-lg mb-6">
                     <p class="text-sm text-emerald-700 font-bold mb-3">✓ Layout file ready for review</p>
@@ -103,7 +103,7 @@
         <div class="mt-8 p-6 bg-[#2D8176]/5 border border-[#2D8176]/20 rounded-xl">
             <h3 class="font-bold text-[#2D8176] mb-3">ℹ️ What happens next?</h3>
             <p class="text-sm text-[#4a5568] mb-3">
-                Your paper has passed all review stages and is ready for publication. The layout is final and will not be changed. 
+                Your paper has passed all review stages and is ready for publication. The layout is final and will not be changed.
                 The Editor-in-Chief will perform a final approval check and your paper will be published to the public repository.
             </p>
             <p class="text-xs text-[#6a7890]">

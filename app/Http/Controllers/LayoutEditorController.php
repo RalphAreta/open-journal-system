@@ -18,7 +18,7 @@ class LayoutEditorController extends Controller
     public function dashboard(Request $request): View
     {
         $user = $request->user();
-        
+
         // Get all layout assignments for this layout editor
         $assignments = LayoutEditorAssignment::where('layout_editor_id', $user->id)
             ->with(['submission.author'])
@@ -95,7 +95,7 @@ class LayoutEditorController extends Controller
         }
 
         $disk = Storage::disk('local');
-        
+
         if (!$disk->exists($submission->file_path)) {
             Log::error('File not found', [
                 'file_path' => $submission->file_path,

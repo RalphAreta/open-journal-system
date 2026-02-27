@@ -37,7 +37,7 @@ class DiagnoseLayoutEditor extends Command
         foreach ($layoutEditors as $editor) {
             $assignmentCount = $editor->layoutEditorAssignments()->count();
             $this->line("  ID: {$editor->id} | Name: {$editor->name} | Email: {$editor->email} | Assignments: {$assignmentCount}");
-            
+
             foreach ($editor->layoutEditorAssignments as $a) {
                 $fileStatus = $a->submission && $a->submission->file_path ? 'EXISTS' : 'MISSING';
                 $filePath = $a->submission ? $a->submission->file_path : 'N/A';

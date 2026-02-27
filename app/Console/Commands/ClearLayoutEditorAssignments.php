@@ -14,7 +14,7 @@ class ClearLayoutEditorAssignments extends Command
     public function handle()
     {
         $count = LayoutEditorAssignment::count();
-        
+
         if ($count === 0) {
             $this->info('No assignments to clear.');
             return;
