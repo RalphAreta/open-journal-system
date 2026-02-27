@@ -7,9 +7,11 @@ use App\Http\Controllers\Admin\EditorExpertiseController;
 use App\Http\Controllers\Admin\ExpertiseCategoryController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\ChiefEditorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LayoutEditorController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\AppealController;
@@ -59,6 +61,8 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/submissions/{submission}/revisions', [SubmissionController::class, 'revisions'])->name('submissions.revisions');
         Route::post('/submissions/{submission}/submit-revision', [SubmissionController::class, 'submitRevision'])->name('submissions.submit-revision');
         Route::post('/submissions/{submission}/appeal', [AppealController::class, 'store'])->name('appeals.store');
+        Route::get('/author/submission/{submission}/final-layout', [AuthorController::class, 'viewFinalLayout'])->name('author.final-layout');
+        Route::get('/author/submission/{submission}/download-layout', [AuthorController::class, 'downloadLayout'])->name('author.download-layout');
     });
 
     Route::middleware('role:reviewer')->group(function (): void {
@@ -79,6 +83,14 @@ Route::middleware('auth')->group(function (): void {
 )->name('reviews.peer-reviews');
     });
 
+    Route::middleware('role:layout-editor')->group(function (): void {
+        Route::get('/layout-editor/dashboard', [LayoutEditorController::class, 'dashboard'])->name('layout-editor.dashboard');
+        Route::get('/layout-editor/assignment/{layoutEditorAssignment}', [LayoutEditorController::class, 'show'])->name('layout-editor.show');
+        Route::get('/layout-editor/assignment/{layoutEditorAssignment}/download', [LayoutEditorController::class, 'downloadFile'])->name('layout-editor.download');
+        Route::post('/layout-editor/assignment/{layoutEditorAssignment}/upload', [LayoutEditorController::class, 'uploadFile'])->name('layout-editor.upload');
+        Route::get('/layout-editor/assignment/{layoutEditorAssignment}/download-layout', [LayoutEditorController::class, 'downloadLayoutFile'])->name('layout-editor.download-layout');
+    });
+
     Route::middleware('role:editor')->group(function (): void {
         Route::get('/dashboard/editor', [DashboardController::class, 'editor'])->name('dashboard.editor');
         Route::get('/editor/submissions', [ReviewController::class, 'editorSubmissions'])->name('editor.submissions');
@@ -91,6 +103,8 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/editor/revision-reviews', [ReviewController::class, 'editorRevisionReviews'])->name('editor.revision-reviews');
         Route::post('/editor/submissions/{submission}/revision-decision', [ReviewController::class, 'editorRevisionDecision'])->name('editor.revision-decision');
         Route::post('/editor/submissions/{submission}/forward-revision-to-reviewers', [ReviewController::class, 'forwardRevisionToReviewers'])->name('editor.forward-revision-to-reviewers');
+        Route::post('/editor/submissions/{submission}/send-to-layout-editor', [ReviewController::class, 'sendToLayoutEditor'])->name('editor.send-to-layout-editor');
+        Route::post('/editor/submissions/{submission}/send-layout-to-author', [ReviewController::class, 'sendLayoutToAuthor'])->name('editor.send-layout-to-author');
     });
 
     Route::middleware('role:editor-in-chief')->group(function (): void {
@@ -144,8 +158,4 @@ Route::middleware('auth')->group(function (): void {
         $notification->markAsRead();
         return response()->json(['ok' => true]);
     })->name('notifications.read')->middleware('auth');
-
-    Route::get('/dashboard/layout-editor', function () {
-    return view('dashboard.layout_editor');
-})->middleware(['auth', 'role:layout_editor'])->name('dashboard.layout_editor');
 });

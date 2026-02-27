@@ -49,6 +49,9 @@ class Submission extends Model
     public const STATUS_REVISIONS_REQUESTED = 'revisions_requested';
     public const STATUS_REVISION_UNDER_REVIEW = 'revision_under_review';
     public const STATUS_ACCEPTED = 'accepted';
+    public const STATUS_LAYOUT_EDITING = 'layout_editing';
+    public const STATUS_LAYOUT_REVIEW = 'layout_review';
+    public const STATUS_AUTHOR_CONFIRMATION = 'author_confirmation';
     public const STATUS_REJECTED = 'rejected';
 
     public const SCREENING_STATUS_PENDING = 'pending';
@@ -63,6 +66,9 @@ class Submission extends Model
             self::STATUS_REVISIONS_REQUESTED => 'Revisions Requested',
             self::STATUS_REVISION_UNDER_REVIEW => 'Revision Under Review',
             self::STATUS_ACCEPTED => 'Accepted',
+            self::STATUS_LAYOUT_EDITING => 'Layout Editing',
+            self::STATUS_LAYOUT_REVIEW => 'Layout Review',
+            self::STATUS_AUTHOR_CONFIRMATION => 'Author Confirmation',
             self::STATUS_REJECTED => 'Rejected',
         ];
     }
@@ -119,6 +125,11 @@ class Submission extends Model
     public function appeals(): HasMany
     {
         return $this->hasMany(Appeal::class);
+    }
+
+    public function layoutEditorAssignments(): HasMany
+    {
+        return $this->hasMany(LayoutEditorAssignment::class);
     }
 
     public function isEditableByAuthor(): bool

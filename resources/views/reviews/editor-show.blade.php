@@ -636,6 +636,51 @@
                                 {{ $submission->editor_notes }}
                             </p>
                         @endif
+
+                        {{-- Layout Editor Section --}}
+                        @if (in_array($submission->status, ['accepted', 'layout_editing', 'layout_review', 'author_confirmation']))
+                            <div class="mt-6 pt-6 border-t border-blue-200">
+                                @if ($submission->status === 'accepted')
+                                    <p class="text-sm font-bold text-slate-800 mb-4">
+                                        📋 Send to Layout Editor
+                                    </p>
+                                    <form method="POST" action="{{ route('editor.send-to-layout-editor', $submission) }}" class="space-y-3">
+                                        @csrf
+                                        <div>
+                                            <label class="text-sm font-bold text-slate-700 block mb-2">
+                                                Select Layout Editor
+                                                <span class="text-red-600">*</span>
+                                            </label>
+                                            <select name="layout_editor_id" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 focus:outline-none">
+                                                <option value="">-- Choose a Layout Editor --</option>
+                                                @foreach ($layoutEditors as $editor)
+                                                    <option value="{{ $editor->id }}">{{ $editor->name }} | {{ $editor->email }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('layout_editor_id')
+                                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                        <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors text-sm">
+                                            Send to Layout Editor
+                                        </button>
+                                    </form>
+                                @elseif ($submission->status === 'layout_editing')
+                                    <p class="text-sm font-bold text-amber-800">⏳ Awaiting layout editor work...</p>
+                                @elseif ($submission->status === 'layout_review')
+                                    <p class="text-sm font-bold text-slate-800 mb-4">✓ Layout file received</p>
+                                    <form method="POST" action="{{ route('editor.send-layout-to-author', $submission) }}" class="space-y-3">
+                                        @csrf
+                                        <p class="text-xs text-slate-600 mb-3">Review the layout file and send to author for final confirmation.</p>
+                                        <button type="submit" class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-colors text-sm">
+                                            Send Layout to Author
+                                        </button>
+                                    </form>
+                                @elseif ($submission->status === 'author_confirmation')
+                                    <p class="text-sm font-bold text-emerald-800">✓ Sent to author for confirmation</p>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 @else
                     <form

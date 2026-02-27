@@ -14,7 +14,7 @@ class RoleSeeder extends Seeder
             ['name' => 'reviewer',        'display_name' => 'Reviewer',        'description' => 'Review assigned submissions'],
             ['name' => 'editor',          'display_name' => 'Editor',          'description' => 'Manage submissions and make editorial decisions'],
             ['name' => 'editor-in-chief', 'display_name' => 'Editor in Chief', 'description' => 'Oversee all editorial operations and final decisions'],
-            ['name' => 'layout_editor',   'display_name' => 'Layout Editor'],
+            ['name' => 'layout-editor',   'display_name' => 'Layout Editor',   'description' => 'Edit and format accepted manuscripts'],
             ['name' => 'admin',           'display_name' => 'Admin',           'description' => 'Full system administration access'],
         ];
 

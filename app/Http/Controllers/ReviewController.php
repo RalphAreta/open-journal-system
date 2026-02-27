@@ -7,6 +7,8 @@ use App\Models\ReviewAssignment;
 use App\Models\Submission;
 use App\Models\RevisionRequest;
 use App\Models\RevisionReview;
+use App\Models\LayoutEditorAssignment;
+use App\Models\User;
 use App\Services\RevisionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -204,7 +206,10 @@ class ReviewController extends Controller
             ])
             ->get();
 
-        return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers'));
+        // Get all layout editors for selection
+        $layoutEditors = User::whereHas('roles', fn($q) => $q->where('name', 'layout-editor'))->get();
+
+        return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers', 'layoutEditors'));
     }
 
     /**
@@ -991,5 +996,63 @@ class ReviewController extends Controller
             'allReviewsIn',
             'myReview',
         ));
+    }
+
+    /**
+     * Send an accepted paper to a layout editor
+     */
+    public function sendToLayoutEditor(Request $request, Submission $submission): RedirectResponse
+    {
+        if ($submission->assigned_editor_id !== $request->user()->id) {
+            abort(403, 'You do not have access to this submission.');
+        }
+
+        // Only accepted papers can go to layout editor
+        if ($submission->status !== Submission::STATUS_ACCEPTED) {
+            return redirect()->back()->with('error', 'Only accepted papers can be sent to layout editor.');
+        }
+
+        $request->validate([
+            'layout_editor_id' => ['required', 'exists:users,id'],
+        ]);
+
+        // Create layout editor assignment
+        LayoutEditorAssignment::create([
+            'submission_id' => $submission->id,
+            'layout_editor_id' => $request->input('layout_editor_id'),
+            'assigned_at' => now(),
+            'status' => LayoutEditorAssignment::STATUS_PENDING,
+        ]);
+
+        // Update submission status
+        $submission->update([
+            'status' => Submission::STATUS_LAYOUT_EDITING,
+        ]);
+
+        return redirect()->route('editor.submission.show', $submission)
+            ->with('success', 'Paper sent to layout editor successfully.');
+    }
+
+    /**
+     * Send layout file to author for review
+     */
+    public function sendLayoutToAuthor(Request $request, Submission $submission): RedirectResponse
+    {
+        if ($submission->assigned_editor_id !== $request->user()->id) {
+            abort(403, 'You do not have access to this submission.');
+        }
+
+        // Only papers in layout review status can be sent to author
+        if ($submission->status !== Submission::STATUS_LAYOUT_REVIEW) {
+            return redirect()->back()->with('error', 'Paper must be in layout review status.');
+        }
+
+        // Update submission status
+        $submission->update([
+            'status' => Submission::STATUS_AUTHOR_CONFIRMATION,
+        ]);
+
+        return redirect()->route('editor.submission.show', $submission)
+            ->with('success', 'Layout file sent to author for confirmation.');
     }
 }

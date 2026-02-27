@@ -25,25 +25,34 @@ class DashboardController extends Controller
         // PRIMARY: Use the active_role that was set during login
         $activeRole = $request->session()->get('active_role');
         if ($activeRole && $user->hasRole($activeRole)) {
-            return $activeRole === 'editor-in-chief'
-                ? redirect()->route('chief-editor.dashboard')
-                : redirect()->route("dashboard.{$activeRole}");
+            if ($activeRole === 'editor-in-chief') {
+                return redirect()->route('chief-editor.dashboard');
+            } elseif ($activeRole === 'layout-editor') {
+                return redirect()->route('layout-editor.dashboard');
+            }
+            return redirect()->route("dashboard.{$activeRole}");
         }
 
         // FALLBACK: If no active_role, try preferred_dashboard from previous visit
         $preferred = $request->session()->get('preferred_dashboard');
         if ($preferred && $user->hasRole($preferred)) {
-            return $preferred === 'editor-in-chief'
-                ? redirect()->route('chief-editor.dashboard')
-                : redirect()->route("dashboard.{$preferred}");
+            if ($preferred === 'editor-in-chief') {
+                return redirect()->route('chief-editor.dashboard');
+            } elseif ($preferred === 'layout-editor') {
+                return redirect()->route('layout-editor.dashboard');
+            }
+            return redirect()->route("dashboard.{$preferred}");
         }
 
         // LAST RESORT: Use primary role if nothing else is available
         $role = $user->primaryRole();
         if ($role) {
-            return $role->name === 'editor-in-chief'
-                ? redirect()->route('chief-editor.dashboard')
-                : redirect()->route("dashboard.{$role->name}");
+            if ($role->name === 'editor-in-chief') {
+                return redirect()->route('chief-editor.dashboard');
+            } elseif ($role->name === 'layout-editor') {
+                return redirect()->route('layout-editor.dashboard');
+            }
+            return redirect()->route("dashboard.{$role->name}");
         }
 
         return redirect()->route('login');
@@ -183,7 +192,7 @@ class DashboardController extends Controller
         }
 
         // Validate the role name
-        if (!in_array($role, ['author', 'reviewer', 'editor', 'editor-in-chief', 'admin'])) {
+        if (!in_array($role, ['author', 'reviewer', 'editor', 'layout-editor', 'editor-in-chief', 'admin'])) {
             abort(400, 'Invalid role.');
         }
 
@@ -191,9 +200,13 @@ class DashboardController extends Controller
         $request->session()->put('active_role', $role);
 
         // Redirect to the appropriate dashboard
-        return $role === 'editor-in-chief'
-            ? redirect()->route('chief-editor.dashboard')
-            : redirect()->route("dashboard.{$role}");
+        if ($role === 'editor-in-chief') {
+            return redirect()->route('chief-editor.dashboard');
+        } elseif ($role === 'layout-editor') {
+            return redirect()->route('layout-editor.dashboard');
+        } else {
+            return redirect()->route("dashboard.{$role}");
+        }
     }
 }
 

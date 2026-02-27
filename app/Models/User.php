@@ -72,6 +72,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(SubmissionAssignment::class, 'assigned_to_user_id');
     }
 
+    public function layoutEditorAssignments(): HasMany
+    {
+        return $this->hasMany(LayoutEditorAssignment::class, 'layout_editor_id');
+    }
+
     public function hasRole(string $roleName): bool
     {
         return $this->roles()->where('name', $roleName)->exists();
@@ -97,15 +102,20 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasRole('reviewer');
     }
 
+    public function isLayoutEditor(): bool
+    {
+        return $this->hasRole('layout-editor');
+    }
+
     public function isAuthor(): bool
     {
         return $this->hasRole('author');
     }
 
-    /** Get primary role for dashboard redirect (admin > editor > reviewer > author). Note: editor-in-chief handled separately. */
+    /** Get primary role for dashboard redirect (admin > editor > layout-editor > reviewer > author). Note: editor-in-chief handled separately. */
     public function primaryRole(): ?Role
     {
-        $order = ['admin', 'editor', 'reviewer', 'author'];
+        $order = ['admin', 'editor', 'layout-editor', 'reviewer', 'author'];
         foreach ($order as $name) {
             $role = $this->roles()->where('name', $name)->first();
             if ($role) {

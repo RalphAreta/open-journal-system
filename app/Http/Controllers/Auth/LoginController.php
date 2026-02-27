@@ -19,7 +19,7 @@ class LoginController extends Controller
     public function login(Request $request): RedirectResponse
     {
         $request->validate([
-            'role'     => ['required', 'in:author,reviewer,editor,editor-in-chief,layout_editor,admin'],
+            'role'     => ['required', 'in:author,reviewer,editor,editor-in-chief,layout-editor,admin'],
             'email'    => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
@@ -125,7 +125,7 @@ class LoginController extends Controller
     'editor-in-chief' => redirect()->route('chief-editor.dashboard'),
     'editor'          => redirect()->route('dashboard.editor'),
     'reviewer'        => redirect()->route('dashboard.reviewer'),
-    'layout_editor'   => redirect()->route('dashboard.layout_editor'),  // <- idagdag
+    'layout-editor'   => redirect()->route('layout-editor.dashboard'),
     default           => redirect()->route('dashboard.author'),
 };
     }

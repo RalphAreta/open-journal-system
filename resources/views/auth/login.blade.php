@@ -291,8 +291,8 @@
                                     Admin
                                 </option>
                                 <option
-                                    value="layout_editor"
-                                    @selected(old('role') == 'layout_editor')
+                                    value="layout-editor"
+                                    @selected(old('role') == 'layout-editor')
                                 >
                                     Layout Editor
                                 </option>
