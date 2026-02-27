@@ -295,6 +295,104 @@
                     </div>
                 @endif
 
+                {{-- Assign Reviewers to Revised Manuscript Section --}}
+                <div class="bg-white border-2 border-blue-200 rounded-xl p-5 mb-6 bg-blue-50">
+                    <div class="flex items-start gap-3 mb-4">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-lg">
+                            👥
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-blue-900">Assign Reviewers to Revised Manuscript</h3>
+                            <p class="text-xs text-blue-700 mt-1">Assign reviewers to evaluate the revised version of the manuscript</p>
+                        </div>
+                    </div>
+
+                    @if ($latestRevision && $latestRevision->revisionReviews->isEmpty())
+                        <form method="POST" action="{{ route('editor.assign-reviewer', $submission) }}" class="space-y-4 revision-reviewer-form">
+                            @csrf
+                            
+                            <div>
+                                <p class="text-xs font-semibold text-blue-900 mb-3">Select reviewers to evaluate this revised manuscript:</p>
+                                
+                                @php
+                                    $allReviewers = \App\Models\User::whereHas('roles', function($q) { $q->where('name', 'reviewer'); })->get();
+                                    $matchedReviewerIds = $matchedReviewers->pluck('id')->toArray();
+                                @endphp
+
+                                @if ($allReviewers->count() > 0)
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto rounded-lg border border-blue-100 p-3 bg-white">
+                                        {{-- Matched reviewers first --}}
+                                        @foreach ($allReviewers as $u)
+                                            @php
+                                                $colors = ['bg-red-500', 'bg-blue-500', 'bg-violet-500', 'bg-emerald-500', 'bg-amber-500', 'bg-pink-500'];
+                                                $bg = $colors[$loop->index % count($colors)];
+                                                $isMatched = in_array($u->id, $matchedReviewerIds);
+                                            @endphp
+
+                                            <label class="reviewer-card" onclick="toggleReviewer(this)" @if($isMatched) style="border-color: #10b981; background-color: #f0fdf4;" @endif>
+                                                <input
+                                                    type="checkbox"
+                                                    name="reviewer_ids[]"
+                                                    value="{{ $u->id }}"
+                                                    class="reviewer-checkbox absolute opacity-0 pointer-events-none"
+                                                />
+                                                <div class="reviewer-avatar {{ $bg }}">
+                                                    {{ strtoupper(substr($u->name, 0, 1)) }}
+                                                </div>
+                                                <div class="min-w-0 flex-1">
+                                                    <p class="text-sm font-medium text-slate-900">{{ $u->name }}</p>
+                                                    <p class="text-xs text-slate-500">{{ $u->email }}</p>
+                                                </div>
+                                                @if($isMatched)
+                                                    <span class="text-[9px] font-bold text-emerald-600 mr-2">✓ MATCH</span>
+                                                @endif
+                                                <div class="reviewer-check">
+                                                    <svg class="w-3 h-3 text-white hidden" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                </div>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <p class="text-xs text-blue-700 bg-white rounded p-3 border border-blue-100">No reviewers available in the system.</p>
+                                @endif
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-blue-900 mb-2">Review Deadline (Optional)</label>
+                                <input type="date" name="due_at" class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                            </div>
+
+                            <div class="flex gap-3 pt-2">
+                                <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg transition-colors">
+                                    Assign Selected Reviewers
+                                </button>
+                            </div>
+                        </form>
+                    @else
+                        <div class="bg-white rounded-lg p-4 border border-blue-100">
+                            <p class="text-xs font-semibold text-blue-900 mb-3">✓ Reviewers Assigned</p>
+                            <div class="space-y-2">
+                                @foreach ($latestRevision->revisionReviews as $rr)
+                                    <div class="flex items-center justify-between text-sm">
+                                        <span class="text-blue-900">{{ $rr->reviewer->name }}</span>
+                                        <span class="text-[10px] font-semibold px-2 py-1 rounded-full
+                                            @if ($rr->status === \App\Models\RevisionReview::STATUS_COMPLETED)
+                                                bg-green-100 text-green-700
+                                            @else
+                                                bg-amber-100 text-amber-700
+                                            @endif
+                                        ">
+                                            {{ ucfirst($rr->status) }}
+                                        </span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
                 @if ($latestRevision && $latestRevision->revisionReviews->isNotEmpty())
                     <div class="space-y-3">
                         <p class="text-[10px] font-bold uppercase tracking-[.06em] text-slate-500">Reviewer Feedback on Revised Manuscript</p>

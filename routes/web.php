@@ -90,6 +90,7 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/editor/submissions/{submission}/request-revision', [ReviewController::class, 'requestRevision'])->name('editor.request-revision');
         Route::get('/editor/revision-reviews', [ReviewController::class, 'editorRevisionReviews'])->name('editor.revision-reviews');
         Route::post('/editor/submissions/{submission}/revision-decision', [ReviewController::class, 'editorRevisionDecision'])->name('editor.revision-decision');
+        Route::post('/editor/submissions/{submission}/forward-revision-to-reviewers', [ReviewController::class, 'forwardRevisionToReviewers'])->name('editor.forward-revision-to-reviewers');
     });
 
     Route::middleware('role:editor-in-chief')->group(function (): void {

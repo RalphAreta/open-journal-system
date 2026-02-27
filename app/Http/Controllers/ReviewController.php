@@ -290,6 +290,7 @@ class ReviewController extends Controller
 
     /**
      * Editor: assign reviewer to submission.
+     * Handles both regular manuscript reviews AND revised manuscript reviews
      */
     public function assignReviewer(Request $request, Submission $submission): RedirectResponse
     {
@@ -310,47 +311,106 @@ class ReviewController extends Controller
 
         $reviewerIds = $validated['reviewer_ids'];
         $dueAt = $validated['due_at'] ?? null;
-        $assignedCount = 0;
-        $skippedCount = 0;
+        
+        // Check if this is a revised manuscript review
+        $isRevisionReview = $submission->status === Submission::STATUS_REVISION_UNDER_REVIEW;
 
-        foreach ($reviewerIds as $reviewerId) {
-            // Check if already assigned
-            $exists = ReviewAssignment::where('submission_id', $submission->id)
-                ->where('reviewer_id', $reviewerId)
-                ->exists();
-
-            if ($exists) {
-                $skippedCount++;
-                continue;
+        if ($isRevisionReview) {
+            // Handle revised manuscript review assignment
+            $latestRevision = $submission->revisionRequests()->latest()->first();
+            
+            if (!$latestRevision) {
+                return back()->withErrors('No revision request found for this submission.');
             }
 
-            ReviewAssignment::create([
-                'submission_id' => $submission->id,
-                'reviewer_id' => $reviewerId,
-                'assigned_by' => $request->user()->id,
-                'status' => ReviewAssignment::STATUS_PENDING,
-                'due_at' => $dueAt,
-            ]);
+            $assignedCount = 0;
+            $skippedCount = 0;
 
-            \App\Models\Notification::create([
-                'user_id'         => $reviewerId,
-                'title'           => '📋 New Review Assignment',
-                'message'         => "You have been assigned to review the manuscript \"{$submission->title}\". Please log in to view and submit your review.",
-                'type'            => 'info',
-                'notifiable_id'   => $submission->id,
-                'notifiable_type' => \App\Models\Submission::class,
-            ]);
+            foreach ($reviewerIds as $reviewerId) {
+                // Check if already assigned to this revision
+                $exists = RevisionReview::where('revision_request_id', $latestRevision->id)
+                    ->where('reviewer_id', $reviewerId)
+                    ->exists();
 
-            $assignedCount++;
+                if ($exists) {
+                    $skippedCount++;
+                    continue;
+                }
+
+                // Create RevisionReview record for revised manuscript review
+                RevisionReview::create([
+                    'revision_request_id' => $latestRevision->id,
+                    'reviewer_id' => $reviewerId,
+                    'status' => RevisionReview::STATUS_ASSIGNED,
+                    'assigned_at' => now(),
+                    'due_at' => $dueAt ?? now()->addDays(14),
+                ]);
+
+                // Notify reviewer about revised manuscript
+                \App\Models\Notification::create([
+                    'user_id' => $reviewerId,
+                    'title' => '🔄 Revised Manuscript Ready for Re-Review',
+                    'message' => "A revised manuscript for \"{$submission->title}\" is ready for your re-review. Please log in to view and submit your feedback.",
+                    'type' => 'info',
+                    'notifiable_id' => $submission->id,
+                    'notifiable_type' => \App\Models\Submission::class,
+                ]);
+
+                $assignedCount++;
+            }
+
+            // Do NOT change submission status for revised manuscripts
+            $message = "Assigned reviewers ($assignedCount) to revised manuscript";
+            if ($skippedCount > 0) {
+                $message .= ". Skipped already-assigned reviewers ($skippedCount).";
+            }
+
+            return back()->with('success', $message);
+
+        } else {
+            // Handle regular manuscript review assignment
+            $assignedCount = 0;
+            $skippedCount = 0;
+
+            foreach ($reviewerIds as $reviewerId) {
+                // Check if already assigned
+                $exists = ReviewAssignment::where('submission_id', $submission->id)
+                    ->where('reviewer_id', $reviewerId)
+                    ->exists();
+
+                if ($exists) {
+                    $skippedCount++;
+                    continue;
+                }
+
+                ReviewAssignment::create([
+                    'submission_id' => $submission->id,
+                    'reviewer_id' => $reviewerId,
+                    'assigned_by' => $request->user()->id,
+                    'status' => ReviewAssignment::STATUS_PENDING,
+                    'due_at' => $dueAt,
+                ]);
+
+                \App\Models\Notification::create([
+                    'user_id'         => $reviewerId,
+                    'title'           => '📋 New Review Assignment',
+                    'message'         => "You have been assigned to review the manuscript \"{$submission->title}\". Please log in to view and submit your review.",
+                    'type'            => 'info',
+                    'notifiable_id'   => $submission->id,
+                    'notifiable_type' => \App\Models\Submission::class,
+                ]);
+
+                $assignedCount++;
+            }
+
+            $submission->update(['status' => Submission::STATUS_UNDER_REVIEW]);
+
+            if ($skippedCount > 0) {
+                return back()->with('success', "Assigned reviewers ($assignedCount). Skipped already-assigned reviewers ($skippedCount).");
+            }
+
+            return back()->with('success', "Assigned $assignedCount reviewer(s). Reviewers have been notified.");
         }
-
-        $submission->update(['status' => Submission::STATUS_UNDER_REVIEW]);
-
-        if ($skippedCount > 0) {
-            return back()->with('success', "Assigned reviewers ($assignedCount). Skipped already-assigned reviewers ($skippedCount).");
-        }
-
-        return back()->with('success', "Successfully assigned $assignedCount reviewer(s).");
     }
 
     /**
@@ -628,6 +688,62 @@ class ReviewController extends Controller
             return redirect()->route('reviews.index')->with('success', 'Revision review submitted successfully.');
         } else {
             return redirect()->route('reviews.index')->with('success', 'Revision review saved as draft. You can continue editing it later.');
+        }
+    }
+
+    /**
+     * Editor: forward revised manuscript to original reviewers
+     * NEW WORKFLOW: Editor reviews revision first, then decides to forward to reviewers
+     * 
+     * Route: POST /editor/submissions/{submission}/forward-revision-to-reviewers
+     */
+    public function forwardRevisionToReviewers(Request $request, Submission $submission): RedirectResponse
+    {
+        try {
+            // Verify authorization
+            if ($submission->assigned_editor_id !== $request->user()->id) {
+                abort(403, 'You do not have access to this submission.');
+            }
+
+            // Verify submission is in correct status (awaiting editor review of revision)
+            if ($submission->status !== Submission::STATUS_REVISION_UNDER_REVIEW) {
+                return back()->withErrors('This submission is not awaiting your revision review.');
+            }
+
+            // Get the latest revision request
+            $revision = $submission->revisionRequests()->latest()->first();
+            if (!$revision || !$revision->revised_at) {
+                return back()->withErrors('No revised manuscript found for this submission.');
+            }
+
+            // Check if reviewers have already been assigned
+            if ($revision->revisionReviews()->exists()) {
+                return back()->withErrors('Reviewers have already been assigned for this revision.');
+            }
+
+            // Assign original reviewers
+            RevisionService::assignOriginalReviewersForRevision($revision);
+
+            Log::info('Revised manuscript forwarded to reviewers', [
+                'submission_id' => $submission->id,
+                'revision_request_id' => $revision->id,
+                'editor_id' => $request->user()->id,
+            ]);
+
+            return redirect()->route('editor.revision-reviews')
+                ->with('success', 'Revised manuscript forwarded to original reviewers. They have been notified.');
+        } catch (\RuntimeException $e) {
+            Log::error('Error forwarding revision to reviewers', [
+                'submission_id' => $submission->id,
+                'error' => $e->getMessage(),
+            ]);
+            return back()->withErrors('Unable to forward to reviewers: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            Log::error('Unexpected error forwarding revision to reviewers', [
+                'submission_id' => $submission->id,
+                'error' => $e->getMessage(),
+            ]);
+            return back()->withErrors('An unexpected error occurred. Please try again.');
         }
     }
 

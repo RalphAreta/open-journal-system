@@ -449,6 +449,76 @@ use App\Models\Submission;
             </div>
             @endif
 
+            {{-- Completed Appeals Section --}}
+            @if ($completedAppeals->count() > 0)
+            <div class="mt-8 pt-6 border-t border-slate-200">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Completed Appeals</h3>
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-slate-50 border-b border-slate-100">
+                                <tr>
+                                    <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Manuscript</th>
+                                    <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Author</th>
+                                    <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Decision</th>
+                                    <th class="px-5 py-3 text-left text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Reviewed</th>
+                                    <th class="px-5 py-3 text-right text-[10px] font-bold uppercase tracking-[.09em] text-slate-400">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="completed-appeals-tbody">
+                                @foreach ($completedAppeals as $appeal)
+                                <tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50/70 transition-colors group"
+                                    data-title="{{ strtolower($appeal->submission->title) }}"
+                                    data-author="{{ strtolower($appeal->author->name) }}">
+                                    <td class="px-5 py-3.5">
+                                        <p class="text-sm font-semibold text-slate-800 group-hover:text-red-600 transition-colors leading-snug">
+                                            {{ Str::limit($appeal->submission->title, 45) }}
+                                        </p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5">#{{ str_pad($appeal->submission->id, 5, '0', STR_PAD_LEFT) }}</p>
+                                    </td>
+                                    <td class="px-5 py-3.5">
+                                        <p class="text-sm text-slate-600 font-medium">{{ $appeal->author->name }}</p>
+                                        <p class="text-[10px] text-slate-400">{{ $appeal->author->email }}</p>
+                                    </td>
+                                    <td class="px-5 py-3.5">
+                                        @if ($appeal->status === 'approved')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-100 text-[10px] font-bold uppercase tracking-[.04em] text-emerald-700">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                            Approved
+                                        </span>
+                                        @else
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-50 border border-red-100 text-[10px] font-bold uppercase tracking-[.04em] text-red-700">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+                                            Rejected
+                                        </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-5 py-3.5">
+                                        <p class="text-sm text-slate-600">{{ $appeal->reviewed_at->format('M d, Y') }}</p>
+                                        <p class="text-[10px] text-slate-400">by {{ $appeal->reviewedBy->name ?? 'System' }}</p>
+                                    </td>
+                                    <td class="px-5 py-3.5 text-right">
+                                        <a href="{{ route('appeals.show', $appeal) }}"
+                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round"/>
+                                            </svg>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mt-3 flex items-center justify-between text-[11px] text-slate-400">
+                    <span>Showing {{ $completedAppeals->firstItem() }}–{{ $completedAppeals->lastItem() }} of {{ $completedAppeals->total() }}</span>
+                    <div>{{ $completedAppeals->links('pagination::tailwind') }}</div>
+                </div>
+            </div>
+            @endif
+
         </div>{{-- /tab-appeals --}}
 
     </div>{{-- /tabbed section --}}
