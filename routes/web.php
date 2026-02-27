@@ -144,4 +144,8 @@ Route::middleware('auth')->group(function (): void {
         $notification->markAsRead();
         return response()->json(['ok' => true]);
     })->name('notifications.read')->middleware('auth');
+
+    Route::get('/dashboard/layout-editor', function () {
+    return view('dashboard.layout_editor');
+})->middleware(['auth', 'role:layout_editor'])->name('dashboard.layout_editor');
 });

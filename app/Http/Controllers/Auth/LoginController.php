@@ -120,13 +120,14 @@ class LoginController extends Controller
         } catch (\Throwable $_) {
             // ignore aggregate counter errors
         }
-        return match($selectedRole) {
-            'admin'           => redirect()->route('dashboard.admin'),
-            'editor-in-chief' => redirect()->route('chief-editor.dashboard'),
-            'editor'          => redirect()->route('dashboard.editor'),
-            'reviewer'        => redirect()->route('dashboard.reviewer'),
-            default           => redirect()->route('dashboard.author'),
-        };
+   return match($selectedRole) {
+    'admin'           => redirect()->route('dashboard.admin'),
+    'editor-in-chief' => redirect()->route('chief-editor.dashboard'),
+    'editor'          => redirect()->route('dashboard.editor'),
+    'reviewer'        => redirect()->route('dashboard.reviewer'),
+    'layout_editor'   => redirect()->route('dashboard.layout_editor'),  // <- idagdag
+    default           => redirect()->route('dashboard.author'),
+};
     }
 
     public function logout(Request $request): RedirectResponse
