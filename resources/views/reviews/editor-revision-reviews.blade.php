@@ -130,61 +130,85 @@
                             </div>
                         @endif
 
+                        {{-- Forward to Reviewers Section (NEW WORKFLOW) --}}
+                        @if ($revision->revisionReviews->isEmpty())
+                            <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <h3 class="text-sm font-bold text-blue-900 mb-3">📋 Ready for Reviewer Feedback?</h3>
+                                <p class="text-sm text-blue-800 mb-4">
+                                    You have reviewed the revised manuscript. You can now:
+                                </p>
+                                <ul class="list-disc list-inside text-sm text-blue-800 mb-4 space-y-1">
+                                    <li><strong>Forward to Reviewers:</strong> Send to original reviewers for their feedback before making a final decision</li>
+                                    <li><strong>Make Final Decision:</strong> Accept, reject, or request further revisions directly</li>
+                                </ul>
+                                <form method="POST" action="{{ route('editor.forward-revision-to-reviewers', $submission) }}" class="inline">
+                                    @csrf
+                                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                        </svg>
+                                        Forward to Original Reviewers
+                                    </button>
+                                </form>
+                            </div>
+                        @endif
+
                         {{-- Revision Reviews from Reviewers --}}
-                        <div class="mb-6">
-                            <h3 class="text-lg font-semibold text-slate-900 mb-4">Reviewer Feedback on Revised Manuscript</h3>
-                            <div class="space-y-4">
-                                @forelse ($revision->revisionReviews as $rr)
-                                    <div class="border border-slate-200 rounded-lg p-4 {{ $rr->status === \App\Models\RevisionReview::STATUS_COMPLETED ? 'bg-slate-50' : 'bg-yellow-50' }}">
-                                        <div class="flex items-start justify-between mb-3">
-                                            <div>
-                                                <p class="font-semibold text-slate-900">Reviewer {{ $loop->index + 1 }}</p>
-                                                @if ($rr->status === \App\Models\RevisionReview::STATUS_COMPLETED)
-                                                    <span class="inline-block mt-1 px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-700">
-                                                        ✓ Completed
-                                                    </span>
-                                                    @if ($rr->submitted_at)
-                                                        <p class="text-xs text-slate-500 mt-1">Submitted: <span class="font-mono">{{ $rr->submitted_at->format('M d, Y • g:i A') }}</span></p>
+                        @if ($revision->revisionReviews->isNotEmpty())
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold text-slate-900 mb-4">Reviewer Feedback on Revised Manuscript</h3>
+                                <div class="space-y-4">
+                                    @foreach ($revision->revisionReviews as $rr)
+                                        <div class="border border-slate-200 rounded-lg p-4 {{ $rr->status === \App\Models\RevisionReview::STATUS_COMPLETED ? 'bg-slate-50' : 'bg-yellow-50' }}">
+                                            <div class="flex items-start justify-between mb-3">
+                                                <div>
+                                                    <p class="font-semibold text-slate-900">Reviewer {{ $loop->index + 1 }}</p>
+                                                    @if ($rr->status === \App\Models\RevisionReview::STATUS_COMPLETED)
+                                                        <span class="inline-block mt-1 px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-700">
+                                                            ✓ Completed
+                                                        </span>
+                                                        @if ($rr->submitted_at)
+                                                            <p class="text-xs text-slate-500 mt-1">Submitted: <span class="font-mono">{{ $rr->submitted_at->format('M d, Y • g:i A') }}</span></p>
+                                                        @endif
+                                                    @else
+                                                        <span class="inline-block mt-1 px-2 py-1 rounded text-xs font-semibold bg-amber-100 text-amber-700">
+                                                            ⏳ Pending
+                                                        </span>
+                                                        @if ($rr->created_at)
+                                                            <p class="text-xs text-slate-500 mt-1">Invited: <span class="font-mono">{{ $rr->created_at->format('M d, Y • g:i A') }}</span></p>
+                                                        @endif
                                                     @endif
-                                                @else
-                                                    <span class="inline-block mt-1 px-2 py-1 rounded text-xs font-semibold bg-amber-100 text-amber-700">
-                                                        ⏳ Pending
+                                                </div>
+                                                @if ($rr->recommendation)
+                                                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+                                                        {{ \App\Models\RevisionReview::recommendationOptions()[$rr->recommendation] ?? $rr->recommendation }}
                                                     </span>
-                                                    @if ($rr->created_at)
-                                                        <p class="text-xs text-slate-500 mt-1">Invited: <span class="font-mono">{{ $rr->created_at->format('M d, Y • g:i A') }}</span></p>
-                                                    @endif
                                                 @endif
                                             </div>
-                                            @if ($rr->recommendation)
-                                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
-                                                    {{ \App\Models\RevisionReview::recommendationOptions()[$rr->recommendation] ?? $rr->recommendation }}
-                                                </span>
+
+                                            @if ($rr->comments_for_author)
+                                                <div class="mb-3">
+                                                    <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Comments for Author</p>
+                                                    <p class="text-sm text-slate-700 whitespace-pre-wrap">{{ $rr->comments_for_author }}</p>
+                                                </div>
+                                            @endif
+
+                                            @if ($rr->comments_for_editor)
+                                                <div>
+                                                    <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Comments for Editor</p>
+                                                    <p class="text-sm text-slate-600 italic whitespace-pre-wrap">{{ $rr->comments_for_editor }}</p>
+                                                </div>
                                             @endif
                                         </div>
-
-                                        @if ($rr->comments_for_author)
-                                            <div class="mb-3">
-                                                <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Comments for Author</p>
-                                                <p class="text-sm text-slate-700 whitespace-pre-wrap">{{ $rr->comments_for_author }}</p>
-                                            </div>
-                                        @endif
-
-                                        @if ($rr->comments_for_editor)
-                                            <div>
-                                                <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Comments for Editor</p>
-                                                <p class="text-sm text-slate-600 italic whitespace-pre-wrap">{{ $rr->comments_for_editor }}</p>
-                                            </div>
-                                        @endif
-                                    </div>
-                                @empty
-                                    <p class="text-slate-600 text-sm">No revision reviews submitted yet.</p>
-                                @endforelse
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
+                        @endif
 
                         {{-- Final Decision Form --}}
                         @php
                             $allReviewsCompleted = $revision->revisionReviews->every(fn($r) => $r->status === \App\Models\RevisionReview::STATUS_COMPLETED);
+                            $hasReviewers = $revision->revisionReviews->isNotEmpty();
                             $draftData = $revision->editor_decision_draft ? json_decode(json_encode($revision->editor_decision_draft), true) : [];
                             $selectedDecision = old('decision', $draftData['decision'] ?? '');
                         @endphp
@@ -194,7 +218,16 @@
 
                             <div>
                                 <label class="block text-sm font-semibold text-slate-900 mb-3">
-                                    Final Editorial Decision <span class="text-red-600">*</span> {{ !$allReviewsCompleted ? '(⚠️ Some reviews pending)' : '' }}
+                                    Final Editorial Decision <span class="text-red-600">*</span>
+                                    @if ($hasReviewers)
+                                        @if (!$allReviewsCompleted)
+                                            <span class="text-amber-600 text-xs">(⚠️ Some reviews still pending)</span>
+                                        @else
+                                            <span class="text-green-600 text-xs">(✓ All reviews received)</span>
+                                        @endif
+                                    @else
+                                        <span class="text-blue-600 text-xs">(No reviewers assigned yet)</span>
+                                    @endif
                                 </label>
                                 <div class="grid grid-cols-3 gap-3">
                                     <label class="flex items-center p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-300 transition-colors {{ $selectedDecision === 'accepted' ? 'border-green-600 bg-green-50' : '' }}">

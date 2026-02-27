@@ -35,6 +35,11 @@ class ChiefEditorController extends Controller
             ->latest('created_at')
             ->paginate(10, ['*'], 'appeals');
 
+        $completedAppeals = Appeal::whereIn('status', [Appeal::STATUS_APPROVED, Appeal::STATUS_REJECTED])
+            ->with(['submission', 'author', 'reviewedBy'])
+            ->latest('reviewed_at')
+            ->paginate(10, ['*'], 'completed_appeals');
+
         $stats = [
             'total_submissions'      => Submission::count(),
             'pending_assignments'    => Submission::where('status', Submission::STATUS_SUBMITTED)
@@ -50,7 +55,7 @@ class ChiefEditorController extends Controller
             'pending_appeals'        => Appeal::where('status', Appeal::STATUS_PENDING)->count(),
         ];
 
-        return view('chief-editor.dashboard', compact('pendingSubmissions', 'assignedSubmissions', 'pendingAppeals', 'stats'));
+        return view('chief-editor.dashboard', compact('pendingSubmissions', 'assignedSubmissions', 'pendingAppeals', 'completedAppeals', 'stats'));
     }
 
     public function showSubmission(Submission $submission)

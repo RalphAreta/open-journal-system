@@ -13,15 +13,24 @@ A comprehensive **Laravel-based Open Journal System** with advanced submission m
 
 ### **Submission Management**
 - Authors select research field matching editor expertise
+- **Initial Screening**: Editor-in-Chief performs initial screening (Pass/Fail) before peer review
 - Editor-in-Chief reviews and assigns submissions to multiple editors
 - Editors assign reviewers and manage review process
 - Submissions can be: Accepted, Rejected, or Revisions Requested
+- **Appeals System**: Authors can appeal rejected manuscripts during initial screening
 
 ### **Revision Workflow**
 - Editors request minor or major revisions with detailed feedback
 - Authors receive notifications about revision requests
 - Authors upload revised manuscripts with notes
 - Editors can re-review revised submissions
+
+### **Appeals System**
+- Authors can submit appeals for rejected manuscripts during initial screening
+- Appeals require detailed reasoning (minimum 50 characters)
+- Editor-in-Chief reviews appeals and makes final decisions (Approve/Reject)
+- Authors see editor's response in dashboard and submission details
+- Approved appeals move manuscripts to peer review stage
 
 ### **Expertise-Based Assignment**
 - Admin defines editor expertise in 12+ research fields
@@ -235,31 +244,67 @@ After seeding, you can:
    - Major Revisions Needed
 5. Add comments for author and editor
 
+### **Author Appeals Rejected Manuscript** (NEW)
+1. Login as Author
+2. View submission with "Failed Initial Screening" status
+3. Click "Submit Appeal" button
+4. Write detailed appeal reason (minimum 50 characters)
+5. Submit the appeal
+6. View appeal status in Dashboard and Submission details
+
+### **Editor-in-Chief Reviews Appeal** (NEW)
+1. Login as Editor-in-Chief
+2. Go to Chief Editor Dashboard
+3. Click on "Appeals" tab to see pending appeals
+4. Click appeal card or "View" button
+5. Review original rejection reason and author's appeal
+6. Make decision:
+   - **Approve** - Move manuscript to peer review stage
+   - **Reject** - Uphold the initial screening rejection
+7. Provide detailed editor response
+8. Author receives notification and can view response in dashboard
+
 ---
 
-## 📱 Dashboard Screenshots
+## 📱 Dashboard Screenshots & Features
 
 ### **Author Dashboard**
 - View submission stats (Total, Submitted, Under Review, Revisions Needed, Accepted, Rejected)
-- See submissions with status
+- See submissions with status badges
+- View appeal decisions and editor-in-chief's response for rejected manuscripts
 - Quick access to revise submissions
+- Monitor initial screening results
 
 ### **Editor Dashboard**
 - View assigned submissions with reviewer recommendations
 - See review counts (Accept/Reject/Minor/Major)
-- Assign reviewers and make decisions
+- Assign reviewers and make editorial decisions
+- Request revisions with detailed feedback
 
-### **Chief Editor Dashboard**
+### **Reviewer Dashboard**
+- View pending review invitations
+- See assigned review tasks
+- Submit reviews with recommendations and comments
+- Track revision reviews for revised submissions
+
+### **Chief Editor Dashboard** (ENHANCED)
 - View all submissions with assignment status
-- See pending assignments
+- **Initial Screening**: Review and decide on submitted manuscripts (Pass/Fail)
+- **Appeals Management Tab**: List and review all pending appeals
+  - See appeal count in tab badge
+  - View appeal timeline with author details
+  - Review original rejection reason and appeal reasoning
+  - Provide approval/rejection decision with detailed response
+- See pending assignments awaiting editor assignment
 - See assigned submissions with current editor
 - Assign/reassign editors based on expertise
+- Track submission workflow progress
 
 ### **Admin Dashboard**
-- Manage users and roles
+- Manage users and assign roles
 - Manage editor expertise fields
-- View all submissions
-- System settings
+- View all submissions in the system
+- Configure system settings
 
 ---
 
@@ -305,9 +350,12 @@ app/
 │   ├── User.php
 │   ├── Submission.php
 │   ├── Review.php
-│   ├── RevisionRequest.php               # NEW: Revision tracking
-│   ├── SubmissionAssignment.php          # NEW: Editor assignments
-│   ├── EditorExpertise.php               # NEW: Editor expertise fields
+│   ├── Appeal.php                        # NEW: Appeal management system
+│   ├── RevisionRequest.php               # Revision tracking
+│   ├── RevisionReview.php                # Revision review tracking
+│   ├── SubmissionAssignment.php          # Editor assignments
+│   ├── EditorExpertise.php               # Editor expertise fields
+│   ├── ReviewAssignment.php              # Reviewer assignments
 │   └── ...
 └── ...
 
@@ -315,9 +363,13 @@ database/
 ├── migrations/
 │   ├── *_create_users_table.php
 │   ├── *_create_submissions_table.php
-│   ├── *_create_editor_expertise_table.php       # NEW
-│   ├── *_create_submission_assignments_table.php # NEW
-│   ├── *_create_revision_requests_table.php      # NEW
+│   ├── *_create_reviews_table.php
+│   ├── *_create_appeals_table.php                # NEW: Appeals system
+│   ├── *_create_editor_expertise_table.php       # Editor expertise fields
+│   ├── *_create_submission_assignments_table.php # Editor assignments
+│   ├── *_create_revision_requests_table.php      # Revision requests
+│   ├── *_create_revision_reviews_table.php       # Revision reviews
+│   ├── *_add_initial_screening_to_submissions.php# Initial screening fields
 │   └── ...
 └── seeders/
     └── DatabaseSeeder.php
@@ -325,18 +377,21 @@ database/
 resources/
 └── views/
     ├── dashboard/
-    │   ├── author.blade.php
+    │   ├── author.blade.php               # Shows appeal decisions in submissions
     │   ├── editor.blade.php
+    │   ├── reviewer.blade.php
     │   ├── admin.blade.php
-    │   └── chief-editor.blade.php         # NEW
+    │   └── chief-editor.blade.php         # Now includes Appeals management tab
     ├── submissions/
-    │   ├── create.blade.php               # Now includes research field
-    │   ├── edit.blade.php                 # Now includes research field
-    │   ├── show.blade.php
-    │   └── revisions.blade.php            # NEW: Revision management
-    ├── reviews/
+    │   ├── create.blade.php               # Includes research field selection
+    │   ├── edit.blade.php                 # Includes research field
+    │   ├── show.blade.php                 # Shows appeal decision info
+    │   ├── partials/
+    │   │   ├── appeal-section.blade.php   # NEW: Appeal form for authors
+    │   │   └── ...\n    │   └── ...\n    ├── appeals/
+    │   ├── index.blade.php                # NEW: List pending appeals (editor-in-chief)\n    │   └── show.blade.php                 # NEW: Review and respond to appeals\n    ├── reviews/
     │   ├── editor-submissions.blade.php   # Enhanced with review counts
-    │   ├── editor-show.blade.php          # NEW: Revision decision UI
+    │   ├── editor-show.blade.php          # Revision decision UI
     │   └── ...
     └── ...
 
@@ -432,5 +487,46 @@ For issues or questions:
 
 ---
 
-**Last Updated**: February 2026
-**Version**: 1.0.0
+## 📌 Recent Updates (February 26, 2026)
+
+### **Appeals System** ✨ NEW
+- Complete appeal workflow for authors contesting rejected manuscripts
+- Editor-in-Chief appeal review interface with decision-making
+- Appeals tab in chief editor dashboard with pending appeals list
+- Author can see appeal decisions and editor's response in dashboard and submission details
+- Appeal form in submission page for rejected manuscripts
+- Database migration and Appeal model implementation
+
+### **Initial Screening Enhancement**
+- Editor-in-Chief performs initial screening before peer review assignment
+- Pass/Fail decision with detailed comments
+- Screening results visible to authors in dashboard
+
+### **Author Dashboard Improvements**
+- Display of appeal decisions with color-coded status (Approved/Rejected/Pending)
+- Show editor-in-chief's response to appeals in submission listings
+- Appeal status chip alongside other submission metadata
+
+### **Submission Details Page Enhancement**
+- New Appeal Decision block showing:
+  - Appeal status (Approved/Rejected/Pending)
+  - Editor-in-Chief's detailed response
+  - Pending review message if decision not yet made
+
+### **UI/UX Improvements**
+- Hide reviewer recommendations from authors in author-facing views
+- Fixed login form to properly recognize "Editor-in-Chief" role
+- Consistent styling for appeal status badges and information cards
+- Tab-based interface for chief editor dashboard with appeals management
+
+### **Backend Improvements**
+- AppealController with full CRUD operations
+- Appeal model with relationships and status constants
+- Appeals eager loading in DashboardController and SubmissionController
+- Authorization checks restricting appeal management to editor-in-chief only
+- Database schema with appeals table including status, responses, and reviewer tracking
+
+---
+
+**Last Updated**: February 26, 2026
+**Version**: 1.1.0
