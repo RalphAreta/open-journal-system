@@ -137,42 +137,67 @@ class LayoutEditorController extends Controller
     /**
      * Upload edited file
      */
-    public function uploadFile(Request $request, $id): RedirectResponse
-    {
-        $user = $request->user();
-        $assignment = LayoutEditorAssignment::findOrFail($id);
+ public function uploadFile(Request $request, $id): RedirectResponse
+{
+    $user = $request->user();
+    $assignment = LayoutEditorAssignment::findOrFail($id);
 
-        if ($assignment->layout_editor_id !== $user->id) {
-            abort(403);
-        }
-
-        $request->validate([
-            'file' => 'required|mimes:pdf,doc,docx|max:10240', // 10MB max
-            'notes' => 'nullable|string|max:1000',
-        ]);
-
-        // Store the layout editor's version
-        $file = $request->file('file');
-        $filename = 'layout-' . $assignment->submission_id . '-' . time() . '.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs('layouts', $filename, 'local');
-
-        // Update assignment with layout file
-        $assignment->update([
-            'layout_file_path' => $path,
-            'layout_file_name' => $file->getClientOriginalName(),
-            'notes' => $request->input('notes'),
-            'status' => LayoutEditorAssignment::STATUS_COMPLETED,
-            'completed_at' => now(),
-        ]);
-
-        // Update submission status to layout review (waiting for editor to review the layout)
-        $assignment->submission->update([
-            'status' => Submission::STATUS_LAYOUT_REVIEW,
-        ]);
-
-        return redirect()->route('layout-editor.dashboard')
-            ->with('success', 'Layout file uploaded successfully. Waiting for editor review.');
+    if ($assignment->layout_editor_id !== $user->id) {
+        abort(403);
     }
+
+    $request->validate([
+        'file'  => 'required|mimes:pdf,doc,docx|max:10240',
+        'notes' => 'nullable|string|max:1000',
+    ]);
+
+    // Store the layout editor's version
+    $file     = $request->file('file');
+    $filename = 'layout-' . $assignment->submission_id . '-' . time() . '.' . $file->getClientOriginalExtension();
+    $path     = $file->storeAs('layouts', $filename, 'local');
+
+    // Update assignment
+    $assignment->update([
+        'layout_file_path' => $path,
+        'layout_file_name' => $file->getClientOriginalName(),
+        'notes'            => $request->input('notes'),
+        'status'           => LayoutEditorAssignment::STATUS_COMPLETED,
+        'completed_at'     => now(),
+    ]);
+
+    // Update submission status
+    $submission = $assignment->submission;
+    $submission->update(['status' => Submission::STATUS_LAYOUT_REVIEW]);
+
+    // Notify editor
+    $editor = $submission->assignedEditor;
+    if ($editor) {
+        \App\Models\Notification::create([
+            'user_id'         => $editor->id,
+            'title'           => 'Layout File Uploaded',
+            'message'         => "The layout editor has uploaded the layout file for \"{$submission->title}\". Please review it.",
+            'type'            => 'info',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => \App\Models\Submission::class,
+        ]);
+    }
+
+    // Notify author
+    $author = $submission->author;
+    if ($author) {
+        \App\Models\Notification::create([
+            'user_id'         => $author->id,
+            'title'           => 'Layout In Progress',
+            'message'         => "Your paper \"{$submission->title}\" has been formatted and is now under editor review.",
+            'type'            => 'info',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => \App\Models\Submission::class,
+        ]);
+    }
+
+    return redirect()->route('layout-editor.dashboard')
+        ->with('success', 'Layout file uploaded successfully. Waiting for editor review.');
+}
 
     /**
      * Download the layout file created by layout editor
