@@ -19,7 +19,7 @@ class LoginController extends Controller
     public function login(Request $request): RedirectResponse
     {
         $request->validate([
-            'role'     => ['required', 'in:author,reviewer,editor,editor-in-chief,admin'],
+            'role'     => ['required', 'in:author,reviewer,editor,editor-in-chief,layout_editor,admin'],
             'email'    => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
