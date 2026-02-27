@@ -107,10 +107,10 @@
                 "
             ></div>
             <div
-                class="absolute top-0 left-0 right-0 h-[2px] z-20 animate-lp-shimmer"
+                class="absolute top-0 left-0 right-0 h-0.5 z-20 animate-lp-shimmer"
             ></div>
 
-            <div class="relative z-20 max-w-[420px]">
+            <div class="relative z-20 max-w-105">
                 @php
                     $visitorCount = null;
                     try {
@@ -145,7 +145,7 @@
                     <br />
                     Knowledge.
                     <em
-                        class="not-italic font-normal block bg-gradient-to-r from-[#c9a84c] via-[#f0d678] to-[#c9a84c] bg-clip-text text-transparent drop-shadow-sm"
+                        class="not-italic font-normal block bg-linear-to-r from-[#c9a84c] via-[#f0d678] to-[#c9a84c] bg-clip-text text-transparent drop-shadow-sm"
                     >
                         Inspiring Innovation.
                     </em>
@@ -158,7 +158,7 @@
                     open-access research for the global academic community.
                 </p>
                 <div
-                    class="w-12 h-[2px] bg-[#c9a84c] mb-6 animate-lp-up [animation-delay:460ms]"
+                    class="w-12 h-0.5 bg-[#c9a84c] mb-6 animate-lp-up [animation-delay:460ms]"
                 ></div>
                 <div class="flex gap-4 animate-lp-up [animation-delay:580ms]">
                     <span
@@ -178,16 +178,16 @@
 
         {{-- RIGHT SIDE: FULL ORIGINAL RESTORED --}}
         <div
-            class="flex-1 flex items-center justify-center p-8 md:p-12 lg:p-16 relative overflow-hidden bg-gradient-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0] z-0"
+            class="flex-1 flex items-center justify-center p-8 md:p-12 lg:p-16 relative overflow-hidden bg-linear-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0] z-0"
         >
             <div
-                class="absolute rounded-full w-[500px] h-[500px] -top-40 -right-28 border border-[#a07830]/10"
+                class="absolute rounded-full w-125 h-125 -top-40 -right-28 border border-[#a07830]/10"
             ></div>
             <div
-                class="absolute rounded-full w-[300px] h-[300px] -top-14 -right-5 border border-[#a07830]/5"
+                class="absolute rounded-full w-75 h-75 -top-14 -right-5 border border-[#a07830]/5"
             ></div>
             <div
-                class="absolute rounded-full w-[240px] h-[240px] -bottom-20 -left-14 border border-[#c9a84c]/10 bg-radial-gradient from-[#c9a84c]/5 to-transparent"
+                class="absolute rounded-full w-60 h-60 -bottom-20 -left-14 border border-[#c9a84c]/10 bg-radial-gradient from-[#c9a84c]/5 to-transparent"
             ></div>
             <div
                 class="absolute inset-0 opacity-[0.035]"
@@ -203,12 +203,12 @@
             ></div>
 
             <div
-                class="relative z-10 w-full max-w-[400px] bg-white/90 border border-[#c9a84c]/20 rounded-[20px] p-10 backdrop-blur-xl shadow-2xl animate-lp-up [animation-delay:200ms]"
+                class="relative z-10 w-full max-w-100 bg-white/90 border border-[#c9a84c]/20 rounded-[20px] p-10 backdrop-blur-xl shadow-2xl animate-lp-up [animation-delay:200ms]"
             >
                 <p
                     class="text-[10px] tracking-widest uppercase text-[#a07830] font-medium mb-2 flex items-center gap-2"
                 >
-                    <span class="w-[18px] h-px bg-[#c9a84c]/60"></span>
+                    <span class="w-4.5 h-px bg-[#c9a84c]/60"></span>
                     JOURNAL SYSTEM
                 </p>
                 <h2
@@ -393,11 +393,11 @@
 
                     <button
                         type="submit"
-                        class="w-full py-3 bg-gradient-to-br from-[#c9a84c] to-[#a07830] text-white text-sm font-semibold tracking-wide rounded-xl shadow-lg shadow-[#a07830]/35 hover:-translate-y-0.5 active:translate-y-0 transition-transform relative overflow-hidden"
+                        class="w-full py-3 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white text-sm font-semibold tracking-wide rounded-xl shadow-lg shadow-[#a07830]/35 hover:-translate-y-0.5 active:translate-y-0 transition-transform relative overflow-hidden"
                     >
                         <span class="relative z-10">Sign In to Portal →</span>
                         <div
-                            class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent"
+                            class="absolute inset-0 bg-linear-to-b from-white/10 to-transparent"
                         ></div>
                     </button>
                 </form>

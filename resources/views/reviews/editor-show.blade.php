@@ -296,9 +296,9 @@
                 @endif
 
                 {{-- Assign Reviewers to Revised Manuscript Section --}}
-                <div class="bg-white border-2 border-blue-200 rounded-xl p-5 mb-6 bg-blue-50">
+                <div class="bg-white border-2 border-blue-200 rounded-xl p-5 mb-6">
                     <div class="flex items-start gap-3 mb-4">
-                        <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-lg">
+                        <div class="shrink-0 w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-lg">
                             👥
                         </div>
                         <div>
@@ -310,10 +310,10 @@
                     @if ($latestRevision && $latestRevision->revisionReviews->isEmpty())
                         <form method="POST" action="{{ route('editor.assign-reviewer', $submission) }}" class="space-y-4 revision-reviewer-form">
                             @csrf
-                            
+
                             <div>
                                 <p class="text-xs font-semibold text-blue-900 mb-3">Select reviewers to evaluate this revised manuscript:</p>
-                                
+
                                 @php
                                     $allReviewers = \App\Models\User::whereHas('roles', function($q) { $q->where('name', 'reviewer'); })->get();
                                     $matchedReviewerIds = $matchedReviewers->pluck('id')->toArray();
@@ -381,7 +381,7 @@
                                             @if ($rr->status === \App\Models\RevisionReview::STATUS_COMPLETED)
                                                 bg-green-100 text-green-700
                                             @else
-                                                bg-amber-100 text-amber-700
+
                                             @endif
                                         ">
                                             {{ ucfirst($rr->status) }}
