@@ -49,7 +49,7 @@ if (!$submission) {
     echo "  ID: {$submission->id}\n";
     echo "  Title: {$submission->title}\n";
     echo "  File Path: {$submission->file_path}\n";
-    
+
     // Check if file exists
     $disk = \Illuminate\Support\Facades\Storage::disk('local');
     $exists = $disk->exists($submission->file_path);
