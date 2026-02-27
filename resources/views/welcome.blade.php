@@ -682,7 +682,7 @@
                             <h4 class="font-libre text-sm font-bold text-[#2D8176] mb-1">{{ $member['name'] }}</h4>
                             <p class="text-xs text-[#c9a84c] font-bold uppercase mb-2">{{ ucfirst(str_replace('_', ' ', $member['role'])) }}</p>
                             <p class="text-[11px] text-[#6a7890] font-medium mb-1">{{ $member['expertise'] }}</p>
-                            <p class="text-[10px] text-[#a7b1c7]">{{ $member['email'] ?? 'Editorial Team' }}</p>
+
                         </div>
                     </div>
                     @empty
