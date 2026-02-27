@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/submissions/{submission}/revisions', [SubmissionController::class, 'revisions'])->name('submissions.revisions');
         Route::post('/submissions/{submission}/submit-revision', [SubmissionController::class, 'submitRevision'])->name('submissions.submit-revision');
         Route::post('/submissions/{submission}/appeal', [AppealController::class, 'store'])->name('appeals.store');
+        Route::get('/author/submission/{submission}/layout-feedback', [AuthorController::class, 'viewLayoutFeedback'])->name('author.layout-feedback');
         Route::get('/author/submission/{submission}/final-layout', [AuthorController::class, 'viewFinalLayout'])->name('author.final-layout');
         Route::get('/author/submission/{submission}/download-layout', [AuthorController::class, 'downloadLayout'])->name('author.download-layout');
     });
