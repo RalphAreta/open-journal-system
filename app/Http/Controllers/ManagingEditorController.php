@@ -132,16 +132,42 @@ public function approveLayout(Submission $submission): RedirectResponse
         abort(403);
     }
 
-    $submission->update(['status' => Submission::STATUS_LAYOUT_REVIEW]);
+    // Get layout assignment before status change
+    $layoutAssignment = $submission->layoutEditorAssignments()
+        ->where('status', LayoutEditorAssignment::STATUS_COMPLETED)
+        ->latest('completed_at')
+        ->first();
+
+    $submission->update(['status' => Submission::STATUS_AUTHOR_CONFIRMATION]);
 
     // Notify assigned editor
     $editor = $submission->assignedEditor;
     if ($editor) {
         \App\Models\Notification::create([
             'user_id'         => $editor->id,
-            'title'           => '✅ Layout Approved by Managing Editor',
-            'message'         => "The managing editor has approved the layout for \"{$submission->title}\". Please review and send to author for final confirmation.",
+            'title'           => '✅ Layout Approved — Action Required',
+            'message'         => "The managing editor has approved the layout for \"{$submission->title}\". Please review and send to the author for final confirmation.",
             'type'            => 'success',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    // Notify author with layout file info
+    $author = $submission->author;
+    if ($author) {
+        $layoutEditorName = $layoutAssignment?->layoutEditor->name ?? 'the layout editor';
+        $fileName = $layoutAssignment?->layout_file_name ?? 'layout file';
+        $notes = $layoutAssignment?->notes;
+        $notesPart = $notes
+            ? "\n\nLayout Editor's Notes:\n\"{$notes}\""
+            : "";
+
+        \App\Models\Notification::create([
+            'user_id'         => $author->id,
+            'title'           => '🎨 Layout Ready — Please Review',
+            'message'         => "Your manuscript \"{$submission->title}\" has been formatted by {$layoutEditorName}. The layout file \"{$fileName}\" is now ready for your final review and confirmation.{$notesPart}",
+            'type'            => 'info',
             'notifiable_id'   => $submission->id,
             'notifiable_type' => Submission::class,
         ]);
@@ -149,7 +175,7 @@ public function approveLayout(Submission $submission): RedirectResponse
 
     return redirect()
         ->route('managing-editor.dashboard')
-        ->with('success', 'Layout approved and editor has been notified.');
+        ->with('success', 'Layout approved. Editor and author have been notified.');
 }
 public function downloadLayout(Submission $submission)
 {

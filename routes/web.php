@@ -161,6 +161,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
     Route::post('/notifications/{notification}/read', [App\Http\Controllers\NotificationController::class, 'read'])->name('notifications.read');
+    Route::get('/submissions/{submission}/layout/download', [SubmissionController::class, 'downloadLayout'])
+    ->name('author.layout.download');
 });
 Route::middleware('role:managing-editor')->group(function (): void {
     Route::get('/managing-editor/dashboard', [ManagingEditorController::class, 'dashboard'])

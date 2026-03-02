@@ -194,4 +194,25 @@ return redirect()->route('submissions.index')->with('success', 'Submission creat
         return redirect()->route('submissions.show', $submission)
             ->with('success', 'Revised manuscript submitted successfully. Awaiting review.');
     }
+
+    public function downloadLayout(Submission $submission)
+{
+    if ($submission->author_id !== Auth::id()) {
+        abort(403);
+    }
+
+    $layoutAssignment = $submission->layoutEditorAssignments()
+        ->where('status', \App\Models\LayoutEditorAssignment::STATUS_COMPLETED)
+        ->latest('completed_at')
+        ->first();
+
+    if (!$layoutAssignment || !\Illuminate\Support\Facades\Storage::disk('local')->exists($layoutAssignment->layout_file_path)) {
+        abort(404, 'Layout file not found.');
+    }
+
+    return response()->download(
+        \Illuminate\Support\Facades\Storage::disk('local')->path($layoutAssignment->layout_file_path),
+        $layoutAssignment->layout_file_name ?? 'layout.pdf'
+    );
+}
 }
