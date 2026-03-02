@@ -235,12 +235,15 @@
 
                             {{-- Notification Bell --}}
                             @php
+                                $unreadCount = \App\Models\Notification::where('user_id', auth()->id())
+                                    ->whereNull('read_at')
+                                    ->count();
+
                                 $unreadNotifs = \App\Models\Notification::where('user_id', auth()->id())
                                     ->whereNull('read_at')
                                     ->latest()
                                     ->take(5)
                                     ->get();
-                                $unreadCount = $unreadNotifs->count();
                             @endphp
 
                             <div class="relative group">
@@ -282,12 +285,27 @@
                                             Notifications
                                         </p>
                                         @if ($unreadCount > 0)
-                                            <a
-                                                href="{{ route('notifications.markAllRead') }}"
-                                                class="text-[9px] font-bold text-[#b0aaa0] hover:text-[#2D8176] uppercase tracking-wider transition-colors"
+                                            <form
+                                                method="POST"
+                                                action="{{ route('notifications.markAllRead') }}"
                                             >
-                                                Mark all read
-                                            </a>
+                                                @csrf
+                                                <button
+                                                    type="submit"
+                                                    style="
+                                                        background: none;
+                                                        border: none;
+                                                        cursor: pointer;
+                                                        padding: 0;
+                                                        font-family:
+                                                            'Source Sans 3',
+                                                            sans-serif;
+                                                    "
+                                                    class="text-[9px] font-bold text-[#b0aaa0] hover:text-[#2D8176] uppercase tracking-wider transition-colors"
+                                                >
+                                                    Mark all read
+                                                </button>
+                                            </form>
                                         @endif
                                     </div>
 
