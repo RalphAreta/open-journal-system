@@ -97,7 +97,7 @@
                                 <p class="text-green-900">{{ $submission->initial_screening_at?->format('F d, Y \\a\\t h:i A') }}</p>
                             </div>
                             <div>
-                                <label class="text-sm font-medium text-green-800">Screening Comments</label>
+                                <label class="text-sm font-medium text-green-800">Screening Commentsss</label>
                                 <p class="text-green-900 mt-1">{{ $submission->initial_screening_comments }}</p>
                             </div>
                         </div>

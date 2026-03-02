@@ -1134,7 +1134,7 @@
         @endif
 
         {{-- ── ASSIGN REVIEWER ── --}}
-        @if (in_array($submission->status, ["submitted", "under_review", "revisions_requested"]))
+        @if (in_array($submission->status, ["submitted", "under_review"]) && $submission->reviewAssignments->isEmpty())
             <div
                 class="bg-white border border-slate-200 rounded-2xl p-6 mb-5 shadow-sm fade-up-4"
             >
