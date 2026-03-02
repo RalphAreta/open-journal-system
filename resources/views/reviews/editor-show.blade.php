@@ -769,7 +769,7 @@
                     Editor Decision
                 </h2>
 
-                @if (in_array($submission->status, ["accepted", "rejected", "revisions_requested"]))
+                @if (in_array($submission->status, ["accepted", "rejected", "revisions_requested", "with_managing_editor", "layout_editing", "layout_review", "author_confirmation"]))
                     <div
                         class="bg-blue-50 border border-blue-200 rounded-xl p-5"
                     >
