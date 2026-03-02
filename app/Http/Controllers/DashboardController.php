@@ -29,6 +29,8 @@ class DashboardController extends Controller
                 return redirect()->route('chief-editor.dashboard');
             } elseif ($activeRole === 'layout-editor') {
                 return redirect()->route('layout-editor.dashboard');
+            } elseif ($activeRole === 'managing-editor') {
+                return redirect()->route('managing-editor.dashboard');
             }
             return redirect()->route("dashboard.{$activeRole}");
         }
@@ -40,6 +42,8 @@ class DashboardController extends Controller
                 return redirect()->route('chief-editor.dashboard');
             } elseif ($preferred === 'layout-editor') {
                 return redirect()->route('layout-editor.dashboard');
+            } elseif ($preferred === 'managing-editor') {
+                return redirect()->route('managing-editor.dashboard');
             }
             return redirect()->route("dashboard.{$preferred}");
         }
@@ -51,6 +55,8 @@ class DashboardController extends Controller
                 return redirect()->route('chief-editor.dashboard');
             } elseif ($role->name === 'layout-editor') {
                 return redirect()->route('layout-editor.dashboard');
+            } elseif ($role->name === 'managing-editor') {
+                return redirect()->route('managing-editor.dashboard');
             }
             return redirect()->route("dashboard.{$role->name}");
         }
@@ -60,7 +66,6 @@ class DashboardController extends Controller
 
     public function author(Request $request): View
     {
-        // remember that author dashboard was visited last
         $request->session()->put('preferred_dashboard', 'author');
 
         $user = $request->user();
@@ -94,33 +99,28 @@ class DashboardController extends Controller
 
     public function reviewer(Request $request): View
     {
-        // remember that reviewer dashboard was visited last
         $request->session()->put('preferred_dashboard', 'reviewer');
 
         $user = $request->user();
 
-        // 1. Pending Invitations (status = 'pending' - awaiting reviewer's accept/decline decision)
         $pendingInvitations = $user->reviewAssignments()
             ->where('status', ReviewAssignment::STATUS_PENDING)
             ->with(['submission.author', 'submission.reviews'])
             ->latest()
             ->get();
 
-        // 2. Standard Review Assignments (for main table - accepted/completed)
         $assignments = $user->reviewAssignments()
             ->whereNotIn('status', [ReviewAssignment::STATUS_PENDING, ReviewAssignment::STATUS_DECLINED])
             ->with(['submission.author', 'submission.reviews'])
             ->latest()
             ->paginate(10);
 
-        // 3. Pending Revision Reviews (The new system)
         $revisionReviews = RevisionReview::where('reviewer_id', $user->id)
             ->where('status', RevisionReview::STATUS_ASSIGNED)
             ->with(['revisionRequest.submission.author'])
             ->latest()
             ->get();
 
-        // 4. Stats Calculation
         $stats = [
             'pending'             => $pendingInvitations->count() + $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_ASSIGNED)->count(),
             'completed'           => $user->reviewAssignments()->where('status', ReviewAssignment::STATUS_COMPLETED)->count(),
@@ -128,7 +128,6 @@ class DashboardController extends Controller
             'completed_revisions' => RevisionReview::where('reviewer_id', $user->id)->where('status', RevisionReview::STATUS_COMPLETED)->count(),
         ];
 
-        // 5. Notifications
         $notifications = Notification::where('user_id', $user->id)
             ->latest()
             ->take(10)
@@ -139,7 +138,6 @@ class DashboardController extends Controller
 
     public function editor(Request $request): View
     {
-        // remember that editor dashboard was visited last
         $request->session()->put('preferred_dashboard', 'editor');
 
         $userId = $request->user()->id;
@@ -150,11 +148,11 @@ class DashboardController extends Controller
             ->paginate(10);
 
         $stats = [
-            'total' => Submission::where('assigned_editor_id', $userId)->count(),
-            'submitted' => Submission::where('assigned_editor_id', $userId)->where('status', Submission::STATUS_SUBMITTED)->count(),
-            'under_review' => Submission::where('assigned_editor_id', $userId)->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
+            'total'                 => Submission::where('assigned_editor_id', $userId)->count(),
+            'submitted'             => Submission::where('assigned_editor_id', $userId)->where('status', Submission::STATUS_SUBMITTED)->count(),
+            'under_review'          => Submission::where('assigned_editor_id', $userId)->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
             'revision_under_review' => Submission::where('assigned_editor_id', $userId)->where('status', Submission::STATUS_REVISION_UNDER_REVIEW)->count(),
-            'decisions_pending' => Submission::where('assigned_editor_id', $userId)->whereIn('status', [
+            'decisions_pending'     => Submission::where('assigned_editor_id', $userId)->whereIn('status', [
                 Submission::STATUS_UNDER_REVIEW,
                 Submission::STATUS_REVISION_UNDER_REVIEW,
                 Submission::STATUS_REVISIONS_REQUESTED,
@@ -166,17 +164,16 @@ class DashboardController extends Controller
 
     public function admin(Request $request): View
     {
-        // remember that admin dashboard was visited last
         $request->session()->put('preferred_dashboard', 'admin');
 
-        $userCount = \App\Models\User::count();
+        $userCount       = \App\Models\User::count();
         $submissionCount = Submission::count();
-        $roleCount = \App\Models\Role::count();
+        $roleCount       = \App\Models\Role::count();
 
         return view('dashboard.admin', [
-            'userCount' => $userCount,
+            'userCount'       => $userCount,
             'submissionCount' => $submissionCount,
-            'roleCount' => $roleCount,
+            'roleCount'       => $roleCount,
         ]);
     }
 
@@ -191,22 +188,20 @@ class DashboardController extends Controller
             abort(403, 'You do not have permission to switch to this role.');
         }
 
-        // Validate the role name
-        if (!in_array($role, ['author', 'reviewer', 'editor', 'layout-editor', 'editor-in-chief', 'admin'])) {
+        if (!in_array($role, ['author', 'reviewer', 'editor', 'layout-editor', 'editor-in-chief', 'admin', 'managing-editor'])) {
             abort(400, 'Invalid role.');
         }
 
-        // Update the active role in session
         $request->session()->put('active_role', $role);
 
-        // Redirect to the appropriate dashboard
         if ($role === 'editor-in-chief') {
             return redirect()->route('chief-editor.dashboard');
         } elseif ($role === 'layout-editor') {
             return redirect()->route('layout-editor.dashboard');
-        } else {
-            return redirect()->route("dashboard.{$role}");
+        } elseif ($role === 'managing-editor') {
+            return redirect()->route('managing-editor.dashboard');
         }
+
+        return redirect()->route("dashboard.{$role}");
     }
 }
-

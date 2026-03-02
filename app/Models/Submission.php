@@ -31,6 +31,11 @@ class Submission extends Model
         'initial_screening_by',
         'initial_screening_at',
         'editor_decision_draft',
+        'managing_editor_id',
+'managing_editor_assigned_at',
+'managing_editor_status',
+'ctf_sent_at',
+'forwarded_to_layout_at',
     ];
 
     protected function casts(): array
@@ -49,6 +54,7 @@ class Submission extends Model
     public const STATUS_REVISIONS_REQUESTED = 'revisions_requested';
     public const STATUS_REVISION_UNDER_REVIEW = 'revision_under_review';
     public const STATUS_ACCEPTED = 'accepted';
+    public const STATUS_WITH_MANAGING_EDITOR = 'with_managing_editor';
     public const STATUS_LAYOUT_EDITING = 'layout_editing';
     public const STATUS_LAYOUT_REVIEW = 'layout_review';
     public const STATUS_AUTHOR_CONFIRMATION = 'author_confirmation';
@@ -69,6 +75,7 @@ class Submission extends Model
             self::STATUS_LAYOUT_EDITING => 'Layout Editing',
             self::STATUS_LAYOUT_REVIEW => 'Layout Review',
             self::STATUS_AUTHOR_CONFIRMATION => 'Author Confirmation',
+            self::STATUS_WITH_MANAGING_EDITOR => 'With Managing Editor',
             self::STATUS_REJECTED => 'Rejected',
         ];
     }

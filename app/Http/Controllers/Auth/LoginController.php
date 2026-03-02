@@ -19,7 +19,7 @@ class LoginController extends Controller
     public function login(Request $request): RedirectResponse
     {
         $request->validate([
-            'role'     => ['required', 'in:author,reviewer,editor,editor-in-chief,layout-editor,admin'],
+            'role' => ['required', 'in:author,reviewer,editor,editor-in-chief,layout-editor,admin,managing-editor'],
             'email'    => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
@@ -123,6 +123,7 @@ class LoginController extends Controller
    return match($selectedRole) {
     'admin'           => redirect()->route('dashboard.admin'),
     'editor-in-chief' => redirect()->route('chief-editor.dashboard'),
+    'managing-editor'  => redirect()->route('managing-editor.dashboard'), 
     'editor'          => redirect()->route('dashboard.editor'),
     'reviewer'        => redirect()->route('dashboard.reviewer'),
     'layout-editor'   => redirect()->route('layout-editor.dashboard'),

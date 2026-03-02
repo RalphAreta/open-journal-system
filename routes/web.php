@@ -17,6 +17,7 @@ use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\AppealController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth; // Make sure this is at the top of the file
+use App\Http\Controllers\ManagingEditorController;
 
 Route::get('/', function () {
     return Auth::check() ? redirect()->route('dashboard') : app(HomeController::class)->index();
@@ -106,6 +107,7 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/editor/submissions/{submission}/forward-revision-to-reviewers', [ReviewController::class, 'forwardRevisionToReviewers'])->name('editor.forward-revision-to-reviewers');
         Route::post('/editor/submissions/{submission}/send-to-layout-editor', [ReviewController::class, 'sendToLayoutEditor'])->name('editor.send-to-layout-editor');
         Route::post('/editor/submissions/{submission}/send-layout-to-author', [ReviewController::class, 'sendLayoutToAuthor'])->name('editor.send-layout-to-author');
+        Route::post('/editor/submissions/{submission}/send-to-managing-editor', [ReviewController::class, 'sendToManagingEditor'])->name('editor.send-to-managing-editor');
     });
 
     Route::middleware('role:editor-in-chief')->group(function (): void {
@@ -159,5 +161,10 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
     Route::post('/notifications/{notification}/read', [App\Http\Controllers\NotificationController::class, 'read'])->name('notifications.read');
+});
+Route::middleware('role:managing-editor')->group(function (): void {
+    Route::get('/managing-editor/dashboard', [ManagingEditorController::class, 'dashboard'])->name('managing-editor.dashboard');
+    Route::get('/managing-editor/submissions/{submission}', [ManagingEditorController::class, 'show'])
+    ->name('managing-editor.submission.show');
 });
 });

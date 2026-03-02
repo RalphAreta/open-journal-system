@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends("layouts.app")
 
-@section('title', 'Manage Submission')
+@section("title", "Manage Submission")
 
-@push('styles')
+@push("styles")
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&display=swap"
         rel="stylesheet"
@@ -125,13 +125,12 @@
     </style>
 @endpush
 
-@section('content')
+@section("content")
     <div class="font-body max-w-4xl">
-
         {{-- Page title --}}
         <div class="mb-6 fade-up">
             <a
-                href="{{ route('editor.submissions') }}"
+                href="{{ route("editor.submissions") }}"
                 class="text-[11px] font-bold uppercase tracking-[.07em] text-slate-400 hover:text-red-600 transition-colors"
             >
                 ← Back to Submissions
@@ -171,11 +170,11 @@
                     </p>
                     @php
                         $sc = match ($submission->status) {
-                            'accepted' => 'bg-emerald-50 border-emerald-200 text-emerald-700',
-                            'rejected' => 'bg-red-50 border-red-200 text-red-700',
-                            'under_review' => 'bg-blue-50 border-blue-200 text-blue-700',
-                            'revisions_requested' => 'bg-amber-50 border-amber-200 text-amber-700',
-                            default => 'bg-slate-50 border-slate-200 text-slate-600',
+                            "accepted" => "bg-emerald-50 border-emerald-200 text-emerald-700",
+                            "rejected" => "bg-red-50 border-red-200 text-red-700",
+                            "under_review" => "bg-blue-50 border-blue-200 text-blue-700",
+                            "revisions_requested" => "bg-amber-50 border-amber-200 text-amber-700",
+                            default => "bg-slate-50 border-slate-200 text-slate-600",
                         };
                     @endphp
 
@@ -197,7 +196,7 @@
                         <span
                             class="w-1.5 h-1.5 rounded-full bg-blue-400"
                         ></span>
-                        {{ $submission->research_field ?? 'Not specified' }}
+                        {{ $submission->research_field ?? "Not specified" }}
                     </span>
                 </div>
                 @if ($submission->file_path)
@@ -208,7 +207,7 @@
                             File
                         </p>
                         <a
-                            href="{{ route('submissions.download', ['submission' => $submission]) }}"
+                            href="{{ route("submissions.download", ["submission" => $submission]) }}"
                             class="inline-flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors"
                         >
                             <svg
@@ -242,9 +241,13 @@
         </div>
 
         {{-- ── Revision Re-Review Section ── --}}
-        @if ($submission->status === 'revision_under_review' && $submission->revisionRequests->isNotEmpty())
-            <div class="bg-white border border-slate-200 rounded-2xl p-6 mb-5 shadow-sm fade-up-1">
-                <h2 class="text-[11px] font-bold uppercase tracking-[.08em] text-slate-400 mb-4">
+        @if ($submission->status === "revision_under_review" && $submission->revisionRequests->isNotEmpty())
+            <div
+                class="bg-white border border-slate-200 rounded-2xl p-6 mb-5 shadow-sm fade-up-1"
+            >
+                <h2
+                    class="text-[11px] font-bold uppercase tracking-[.08em] text-slate-400 mb-4"
+                >
                     Revision Files
                 </h2>
 
@@ -255,135 +258,269 @@
                 {{-- Original vs Revised Files --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     {{-- Original Manuscript --}}
-                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-4">
-                        <p class="text-[10px] font-bold uppercase tracking-[.06em] text-slate-600 mb-3">Original Manuscript</p>
+                    <div
+                        class="bg-slate-50 border border-slate-100 rounded-xl p-4"
+                    >
+                        <p
+                            class="text-[10px] font-bold uppercase tracking-[.06em] text-slate-600 mb-3"
+                        >
+                            Original Manuscript
+                        </p>
+
                         @if ($submission->original_file_path)
-                            <p class="text-sm text-slate-700 mb-3 truncate" title="{{ $submission->original_file_name }}">{{ $submission->original_file_name }}</p>
-                            <a href="{{ route('submissions.download-original', ['submission' => $submission]) }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            <p
+                                class="text-sm text-slate-700 mb-3 truncate"
+                                title="{{ $submission->original_file_name }}"
+                            >
+                                {{ $submission->original_file_name }}
+                            </p>
+                            <a
+                                href="{{ route("submissions.download-original", ["submission" => $submission]) }}"
+                                class="inline-flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors"
+                            >
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                    />
                                 </svg>
                                 Download
                             </a>
                         @else
-                            <p class="text-sm text-slate-500 italic">No original file</p>
+                            <p class="text-sm text-slate-500 italic">
+                                No original file
+                            </p>
                         @endif
                     </div>
 
                     {{-- Revised Manuscript --}}
-                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-4">
-                        <p class="text-[10px] font-bold uppercase tracking-[.06em] text-slate-600 mb-3">Revised Manuscript</p>
+                    <div
+                        class="bg-slate-50 border border-slate-100 rounded-xl p-4"
+                    >
+                        <p
+                            class="text-[10px] font-bold uppercase tracking-[.06em] text-slate-600 mb-3"
+                        >
+                            Revised Manuscript
+                        </p>
+
                         @if ($latestRevision && $latestRevision->revised_at && $submission->file_path)
-                            <p class="text-sm text-slate-700 mb-3 truncate" title="{{ $submission->file_name }}">{{ $submission->file_name }}</p>
-                            <a href="{{ route('submissions.download', ['submission' => $submission]) }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            <p
+                                class="text-sm text-slate-700 mb-3 truncate"
+                                title="{{ $submission->file_name }}"
+                            >
+                                {{ $submission->file_name }}
+                            </p>
+                            <a
+                                href="{{ route("submissions.download", ["submission" => $submission]) }}"
+                                class="inline-flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors"
+                            >
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                    />
                                 </svg>
                                 Download
                             </a>
                         @else
-                            <p class="text-sm text-slate-500 italic">No revised manuscript yet</p>
+                            <p class="text-sm text-slate-500 italic">
+                                No revised manuscript yet
+                            </p>
                         @endif
                     </div>
                 </div>
 
                 {{-- Author's Revision Notes --}}
                 @if ($latestRevision && $latestRevision->revision_notes)
-                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
-                        <p class="text-[10px] font-bold uppercase tracking-[.06em] text-blue-700 mb-1">Author's Revision Notes</p>
-                        <p class="text-sm text-blue-900">{{ $latestRevision->revision_notes }}</p>
+                    <div
+                        class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4"
+                    >
+                        <p
+                            class="text-[10px] font-bold uppercase tracking-[.06em] text-blue-700 mb-1"
+                        >
+                            Author's Revision Notes
+                        </p>
+                        <p class="text-sm text-blue-900">
+                            {{ $latestRevision->revision_notes }}
+                        </p>
                     </div>
                 @endif
 
                 {{-- Assign Reviewers to Revised Manuscript Section --}}
-                <div class="bg-white border-2 border-blue-200 rounded-xl p-5 mb-6">
+                <div
+                    class="bg-white border-2 border-blue-200 rounded-xl p-5 mb-6"
+                >
                     <div class="flex items-start gap-3 mb-4">
-                        <div class="shrink-0 w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-lg">
+                        <div
+                            class="shrink-0 w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-lg"
+                        >
                             👥
                         </div>
                         <div>
-                            <h3 class="text-sm font-bold text-blue-900">Assign Reviewers to Revised Manuscript</h3>
-                            <p class="text-xs text-blue-700 mt-1">Assign reviewers to evaluate the revised version of the manuscript</p>
+                            <h3 class="text-sm font-bold text-blue-900">
+                                Assign Reviewers to Revised Manuscript
+                            </h3>
+                            <p class="text-xs text-blue-700 mt-1">
+                                Assign reviewers to evaluate the revised version
+                                of the manuscript
+                            </p>
                         </div>
                     </div>
 
                     @if ($latestRevision && $latestRevision->revisionReviews->isEmpty())
-                        <form method="POST" action="{{ route('editor.assign-reviewer', $submission) }}" class="space-y-4 revision-reviewer-form">
+                        <form
+                            method="POST"
+                            action="{{ route("editor.assign-reviewer", $submission) }}"
+                            class="space-y-4 revision-reviewer-form"
+                        >
                             @csrf
 
                             <div>
-                                <p class="text-xs font-semibold text-blue-900 mb-3">Select reviewers to evaluate this revised manuscript:</p>
+                                <p
+                                    class="text-xs font-semibold text-blue-900 mb-3"
+                                >
+                                    Select reviewers to evaluate this revised
+                                    manuscript:
+                                </p>
 
                                 @php
-                                    $allReviewers = \App\Models\User::whereHas('roles', function($q) { $q->where('name', 'reviewer'); })->get();
-                                    $matchedReviewerIds = $matchedReviewers->pluck('id')->toArray();
+                                    $allReviewers = \App\Models\User::whereHas("roles", function ($q) {
+                                        $q->where("name", "reviewer");
+                                    })->get();
+                                    $matchedReviewerIds = $matchedReviewers->pluck("id")->toArray();
                                 @endphp
 
                                 @if ($allReviewers->count() > 0)
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto rounded-lg border border-blue-100 p-3 bg-white">
+                                    <div
+                                        class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto rounded-lg border border-blue-100 p-3 bg-white"
+                                    >
                                         {{-- Matched reviewers first --}}
                                         @foreach ($allReviewers as $u)
                                             @php
-                                                $colors = ['bg-red-500', 'bg-blue-500', 'bg-violet-500', 'bg-emerald-500', 'bg-amber-500', 'bg-pink-500'];
+                                                $colors = ["bg-red-500", "bg-blue-500", "bg-violet-500", "bg-emerald-500", "bg-amber-500", "bg-pink-500"];
                                                 $bg = $colors[$loop->index % count($colors)];
                                                 $isMatched = in_array($u->id, $matchedReviewerIds);
                                             @endphp
 
-                                            <label class="reviewer-card" onclick="toggleReviewer(this)" @if($isMatched) style="border-color: #10b981; background-color: #f0fdf4;" @endif>
+                                            <label
+                                                class="reviewer-card"
+                                                onclick="toggleReviewer(this)"
+                                                @if($isMatched) style="border-color: #10b981; background-color: #f0fdf4;" @endif
+                                            >
                                                 <input
                                                     type="checkbox"
                                                     name="reviewer_ids[]"
                                                     value="{{ $u->id }}"
                                                     class="reviewer-checkbox absolute opacity-0 pointer-events-none"
                                                 />
-                                                <div class="reviewer-avatar {{ $bg }}">
+                                                <div
+                                                    class="reviewer-avatar {{ $bg }}"
+                                                >
                                                     {{ strtoupper(substr($u->name, 0, 1)) }}
                                                 </div>
                                                 <div class="min-w-0 flex-1">
-                                                    <p class="text-sm font-medium text-slate-900">{{ $u->name }}</p>
-                                                    <p class="text-xs text-slate-500">{{ $u->email }}</p>
+                                                    <p
+                                                        class="text-sm font-medium text-slate-900"
+                                                    >
+                                                        {{ $u->name }}
+                                                    </p>
+                                                    <p
+                                                        class="text-xs text-slate-500"
+                                                    >
+                                                        {{ $u->email }}
+                                                    </p>
                                                 </div>
-                                                @if($isMatched)
-                                                    <span class="text-[9px] font-bold text-emerald-600 mr-2">✓ MATCH</span>
+                                                @if ($isMatched)
+                                                    <span
+                                                        class="text-[9px] font-bold text-emerald-600 mr-2"
+                                                    >
+                                                        ✓ MATCH
+                                                    </span>
                                                 @endif
+
                                                 <div class="reviewer-check">
-                                                    <svg class="w-3 h-3 text-white hidden" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                                    <svg
+                                                        class="w-3 h-3 text-white hidden"
+                                                        fill="currentColor"
+                                                        viewBox="0 0 20 20"
+                                                    >
+                                                        <path
+                                                            fill-rule="evenodd"
+                                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                            clip-rule="evenodd"
+                                                        />
                                                     </svg>
                                                 </div>
                                             </label>
                                         @endforeach
                                     </div>
                                 @else
-                                    <p class="text-xs text-blue-700 bg-white rounded p-3 border border-blue-100">No reviewers available in the system.</p>
+                                    <p
+                                        class="text-xs text-blue-700 bg-white rounded p-3 border border-blue-100"
+                                    >
+                                        No reviewers available in the system.
+                                    </p>
                                 @endif
                             </div>
 
                             <div>
-                                <label class="block text-xs font-semibold text-blue-900 mb-2">Review Deadline (Optional)</label>
-                                <input type="date" name="due_at" class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                                <label
+                                    class="block text-xs font-semibold text-blue-900 mb-2"
+                                >
+                                    Review Deadline (Optional)
+                                </label>
+                                <input
+                                    type="date"
+                                    name="due_at"
+                                    class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                />
                             </div>
 
                             <div class="flex gap-3 pt-2">
-                                <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg transition-colors">
+                                <button
+                                    type="submit"
+                                    class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg transition-colors"
+                                >
                                     Assign Selected Reviewers
                                 </button>
                             </div>
                         </form>
                     @else
-                        <div class="bg-white rounded-lg p-4 border border-blue-100">
-                            <p class="text-xs font-semibold text-blue-900 mb-3">✓ Reviewers Assigned</p>
+                        <div
+                            class="bg-white rounded-lg p-4 border border-blue-100"
+                        >
+                            <p class="text-xs font-semibold text-blue-900 mb-3">
+                                ✓ Reviewers Assigned
+                            </p>
                             <div class="space-y-2">
                                 @foreach ($latestRevision->revisionReviews as $rr)
-                                    <div class="flex items-center justify-between text-sm">
-                                        <span class="text-blue-900">{{ $rr->reviewer->name }}</span>
-                                        <span class="text-[10px] font-semibold px-2 py-1 rounded-full
-                                            @if ($rr->status === \App\Models\RevisionReview::STATUS_COMPLETED)
-                                                bg-green-100 text-green-700
+                                    <div
+                                        class="flex items-center justify-between text-sm"
+                                    >
+                                        <span class="text-blue-900">
+                                            {{ $rr->reviewer->name }}
+                                        </span>
+                                        <span
+                                            class="text-[10px] font-semibold px-2 py-1 rounded-full @if ($rr->status === \App\Models\RevisionReview::STATUS_COMPLETED)
+                                                bg-green-100
+                                                text-green-700
                                             @else
-
-                                            @endif
-                                        ">
+                                            @endif"
+                                        >
                                             {{ ucfirst($rr->status) }}
                                         </span>
                                     </div>
@@ -395,40 +532,72 @@
 
                 @if ($latestRevision && $latestRevision->revisionReviews->isNotEmpty())
                     <div class="space-y-3">
-                        <p class="text-[10px] font-bold uppercase tracking-[.06em] text-slate-500">Reviewer Feedback on Revised Manuscript</p>
+                        <p
+                            class="text-[10px] font-bold uppercase tracking-[.06em] text-slate-500"
+                        >
+                            Reviewer Feedback on Revised Manuscript
+                        </p>
                         @foreach ($latestRevision->revisionReviews as $rr)
-                            <div class="bg-slate-50 border border-slate-100 rounded-xl p-4">
-                                <div class="flex items-center justify-between mb-3">
+                            <div
+                                class="bg-slate-50 border border-slate-100 rounded-xl p-4"
+                            >
+                                <div
+                                    class="flex items-center justify-between mb-3"
+                                >
                                     <div>
-                                        <p class="text-sm font-bold text-slate-800">
-                                            Reviewer: {{ $rr->reviewer->name ?? 'Anonymous' }}
+                                        <p
+                                            class="text-sm font-bold text-slate-800"
+                                        >
+                                            Reviewer:
+                                            {{ $rr->reviewer->name ?? "Anonymous" }}
                                         </p>
-                                        <p class="text-[10px] text-slate-400 mt-0.5">
+                                        <p
+                                            class="text-[10px] text-slate-400 mt-0.5"
+                                        >
                                             {{ $rr->created_at?->format('M d, Y \a\t h:i A') }}
                                         </p>
                                     </div>
-                                    <span class="text-[10px] font-bold uppercase tracking-[.05em] px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600">
+                                    <span
+                                        class="text-[10px] font-bold uppercase tracking-[.05em] px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600"
+                                    >
                                         {{ \App\Models\Review::recommendationOptions()[$rr->recommendation] ?? $rr->recommendation }}
                                     </span>
                                 </div>
 
                                 @if ($rr->rating)
                                     <p class="text-xs text-slate-500 mb-2">
-                                        Rating: <span class="font-bold text-slate-700">{{ $rr->rating }}/5.0</span>
+                                        Rating:
+                                        <span class="font-bold text-slate-700">
+                                            {{ $rr->rating }}/5.0
+                                        </span>
                                     </p>
                                 @endif
 
                                 @if ($rr->comments_for_author)
                                     <div class="mb-2">
-                                        <p class="text-xs font-semibold text-slate-600 mb-0.5">Comments for Author:</p>
-                                        <p class="text-sm text-slate-600">{{ $rr->comments_for_author }}</p>
+                                        <p
+                                            class="text-xs font-semibold text-slate-600 mb-0.5"
+                                        >
+                                            Comments for Author:
+                                        </p>
+                                        <p class="text-sm text-slate-600">
+                                            {{ $rr->comments_for_author }}
+                                        </p>
                                     </div>
                                 @endif
 
                                 @if ($rr->comments_for_editor)
                                     <div class="mb-2">
-                                        <p class="text-xs font-semibold text-slate-600 mb-0.5 italic">Comments for Editor (Internal):</p>
-                                        <p class="text-sm text-slate-600 italic">{{ $rr->comments_for_editor }}</p>
+                                        <p
+                                            class="text-xs font-semibold text-slate-600 mb-0.5 italic"
+                                        >
+                                            Comments for Editor (Internal):
+                                        </p>
+                                        <p
+                                            class="text-sm text-slate-600 italic"
+                                        >
+                                            {{ $rr->comments_for_editor }}
+                                        </p>
                                     </div>
                                 @endif
                             </div>
@@ -504,7 +673,7 @@
                         Perform initial screening before assigning reviewers.
                     </p>
                     <a
-                        href="{{ route('editor.initial-screening', $submission) }}"
+                        href="{{ route("editor.initial-screening", $submission) }}"
                         class="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all hover:-translate-y-0.5"
                     >
                         Perform Screening
@@ -525,7 +694,7 @@
                                 Screened By
                             </p>
                             <p class="text-emerald-900">
-                                {{ $submission->initialScreeningBy?->name ?? 'Unknown' }}
+                                {{ $submission->initialScreeningBy?->name ?? "Unknown" }}
                             </p>
                         </div>
                         <div>
@@ -535,7 +704,7 @@
                                 Date
                             </p>
                             <p class="text-emerald-900">
-                                {{ $submission->initial_screening_at?->format('M d, Y') }}
+                                {{ $submission->initial_screening_at?->format("M d, Y") }}
                             </p>
                         </div>
                     </div>
@@ -543,7 +712,7 @@
                         {{ $submission->initial_screening_comments }}
                     </p>
                     <a
-                        href="{{ route('editor.initial-screening', $submission) }}"
+                        href="{{ route("editor.initial-screening", $submission) }}"
                         class="text-xs font-bold text-emerald-700 hover:text-emerald-900 mt-3 inline-block"
                     >
                         Edit Decision →
@@ -562,7 +731,7 @@
                                 Screened By
                             </p>
                             <p class="text-red-900">
-                                {{ $submission->initialScreeningBy?->name ?? 'Unknown' }}
+                                {{ $submission->initialScreeningBy?->name ?? "Unknown" }}
                             </p>
                         </div>
                         <div>
@@ -572,7 +741,7 @@
                                 Date
                             </p>
                             <p class="text-red-900">
-                                {{ $submission->initial_screening_at?->format('M d, Y') }}
+                                {{ $submission->initial_screening_at?->format("M d, Y") }}
                             </p>
                         </div>
                     </div>
@@ -580,7 +749,7 @@
                         {{ $submission->initial_screening_comments }}
                     </p>
                     <a
-                        href="{{ route('editor.initial-screening', $submission) }}"
+                        href="{{ route("editor.initial-screening", $submission) }}"
                         class="text-xs font-bold text-red-700 hover:text-red-900 mt-3 inline-block"
                     >
                         Override Decision →
@@ -600,7 +769,7 @@
                     Editor Decision
                 </h2>
 
-                @if (in_array($submission->status, ['accepted', 'rejected', 'revisions_requested']))
+                @if (in_array($submission->status, ["accepted", "rejected", "revisions_requested"]))
                     <div
                         class="bg-blue-50 border border-blue-200 rounded-xl p-5"
                     >
@@ -626,7 +795,7 @@
                                         Decision Date
                                     </p>
                                     <p class="text-blue-900">
-                                        {{ $submission->editor_decision_at->format('M d, Y') }}
+                                        {{ $submission->editor_decision_at->format("M d, Y") }}
                                     </p>
                                 </div>
                             @endif
@@ -637,47 +806,101 @@
                             </p>
                         @endif
 
-                        {{-- Layout Editor Section --}}
-                        @if (in_array($submission->status, ['accepted', 'layout_editing', 'layout_review', 'author_confirmation']))
+                        {{-- Managing Editor Section --}}
+                        @if (in_array($submission->status, ["accepted", "with_managing_editor", "layout_editing", "layout_review", "author_confirmation"]))
                             <div class="mt-6 pt-6 border-t border-blue-200">
-                                @if ($submission->status === 'accepted')
-                                    <p class="text-sm font-bold text-slate-800 mb-4">
-                                        📋 Send to Layout Editor
+                                @if ($submission->status === "accepted")
+                                    <p
+                                        class="text-sm font-bold text-slate-800 mb-4"
+                                    >
+                                        📋 Assign to Managing Editor
                                     </p>
-                                    <form method="POST" action="{{ route('editor.send-to-layout-editor', $submission) }}" class="space-y-3">
+                                    <form
+                                        method="POST"
+                                        action="{{ route("editor.send-to-managing-editor", $submission) }}"
+                                        class="space-y-3"
+                                    >
                                         @csrf
                                         <div>
-                                            <label class="text-sm font-bold text-slate-700 block mb-2">
-                                                Select Layout Editor
-                                                <span class="text-red-600">*</span>
+                                            <label
+                                                class="text-sm font-bold text-slate-700 block mb-2"
+                                            >
+                                                Select Managing Editor
+                                                <span class="text-red-600">
+                                                    *
+                                                </span>
                                             </label>
-                                            <select name="layout_editor_id" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 focus:outline-none">
-                                                <option value="">-- Choose a Layout Editor --</option>
-                                                @foreach ($layoutEditors as $editor)
-                                                    <option value="{{ $editor->id }}">{{ $editor->name }} | {{ $editor->email }}</option>
+                                            <select
+                                                name="managing_editor_id"
+                                                required
+                                                class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                                            >
+                                                <option value="">
+                                                    -- Choose a Managing Editor
+                                                    --
+                                                </option>
+                                                @foreach ($managingEditors as $me)
+                                                    <option
+                                                        value="{{ $me->id }}"
+                                                    >
+                                                        {{ $me->name }} |
+                                                        {{ $me->email }}
+                                                    </option>
                                                 @endforeach
                                             </select>
-                                            @error('layout_editor_id')
-                                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                                            @error("managing_editor_id")
+                                                <p
+                                                    class="text-red-600 text-xs mt-1"
+                                                >
+                                                    {{ $message }}
+                                                </p>
                                             @enderror
                                         </div>
-                                        <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors text-sm">
-                                            Send to Layout Editor
+                                        <button
+                                            type="submit"
+                                            class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors text-sm"
+                                        >
+                                            Assign to Managing Editor
                                         </button>
                                     </form>
-                                @elseif ($submission->status === 'layout_editing')
-                                    <p class="text-sm font-bold text-amber-800">⏳ Awaiting layout editor work...</p>
-                                @elseif ($submission->status === 'layout_review')
-                                    <p class="text-sm font-bold text-slate-800 mb-4">✓ Layout file received</p>
-                                    <form method="POST" action="{{ route('editor.send-layout-to-author', $submission) }}" class="space-y-3">
+                                @elseif ($submission->status === "with_managing_editor")
+                                    <p class="text-sm font-bold text-amber-800">
+                                        ⏳ With Managing Editor — awaiting CTF &
+                                        layout assignment...
+                                    </p>
+                                @elseif ($submission->status === "layout_editing")
+                                    <p class="text-sm font-bold text-amber-800">
+                                        ⏳ Awaiting layout editor work...
+                                    </p>
+                                @elseif ($submission->status === "layout_review")
+                                    <p
+                                        class="text-sm font-bold text-slate-800 mb-4"
+                                    >
+                                        ✓ Layout file received
+                                    </p>
+                                    <form
+                                        method="POST"
+                                        action="{{ route("editor.send-layout-to-author", $submission) }}"
+                                        class="space-y-3"
+                                    >
                                         @csrf
-                                        <p class="text-xs text-slate-600 mb-3">Review the layout file and send to author for final confirmation.</p>
-                                        <button type="submit" class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-colors text-sm">
+                                        <p class="text-xs text-slate-600 mb-3">
+                                            Review the layout file and send to
+                                            author for final confirmation.
+                                        </p>
+                                        <button
+                                            type="submit"
+                                            class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-colors text-sm"
+                                        >
                                             Send Layout to Author
                                         </button>
                                     </form>
-                                @elseif ($submission->status === 'author_confirmation')
-                                    <p class="text-sm font-bold text-emerald-800">✓ Sent to author for confirmation</p>
+                                @elseif ($submission->status === "author_confirmation")
+                                    <p
+                                        class="text-sm font-bold text-emerald-800"
+                                    >
+                                        ✓ Sent to author for confirmation
+                                    </p>
                                 @endif
                             </div>
                         @endif
@@ -686,7 +909,7 @@
                     <form
                         id="decision-form"
                         method="POST"
-                        action="{{ route('editor.decision', $submission) }}"
+                        action="{{ route("editor.decision", $submission) }}"
                         class="space-y-5"
                     >
                         @csrf
@@ -698,8 +921,9 @@
                             <div class="grid grid-cols-3 gap-2">
                                 @php
                                     $draftData = $submission->editor_decision_draft ? json_decode(json_encode($submission->editor_decision_draft), true) : [];
-                                    $selectedStatus = old('status', $draftData['status'] ?? '');
+                                    $selectedStatus = old("status", $draftData["status"] ?? "");
                                 @endphp
+
                                 <label class="relative block cursor-pointer">
                                     <input
                                         type="radio"
@@ -707,7 +931,7 @@
                                         value="accepted"
                                         id="dec_accepted"
                                         class="peer sr-only"
-                                        {{ $selectedStatus === 'accepted' ? 'checked' : '' }}
+                                        {{ $selectedStatus === "accepted" ? "checked" : "" }}
                                     />
                                     <div
                                         class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-emerald-400 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:shadow-sm"
@@ -731,7 +955,7 @@
                                         value="rejected"
                                         id="dec_rejected"
                                         class="peer sr-only"
-                                        {{ $selectedStatus === 'rejected' ? 'checked' : '' }}
+                                        {{ $selectedStatus === "rejected" ? "checked" : "" }}
                                     />
                                     <div
                                         class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-red-400 peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:shadow-sm"
@@ -755,7 +979,7 @@
                                         value="revisions_requested"
                                         id="dec_revisions"
                                         class="peer sr-only revision-option"
-                                        {{ $selectedStatus === 'revisions_requested' ? 'checked' : '' }}
+                                        {{ $selectedStatus === "revisions_requested" ? "checked" : "" }}
                                     />
                                     <div
                                         class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-500 peer-checked:bg-amber-50 peer-checked:shadow-sm"
@@ -777,7 +1001,7 @@
 
                         <div
                             id="revision-fields"
-                            class="{{ $selectedStatus === 'revisions_requested' ? '' : 'hidden' }} border-t border-slate-100 pt-5 space-y-4"
+                            class="{{ $selectedStatus === "revisions_requested" ? "" : "hidden" }} border-t border-slate-100 pt-5 space-y-4"
                         >
                             <div>
                                 <label
@@ -796,7 +1020,7 @@
                                             value="minor"
                                             id="rt_minor"
                                             class="peer sr-only"
-                                            {{ old('revision_type', $draftData['revision_type'] ?? '') === 'minor' ? 'checked' : '' }}
+                                            {{ old("revision_type", $draftData["revision_type"] ?? "") === "minor" ? "checked" : "" }}
                                         />
                                         <div
                                             class="border-2 border-slate-200 rounded-xl p-3 transition-all hover:border-amber-400 peer-checked:border-amber-500 peer-checked:bg-amber-50 peer-checked:shadow-sm"
@@ -822,7 +1046,7 @@
                                             value="major"
                                             id="rt_major"
                                             class="peer sr-only"
-                                            {{ old('revision_type', $draftData['revision_type'] ?? '') === 'major' ? 'checked' : '' }}
+                                            {{ old("revision_type", $draftData["revision_type"] ?? "") === "major" ? "checked" : "" }}
                                         />
                                         <div
                                             class="border-2 border-slate-200 rounded-xl p-3 transition-all hover:border-orange-400 peer-checked:border-orange-500 peer-checked:bg-orange-50 peer-checked:shadow-sm"
@@ -854,7 +1078,9 @@
                                     rows="3"
                                     placeholder="Explain what revisions are needed…"
                                     class="block w-full rounded-xl border border-slate-200 text-sm px-3 py-2.5 bg-slate-50 focus:outline-none focus:border-red-400 transition-colors resize-none"
-                                >{{ old('revision_reason', $draftData['revision_reason'] ?? '') }}</textarea>
+                                >
+{{ old("revision_reason", $draftData["revision_reason"] ?? "") }}</textarea
+                                >
                             </div>
                         </div>
 
@@ -874,7 +1100,9 @@
                                 maxlength="2000"
                                 placeholder="Additional notes for the author…"
                                 class="block w-full rounded-xl border border-slate-200 text-sm px-3 py-2.5 bg-slate-50 focus:outline-none focus:border-red-400 transition-colors resize-none"
-                            >{{ old('editor_notes', $draftData['editor_notes'] ?? '') }}</textarea>
+                            >
+{{ old("editor_notes", $draftData["editor_notes"] ?? "") }}</textarea
+                            >
                         </div>
 
                         <div
@@ -906,7 +1134,7 @@
         @endif
 
         {{-- ── ASSIGN REVIEWER ── --}}
-        @if (in_array($submission->status, ['submitted', 'under_review', 'revisions_requested']))
+        @if (in_array($submission->status, ["submitted", "under_review", "revisions_requested"]))
             <div
                 class="bg-white border border-slate-200 rounded-2xl p-6 mb-5 shadow-sm fade-up-4"
             >
@@ -939,7 +1167,7 @@
 
                 <form
                     method="POST"
-                    action="{{ route('editor.assign-reviewer', $submission) }}"
+                    action="{{ route("editor.assign-reviewer", $submission) }}"
                     class="space-y-5"
                 >
                     @csrf
@@ -973,7 +1201,7 @@
                             >
                                 @foreach ($matchedReviewers as $u)
                                     @php
-                                        $colors = ['bg-red-500', 'bg-blue-500', 'bg-violet-500', 'bg-emerald-500', 'bg-amber-500', 'bg-pink-500'];
+                                        $colors = ["bg-red-500", "bg-blue-500", "bg-violet-500", "bg-emerald-500", "bg-amber-500", "bg-pink-500"];
                                         $bg = $colors[$loop->index % count($colors)];
                                     @endphp
 
@@ -1005,7 +1233,7 @@
                                                 class="text-[10px] font-bold text-slate-400 mt-0.5"
                                             >
                                                 {{ $u->active_reviews_count }}
-                                                {{ $u->active_reviews_count == 1 ? 'active review' : 'active reviews' }}
+                                                {{ $u->active_reviews_count == 1 ? "active review" : "active reviews" }}
                                             </p>
                                         </div>
                                         <div class="reviewer-check">
@@ -1040,7 +1268,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 @foreach ($otherReviewers as $u)
                                     @php
-                                        $colors = ['bg-slate-500', 'bg-cyan-500', 'bg-teal-500', 'bg-indigo-500', 'bg-rose-500', 'bg-lime-500'];
+                                        $colors = ["bg-slate-500", "bg-cyan-500", "bg-teal-500", "bg-indigo-500", "bg-rose-500", "bg-lime-500"];
                                         $bg = $colors[$loop->index % count($colors)];
                                     @endphp
 
@@ -1072,7 +1300,7 @@
                                                 class="text-[10px] font-bold text-slate-400 mt-0.5"
                                             >
                                                 {{ $u->active_reviews_count }}
-                                                {{ $u->active_reviews_count == 1 ? 'active review' : 'active reviews' }}
+                                                {{ $u->active_reviews_count == 1 ? "active review" : "active reviews" }}
                                             </p>
                                         </div>
                                         <div class="reviewer-check">
@@ -1133,7 +1361,7 @@
                                     name="due_at"
                                     id="due_at"
                                     required
-                                    min="{{ now()->addDay()->format('Y-m-d') }}"
+                                    min="{{ now()->addDay()->format("Y-m-d") }}"
                                     class="block w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-red-400 transition-colors"
                                     onchange="updateDueDateHint(this)"
                                 />
@@ -1145,8 +1373,13 @@
                                 Reviewer will have
                                 <span id="due-days" class="font-bold"></span>
                                 days to complete the review.
-                                <br>
-                                <span id="due-date" class="text-slate-500 font-mono mt-1 inline-block">Deadline: </span>
+                                <br />
+                                <span
+                                    id="due-date"
+                                    class="text-slate-500 font-mono mt-1 inline-block"
+                                >
+                                    Deadline:
+                                </span>
                             </p>
                         </div>
                         <button
@@ -1202,7 +1435,7 @@
     </div>
 @endsection
 
-@push('scripts')
+@push("scripts")
     <script>
         function toggleReviewer(card) {
             const checkbox = card.querySelector('.reviewer-checkbox');
@@ -1215,7 +1448,9 @@
             card.classList.toggle('selected', checkbox.checked);
 
             // Update selected count badge
-            const total = document.querySelectorAll('.reviewer-checkbox:checked').length;
+            const total = document.querySelectorAll(
+                '.reviewer-checkbox:checked',
+            ).length;
             const badge = document.getElementById('selected-count');
             const num = document.getElementById('selected-num');
 
@@ -1230,7 +1465,7 @@
             const daysSpan = document.getElementById('due-days');
             const dateSpan = document.getElementById('due-date');
             if (!input.value || !hint) {
-                if(hint) hint.classList.add('hidden');
+                if (hint) hint.classList.add('hidden');
                 return;
             }
             const diff = Math.ceil(
@@ -1259,27 +1494,41 @@
         const revisionReason = document.getElementById('revision_reason');
 
         if (decisionForm && revisionFields) {
-            const statusRadios = decisionForm.querySelectorAll('input[name="status"]');
-            const revTypeRadios = decisionForm.querySelectorAll('input[name="revision_type"]');
+            const statusRadios = decisionForm.querySelectorAll(
+                'input[name="status"]',
+            );
+            const revTypeRadios = decisionForm.querySelectorAll(
+                'input[name="revision_type"]',
+            );
 
             function toggleRevision() {
-                const selected = decisionForm.querySelector('input[name="status"]:checked');
+                const selected = decisionForm.querySelector(
+                    'input[name="status"]:checked',
+                );
                 const isRev = selected?.value === 'revisions_requested';
                 revisionFields.classList.toggle('hidden', !isRev);
 
                 revTypeRadios.forEach((r) =>
-                    isRev ? r.setAttribute('required', '') : r.removeAttribute('required')
+                    isRev
+                        ? r.setAttribute('required', '')
+                        : r.removeAttribute('required'),
                 );
 
                 if (revisionReason) {
-                    isRev ? revisionReason.setAttribute('required', '') : revisionReason.removeAttribute('required');
+                    isRev
+                        ? revisionReason.setAttribute('required', '')
+                        : revisionReason.removeAttribute('required');
                 }
             }
 
-            statusRadios.forEach((r) => r.addEventListener('change', toggleRevision));
+            statusRadios.forEach((r) =>
+                r.addEventListener('change', toggleRevision),
+            );
 
             decisionForm.addEventListener('submit', () => {
-                const selected = decisionForm.querySelector('input[name="status"]:checked');
+                const selected = decisionForm.querySelector(
+                    'input[name="status"]:checked',
+                );
                 if (selected?.value !== 'revisions_requested') {
                     revTypeRadios.forEach((r) => (r.disabled = true));
                     if (revisionReason) revisionReason.disabled = true;

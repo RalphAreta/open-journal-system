@@ -296,6 +296,12 @@
                                 >
                                     Layout Editor
                                 </option>
+                                <option
+                                    value="managing-editor"
+                                    @selected(old('role') == 'managing-editor')
+                                >
+                                    Managing Editor
+                                </option>
                             </select>
                             <div
                                 class="absolute right-4 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] border-t-[#b8aa88] pointer-events-none"

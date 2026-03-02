@@ -207,9 +207,9 @@ class ReviewController extends Controller
             ->get();
 
         // Get all layout editors for selection
-        $layoutEditors = User::whereHas('roles', fn($q) => $q->where('name', 'layout-editor'))->get();
+       $managingEditors = User::whereHas('roles', fn($q) => $q->where('name', 'managing-editor'))->get();
 
-        return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers', 'layoutEditors'));
+return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers', 'managingEditors'));
     }
 
     /**
@@ -1054,5 +1054,43 @@ class ReviewController extends Controller
 
         return redirect()->route('editor.submission.show', $submission)
             ->with('success', 'Layout file sent to author for confirmation.');
+    }
+
+    /**
+     * Send an accepted paper to a Managing Editor
+     * REPLACES sendToLayoutEditor — editor now sends to managing editor first
+     */
+    public function sendToManagingEditor(Request $request, Submission $submission): RedirectResponse
+    {
+        if ($submission->assigned_editor_id !== $request->user()->id) {
+            abort(403, 'You do not have access to this submission.');
+        }
+
+        if ($submission->status !== Submission::STATUS_ACCEPTED) {
+            return redirect()->back()->with('error', 'Only accepted papers can be sent to the managing editor.');
+        }
+
+        $request->validate([
+            'managing_editor_id' => ['required', 'exists:users,id'],
+        ]);
+
+        $submission->update([
+            'managing_editor_id'         => $request->input('managing_editor_id'),
+            'managing_editor_assigned_at' => now(),
+            'managing_editor_status'      => 'pending',
+            'status'                      => Submission::STATUS_WITH_MANAGING_EDITOR,
+        ]);
+
+        \App\Models\Notification::create([
+            'user_id'         => $request->input('managing_editor_id'),
+            'title'           => '📄 New Manuscript Assignment',
+            'message'         => "You have been assigned to manage the manuscript \"{$submission->title}\". Please issue the Copyright Transfer Form and assign a Layout Editor.",
+            'type'            => 'info',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+
+        return redirect()->route('editor.submission.show', $submission)
+            ->with('success', 'Paper assigned to Managing Editor successfully.');
     }
 }
