@@ -163,8 +163,16 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/notifications/{notification}/read', [App\Http\Controllers\NotificationController::class, 'read'])->name('notifications.read');
 });
 Route::middleware('role:managing-editor')->group(function (): void {
-    Route::get('/managing-editor/dashboard', [ManagingEditorController::class, 'dashboard'])->name('managing-editor.dashboard');
+    Route::get('/managing-editor/dashboard', [ManagingEditorController::class, 'dashboard'])
+        ->name('managing-editor.dashboard');
+
     Route::get('/managing-editor/submissions/{submission}', [ManagingEditorController::class, 'show'])
-    ->name('managing-editor.submission.show');
+        ->name('managing-editor.submission.show');
+
+    Route::post('/managing-editor/submissions/{submission}/ctf', [ManagingEditorController::class, 'generateCtf'])
+        ->name('managing-editor.ctf.generate');
+
+    Route::post('/managing-editor/submissions/{submission}/forward', [ManagingEditorController::class, 'forwardToLayout'])
+        ->name('managing-editor.forward');
 });
 });

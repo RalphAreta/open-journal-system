@@ -47,21 +47,34 @@ class SubmissionController extends Controller
         // Using Auth::id() prevents the 'Undefined method id' error
         $path = $file->store('submissions/' . Auth::id(), 'local');
 
-        Submission::create([
-            'author_id' => Auth::id(),
-            'title' => $validated['title'],
-            'abstract' => $validated['abstract'],
-            'keywords' => $validated['keywords'] ?? null,
-            'research_field' => $validated['research_field'],
-            'file_path' => $path,
-            'file_name' => $file->getClientOriginalName(),
-            'original_file_path' => $path,
-            'original_file_name' => $file->getClientOriginalName(),
-            'status' => Submission::STATUS_SUBMITTED,
-            'submitted_at' => now(),
-        ]);
+       $submission = Submission::create([
+    'author_id' => Auth::id(),
+    'title' => $validated['title'],
+    'abstract' => $validated['abstract'],
+    'keywords' => $validated['keywords'] ?? null,
+    'research_field' => $validated['research_field'],
+    'file_path' => $path,
+    'file_name' => $file->getClientOriginalName(),
+    'original_file_path' => $path,
+    'original_file_name' => $file->getClientOriginalName(),
+    'status' => Submission::STATUS_SUBMITTED,
+    'submitted_at' => now(),
+]);
 
-        return redirect()->route('submissions.index')->with('success', 'Submission created successfully.');
+// Notify all chief editors
+$chiefEditors = User::whereHas('roles', fn($q) => $q->where('name', 'editor-in-chief'))->get();
+foreach ($chiefEditors as $ce) {
+    \App\Models\Notification::create([
+        'user_id'         => $ce->id,
+        'title'           => ' New Manuscript Submitted',
+        'message'         => "A new manuscript has been submitted: \"{$submission->title}\" by " . Auth::user()->name . ".",
+        'type'            => 'info',
+        'notifiable_id'   => $submission->id,
+        'notifiable_type' => Submission::class,
+    ]);
+}
+
+return redirect()->route('submissions.index')->with('success', 'Submission created successfully.');
     }
 
     public function show(Submission $submission): View|RedirectResponse

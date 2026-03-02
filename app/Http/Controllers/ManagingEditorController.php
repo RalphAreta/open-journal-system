@@ -12,22 +12,23 @@ use Illuminate\View\View;
 class ManagingEditorController extends Controller
 {
     public function dashboard(): View
-    {
-        $submissions = Submission::with('author')
-            ->where('managing_editor_id', auth()->id())
-            ->orderBy('updated_at', 'desc')
-            ->get();
+{
+    $submissions = Submission::with('author')
+        ->where('managing_editor_id', auth()->id())
+        ->orderBy('updated_at', 'desc')
+        ->get();
 
-        $stats = [
-            'pending'   => $submissions->filter(fn($s) => is_null($s->managing_editor_status) || $s->managing_editor_status === 'pending')->count(),
-            'ctf_sent'  => $submissions->where('managing_editor_status', 'ctf_sent')->count(),
-            'forwarded' => $submissions->where('managing_editor_status', 'forwarded')->count(),
-            'total'     => $submissions->count(),
-        ];
+    $stats = [
+        'pending'   => $submissions->filter(fn($s) => is_null($s->managing_editor_status) || $s->managing_editor_status === 'pending')->count(),
+        'ctf_sent'  => $submissions->where('managing_editor_status', 'ctf_sent')->count(),
+        'forwarded' => $submissions->where('managing_editor_status', 'forwarded')->count(),
+        'total'     => $submissions->count(),
+    ];
 
-        return view('managing-editor.dashboard', compact('submissions', 'stats'));
-    }
+    $layoutEditors = User::whereHas('roles', fn($q) => $q->where('name', 'layout-editor'))->get();
 
+    return view('managing-editor.dashboard', compact('submissions', 'stats', 'layoutEditors'));
+}
     /**
      * Generate / mark Copyright Transfer Form as sent.
      */

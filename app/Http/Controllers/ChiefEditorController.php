@@ -186,10 +186,12 @@ class ChiefEditorController extends Controller
             }
         }
 
-        $editorNames   = [];
-        $primaryEditor = null;
+       $editorNames   = [];
+$primaryEditor = null;
 
-        foreach ($editors as $index => $editor) {
+$submission->load('author');
+
+foreach ($editors as $index => $editor) {
             $expertiseField = $editor->editorExpertise->first()?->field_name ?? 'General';
 
             SubmissionAssignment::create([
@@ -201,11 +203,20 @@ class ChiefEditorController extends Controller
                 'assigned_at'         => now(),
             ]);
 
-            $editorNames[] = $editor->name;
+         $editorNames[] = $editor->name;
 
-            if ($index === 0) {
-                $primaryEditor = $editor->id;
-            }
+if ($index === 0) {
+    $primaryEditor = $editor->id;
+}
+
+\App\Models\Notification::create([
+    'user_id'         => $editor->id,
+    'title'           => '📋 New Manuscript Assigned',
+    'message'         => "You have been assigned to handle the manuscript \"{$submission->title}\" by {$submission->author->name}.",
+    'type'            => 'info',
+    'notifiable_id'   => $submission->id,
+    'notifiable_type' => Submission::class,
+]);
         }
 
         $submission->update([
@@ -239,10 +250,12 @@ class ChiefEditorController extends Controller
             }
         });
 
-        $editorNames   = [];
-        $primaryEditor = null;
+      $editorNames   = [];
+$primaryEditor = null;
 
-        foreach ($editors as $index => $editor) {
+$submission->load('author');
+
+foreach ($editors as $index => $editor) {
             $expertiseField = $editor->editorExpertise->first()?->field_name ?? 'General';
 
             SubmissionAssignment::create([
@@ -254,11 +267,20 @@ class ChiefEditorController extends Controller
                 'assigned_at'         => now(),
             ]);
 
-            $editorNames[] = $editor->name;
+         $editorNames[] = $editor->name;
 
-            if ($index === 0) {
-                $primaryEditor = $editor->id;
-            }
+if ($index === 0) {
+    $primaryEditor = $editor->id;
+}
+
+\App\Models\Notification::create([
+    'user_id'         => $editor->id,
+    'title'           => '🔄 Manuscript Reassigned to You',
+    'message'         => "The manuscript \"{$submission->title}\" by {$submission->author->name} has been reassigned to you.",
+    'type'            => 'info',
+    'notifiable_id'   => $submission->id,
+    'notifiable_type' => Submission::class,
+]);
         }
 
         $submission->update(['assigned_editor_id' => $primaryEditor]);

@@ -44,7 +44,6 @@
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23faf6ef'/%3E%3Ccircle cx='1' cy='1' r='.4' fill='%23e8dfd0' opacity='.5'/%3E%3C/svg%3E");
         }
 
-        /* Hero */
         .hero-header {
             position: relative;
             padding: 44px 0 32px;
@@ -61,7 +60,6 @@
             background: linear-gradient(90deg, var(--teal), transparent);
         }
         .hero-eyebrow {
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.2em;
@@ -91,15 +89,12 @@
             color: var(--teal);
         }
         .hero-sub {
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.98rem;
             font-weight: 400;
             color: var(--ink-soft);
             margin-top: 8px;
-            letter-spacing: 0.01em;
         }
         .date-pill {
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.78rem;
             font-weight: 600;
             letter-spacing: 0.06em;
@@ -111,7 +106,6 @@
             border-radius: 20px;
         }
 
-        /* Stat Grid */
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -126,7 +120,6 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-
         .stat-cell {
             padding: 24px 22px 18px;
             border-right: 1px solid var(--border);
@@ -144,9 +137,7 @@
         .stat-cell:nth-last-child(-n + 4) {
             border-bottom: none;
         }
-
         .stat-lbl {
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.68rem;
             font-weight: 700;
             letter-spacing: 0.1em;
@@ -172,7 +163,6 @@
         .stat-cell:hover .accent-line {
             width: 36px;
         }
-
         .sv-teal {
             color: var(--teal);
         }
@@ -185,7 +175,6 @@
         .sv-amber {
             color: #a07830;
         }
-
         .al-teal {
             background: var(--teal);
         }
@@ -199,7 +188,6 @@
             background: #a07830;
         }
 
-        /* Search */
         .search-wrap {
             position: relative;
         }
@@ -236,7 +224,6 @@
             color: #b5a595;
         }
 
-        /* Table */
         .ms-table-wrap {
             background: #fff;
             border: 1px solid var(--border-dk);
@@ -257,10 +244,8 @@
             font-size: 1.15rem;
             font-weight: 700;
             color: var(--ink);
-            letter-spacing: 0.01em;
         }
         .ms-table-head-count {
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.76rem;
             font-weight: 600;
             color: var(--ink-soft);
@@ -280,7 +265,6 @@
         }
         table.mst th {
             padding: 12px 24px;
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.68rem;
             font-weight: 700;
             letter-spacing: 0.1em;
@@ -293,7 +277,6 @@
         }
         table.mst td {
             padding: 18px 24px;
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.92rem;
             border-bottom: 1px solid #f5f0e8;
             vertical-align: top;
@@ -312,7 +295,6 @@
         }
 
         .ms-ref {
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.76rem;
             font-weight: 700;
             color: var(--teal);
@@ -334,20 +316,17 @@
             transition: color 0.12s;
         }
         .ms-author {
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.8rem;
             color: var(--ink-soft);
             margin-top: 3px;
         }
 
-        /* Status badges */
         .sbadge {
             display: inline-flex;
             align-items: center;
             gap: 7px;
             padding: 5px 12px;
             border-radius: 20px;
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.7rem;
             font-weight: 700;
             letter-spacing: 0.06em;
@@ -361,7 +340,6 @@
             border-radius: 50%;
             flex-shrink: 0;
         }
-
         .sbadge.pending-me {
             background: #fdf8ec;
             border-color: rgba(201, 168, 76, 0.4);
@@ -370,7 +348,6 @@
         .sbadge.pending-me .dot {
             background: var(--gold);
         }
-
         .sbadge.ctf-sent {
             background: var(--teal-lt);
             border-color: rgba(45, 129, 118, 0.35);
@@ -379,7 +356,6 @@
         .sbadge.ctf-sent .dot {
             background: var(--teal);
         }
-
         .sbadge.forwarded {
             background: #f0fdf4;
             border-color: #86efac;
@@ -389,12 +365,10 @@
             background: var(--teal-dk);
         }
 
-        /* Action buttons */
         .btn-action {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.72rem;
             font-weight: 700;
             letter-spacing: 0.07em;
@@ -407,6 +381,7 @@
             white-space: nowrap;
             cursor: pointer;
             background: none;
+            font-family: 'Source Sans 3', sans-serif;
         }
         .btn-action.teal {
             color: var(--teal);
@@ -427,7 +402,6 @@
             box-shadow: 0 4px 12px rgba(201, 168, 76, 0.25);
         }
 
-        /* Alert strip */
         .alert-strip {
             border-radius: 10px;
             overflow: hidden;
@@ -449,7 +423,6 @@
             gap: 12px;
         }
         .alert-tag {
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.7rem;
             font-weight: 800;
             letter-spacing: 0.12em;
@@ -457,13 +430,11 @@
             margin-bottom: 3px;
         }
         .alert-desc {
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.9rem;
             font-weight: 400;
         }
 
         .ms-date {
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.78rem;
             font-weight: 600;
             color: var(--ink-soft);
@@ -471,7 +442,6 @@
             white-space: nowrap;
         }
 
-        /* Empty state */
         .empty-state {
             padding: 80px 24px;
             text-align: center;
@@ -488,7 +458,6 @@
             margin: 0 auto 16px;
         }
         .empty-state-label {
-            font-family: 'Source Sans 3', sans-serif;
             font-size: 0.78rem;
             font-weight: 700;
             letter-spacing: 0.14em;
@@ -496,7 +465,165 @@
             color: #c9b99a;
         }
 
-        /* Fade animations */
+        /* ── Modal ── */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 18, 9, 0.45);
+            backdrop-filter: blur(3px);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-backdrop.open {
+            display: flex;
+        }
+        .modal-box {
+            background: #fff;
+            border: 1px solid var(--border-dk);
+            border-radius: 18px;
+            box-shadow: 0 24px 60px rgba(26, 18, 9, 0.22);
+            width: 100%;
+            max-width: 480px;
+            margin: 20px;
+            overflow: hidden;
+            animation: modalIn 0.25s ease both;
+        }
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .modal-head {
+            background: var(--parchment);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-head-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-soft);
+            transition: all 0.15s;
+        }
+        .modal-close:hover {
+            background: var(--cream);
+            color: var(--ink);
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .modal-manuscript-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 0.95rem;
+            font-style: italic;
+            color: var(--ink-mid);
+            background: var(--cream);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .modal-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 8px;
+            display: block;
+        }
+        .modal-select {
+            width: 100%;
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.92rem;
+            color: var(--ink);
+            outline: none;
+            transition:
+                border-color 0.15s,
+                box-shadow 0.15s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b5740' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+        .modal-select:focus {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(45, 129, 118, 0.12);
+        }
+        .modal-footer {
+            padding: 16px 24px 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            border-top: 1px solid var(--border);
+        }
+        .btn-modal-cancel {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border-dk);
+            background: #fff;
+            color: var(--ink-soft);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-modal-cancel:hover {
+            background: var(--parchment);
+        }
+        .btn-modal-submit {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 10px 24px;
+            border-radius: 8px;
+            border: none;
+            background: var(--teal);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-modal-submit:hover {
+            background: var(--teal-dk);
+            box-shadow: 0 4px 14px rgba(45, 129, 118, 0.3);
+        }
+
         .fu {
             animation: fu 0.45s ease both;
         }
@@ -658,8 +785,7 @@
             <div class="ms-table-head">
                 <span class="ms-table-head-title">Assigned Manuscripts</span>
                 <span class="ms-table-head-count">
-                    {{ $submissions->count() }}
-                    records
+                    {{ $submissions->count() }} records
                 </span>
             </div>
 
@@ -670,7 +796,7 @@
                             <th style="width: 110px">Ref No.</th>
                             <th>Manuscript Title &amp; Author</th>
                             <th style="width: 170px">Status</th>
-                            <th style="width: 200px">Actions</th>
+                            <th style="width: 220px">Actions</th>
                             <th style="width: 120px; text-align: right">
                                 Updated
                             </th>
@@ -678,6 +804,15 @@
                     </thead>
                     <tbody>
                         @forelse ($submissions as $s)
+                            @php
+                                $meStatus = $s->managing_editor_status ?? 'pending';
+                                [$cls, $label] = match ($meStatus) {
+                                    'ctf_sent' => ['ctf-sent', 'CTF Sent'],
+                                    'forwarded' => ['forwarded', 'Sent to Layout'],
+                                    default => ['pending-me', 'Awaiting CTF'],
+                                };
+                            @endphp
+
                             <tr class="submission-row">
                                 <td>
                                     <span class="ms-ref">
@@ -694,15 +829,6 @@
                                     </p>
                                 </td>
                                 <td>
-                                    @php
-                                        $meStatus = $s->managing_editor_status ?? 'pending';
-                                        [$cls, $label] = match ($meStatus) {
-                                            'ctf_sent' => ['ctf-sent', 'CTF Sent'],
-                                            'forwarded' => ['forwarded', 'Sent to Layout'],
-                                            default => ['pending-me', 'Awaiting CTF'],
-                                        };
-                                    @endphp
-
                                     <span
                                         class="sbadge {{ $cls }} status-cell"
                                     >
@@ -712,7 +838,7 @@
                                 </td>
                                 <td>
                                     <div class="flex flex-col gap-2">
-                                        {{-- View button (always visible) --}}
+                                        {{-- View --}}
                                         <a
                                             href="{{ route('managing-editor.submission.show', $s) }}"
                                             class="btn-action teal"
@@ -733,30 +859,49 @@
                                             View
                                         </a>
 
-                                        {{-- Generate CTF (shown when pending) --}}
+                                        {{-- Generate CTF (pending only) --}}
                                         @if ($meStatus === 'pending')
-                                            <a href="#" class="btn-action gold">
-                                                <svg
-                                                    width="12"
-                                                    height="12"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    viewBox="0 0 24 24"
+                                            <form
+                                                method="POST"
+                                                action="{{ route('managing-editor.ctf.generate', $s) }}"
+                                            >
+                                                @csrf
+                                                <button
+                                                    type="submit"
+                                                    class="btn-action gold"
+                                                    style="width: 100%"
                                                 >
-                                                    <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                                    />
-                                                </svg>
-                                                Generate CTF
-                                            </a>
+                                                    <svg
+                                                        width="12"
+                                                        height="12"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        stroke-width="2"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                        />
+                                                    </svg>
+                                                    Generate CTF
+                                                </button>
+                                            </form>
                                         @endif
 
-                                        {{-- Send to Layout (shown when CTF sent) --}}
+                                        {{-- Send to Layout (ctf_sent only) — opens modal --}}
                                         @if ($meStatus === 'ctf_sent')
-                                            <a href="#" class="btn-action teal">
+                                            <button
+                                                type="button"
+                                                class="btn-action teal"
+                                                onclick="
+                                                    openLayoutModal(
+                                                        {{ $s->id }},
+                                                        '{{ addslashes($s->title) }}',
+                                                    )
+                                                "
+                                            >
                                                 <svg
                                                     width="12"
                                                     height="12"
@@ -772,7 +917,21 @@
                                                     />
                                                 </svg>
                                                 Send to Layout
-                                            </a>
+                                            </button>
+                                        @endif
+
+                                        {{-- Forwarded label --}}
+                                        @if ($meStatus === 'forwarded')
+                                            <span
+                                                style="
+                                                    font-size: 0.72rem;
+                                                    font-weight: 700;
+                                                    color: var(--teal-dk);
+                                                    letter-spacing: 0.04em;
+                                                "
+                                            >
+                                                ✓ Forwarded
+                                            </span>
                                         @endif
                                     </div>
                                 </td>
@@ -827,10 +986,103 @@
             <div class="fu4 mt-5">{{ $submissions->links() }}</div>
         @endif
     </div>
+
+    {{-- ── Assign Layout Editor Modal ── --}}
+    <div
+        class="modal-backdrop"
+        id="layoutModal"
+        onclick="closeOnBackdrop(event)"
+    >
+        <div class="modal-box">
+            <div class="modal-head">
+                <span class="modal-head-title">Assign Layout Editor</span>
+                <button class="modal-close" onclick="closeLayoutModal()">
+                    <svg
+                        width="14"
+                        height="14"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6 18L18 6M6 6l12 12"
+                        />
+                    </svg>
+                </button>
+            </div>
+
+            <form method="POST" id="layoutModalForm" action="">
+                @csrf
+                <div class="modal-body">
+                    <p class="modal-manuscript-title" id="modalManuscriptTitle">
+                        —
+                    </p>
+
+                    <label class="modal-label" for="layout_editor_id">
+                        Select Layout Editor
+                    </label>
+                    <select
+                        name="layout_editor_id"
+                        id="layout_editor_id"
+                        class="modal-select"
+                        required
+                    >
+                        <option value="">— Choose a Layout Editor —</option>
+                        @foreach ($layoutEditors as $le)
+                            <option value="{{ $le->id }}">
+                                {{ $le->name }} — {{ $le->email }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('layout_editor_id')
+                        <p
+                            style="
+                                font-size: 0.78rem;
+                                color: #dc2626;
+                                margin-top: 6px;
+                            "
+                        >
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn-modal-cancel"
+                        onclick="closeLayoutModal()"
+                    >
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-modal-submit">
+                        <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M13 5l7 7-7 7M5 5l7 7-7 7"
+                            />
+                        </svg>
+                        Forward to Layout
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     <script>
+        // ── Table filter ──
         function filterTable() {
             const f = document.getElementById('dashboardSearch').value.toUpperCase();
             document.querySelectorAll('.submission-row').forEach(row => {
@@ -841,6 +1093,30 @@
             });
         }
 
+        // ── Modal ──
+        const routes = @json(
+            $submissions->filter(fn($s) => $s->managing_editor_status === 'ctf_sent')
+                ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.forward', $s)])
+        );
+
+        function openLayoutModal(id, title) {
+            document.getElementById('modalManuscriptTitle').textContent = title;
+            document.getElementById('layoutModalForm').action = routes[id] ?? '#';
+            document.getElementById('layout_editor_id').value = '';
+            document.getElementById('layoutModal').classList.add('open');
+        }
+
+        function closeLayoutModal() {
+            document.getElementById('layoutModal').classList.remove('open');
+        }
+
+        function closeOnBackdrop(e) {
+            if (e.target === document.getElementById('layoutModal')) closeLayoutModal();
+        }
+
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLayoutModal(); });
+
+        // ── Success toast ──
         @if(session('success'))
             Swal.fire({
                 icon: 'success',
@@ -848,10 +1124,7 @@
                 html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
                 confirmButtonText: 'Close',
                 confirmButtonColor: '#2d8176',
-                customClass: {
-                    popup: 'rounded-2xl',
-                    confirmButton: 'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'
-                },
+                customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
                 buttonsStyling: false,
             });
         @endif
