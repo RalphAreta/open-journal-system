@@ -14,9 +14,8 @@ use Illuminate\Support\Facades\Auth;
 
 class ChiefEditorController extends Controller
 {
-    public function dashboard(\Illuminate\Http\Request $request)
+    public function dashboard(Request $request)
     {
-        // remember that chief editor dashboard was visited last
         $request->session()->put('preferred_dashboard', 'editor-in-chief');
 
         $pendingSubmissions = Submission::where('status', Submission::STATUS_SUBMITTED)
@@ -62,7 +61,7 @@ class ChiefEditorController extends Controller
     {
         $researchField = $submission->research_field;
 
-        // Only load editors whose expertise MATCHES the submission's research field
+        // 1. MATCHING editors
         $matchingEditors = User::whereHas('roles', fn($q) => $q->where('name', 'editor'))
             ->whereHas('editorExpertise', fn($q) => $q->where('field_name', $researchField))
             ->withCount(['submissionAssignments as active_assignments_count' => fn($q) =>
@@ -72,7 +71,6 @@ class ChiefEditorController extends Controller
             ->with('editorExpertise')
             ->get();
 
-        // Group by expertise field
         $editorsByField = [];
         foreach ($matchingEditors as $editor) {
             foreach ($editor->editorExpertise as $expertise) {
@@ -82,7 +80,7 @@ class ChiefEditorController extends Controller
             }
         }
 
-        // Fallback for manual assignment
+        // 2. ALL editors (Fallback)
         $allEditors = User::whereHas('roles', fn($q) => $q->where('name', 'editor'))
             ->withCount(['submissionAssignments as active_assignments_count' => fn($q) =>
                 $q->whereNull('rejected_at')
@@ -108,7 +106,49 @@ class ChiefEditorController extends Controller
 
     public function initialScreening(Submission $submission)
     {
-        return view('chief-editor.initial-screening', compact('submission'));
+        $researchField = $submission->research_field;
+
+        // 1. MATCHING editors
+        $matchingEditors = User::whereHas('roles', fn($q) => $q->where('name', 'editor'))
+            ->whereHas('editorExpertise', fn($q) => $q->where('field_name', $researchField))
+            ->withCount(['submissionAssignments as active_assignments_count' => fn($q) =>
+                $q->whereNull('rejected_at')
+                  ->whereHas('submission', fn($q2) => $q2->whereNotIn('status', ['accepted', 'rejected']))
+            ])
+            ->with('editorExpertise')
+            ->get();
+
+        $editorsByField = [];
+        foreach ($matchingEditors as $editor) {
+            foreach ($editor->editorExpertise as $expertise) {
+                if ($expertise->field_name === $researchField) {
+                    $editorsByField[$expertise->field_name][] = $editor;
+                }
+            }
+        }
+
+        // 2. ALL editors (Fallback)
+        $allEditors = User::whereHas('roles', fn($q) => $q->where('name', 'editor'))
+            ->withCount(['submissionAssignments as active_assignments_count' => fn($q) =>
+                $q->whereNull('rejected_at')
+                  ->whereHas('submission', fn($q2) => $q2->whereNotIn('status', ['accepted', 'rejected']))
+            ])
+            ->with('editorExpertise')
+            ->get();
+
+        $allEditorsByField = [];
+        foreach ($allEditors as $editor) {
+            foreach ($editor->editorExpertise as $expertise) {
+                $allEditorsByField[$expertise->field_name][] = $editor;
+            }
+        }
+
+        return view('chief-editor.initial-screening', compact(
+            'submission', 
+            'researchField', 
+            'editorsByField', 
+            'allEditorsByField'
+        ));
     }
 
     public function storeInitialScreening(Request $request, Submission $submission)
@@ -119,13 +159,10 @@ class ChiefEditorController extends Controller
             'revision_type'    => 'nullable|in:minor,major|required_if:screening_status,revision',
         ]);
 
-        /** @var User $currentUser */
-        $currentUser = Auth::user();
-
         if ($validated['screening_status'] === 'revision') {
             RevisionService::createRevisionRequest(
                 $submission,
-                $currentUser,
+                Auth::user(),
                 $validated['revision_type'],
                 $validated['comments'],
                 'initial_screening'
@@ -179,19 +216,13 @@ class ChiefEditorController extends Controller
         ]);
 
         $editors = User::whereIn('id', $validated['editor_ids'])->get();
+        
+        $submission->load('author');
 
-        foreach ($editors as $editor) {
-            if (!$editor->hasRole('editor')) {
-                return back()->withErrors("{$editor->name} is not an editor.");
-            }
-        }
+        $editorNames = [];
+        $primaryEditor = null;
 
-       $editorNames   = [];
-$primaryEditor = null;
-
-$submission->load('author');
-
-foreach ($editors as $index => $editor) {
+        foreach ($editors as $index => $editor) {
             $expertiseField = $editor->editorExpertise->first()?->field_name ?? 'General';
 
             SubmissionAssignment::create([
@@ -203,20 +234,17 @@ foreach ($editors as $index => $editor) {
                 'assigned_at'         => now(),
             ]);
 
-         $editorNames[] = $editor->name;
+            $editorNames[] = $editor->name;
+            if ($index === 0) $primaryEditor = $editor->id;
 
-if ($index === 0) {
-    $primaryEditor = $editor->id;
-}
-
-\App\Models\Notification::create([
-    'user_id'         => $editor->id,
-    'title'           => '📋 New Manuscript Assigned',
-    'message'         => "You have been assigned to handle the manuscript \"{$submission->title}\" by {$submission->author->name}.",
-    'type'            => 'info',
-    'notifiable_id'   => $submission->id,
-    'notifiable_type' => Submission::class,
-]);
+            \App\Models\Notification::create([
+                'user_id'         => $editor->id,
+                'title'           => '📋 New Manuscript Assigned',
+                'message'         => "You have been assigned to handle the manuscript \"{$submission->title}\" by {$submission->author->name}.",
+                'type'            => 'info',
+                'notifiable_id'   => $submission->id,
+                'notifiable_type' => Submission::class,
+            ]);
         }
 
         $submission->update([
@@ -226,109 +254,5 @@ if ($index === 0) {
 
         return redirect()->route('chief-editor.submission.show', $submission)
             ->with('success', 'Submission assigned to: ' . implode(', ', $editorNames) . '.');
-    }
-
-    public function reassignSubmission(Request $request, Submission $submission)
-    {
-        $validated = $request->validate([
-            'editor_ids'   => 'required|array|min:1',
-            'editor_ids.*' => 'exists:users,id',
-            'notes'        => 'nullable|string|max:1000',
-        ]);
-
-        $editors = User::whereIn('id', $validated['editor_ids'])->get();
-
-        foreach ($editors as $editor) {
-            if (!$editor->hasRole('editor')) {
-                return back()->withErrors("{$editor->name} is not an editor.");
-            }
-        }
-
-        $submission->assignments()->latest()->get()->each(function ($assignment) {
-            if (!$assignment->isAccepted()) {
-                $assignment->update(['rejected_at' => now()]);
-            }
-        });
-
-      $editorNames   = [];
-$primaryEditor = null;
-
-$submission->load('author');
-
-foreach ($editors as $index => $editor) {
-            $expertiseField = $editor->editorExpertise->first()?->field_name ?? 'General';
-
-            SubmissionAssignment::create([
-                'submission_id'       => $submission->id,
-                'assigned_to_user_id' => $editor->id,
-                'assigned_by_user_id' => Auth::id(),
-                'expertise_field'     => $expertiseField,
-                'assignment_notes'    => $validated['notes'] ?? null,
-                'assigned_at'         => now(),
-            ]);
-
-         $editorNames[] = $editor->name;
-
-if ($index === 0) {
-    $primaryEditor = $editor->id;
-}
-
-\App\Models\Notification::create([
-    'user_id'         => $editor->id,
-    'title'           => '🔄 Manuscript Reassigned to You',
-    'message'         => "The manuscript \"{$submission->title}\" by {$submission->author->name} has been reassigned to you.",
-    'type'            => 'info',
-    'notifiable_id'   => $submission->id,
-    'notifiable_type' => Submission::class,
-]);
-        }
-
-        $submission->update(['assigned_editor_id' => $primaryEditor]);
-
-        return back()->with('success', 'Submission reassigned to: ' . implode(', ', $editorNames) . '.');
-    }
-
-    public function reviewSubmission(Request $request, Submission $submission)
-    {
-        $validated = $request->validate([
-            'notes' => 'required|string|max:1000',
-        ]);
-
-        $submission->update([
-            'chief_editor_notes'     => $validated['notes'],
-            'chief_editor_review_at' => now(),
-        ]);
-
-        \App\Models\Notification::create([
-            'user_id'         => $submission->author_id,
-            'title'           => '📝 Chief Editor Added a Review Note',
-            'message'         => "The Chief Editor has added a note on your manuscript \"{$submission->title}\".\n\nNote: {$validated['notes']}",
-            'type'            => 'info',
-            'notifiable_id'   => $submission->id,
-            'notifiable_type' => Submission::class,
-        ]);
-
-        return back()->with('success', 'Submission review notes added.');
-    }
-
-    public function requestRevision(Request $request, Submission $submission)
-    {
-        $validated = $request->validate([
-            'revision_type'   => ['required', 'in:minor,major'],
-            'revision_reason' => ['required', 'string', 'max:2000'],
-        ]);
-
-        /** @var User $authUser */
-        $authUser = Auth::user();
-
-        RevisionService::createRevisionRequest(
-            $submission,
-            $authUser,
-            $validated['revision_type'],
-            $validated['revision_reason'],
-            'initial_screening'
-        );
-
-        return back()->with('success', 'Revision request sent to author.');
     }
 }

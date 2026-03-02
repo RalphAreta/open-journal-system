@@ -124,132 +124,89 @@
                         </div>
                     </div>
                 @endif
-
             </div>
 
-            {{-- ── RIGHT: Decision Panel (sticky) ── --}}
-            <div class="col-span-1 sticky top-6 flex flex-col gap-4">
+            {{-- ── RIGHT: Decision Panel ── --}}
+            <div class="col-span-1 flex flex-col gap-5">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-6">
+                    <h2 class="text-sm font-semibold text-slate-800 mb-5">⚖️ Make Decision</h2>
 
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="px-6 py-4 border-b border-slate-100">
-                        <h2 class="text-sm font-semibold text-slate-800">
-                            ⚖️ {{ $submission->isPendingInitialScreening() ? 'Screening Decision' : 'Override Decision' }}
-                        </h2>
-                    </div>
-                    <div class="p-6">
+                    {{-- Status Ribbon --}}
+                    @php
+                        $currentStatus = $submission->initial_screening_status;
+                    @endphp
+                    
+                    @if ($submission->isPendingInitialScreening())
+                        <div class="flex items-center gap-2.5 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-5">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                            <p class="text-xs font-semibold text-amber-700">Awaiting initial screening</p>
+                        </div>
+                    @elseif ($currentStatus === 'passed')
+                        <div class="flex items-center gap-2.5 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                            <p class="text-xs font-semibold text-emerald-700">Currently: Passed Screening</p>
+                        </div>
+                    @else
+                        <div class="flex items-center gap-2.5 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-5">
+                            <span class="w-2 h-2 rounded-full bg-red-400 shrink-0"></span>
+                            <p class="text-xs font-semibold text-red-700">Currently: {{ ucfirst($currentStatus) }}</p>
+                        </div>
+                    @endif
 
-                        {{-- Validation Errors --}}
-                        @if ($errors->any())
-                            <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-5">
-                                <p class="text-xs font-bold text-red-700 mb-1">Please fix the following:</p>
-                                <ul class="list-disc list-inside space-y-0.5">
-                                    @foreach ($errors->all() as $error)
-                                        <li class="text-xs text-red-600">{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+                    <form method="POST" action="{{ route('chief-editor.store-initial-screening', $submission) }}">
+                        @csrf
 
-                        {{-- Status Ribbon --}}
-                        @php
-                            $currentStatus = $submission->initial_screening_status;
-                        @endphp
-                        
-                        @if ($submission->isPendingInitialScreening())
-                            <div class="flex items-center gap-2.5 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-5">
-                                <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
-                                <p class="text-xs font-semibold text-amber-700">Awaiting initial screening</p>
-                            </div>
-                        @elseif ($currentStatus === 'passed')
-                            <div class="flex items-center gap-2.5 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-5">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-                                <p class="text-xs font-semibold text-emerald-700">Currently: Passed Screening</p>
-                            </div>
-                        @else
-                            <div class="flex items-center gap-2.5 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-5">
-                                <span class="w-2 h-2 rounded-full bg-red-400 shrink-0"></span>
-                                <p class="text-xs font-semibold text-red-700">Currently: {{ ucfirst($currentStatus) }}</p>
-                            </div>
-                        @endif
+                        {{-- Decision Options --}}
+                        <div class="mb-4">
+                            <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Decision</label>
+                            <div class="flex flex-col gap-2">
 
-                        <form method="POST" action="{{ route('chief-editor.store-initial-screening', $submission) }}">
-                            @csrf
-
-                            {{-- Decision Options --}}
-                            <div class="mb-4">
-                                <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Decision</label>
-                                <div class="flex flex-col gap-2">
-
-                                    {{-- PASS --}}
-                                    <label class="decision-card flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all border-slate-200 hover:border-teal-300">
-                                        <input type="radio" name="screening_status" value="passed" 
-                                            class="mt-0.5 accent-teal-600"
-                                            {{ old('screening_status', $currentStatus) === 'passed' ? 'checked' : '' }}>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-700">✓ Pass — Proceed</p>
-                                            <p class="text-[10px] text-slate-400 mt-0.5">Meets basic standards</p>
-                                        </div>
-                                    </label>
-
-                                    {{-- REVISION --}}
-                                    <label class="decision-card flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all border-slate-200 hover:border-amber-300">
-                                        <input type="radio" name="screening_status" value="revision" 
-                                            class="mt-0.5 accent-amber-500"
-                                            {{ old('screening_status', $currentStatus) === 'revision' ? 'checked' : '' }}>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-700">🔄 Request Revision</p>
-                                            <p class="text-[10px] text-slate-400 mt-0.5">Needs changes before proceeding</p>
-                                        </div>
-                                    </label>
-
-                                    {{-- FAIL --}}
-                                    <label class="decision-card flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all border-slate-200 hover:border-red-300">
-                                        <input type="radio" name="screening_status" value="failed" 
-                                            class="mt-0.5 accent-red-500"
-                                            {{ old('screening_status', $currentStatus) === 'failed' ? 'checked' : '' }}>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-700">✗ Fail — Reject</p>
-                                            <p class="text-[10px] text-slate-400 mt-0.5">Below submission quality</p>
-                                        </div>
-                                    </label>
-
-                                </div>
-                            </div>
-
-                            {{-- Revision Type (Hidden by default) --}}
-                            <div id="revision-options" class="{{ old('screening_status', $currentStatus) === 'revision' ? '' : 'hidden' }} mb-4 p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Revision Type</label>
-                                <select name="revision_type" class="w-full bg-white px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none">
-                                    <option value="">Select type...</option>
-                                    <option value="minor" {{ old('revision_type') === 'minor' ? 'selected' : '' }}>Minor Revision</option>
-                                    <option value="major" {{ old('revision_type') === 'major' ? 'selected' : '' }}>Major Revision</option>
-                                </select>
-                            </div>
-
-                            {{-- Comments --}}
-                            <div class="mb-5">
-                                <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
-                                    Comments <span class="text-red-500">*</span>
+                                {{-- PASS --}}
+                                <label class="decision-card flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all border-slate-200 hover:border-teal-300">
+                                    <input type="radio" name="screening_status" value="passed" 
+                                        class="mt-0.5 accent-teal-600"
+                                        {{ old('screening_status', $currentStatus) === 'passed' ? 'checked' : '' }}>
+                                    <div>
+                                        <p class="text-xs font-semibold text-slate-700">✓ Pass — Proceed</p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5">Meets basic standards</p>
+                                    </div>
                                 </label>
-                                <textarea name="comments" rows="4" required
-                                    class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 resize-none focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition"
-                                    placeholder="Explain your decision to the author...">{{ old('comments', $submission->initial_screening_comments) }}</textarea>
+
+                                {{-- FAIL --}}
+                                <label class="decision-card flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all border-slate-200 hover:border-red-300">
+                                    <input type="radio" name="screening_status" value="failed" 
+                                        class="mt-0.5 accent-red-500"
+                                        {{ old('screening_status', $currentStatus) === 'failed' ? 'checked' : '' }}>
+                                    <div>
+                                        <p class="text-xs font-semibold text-slate-700">✗ Fail — Reject</p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5">Below submission quality</p>
+                                    </div>
+                                </label>
+
                             </div>
-
-                            <button type="submit"
-                                class="w-full bg-teal-700 hover:bg-teal-800 text-white font-semibold text-sm py-3 rounded-xl transition-colors shadow-sm">
-                                {{ $submission->isPendingInitialScreening() ? 'Submit Decision' : 'Update Decision' }}
-                            </button>
-
-                        </form>
-
-                        <div class="mt-4 pt-4 border-t border-slate-100 text-center">
-                            <a href="{{ route('chief-editor.submission.show', $submission) }}"
-                               class="text-xs text-slate-400 hover:text-teal-700 font-medium transition-colors">
-                                Cancel — Go back
-                            </a>
                         </div>
 
+                        {{-- Comments / Suggestions --}}
+                        <div class="mb-5">
+                            <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
+                                Comments / Suggestions <span class="text-red-500">*</span>
+                            </label>
+                            <textarea id="comments-box" name="comments" rows="4" required
+                                class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 resize-none focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition"
+                                placeholder="Provide feedback or reasons for your decision...">{{ old('comments', $submission->initial_screening_comments) }}</textarea>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-teal-700 hover:bg-teal-800 text-white font-semibold text-sm py-3 rounded-xl transition-colors shadow-sm">
+                            {{ $submission->isPendingInitialScreening() ? 'Submit Decision' : 'Update Decision' }}
+                        </button>
+                    </form>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100 text-center">
+                        <a href="{{ route('chief-editor.submission.show', $submission) }}"
+                           class="text-xs text-slate-400 hover:text-teal-700 font-medium transition-colors">
+                            Cancel — Go back
+                        </a>
                     </div>
                 </div>
 
@@ -260,40 +217,51 @@
                         Submitting will notify the author. <strong>Passed</strong> submissions will be available for editor assignment.
                     </p>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 
-{{-- Script to handle dynamic UI --}}
+{{-- Script to handle dynamic UI and Auto-comments --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const radios = document.querySelectorAll('input[name="screening_status"]');
-        const revisionOptions = document.getElementById('revision-options');
+        const commentsBox = document.getElementById('comments-box');
+
+        // Pre-defined comments
+        const autoComments = {
+            passed: "Congratulations! Your submission has passed the initial screening and will proceed to the next stage of peer review.",
+            failed: "Thank you for your submission. Unfortunately, your manuscript does not meet the minimum requirements for our journal at this time."
+        };
 
         function updateUI() {
             radios.forEach(radio => {
                 const card = radio.closest('.decision-card');
                 if (radio.checked) {
-                    if (radio.value === 'passed') card.classList.add('border-teal-500', 'bg-teal-50');
-                    if (radio.value === 'revision') card.classList.add('border-amber-400', 'bg-amber-50');
-                    if (radio.value === 'failed') card.classList.add('border-red-400', 'bg-red-50');
-                    
-                    // Show/Hide revision select
-                    if (radio.value === 'revision') {
-                        revisionOptions.classList.remove('hidden');
-                    } else {
-                        revisionOptions.classList.add('hidden');
+                    if (radio.value === 'passed') {
+                        card.classList.add('border-teal-500', 'bg-teal-50');
+                        // Auto-fill comment if box is empty or not yet filled by auto-comment
+                        if (commentsBox.value === '' || commentsBox.value === autoComments.failed) {
+                            commentsBox.value = autoComments.passed;
+                        }
+                    }
+                    if (radio.value === 'failed') {
+                        card.classList.add('border-red-400', 'bg-red-50');
+                        // Auto-fill comment if box is empty or not yet filled by auto-comment
+                        if (commentsBox.value === '' || commentsBox.value === autoComments.passed) {
+                            commentsBox.value = autoComments.failed;
+                        }
                     }
                 } else {
-                    card.classList.remove('border-teal-500', 'bg-teal-50', 'border-amber-400', 'bg-amber-50', 'border-red-400', 'bg-red-50');
+                    card.classList.remove('border-teal-500', 'bg-teal-50', 'border-red-400', 'bg-red-50');
                 }
             });
         }
 
         radios.forEach(r => r.addEventListener('change', updateUI));
-        updateUI(); // Initial run
+        
+        // Initial run to check for old() values
+        updateUI(); 
     });
 </script>
 
