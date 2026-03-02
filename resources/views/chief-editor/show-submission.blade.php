@@ -1,342 +1,810 @@
-   @php
-    use App\Models\Submission;
-    @endphp
-
-    @extends('layouts.app')
-
-    @section('title', 'Review & Assign Submission')
-
-    @section('content')
-    <div class="mb-8">
-        <h1 class="text-5xl font-bold text-slate-900 mb-2">{{ $submission->title }}</h1>
-        <p class="text-lg text-slate-600">{{ $submission->author->name }}</p>
-    </div>
-
-    <div class="grid grid-cols-3 gap-6">
-        <!-- Submission Details -->
-        <div class="col-span-2">
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 mb-6">
-                <h2 class="text-2xl font-bold text-slate-900 mb-6">Submission Details</h2>
-
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-900 mb-2">Research Field</label>
-                        <span class="inline-block bg-red-50 border border-red-200 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
-                            {{ $submission->research_field ?? 'Not specified' }}
-                        </span>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-900 mb-2">Abstract</label>
-                        <p class="text-slate-700 leading-relaxed">{{ $submission->abstract }}</p>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-900 mb-2">Keywords</label>
-                        <div class="flex flex-wrap gap-2">
-                            @foreach (explode(',', $submission->keywords) as $keyword)
-                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">
-                                    {{ trim($keyword) }}
-                                </span>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-900 mb-2">Status</label>
-                        <span class="inline-block px-4 py-2 rounded-lg font-semibold
-                            {{ $submission->status === 'submitted'    ? 'bg-yellow-50 text-yellow-700' : '' }}
-                            {{ $submission->status === 'under_review' ? 'bg-blue-50 text-blue-700'     : '' }}
-                            {{ $submission->status === 'accepted'     ? 'bg-green-50 text-green-700'   : '' }}
-                            {{ $submission->status === 'rejected'     ? 'bg-red-50 text-red-700'       : '' }}
-                        ">
-                            {{ \App\Models\Submission::statusOptions()[$submission->status] ?? $submission->status }}
-                        </span>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-900 mb-2">Submitted</label>
-                        <p class="text-slate-700">{{ $submission->submitted_at->format('F d, Y \\a\\t h:i A') }}</p>
-                    </div>
-
-                    @if ($submission->file_name)
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-900 mb-2">Submission File</label>
-                            <a href="{{ route('submissions.download-original', $submission) }}"
-                            class="inline-flex items-center gap-2 text-red-600 hover:text-red-700 font-semibold">
-                                📥 {{ $submission->original_file_name ?? $submission->file_name }}
-                            </a>
-                        </div>
-                    @endif
-                </div>
-            </div>
-
-            <!-- Initial Screening Status -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 mb-6">
-                <h2 class="text-2xl font-bold text-slate-900 mb-6">Initial Screening</h2>
-                
-                @if ($submission->isPendingInitialScreening())
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-                        <p class="text-yellow-900 font-semibold mb-4">⏳ Pending Initial Screening</p>
-                        <p class="text-yellow-800 text-sm mb-6">This manuscript has not been screened yet.</p>
-                        <a href="{{ route('chief-editor.initial-screening', $submission) }}"
-                        class="inline-block px-6 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg transition">
-                            Perform Initial Screening
-                        </a>
-                    </div>
-                @elseif ($submission->hasPassedInitialScreening())
-                    <div class="bg-green-50 border border-green-200 rounded-lg p-6">
-                        <p class="text-green-900 font-semibold mb-3">✓ Passed Initial Screening</p>
-                        <div class="space-y-3 mb-4">
-                            <div>
-                                <label class="text-sm font-medium text-green-800">Screened By</label>
-                                <p class="text-green-900">{{ $submission->initialScreeningBy?->name ?? 'Unknown' }}</p>
-                            </div>
-                            <div>
-                                <label class="text-sm font-medium text-green-800">Screening Date</label>
-                                <p class="text-green-900">{{ $submission->initial_screening_at?->format('F d, Y \\a\\t h:i A') }}</p>
-                            </div>
-                            <div>
-                                <label class="text-sm font-medium text-green-800">Screening Commentsss</label>
-                                <p class="text-green-900 mt-1">{{ $submission->initial_screening_comments }}</p>
-                            </div>
-                        </div>
-                        <a href="{{ route('chief-editor.initial-screening', $submission) }}"
-                        class="inline-block text-green-700 hover:text-green-900 font-medium text-sm">
-                            Edit Screening Decision
-                        </a>
-                    </div>
-                @else
-                    <div class="bg-red-50 border border-red-200 rounded-lg p-6">
-                        <p class="text-red-900 font-semibold mb-3">✗ Failed Initial Screening</p>
-                        <div class="space-y-3 mb-4">
-                            <div>
-                                <label class="text-sm font-medium text-red-800">Screened By</label>
-                                <p class="text-red-900">{{ $submission->initialScreeningBy?->name ?? 'Unknown' }}</p>
-                            </div>
-                            <div>
-                                <label class="text-sm font-medium text-red-800">Screening Date</label>
-                                <p class="text-red-900">{{ $submission->initial_screening_at?->format('F d, Y \\a\\t h:i A') }}</p>
-                            </div>
-                            <div>
-                                <label class="text-sm font-medium text-red-800">Screening Comments</label>
-                                <p class="text-red-900 mt-1">{{ $submission->initial_screening_comments }}</p>
-                            </div>
-                        </div>
-                        <a href="{{ route('chief-editor.initial-screening', $submission) }}"
-                        class="inline-block text-red-700 hover:text-red-900 font-medium text-sm">
-                            Override Decision
-                        </a>
-                    </div>
-                @endif
-            </div>
-        </div>
-
-        {{-- Revision History --}}
-    @if ($submission->revisionRequests()->count() > 0)
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 mb-6">
-            <h2 class="text-2xl font-bold text-slate-900 mb-6">Revision History</h2>
-
-            <div class="space-y-4">
-                @foreach ($submission->revisionRequests()->with('requestedBy')->latest('requested_at')->get() as $revision)
-                    <div class="border border-slate-200 rounded-lg p-5
-                        {{ $revision->revised_at ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-amber-400' }}">
-
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <span class="font-semibold text-slate-900">
-                                    {{ ucfirst($revision->revision_type) }} Revision
-                                </span>
-                                <span class="ml-2 text-xs text-slate-500">
-                                    Requested by {{ $revision->requestedBy?->name ?? 'Unknown' }}
-                                    on {{ $revision->requested_at->format('M d, Y h:i A') }}
-                                </span>
-                            </div>
-                            @if ($revision->revised_at)
-                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-                                    ✓ Revised
-                                </span>
-                            @else
-                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
-                                    ⏳ Awaiting Revision
-                                </span>
-                            @endif
-                        </div>
-
-                        <div class="bg-slate-50 rounded p-3 mb-3">
-                            <p class="text-xs font-semibold text-slate-600 mb-1">Reason</p>
-                            <p class="text-sm text-slate-700">{{ $revision->reason }}</p>
-                        </div>
-
-                        @if ($revision->revised_at)
-                            <div class="bg-green-50 rounded p-3">
-                                <p class="text-xs font-semibold text-green-700 mb-1">
-                                    Author's Revision Notes
-                                    <span class="font-normal text-green-600 ml-1">
-                                        — submitted {{ $revision->revised_at->format('M d, Y h:i A') }}
-                                    </span>
-                                </p>
-                                <p class="text-sm text-green-900">{{ $revision->revision_notes }}</p>
-
-                                @if ($submission->file_name)
-                                    <div class="mt-3 pt-3 border-t border-green-200">
-                                        <a href="{{ route('submissions.download', $submission) }}"
-                                        class="inline-flex items-center gap-1 text-sm font-semibold text-green-700 hover:text-green-900">
-                                            📥 Download Revised File — {{ $submission->file_name }}
-                                        </a>
-                                    </div>
-                                @endif
-                            </div>
-                        @endif
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @endif
-     </div> {{-- end col-span-2 --}}
-
-
-        <!-- Assignment Panel -->
-        <div class="col-span-1">
-            <!-- Current Assignment -->
-            @php
-                $currentAssignments = $submission->assignments()
-                    ->whereNull('rejected_at')
-                    ->latest('assigned_at')
-                    ->get();
-            @endphp
-
-            @if ($currentAssignments->count() > 0)
-                <div class="bg-green-50 border border-green-200 rounded-xl p-6 mb-6">
-                    <h3 class="font-bold text-green-900 mb-3">✓ Currently Assigned</h3>
-                    <div class="space-y-2">
-                        @foreach ($currentAssignments as $assignment)
-                            <div class="bg-white rounded-lg p-3">
-                                <p class="font-semibold text-slate-900">{{ $assignment->assignedTo->name }}</p>
-                                <p class="text-xs text-slate-500">{{ $assignment->expertise_field }}</p>
-                                @if ($assignment->isAccepted())
-                                    <p class="text-xs text-green-700 font-semibold mt-1">✓ Accepted</p>
-                                @elseif ($assignment->isPending())
-                                    <p class="text-xs text-yellow-700 font-semibold mt-1">⏳ Pending</p>
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                    <button type="button"
-                        onclick="document.getElementById('reassign-form').style.display = 'block'"
-                        class="mt-4 w-full text-sm text-green-700 hover:text-green-900 font-semibold transition-colors">
-                        Change Assignments
-                    </button>
-                </div>
-            @endif
-
-            <!-- Assign Form -->
-            <form id="reassign-form" method="POST"
-                action="{{ !$submission->assignedEditor ? route('chief-editor.assign', $submission) : route('chief-editor.reassign', $submission) }}"
-                class="bg-white rounded-xl shadow-sm border border-slate-200 p-6"
-                {{ $submission->assignedEditor ? 'style=display:none' : '' }}>
-                @csrf
-
-                <h3 class="font-bold text-slate-900 mb-1">
-                    {{ $submission->assignedEditor ? 'Reassign Editors' : 'Assign Editors' }}
-                </h3>
-                <p class="text-sm text-slate-500 mb-4">
-                    Showing editors matched to
-                    <span class="font-semibold text-red-600">{{ $researchField }}</span>
-                </p>
-
-                <div class="space-y-4 mb-4 max-h-72 overflow-y-auto">
-
-                    {{-- MATCHED editors --}}
-                    @if (!empty($editorsByField))
-                        @foreach ($editorsByField as $field => $editors)
-                            <div class="border-l-4 border-red-400 bg-red-50 p-3 rounded">
-                                <p class="text-xs font-semibold text-red-700 uppercase mb-2">
-                                    ✅ {{ $field }} — Matched
-                                </p>
-                                <div class="space-y-2">
-                                   @foreach ($editors as $editor)
 @php
-    $activeCount = $editor->active_assignments_count ?? 0;
-  $isAssignedHere = $submission->assignments()
-        ->whereNull('rejected_at')
-        ->where('assigned_to_user_id', $editor->id)
-        ->exists();
+    use App\Models\Submission;
 @endphp
-    <label class="flex items-start gap-3 cursor-pointer">
-        <input type="checkbox" name="editor_ids[]" value="{{ $editor->id }}"
-            class="editor-cb mt-1 rounded border-slate-300 text-red-600 focus:ring-red-500"
-            {{ $isAssignedHere ? 'checked' : '' }}>
-        <div>
-            <p class="text-sm font-medium text-slate-900">
-                {{ $editor->name }}
-                @if ($isAssignedHere)
-                    <span class="ml-1 text-xs font-semibold text-green-600">✓ Assigned</span>
-                @endif
-            </p>
-            <p class="text-xs text-slate-500">{{ $editor->email }}</p>
-            <p class="text-xs mt-0.5
-                {{ $activeCount === 0 ? 'text-green-600' : ($activeCount <= 3 ? 'text-amber-600' : 'text-red-500') }}">
-                {{ $activeCount === 0 ? '✓ Available' : $activeCount . ' active assignment' . ($activeCount > 1 ? 's' : '') }}
-            </p>
-        </div>
-    </label>
-@endforeach
-                                </div>
-                            </div>
-                        @endforeach
-                    @else
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-700">
-                            ⚠️ No editors matched for <strong>{{ $researchField }}</strong>.
-                        </div>
-                    @endif
 
-                    {{-- OTHER editors (collapsed by default) --}}
+@extends('layouts.app')
+
+@section('title', 'Review & Assign Submission')
+
+@push('styles')
+    <link
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet"
+    />
+    <style>
+        :root {
+            --teal: #2d8176;
+            --teal-d: #236860;
+            --gold: #c9a84c;
+            --gold-l: #f0d678;
+            --ink: #0d1628;
+            --mist: #f5f0e8;
+            --red: #dc2626;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .fade-up {
+            opacity: 0;
+            animation: fadeUp 0.5s cubic-bezier(0.22, 0.68, 0, 1.2) forwards;
+        }
+        .fade-up-1 {
+            opacity: 0;
+            animation: fadeUp 0.5s 0.08s cubic-bezier(0.22, 0.68, 0, 1.2)
+                forwards;
+        }
+        .fade-up-2 {
+            opacity: 0;
+            animation: fadeUp 0.5s 0.16s cubic-bezier(0.22, 0.68, 0, 1.2)
+                forwards;
+        }
+
+        .shimmer-bar {
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--gold),
+                var(--gold-l),
+                var(--gold),
+                transparent
+            );
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+
+        /* Cards */
+        .card {
+            background: #fff;
+            border: 1.5px solid #ede8e0;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid #ede8e0;
+            background: linear-gradient(to right, #faf8f5, #f5f0e8);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Section label */
+        .field-label {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: #b0aaa0;
+            margin-bottom: 4px;
+        }
+        .field-value {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        /* Status badge */
+        .s-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 1px solid transparent;
+        }
+        .s-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .s-badge.submitted {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+        .s-badge.submitted .dot {
+            background: #2563eb;
+        }
+        .s-badge.under_review {
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #b45309;
+        }
+        .s-badge.under_review .dot {
+            background: #d97706;
+        }
+        .s-badge.accepted {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #15803d;
+        }
+        .s-badge.accepted .dot {
+            background: #16a34a;
+        }
+        .s-badge.rejected {
+            background: #fff5f5;
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+        .s-badge.rejected .dot {
+            background: #dc2626;
+        }
+        .s-badge.default {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #475569;
+        }
+        .s-badge.default .dot {
+            background: #94a3b8;
+        }
+
+        /* Keyword chip */
+        .kw-chip {
+            display: inline-flex;
+            padding: 3px 10px;
+            border-radius: 100px;
+            background: rgba(45, 129, 118, 0.07);
+            border: 1px solid rgba(45, 129, 118, 0.15);
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--teal);
+        }
+
+        /* Field badge */
+        .field-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 100px;
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--red);
+        }
+
+        /* Screening states */
+        .screen-pass {
+            background: #f0fdf4;
+            border: 1.5px solid #bbf7d0;
+            border-radius: 14px;
+            padding: 16px;
+        }
+        .screen-fail {
+            background: #fff5f5;
+            border: 1.5px solid #fecaca;
+            border-radius: 14px;
+            padding: 16px;
+        }
+        .screen-pending {
+            background: #fffbeb;
+            border: 1.5px solid #fde68a;
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        /* Revision item */
+        .revision-item {
+            border: 1px solid #ede8e0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .revision-item.revised {
+            border-left: 3px solid #16a34a;
+        }
+        .revision-item.pending {
+            border-left: 3px solid #d97706;
+        }
+
+        /* Editor checkbox card */
+        .editor-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1.5px solid #ede8e0;
+            background: #fff;
+            cursor: pointer;
+            transition:
+                border-color 0.15s,
+                background 0.15s;
+        }
+        .editor-option:has(input:checked) {
+            border-color: var(--teal);
+            background: rgba(45, 129, 118, 0.04);
+        }
+        .editor-option input[type='checkbox'] {
+            width: 15px;
+            height: 15px;
+            accent-color: var(--teal);
+            margin-top: 2px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        /* Assignment history item */
+        .hist-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #ede8e0;
+            border-left-width: 3px;
+            background: #fff;
+        }
+        .hist-item.accepted {
+            border-left-color: #16a34a;
+        }
+        .hist-item.rejected {
+            border-left-color: var(--red);
+        }
+        .hist-item.pending {
+            border-left-color: #d97706;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 11px 20px;
+            border-radius: 12px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            background: var(--teal);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition:
+                background 0.15s,
+                transform 0.12s,
+                box-shadow 0.15s;
+            box-shadow: 0 4px 12px rgba(45, 129, 118, 0.25);
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: var(--teal-d);
+            transform: translateY(-1px);
+        }
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            background: #f5f0e8;
+            color: #9ea8b8;
+            border: 1.5px solid #e2ddd4;
+            cursor: pointer;
+            transition:
+                background 0.15s,
+                color 0.15s;
+            margin-top: 8px;
+        }
+        .btn-secondary:hover {
+            background: #ede8e0;
+            color: #6a7890;
+        }
+
+        .btn-screen {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+        .btn-screen-amber {
+            background: #d97706;
+            color: #fff;
+        }
+        .btn-screen-amber:hover {
+            background: #b45309;
+        }
+        .btn-screen-green {
+            color: #15803d;
+            font-size: 11px;
+        }
+        .btn-screen-green:hover {
+            color: #166534;
+        }
+        .btn-screen-red {
+            color: #b91c1c;
+            font-size: 11px;
+        }
+        .btn-screen-red:hover {
+            color: #991b1b;
+        }
+
+        /* Workflow steps */
+        .workflow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+        }
+        .step-num {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--teal);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 10px;
+            font-weight: 900;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* Currently assigned badge */
+        .assigned-editor-card {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #bbf7d0;
+            background: #f0fdf4;
+        }
+    </style>
+@endpush
+
+@section('content')
+    <div
+        class="min-h-screen font-['Source_Sans_3']"
+        style="
+            background: linear-gradient(
+                135deg,
+                #f5f0e8 0%,
+                #ede5d5 50%,
+                #e8e0f0 100%
+            );
+        "
+    >
+        <div class="fixed top-0 left-0 right-0 h-[2px] shimmer-bar z-50"></div>
+
+        <div class="max-w-6xl mx-auto py-8 px-4">
+            {{-- Back + Header --}}
+            <div class="fade-up mb-6">
+                <a
+                    href="{{ route('chief-editor.dashboard') }}"
+                    class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[#b0aaa0] hover:text-[var(--teal)] transition-colors mb-4"
+                >
+                    <svg
+                        class="w-3 h-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2.5"
+                            d="M15 19l-7-7 7-7"
+                        />
+                    </svg>
+                    Back to Dashboard
+                </a>
+                <div class="flex items-start justify-between gap-4 flex-wrap">
+                    <div class="flex-1 min-w-0">
+                        <p
+                            class="text-[9px] font-black uppercase tracking-[.2em] text-[var(--teal)] mb-1"
+                        >
+                            Chief Editor · Review & Assign
+                        </p>
+                        <h1
+                            class="font-['Libre_Baskerville'] text-2xl font-bold text-[var(--ink)] leading-snug"
+                        >
+                            {{ $submission->title }}
+                        </h1>
+                        <p class="text-sm text-[#8a96a8] mt-1">
+                            by
+                            <span class="font-semibold text-[#6a7890]">
+                                {{ $submission->author->name }}
+                            </span>
+                        </p>
+                    </div>
                     @php
-                        $otherFields = array_diff_key($allEditorsByField, $editorsByField);
+                        $sc = match ($submission->status) {
+                            'submitted' => 'submitted',
+                            'under_review' => 'under_review',
+                            'accepted' => 'accepted',
+                            'rejected' => 'rejected',
+                            default => 'default',
+                        };
                     @endphp
 
-                    @if (!empty($otherFields))
-                        <div>
-                            <button type="button" onclick="toggleOthers()"
-                                class="text-xs text-slate-500 hover:text-slate-700 font-semibold underline mt-1"
-                                id="toggle-others-btn">
-                                + Show other editors
-                            </button>
+                    <span class="s-badge {{ $sc }} mt-1">
+                        <span class="dot"></span>
+                        {{ Submission::statusOptions()[$submission->status] ?? $submission->status }}
+                    </span>
+                </div>
+            </div>
 
-                            <div id="other-editors" class="hidden mt-3 space-y-3">
-                                <p class="text-xs text-slate-400 italic">These editors have different expertise fields</p>
-                                @foreach ($otherFields as $field => $editors)
-                                    <div class="border-l-4 border-slate-300 bg-slate-50 p-3 rounded">
-                                        <p class="text-xs font-semibold text-slate-500 uppercase mb-2">{{ $field }}</p>
-                                        <div class="space-y-2">
-                                           @foreach ($editors as $editor)
-  @php
-    $activeCount = $editor->active_assignments_count ?? 0;
-    $isAssignedHere = $submission->assignments()
-        ->whereNull('rejected_at')
-        ->where('assigned_to_user_id', $editor->id)
-        ->exists();
-@endphp
-    <label class="flex items-start gap-3 cursor-pointer">
-        <input type="checkbox" name="editor_ids[]" value="{{ $editor->id }}"
-            class="editor-cb mt-1 rounded border-slate-300 text-red-600 focus:ring-red-500"
-            {{ $isAssignedHere ? 'checked' : '' }}>
-        <div>
-            <p class="text-sm font-medium text-slate-900">
-                {{ $editor->name }}
-                @if ($isAssignedHere)
-                    <span class="ml-1 text-xs font-semibold text-green-600">✓ Assigned</span>
-                @endif
-            </p>
-            <p class="text-xs text-slate-500">{{ $editor->email }}</p>
-            <p class="text-xs mt-0.5
-                {{ $activeCount === 0 ? 'text-green-600' : ($activeCount <= 3 ? 'text-amber-600' : 'text-red-500') }}">
-                {{ $activeCount === 0 ? '✓ Available' : $activeCount . ' active assignment' . ($activeCount > 1 ? 's' : '') }}
-            </p>
-        </div>
-    </label>
-@endforeach
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                {{-- ── LEFT: Main Details ── --}}
+                <div class="lg:col-span-2 space-y-4 fade-up-1">
+                    {{-- Submission Details --}}
+                    <div class="card">
+                        <div class="card-header">
+                            <h2
+                                class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)]"
+                            >
+                                Submission Details
+                            </h2>
+                            @if ($submission->file_name)
+                                <a
+                                    href="{{ route('submissions.download-original', $submission) }}"
+                                    class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-[var(--teal)] hover:text-[var(--teal-d)] transition-colors"
+                                >
+                                    <svg
+                                        class="w-3.5 h-3.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2.5"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                        />
+                                    </svg>
+                                    Download File
+                                </a>
+                            @endif
+                        </div>
+                        <div class="card-body">
+                            <div class="grid grid-cols-2 gap-x-6 gap-y-4 mb-4">
+                                <div>
+                                    <p class="field-label">Research Field</p>
+                                    <span class="field-badge">
+                                        {{ $submission->research_field ?? 'Not specified' }}
+                                    </span>
+                                </div>
+                                <div>
+                                    <p class="field-label">Submitted</p>
+                                    <p class="field-value text-sm">
+                                        {{ $submission->submitted_at->format('M d, Y') }}
+                                    </p>
+                                    <p class="text-[10px] text-[#b0aaa0]">
+                                        {{ $submission->submitted_at->format('h:i A') }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            @if ($submission->keywords)
+                                <div class="mb-4">
+                                    <p class="field-label mb-2">Keywords</p>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        @foreach (explode(',', $submission->keywords) as $kw)
+                                            <span class="kw-chip">
+                                                {{ trim($kw) }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                            <div>
+                                <p class="field-label mb-1">Abstract</p>
+                                <p
+                                    class="text-sm text-[#4a5568] leading-relaxed"
+                                >
+                                    {{ $submission->abstract }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Initial Screening --}}
+                    <div class="card">
+                        <div class="card-header">
+                            <h2
+                                class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)]"
+                            >
+                                Initial Screening
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            @if ($submission->isPendingInitialScreening())
+                                <div class="screen-pending">
+                                    <p
+                                        class="font-['Libre_Baskerville'] font-bold text-amber-800 mb-2"
+                                    >
+                                        ⏳ Pending Initial Screening
+                                    </p>
+                                    <p class="text-xs text-amber-700 mb-3">
+                                        This manuscript has not been screened
+                                        yet.
+                                    </p>
+                                    <a
+                                        href="{{ route('chief-editor.initial-screening', $submission) }}"
+                                        class="btn-screen btn-screen-amber"
+                                    >
+                                        Perform Initial Screening →
+                                    </a>
+                                </div>
+                            @elseif ($submission->hasPassedInitialScreening())
+                                <div class="screen-pass">
+                                    <div
+                                        class="flex items-center justify-between mb-3"
+                                    >
+                                        <p
+                                            class="font-['Libre_Baskerville'] font-bold text-emerald-800"
+                                        >
+                                            ✓ Passed Initial Screening
+                                        </p>
+                                        <a
+                                            href="{{ route('chief-editor.initial-screening', $submission) }}"
+                                            class="btn-screen btn-screen-green"
+                                        >
+                                            Edit Decision
+                                        </a>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3 mb-3">
+                                        <div>
+                                            <p
+                                                class="field-label"
+                                                style="color: #166534"
+                                            >
+                                                Screened By
+                                            </p>
+                                            <p
+                                                class="text-sm font-semibold text-emerald-900"
+                                            >
+                                                {{ $submission->initialScreeningBy?->name ?? 'Unknown' }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p
+                                                class="field-label"
+                                                style="color: #166534"
+                                            >
+                                                Date
+                                            </p>
+                                            <p
+                                                class="text-sm font-semibold text-emerald-900"
+                                            >
+                                                {{ $submission->initial_screening_at?->format('M d, Y') }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="field-label mb-1"
+                                            style="color: #166534"
+                                        >
+                                            Comments
+                                        </p>
+                                        <p class="text-sm text-emerald-900">
+                                            {{ $submission->initial_screening_comments }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="screen-fail">
+                                    <div
+                                        class="flex items-center justify-between mb-3"
+                                    >
+                                        <p
+                                            class="font-['Libre_Baskerville'] font-bold text-red-800"
+                                        >
+                                            ✗ Failed Initial Screening
+                                        </p>
+                                        <a
+                                            href="{{ route('chief-editor.initial-screening', $submission) }}"
+                                            class="btn-screen btn-screen-red"
+                                        >
+                                            Override Decision
+                                        </a>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3 mb-3">
+                                        <div>
+                                            <p
+                                                class="field-label"
+                                                style="color: #991b1b"
+                                            >
+                                                Screened By
+                                            </p>
+                                            <p
+                                                class="text-sm font-semibold text-red-900"
+                                            >
+                                                {{ $submission->initialScreeningBy?->name ?? 'Unknown' }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p
+                                                class="field-label"
+                                                style="color: #991b1b"
+                                            >
+                                                Date
+                                            </p>
+                                            <p
+                                                class="text-sm font-semibold text-red-900"
+                                            >
+                                                {{ $submission->initial_screening_at?->format('M d, Y') }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="field-label mb-1"
+                                            style="color: #991b1b"
+                                        >
+                                            Comments
+                                        </p>
+                                        <p class="text-sm text-red-900">
+                                            {{ $submission->initial_screening_comments }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Revision History --}}
+                    @if ($submission->revisionRequests()->count() > 0)
+                        <div class="card">
+                            <div class="card-header">
+                                <h2
+                                    class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)]"
+                                >
+                                    Revision History
+                                </h2>
+                                <span
+                                    class="text-[9px] font-black uppercase tracking-widest text-[#b0aaa0]"
+                                >
+                                    {{ $submission->revisionRequests()->count() }}
+                                    request(s)
+                                </span>
+                            </div>
+                            <div class="card-body space-y-3">
+                                @foreach ($submission->revisionRequests()->with('requestedBy')->latest('requested_at')->get() as $rev)
+                                    <div
+                                        class="revision-item {{ $rev->revised_at ? 'revised' : 'pending' }}"
+                                    >
+                                        <div class="p-3">
+                                            <div
+                                                class="flex items-start justify-between gap-2 mb-2"
+                                            >
+                                                <div>
+                                                    <span
+                                                        class="text-sm font-bold text-[var(--ink)]"
+                                                    >
+                                                        {{ ucfirst($rev->revision_type) }}
+                                                        Revision
+                                                    </span>
+                                                    <p
+                                                        class="text-[10px] text-[#b0aaa0] mt-0.5"
+                                                    >
+                                                        by
+                                                        {{ $rev->requestedBy?->name ?? 'Unknown' }}
+                                                        ·
+                                                        {{ $rev->requested_at->format('M d, Y') }}
+                                                    </p>
+                                                </div>
+                                                @if ($rev->revised_at)
+                                                    <span
+                                                        class="s-badge accepted flex-shrink-0"
+                                                    >
+                                                        <span
+                                                            class="dot"
+                                                        ></span>
+                                                        Revised
+                                                    </span>
+                                                @else
+                                                    <span
+                                                        class="s-badge under_review flex-shrink-0"
+                                                    >
+                                                        <span
+                                                            class="dot"
+                                                        ></span>
+                                                        Pending
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            <div
+                                                class="bg-[#faf8f5] rounded-lg p-3 mb-2"
+                                            >
+                                                <p class="field-label mb-1">
+                                                    Reason
+                                                </p>
+                                                <p
+                                                    class="text-sm text-[#4a5568]"
+                                                >
+                                                    {{ $rev->reason }}
+                                                </p>
+                                            </div>
+                                            @if ($rev->revised_at)
+                                                <div
+                                                    class="bg-emerald-50 rounded-lg p-3"
+                                                >
+                                                    <p
+                                                        class="field-label mb-1"
+                                                        style="color: #166534"
+                                                    >
+                                                        Author's Notes ·
+                                                        <span
+                                                            class="normal-case font-normal"
+                                                        >
+                                                            {{ $rev->revised_at->format('M d, Y') }}
+                                                        </span>
+                                                    </p>
+                                                    <p
+                                                        class="text-sm text-emerald-900"
+                                                    >
+                                                        {{ $rev->revision_notes }}
+                                                    </p>
+                                                    @if ($submission->file_name)
+                                                        <div
+                                                            class="mt-2 pt-2 border-t border-emerald-200"
+                                                        >
+                                                            <a
+                                                                href="{{ route('submissions.download', $submission) }}"
+                                                                class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-900"
+                                                            >
+                                                                📥 Download
+                                                                Revised File
+                                                            </a>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach
@@ -345,78 +813,416 @@
                     @endif
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-sm font-semibold text-slate-900 mb-2">Notes (Optional)</label>
-                    <textarea name="notes" rows="3"
-                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                        placeholder="Add assignment notes..."></textarea>
-                </div>
+                {{-- ── RIGHT: Assignment Panel ── --}}
+                <div class="lg:col-span-1 space-y-4 fade-up-2">
+                    {{-- Currently Assigned --}}
+                    @php
+                        $currentAssignments = $submission
+                            ->assignments()
+                            ->whereNull('rejected_at')
+                            ->latest('assigned_at')
+                            ->get();
+                    @endphp
 
-                <button type="submit" id="assign-btn" disabled
-                    class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-semibold
-                        transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                    {{ $submission->assignedEditor ? '✓ Reassign' : '✓ Assign' }}
-                </button>
-
-                @if ($submission->assignedEditor)
-                    <button type="button"
-                        onclick="document.getElementById('reassign-form').style.display = 'none'"
-                        class="w-full mt-2 bg-slate-100 text-slate-700 py-2 rounded-lg hover:bg-slate-200 font-semibold transition-colors">
-                        Cancel
-                    </button>
-                @endif
-            </form>
-
-            <script>
-                const checkboxes = document.querySelectorAll('.editor-cb');
-                const assignBtn  = document.getElementById('assign-btn');
-
-                checkboxes.forEach(cb => {
-                    cb.addEventListener('change', () => {
-                        assignBtn.disabled = ![...checkboxes].some(c => c.checked);
-                    });
-                });
-
-                function toggleOthers() {
-                    const el  = document.getElementById('other-editors');
-                    const btn = document.getElementById('toggle-others-btn');
-                    const hidden = el.classList.toggle('hidden');
-                    btn.textContent = hidden ? '+ Show other editors' : '− Hide other editors';
-                }
-            </script>
-
-            <!-- Assignment History -->
-            @if ($submission->assignments()->count() > 0)
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mt-6">
-                    <h3 class="font-bold text-slate-900 mb-4">Assignment History</h3>
-                    <div class="space-y-3">
-                        @foreach ($submission->assignments()->latest()->get() as $assignment)
-                            <div class="bg-white rounded-lg p-3 text-sm border-l-4
-                                {{ $assignment->isAccepted() ? 'border-green-500' : ($assignment->isRejected() ? 'border-red-500' : 'border-yellow-500') }}">
-                                <p class="font-semibold text-slate-900">{{ $assignment->assignedTo->name }}</p>
-                                <p class="text-xs text-slate-600">{{ $assignment->expertise_field }}</p>
-                                <p class="text-xs text-slate-500 mt-1">
-                                    {{ $assignment->assigned_at->format('M d, Y') }}
-                                    @if ($assignment->isAccepted())
-                                        <span class="text-green-700 font-semibold">✓ Accepted</span>
-                                    @elseif ($assignment->isRejected())
-                                        <span class="text-red-700 font-semibold">✗ Rejected</span>
-                                    @else
-                                        <span class="text-yellow-700 font-semibold">⏳ Pending</span>
-                                    @endif
-                                </p>
+                    @if ($currentAssignments->count() > 0)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3
+                                    class="font-['Libre_Baskerville'] text-sm font-bold text-emerald-700"
+                                >
+                                    ✓ Currently Assigned
+                                </h3>
                             </div>
-                        @endforeach
+                            <div class="card-body space-y-2">
+                                @foreach ($currentAssignments as $ca)
+                                    <div class="assigned-editor-card">
+                                        <p
+                                            class="text-sm font-bold text-[var(--ink)]"
+                                        >
+                                            {{ $ca->assignedTo->name }}
+                                        </p>
+                                        <p class="text-[10px] text-[#b0aaa0]">
+                                            {{ $ca->expertise_field }}
+                                        </p>
+                                        @if ($ca->isAccepted())
+                                            <span
+                                                class="text-[10px] font-black text-emerald-600 uppercase tracking-wider"
+                                            >
+                                                ✓ Accepted
+                                            </span>
+                                        @elseif ($ca->isPending())
+                                            <span
+                                                class="text-[10px] font-black text-amber-600 uppercase tracking-wider"
+                                            >
+                                                ⏳ Pending
+                                            </span>
+                                        @endif
+                                    </div>
+                                @endforeach
+
+                                <button
+                                    type="button"
+                                    onclick="
+                                        document.getElementById(
+                                            'reassign-form',
+                                        ).style.display = 'block';
+                                        this.closest('.card').style.display =
+                                            'none';
+                                    "
+                                    class="w-full text-[10px] font-black uppercase tracking-widest text-[var(--teal)] hover:text-[var(--teal-d)] transition-colors pt-1"
+                                >
+                                    Change Assignments →
+                                </button>
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Assign / Reassign Form --}}
+                    <div
+                        class="card"
+                        id="reassign-form"
+                        {{ $submission->assignedEditor ? 'style=display:none' : '' }}
+                    >
+                        <div class="card-header">
+                            <h3
+                                class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)]"
+                            >
+                                {{ $submission->assignedEditor ? 'Reassign Editors' : 'Assign Editors' }}
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-[11px] text-[#8a96a8] mb-3">
+                                Matched to
+                                <span class="font-black text-[var(--red)]">
+                                    {{ $researchField }}
+                                </span>
+                            </p>
+
+                            <form
+                                method="POST"
+                                action="{{ ! $submission->assignedEditor ? route('chief-editor.assign', $submission) : route('chief-editor.reassign', $submission) }}"
+                            >
+                                @csrf
+
+                                <div
+                                    class="space-y-2 mb-4 max-h-64 overflow-y-auto pr-1"
+                                >
+                                    {{-- Matched editors --}}
+                                    @if (! empty($editorsByField))
+                                        @foreach ($editorsByField as $field => $editors)
+                                            <div class="mb-2">
+                                                <p
+                                                    class="text-[9px] font-black uppercase tracking-[.15em] text-[var(--teal)] mb-1.5 flex items-center gap-1"
+                                                >
+                                                    <span
+                                                        class="w-1.5 h-1.5 rounded-full bg-[var(--teal)]"
+                                                    ></span>
+                                                    {{ $field }} · Matched
+                                                </p>
+                                                <div class="space-y-1.5">
+                                                    @foreach ($editors as $editor)
+                                                        @php
+                                                            $activeCount = $editor->active_assignments_count ?? 0;
+                                                            $isAssignedHere = $submission
+                                                                ->assignments()
+                                                                ->whereNull('rejected_at')
+                                                                ->where('assigned_to_user_id', $editor->id)
+                                                                ->exists();
+                                                        @endphp
+
+                                                        <label
+                                                            class="editor-option"
+                                                        >
+                                                            <input
+                                                                type="checkbox"
+                                                                name="editor_ids[]"
+                                                                value="{{ $editor->id }}"
+                                                                class="editor-cb"
+                                                                {{ $isAssignedHere ? 'checked' : '' }}
+                                                            />
+                                                            <div
+                                                                class="min-w-0 flex-1"
+                                                            >
+                                                                <p
+                                                                    class="text-sm font-bold text-[var(--ink)] truncate"
+                                                                >
+                                                                    {{ $editor->name }}
+                                                                    @if ($isAssignedHere)
+                                                                        <span
+                                                                            class="text-[9px] font-black text-emerald-600 ml-1"
+                                                                        >
+                                                                            ✓
+                                                                        </span>
+                                                                    @endif
+                                                                </p>
+                                                                <p
+                                                                    class="text-[10px] text-[#b0aaa0] truncate"
+                                                                >
+                                                                    {{ $editor->email }}
+                                                                </p>
+                                                                <p
+                                                                    class="text-[10px] font-bold mt-0.5 {{ $activeCount === 0 ? 'text-emerald-600' : ($activeCount <= 3 ? 'text-amber-600' : 'text-red-500') }}"
+                                                                >
+                                                                    {{ $activeCount === 0 ? '✓ Available' : $activeCount . ' active' }}
+                                                                </p>
+                                                            </div>
+                                                        </label>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    @else
+                                        <div
+                                            class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-700 font-medium"
+                                        >
+                                            ⚠️ No editors matched for
+                                            <strong>
+                                                {{ $researchField }}
+                                            </strong>
+                                        </div>
+                                    @endif
+
+                                    {{-- Other editors --}}
+                                    @php
+                                        $otherFields = array_diff_key($allEditorsByField, $editorsByField);
+                                    @endphp
+
+                                    @if (! empty($otherFields))
+                                        <div>
+                                            <button
+                                                type="button"
+                                                onclick="toggleOthers()"
+                                                id="toggle-others-btn"
+                                                class="text-[10px] font-black uppercase tracking-wider text-[#b0aaa0] hover:text-[var(--teal)] transition-colors mt-1"
+                                            >
+                                                + Show other editors
+                                            </button>
+                                            <div
+                                                id="other-editors"
+                                                class="hidden mt-2 space-y-1.5"
+                                            >
+                                                <p
+                                                    class="text-[9px] text-[#c0b8b0] italic mb-1"
+                                                >
+                                                    Different expertise fields
+                                                </p>
+                                                @foreach ($otherFields as $field => $editors)
+                                                    <div class="mb-2">
+                                                        <p
+                                                            class="text-[9px] font-black uppercase tracking-[.15em] text-[#b0aaa0] mb-1.5"
+                                                        >
+                                                            {{ $field }}
+                                                        </p>
+                                                        <div
+                                                            class="space-y-1.5"
+                                                        >
+                                                            @foreach ($editors as $editor)
+                                                                @php
+                                                                    $activeCount = $editor->active_assignments_count ?? 0;
+                                                                    $isAssignedHere = $submission
+                                                                        ->assignments()
+                                                                        ->whereNull('rejected_at')
+                                                                        ->where('assigned_to_user_id', $editor->id)
+                                                                        ->exists();
+                                                                @endphp
+
+                                                                <label
+                                                                    class="editor-option"
+                                                                >
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        name="editor_ids[]"
+                                                                        value="{{ $editor->id }}"
+                                                                        class="editor-cb"
+                                                                        {{ $isAssignedHere ? 'checked' : '' }}
+                                                                    />
+                                                                    <div
+                                                                        class="min-w-0 flex-1"
+                                                                    >
+                                                                        <p
+                                                                            class="text-sm font-bold text-[var(--ink)] truncate"
+                                                                        >
+                                                                            {{ $editor->name }}
+                                                                        </p>
+                                                                        <p
+                                                                            class="text-[10px] text-[#b0aaa0] truncate"
+                                                                        >
+                                                                            {{ $editor->email }}
+                                                                        </p>
+                                                                        <p
+                                                                            class="text-[10px] font-bold mt-0.5 {{ $activeCount === 0 ? 'text-emerald-600' : ($activeCount <= 3 ? 'text-amber-600' : 'text-red-500') }}"
+                                                                        >
+                                                                            {{ $activeCount === 0 ? '✓ Available' : $activeCount . ' active' }}
+                                                                        </p>
+                                                                    </div>
+                                                                </label>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <div class="mb-4">
+                                    <p class="field-label mb-1.5">
+                                        Notes (Optional)
+                                    </p>
+                                    <textarea
+                                        name="notes"
+                                        rows="3"
+                                        placeholder="Add assignment notes..."
+                                        class="w-full px-3 py-2.5 text-sm border border-[#e2ddd4] rounded-xl focus:border-[var(--teal)] focus:ring-2 focus:ring-[rgba(45,129,118,.1)] outline-none font-['Source_Sans_3'] resize-none transition-all"
+                                    ></textarea>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    id="assign-btn"
+                                    disabled
+                                    class="btn-primary"
+                                >
+                                    {{ $submission->assignedEditor ? '✓ Reassign' : '✓ Assign Editors' }}
+                                </button>
+
+                                @if ($submission->assignedEditor)
+                                    <button
+                                        type="button"
+                                        onclick="
+                                            document.getElementById(
+                                                'reassign-form',
+                                            ).style.display = 'none'
+                                        "
+                                        class="btn-secondary"
+                                    >
+                                        Cancel
+                                    </button>
+                                @endif
+                            </form>
+                        </div>
+                    </div>
+
+                    {{-- Assignment History --}}
+                    @if ($submission->assignments()->count() > 0)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3
+                                    class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)]"
+                                >
+                                    Assignment History
+                                </h3>
+                                <span
+                                    class="text-[9px] font-black uppercase tracking-widest text-[#b0aaa0]"
+                                >
+                                    {{ $submission->assignments()->count() }}
+                                </span>
+                            </div>
+                            <div class="card-body space-y-2">
+                                @foreach ($submission->assignments()->latest()->get() as $ha)
+                                    <div
+                                        class="hist-item {{ $ha->isAccepted() ? 'accepted' : ($ha->isRejected() ? 'rejected' : 'pending') }}"
+                                    >
+                                        <p
+                                            class="text-sm font-bold text-[var(--ink)]"
+                                        >
+                                            {{ $ha->assignedTo->name }}
+                                        </p>
+                                        <p class="text-[10px] text-[#b0aaa0]">
+                                            {{ $ha->expertise_field }}
+                                        </p>
+                                        <div
+                                            class="flex items-center justify-between mt-1"
+                                        >
+                                            <span
+                                                class="text-[10px] text-[#c0b8b0] font-mono"
+                                            >
+                                                {{ $ha->assigned_at->format('M d, Y') }}
+                                            </span>
+                                            @if ($ha->isAccepted())
+                                                <span
+                                                    class="text-[9px] font-black uppercase tracking-wider text-emerald-600"
+                                                >
+                                                    ✓ Accepted
+                                                </span>
+                                            @elseif ($ha->isRejected())
+                                                <span
+                                                    class="text-[9px] font-black uppercase tracking-wider text-red-600"
+                                                >
+                                                    ✗ Rejected
+                                                </span>
+                                            @else
+                                                <span
+                                                    class="text-[9px] font-black uppercase tracking-wider text-amber-600"
+                                                >
+                                                    ⏳ Pending
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Workflow Info --}}
+                    <div class="card">
+                        <div class="card-header">
+                            <h3
+                                class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)]"
+                            >
+                                📋 Workflow
+                            </h3>
+                        </div>
+                        <div class="card-body space-y-1">
+                            @foreach ([
+                                    'Screen the manuscript for eligibility',
+                                    'Assign to a matched editor',
+                                    'Editor distributes to reviewers',
+                                    'Reviews collected & decision made',
+                                    'Author notified of outcome'
+                                ]
+                                as $i => $step)
+                                <div class="workflow-step">
+                                    <div class="step-num">{{ $i + 1 }}</div>
+                                    <p
+                                        class="text-xs text-[#6a7890] leading-relaxed pt-0.5"
+                                    >
+                                        {{ $step }}
+                                    </p>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            @endif
+            </div>
         </div>
     </div>
 
-    <div class="mt-8">
-        <a href="{{ route('chief-editor.dashboard') }}"
-        class="inline-block text-red-600 hover:text-red-700 transition-colors font-medium">
-            ← Back to Dashboard
-        </a>
-    </div>
-    @endsection
+    <script>
+        const checkboxes = document.querySelectorAll('.editor-cb');
+        const assignBtn = document.getElementById('assign-btn');
+
+        checkboxes.forEach((cb) => {
+            cb.addEventListener('change', () => {
+                if (assignBtn)
+                    assignBtn.disabled = ![...checkboxes].some(
+                        (c) => c.checked,
+                    );
+            });
+        });
+
+        // Enable button if any checkbox already checked on load
+        if (assignBtn)
+            assignBtn.disabled = ![...checkboxes].some((c) => c.checked);
+
+        function toggleOthers() {
+            const el = document.getElementById('other-editors');
+            const btn = document.getElementById('toggle-others-btn');
+            const hidden = el.classList.toggle('hidden');
+            btn.textContent = hidden
+                ? '+ Show other editors'
+                : '− Hide other editors';
+        }
+    </script>
+@endsection
