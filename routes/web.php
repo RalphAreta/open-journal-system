@@ -55,6 +55,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard/switch-role/{role}', [DashboardController::class, 'switchRole'])->name('dashboard.switch-role');
     Route::get('/submissions/{submission}/download', [ReviewController::class, 'downloadFile'])->name('submissions.download');
     Route::get('/submissions/{submission}/download-original', [ReviewController::class, 'downloadOriginalFile'])->name('submissions.download-original');
+    Route::get('/submissions/{submission}/download-ctf', [ManagingEditorController::class, 'downloadCtf'])
+    ->name('submissions.download-ctf');
 
     Route::middleware('role:author')->group(function (): void {
         Route::get('/dashboard/author', [DashboardController::class, 'author'])->name('dashboard.author');

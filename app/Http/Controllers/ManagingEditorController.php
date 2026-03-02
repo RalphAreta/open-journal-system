@@ -32,31 +32,44 @@ class ManagingEditorController extends Controller
     /**
      * Generate / mark Copyright Transfer Form as sent.
      */
-    public function generateCtf(Submission $submission): RedirectResponse
-    {
-        if ($submission->managing_editor_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $submission->update([
-            'managing_editor_status' => 'ctf_sent',
-            'ctf_sent_at'            => now(),
-        ]);
-
-        \App\Models\Notification::create([
-            'user_id'         => $submission->author_id,
-            'title'           => '📄 Copyright Transfer Form',
-            'message'         => "A Copyright Transfer Form has been issued for your manuscript \"{$submission->title}\". Please check your email.",
-            'type'            => 'info',
-            'notifiable_id'   => $submission->id,
-            'notifiable_type' => Submission::class,
-        ]);
-
-        return redirect()
-            ->route('managing-editor.dashboard')
-            ->with('success', 'Copyright Transfer Form has been sent to the author.');
+   public function generateCtf(Request $request, Submission $submission): RedirectResponse
+{
+    if ($submission->managing_editor_id !== auth()->id()) {
+        abort(403);
     }
 
+    $request->validate([
+        'ctf_file' => 'required|mimes:pdf,doc,docx|max:10240',
+    ]);
+
+    $file     = $request->file('ctf_file');
+    $filename = 'ctf-' . $submission->id . '-' . time() . '.' . $file->getClientOriginalExtension();
+   $path     = $file->storeAs('ctf-forms', $filename, 'local');
+
+if (!$path) {
+    return back()->with('error', 'File upload failed. Please try again.');
+}
+
+$submission->update([
+        'managing_editor_status' => 'ctf_sent',
+        'ctf_sent_at'            => now(),
+        'ctf_file_path'          => $path,
+        'ctf_file_name'          => $file->getClientOriginalName(),
+    ]);
+
+    \App\Models\Notification::create([
+        'user_id'         => $submission->author_id,
+        'title'           => '📄 Copyright Transfer Form',
+        'message'         => "A Copyright Transfer Form has been uploaded for your manuscript \"{$submission->title}\". Please download and sign it.",
+        'type'            => 'info',
+        'notifiable_id'   => $submission->id,
+        'notifiable_type' => Submission::class,
+    ]);
+
+    return redirect()
+        ->route('managing-editor.dashboard')
+        ->with('success', 'CTF uploaded and sent to the author.');
+}
     /**
      * Assign a Layout Editor and forward the manuscript.
      */
@@ -195,6 +208,21 @@ public function downloadLayout(Submission $submission)
     return response()->download(
         \Illuminate\Support\Facades\Storage::disk('local')->path($layoutAssignment->layout_file_path),
         $layoutAssignment->layout_file_name ?? 'layout.pdf'
+    );
+}
+
+public function downloadCtf(Submission $submission)
+{
+    if (auth()->id() !== $submission->author_id && 
+        auth()->id() !== $submission->managing_editor_id) {
+        abort(403);
+    }
+    if (!$submission->ctf_file_path) {
+        abort(404, 'CTF file not found.');
+    }
+    return response()->download(
+        \Illuminate\Support\Facades\Storage::disk('local')->path($submission->ctf_file_path),
+        $submission->ctf_file_name ?? 'copyright-transfer-form.pdf'
     );
 }
 

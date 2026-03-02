@@ -746,5 +746,185 @@
                 @endif
             </div>
         </div>
+        {{-- CTF Upload --}}
+        <div class="card fu3">
+            <div class="card-header">
+                <div class="card-header-icon" style="background: #fdf8ec">
+                    <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="var(--gold-dk)"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                    </svg>
+                </div>
+                <span class="card-header-title">Copyright Transfer Form</span>
+            </div>
+            <div class="card-body">
+                @if ($submission->ctf_file_path)
+                    {{-- Already uploaded --}}
+                    <div class="file-card">
+                        <div class="file-icon">
+                            <svg
+                                width="20"
+                                height="20"
+                                fill="none"
+                                stroke="var(--gold-dk)"
+                                stroke-width="1.8"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                />
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="file-name">
+                                {{ $submission->ctf_file_name ?? 'copyright-transfer-form.pdf' }}
+                            </p>
+                            <p class="file-tag" style="color: var(--gold-dk)">
+                                CTF — Sent
+                                {{ $submission->ctf_sent_at?->format('M j, Y') }}
+                            </p>
+                        </div>
+                        <a
+                            href="{{ route('submissions.download-ctf', $submission) }}"
+                            class="btn-download"
+                            style="
+                                border-color: rgba(201, 168, 76, 0.4);
+                                color: var(--gold-dk);
+                            "
+                        >
+                            <svg
+                                width="13"
+                                height="13"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                />
+                            </svg>
+                            Download
+                        </a>
+                    </div>
+                    <p
+                        style="
+                            font-size: 0.82rem;
+                            color: var(--ink-soft);
+                            margin-top: 12px;
+                        "
+                    >
+                        Re-upload to replace the existing CTF:
+                    </p>
+                @endif
+
+                {{-- Upload Form --}}
+                @if ($submission->managing_editor_status !== 'forwarded')
+                    <form
+                        method="POST"
+                        action="{{ route('managing-editor.ctf.generate', $submission) }}"
+                        enctype="multipart/form-data"
+                        style="
+                            margin-top: {{ $submission->ctf_file_path ? '8px' : '0' }};
+                        "
+                    >
+                        @csrf
+                        <div
+                            style="
+                                display: flex;
+                                gap: 12px;
+                                align-items: center;
+                                flex-wrap: wrap;
+                            "
+                        >
+                            <input
+                                type="file"
+                                name="ctf_file"
+                                accept=".pdf,.doc,.docx"
+                                required
+                                style="
+                                    font-size: 0.88rem;
+                                    color: var(--ink);
+                                    flex: 1;
+                                    min-width: 200px;
+                                "
+                            />
+                            <button
+                                type="submit"
+                                style="
+                                    display: inline-flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                    background: var(--gold);
+                                    color: #fff;
+                                    font-size: 0.76rem;
+                                    font-weight: 700;
+                                    letter-spacing: 0.08em;
+                                    text-transform: uppercase;
+                                    padding: 10px 20px;
+                                    border-radius: 6px;
+                                    border: none;
+                                    cursor: pointer;
+                                    transition: background 0.15s;
+                                    white-space: nowrap;
+                                "
+                            >
+                                <svg
+                                    width="14"
+                                    height="14"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                    />
+                                </svg>
+                                Upload & Send CTF
+                            </button>
+                        </div>
+                        @error('ctf_file')
+                            <p
+                                style="
+                                    color: #dc2626;
+                                    font-size: 0.82rem;
+                                    margin-top: 8px;
+                                "
+                            >
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </form>
+                @else
+                    <p
+                        style="
+                            font-size: 0.88rem;
+                            color: var(--ink-soft);
+                            padding: 12px 0;
+                        "
+                    >
+                        Manuscript has been forwarded to layout editor. CTF
+                        upload is locked.
+                    </p>
+                @endif
+            </div>
+        </div>
     </div>
 @endsection

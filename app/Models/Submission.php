@@ -36,6 +36,8 @@ class Submission extends Model
 'managing_editor_status',
 'ctf_sent_at',
 'forwarded_to_layout_at',
+'ctf_file_path',
+'ctf_file_name',
     ];
 
     protected function casts(): array
