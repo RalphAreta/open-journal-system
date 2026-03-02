@@ -165,35 +165,45 @@ class LayoutEditorController extends Controller
         'completed_at'     => now(),
     ]);
 
-    // Update submission status
-    $submission = $assignment->submission;
-    $submission->update(['status' => Submission::STATUS_LAYOUT_REVIEW]);
+   // Update submission status
+$submission = $assignment->submission;
+$submission->update(['status' => Submission::STATUS_LAYOUT_REVIEW]);
 
-    // Notify editor
-    $editor = $submission->assignedEditor;
-    if ($editor) {
-        \App\Models\Notification::create([
-            'user_id'         => $editor->id,
-            'title'           => 'Layout File Uploaded',
-            'message'         => "The layout editor has uploaded the layout file for \"{$submission->title}\". Please review it.",
-            'type'            => 'info',
-            'notifiable_id'   => $submission->id,
-            'notifiable_type' => \App\Models\Submission::class,
-        ]);
-    }
+$notes = $request->input('notes');
+$notesPart = $notes
+    ? "\n\nLayout Editor's Notes:\n\"{$notes}\""
+    : "";
 
-    // Notify author
-    $author = $submission->author;
-    if ($author) {
-        \App\Models\Notification::create([
-            'user_id'         => $author->id,
-            'title'           => 'Layout In Progress',
-            'message'         => "Your paper \"{$submission->title}\" has been formatted and is now under editor review.",
-            'type'            => 'info',
-            'notifiable_id'   => $submission->id,
-            'notifiable_type' => \App\Models\Submission::class,
-        ]);
-    }
+// Notify Managing Editor (NOT editor/author yet)
+$managingEditor = $submission->managingEditor;
+if ($managingEditor) {
+    \App\Models\Notification::create([
+        'user_id'         => $managingEditor->id,
+        'title'           => '🎨 Layout File Ready for Review',
+'message' => "The layout editor has completed formatting \"{$submission->title}\". Go to your dashboard and click 'Review Layout' to view and download the file.{$notesPart}",
+        'type'            => 'info',
+        'notifiable_id'   => $submission->id,
+        'notifiable_type' => \App\Models\Submission::class,
+    ]);
+}
+
+   // Notify author
+$author = $submission->author;
+if ($author) {
+    $notes = $request->input('notes');
+    $notesPart = $notes
+        ? "\n\nLayout Editor's Notes:\n\"{$notes}\""
+        : "\n\nNo additional notes were provided by the layout editor.";
+
+    \App\Models\Notification::create([
+        'user_id'         => $author->id,
+        'title'           => '🎨 Layout Version Ready for Review',
+       'message' => "The layout editor has completed formatting \"{$submission->title}\". Go to your dashboard and click 'Review Layout' to view and download the file.{$notesPart}",
+        'type'            => 'info',
+        'notifiable_id'   => $submission->id,
+        'notifiable_type' => \App\Models\Submission::class,
+    ]);
+}
 
     return redirect()->route('layout-editor.dashboard')
         ->with('success', 'Layout file uploaded successfully. Waiting for editor review.');

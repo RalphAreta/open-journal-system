@@ -109,5 +109,67 @@ class ManagingEditorController extends Controller
 
     return view('managing-editor.show', compact('submission'));
 }
+public function showLayout(Submission $submission): View
+{
+    if ($submission->managing_editor_id !== auth()->id()) {
+        abort(403);
+    }
+
+    $submission->load(['author', 'assignedEditor', 'layoutEditorAssignments.layoutEditor']);
+
+    // Get the latest completed layout assignment
+    $layoutAssignment = $submission->layoutEditorAssignments()
+        ->where('status', LayoutEditorAssignment::STATUS_COMPLETED)
+        ->latest('completed_at')
+        ->first();
+
+    return view('managing-editor.show-layout', compact('submission', 'layoutAssignment'));
+}
+
+public function approveLayout(Submission $submission): RedirectResponse
+{
+    if ($submission->managing_editor_id !== auth()->id()) {
+        abort(403);
+    }
+
+    $submission->update(['status' => Submission::STATUS_LAYOUT_REVIEW]);
+
+    // Notify assigned editor
+    $editor = $submission->assignedEditor;
+    if ($editor) {
+        \App\Models\Notification::create([
+            'user_id'         => $editor->id,
+            'title'           => '✅ Layout Approved by Managing Editor',
+            'message'         => "The managing editor has approved the layout for \"{$submission->title}\". Please review and send to author for final confirmation.",
+            'type'            => 'success',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    return redirect()
+        ->route('managing-editor.dashboard')
+        ->with('success', 'Layout approved and editor has been notified.');
+}
+public function downloadLayout(Submission $submission)
+{
+    if ($submission->managing_editor_id !== auth()->id()) {
+        abort(403);
+    }
+
+    $layoutAssignment = $submission->layoutEditorAssignments()
+        ->where('status', LayoutEditorAssignment::STATUS_COMPLETED)
+        ->latest('completed_at')
+        ->first();
+
+    if (!$layoutAssignment || !$layoutAssignment->layout_file_path) {
+        abort(404, 'Layout file not found.');
+    }
+
+    return response()->download(
+        \Illuminate\Support\Facades\Storage::disk('local')->path($layoutAssignment->layout_file_path),
+        $layoutAssignment->layout_file_name ?? 'layout.pdf'
+    );
+}
 
 }

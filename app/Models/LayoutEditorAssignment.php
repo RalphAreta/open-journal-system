@@ -52,4 +52,6 @@ class LayoutEditorAssignment extends Model
     {
         return $this->belongsTo(User::class, 'layout_editor_id');
     }
+
+    
 }

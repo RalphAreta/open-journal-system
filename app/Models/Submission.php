@@ -114,6 +114,11 @@ class Submission extends Model
         return $this->belongsTo(User::class, 'assigned_editor_id');
     }
 
+    public function managingEditor(): BelongsTo
+{
+    return $this->belongsTo(User::class, 'managing_editor_id');
+}
+
     public function initialScreeningBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'initial_screening_by');

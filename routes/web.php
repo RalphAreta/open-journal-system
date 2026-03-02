@@ -174,5 +174,13 @@ Route::middleware('role:managing-editor')->group(function (): void {
 
     Route::post('/managing-editor/submissions/{submission}/forward', [ManagingEditorController::class, 'forwardToLayout'])
         ->name('managing-editor.forward');
+        Route::get('/managing-editor/submissions/{submission}/layout', [ManagingEditorController::class, 'showLayout'])
+    ->name('managing-editor.layout.show');
+
+Route::post('/managing-editor/submissions/{submission}/layout/approve', [ManagingEditorController::class, 'approveLayout'])
+    ->name('managing-editor.layout.approve');
+
+Route::get('/managing-editor/submissions/{submission}/layout/download', [ManagingEditorController::class, 'downloadLayout'])
+    ->name('managing-editor.layout.download');
 });
 });
