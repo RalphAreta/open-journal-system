@@ -104,15 +104,66 @@
                 @error('comments_for_editor') <p class="text-red-600 text-xs font-medium mt-1">{{ $message }}</p> @enderror
             </div>
 
+            {{-- Rating Scale Reference --}}
+            <div class="bg-slate-50 border border-slate-200 rounded-lg p-6 mb-6">
+                <h3 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wide">Rating Scale</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-300">
+                                <th class="text-left p-2 font-bold text-slate-900">Range</th>
+                                <th class="text-left p-2 font-bold text-slate-900">Label</th>
+                                <th class="text-left p-2 font-bold text-slate-900">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-200 bg-red-50">
+                                <td class="p-2 font-medium text-slate-900">1-20</td>
+                                <td class="p-2 text-slate-900">Critically deficient</td>
+                                <td class="p-2 text-slate-700">Fundamental flaws; unsuitable for publication</td>
+                            </tr>
+                            <tr class="border-b border-slate-200 bg-orange-50">
+                                <td class="p-2 font-medium text-slate-900">21-40</td>
+                                <td class="p-2 text-slate-900">Below standard</td>
+                                <td class="p-2 text-slate-700">Major deficiencies; significant revisions needed</td>
+                            </tr>
+                            <tr class="border-b border-slate-200 bg-amber-50">
+                                <td class="p-2 font-medium text-slate-900">41-55</td>
+                                <td class="p-2 text-slate-900">Acceptable but limited</td>
+                                <td class="p-2 text-slate-700">Concerns present; major revisions required</td>
+                            </tr>
+                            <tr class="border-b border-slate-200 bg-yellow-50">
+                                <td class="p-2 font-medium text-slate-900">56-70</td>
+                                <td class="p-2 text-slate-900">Competent work</td>
+                                <td class="p-2 text-slate-700">Acceptable quality; minor to moderate revisions</td>
+                            </tr>
+                            <tr class="border-b border-slate-200 bg-lime-50">
+                                <td class="p-2 font-medium text-slate-900">71-85</td>
+                                <td class="p-2 text-slate-900">Good to excellent</td>
+                                <td class="p-2 text-slate-700">Sound work; minimal revisions needed</td>
+                            </tr>
+                            <tr class="bg-green-50">
+                                <td class="p-2 font-medium text-slate-900">86-100</td>
+                                <td class="p-2 text-slate-900">Outstanding</td>
+                                <td class="p-2 text-slate-700">Exemplary quality; ready for publication</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             {{-- Rating --}}
             <div>
                 <label for="rating" class="block text-sm font-semibold text-slate-900 mb-3">
-                    Rating <span class="text-slate-500 font-normal text-xs">(1-5, optional)</span>
+                    Rating <span class="text-slate-500 font-normal text-xs">(1-100, optional)</span>
                 </label>
                 <div class="flex items-center gap-3">
-                    <input id="rating" type="number" name="rating" min="1" max="5" value="{{ old('rating', $existingReview?->rating) }}"
-                        class="w-20 px-4 py-2.5 border border-slate-300 rounded-lg text-slate-900 font-medium focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all">
-                    <span class="text-xs text-slate-500">out of 5 stars</span>
+                    <input id="rating" type="number" name="rating" min="1" max="100" 
+                        value="{{ old('rating', $existingReview?->rating) }}"
+                        class="w-24 px-4 py-2.5 border border-slate-300 rounded-lg text-slate-900 font-medium focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
+                        placeholder="0">
+                    <span class="text-xs text-slate-500 font-medium">/ 100</span>
+                    <span id="ratingInterpretation" class="text-xs text-slate-600 font-semibold px-3 py-2 bg-slate-50 rounded-lg"></span>
                 </div>
                 @error('rating') <p class="text-red-600 text-xs font-medium mt-1">{{ $message }}</p> @enderror
             </div>
@@ -142,5 +193,49 @@
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ratingInput = document.getElementById('rating');
+    const interpretationDisplay = document.getElementById('ratingInterpretation');
+    
+    function updateInterpretation(rating) {
+        if (!rating || rating < 1 || rating > 100) {
+            interpretationDisplay.textContent = '';
+            return;
+        }
+        
+        const interpretations = {
+            '1-20': 'Critically deficient',
+            '21-40': 'Below publication standard',
+            '41-55': 'Acceptable but limited',
+            '56-70': 'Competent work',
+            '71-85': 'Good to excellent',
+            '86-100': 'Outstanding contribution'
+        };
+        
+        let interpretation = '';
+        if (rating >= 1 && rating <= 20) interpretation = interpretations['1-20'];
+        else if (rating >= 21 && rating <= 40) interpretation = interpretations['21-40'];
+        else if (rating >= 41 && rating <= 55) interpretation = interpretations['41-55'];
+        else if (rating >= 56 && rating <= 70) interpretation = interpretations['56-70'];
+        else if (rating >= 71 && rating <= 85) interpretation = interpretations['71-85'];
+        else if (rating >= 86 && rating <= 100) interpretation = interpretations['86-100'];
+        
+        interpretationDisplay.textContent = interpretation;
+    }
+    
+    if (ratingInput) {
+        ratingInput.addEventListener('input', function() {
+            updateInterpretation(this.value);
+        });
+        
+        // Initialize on page load
+        if (ratingInput.value) {
+            updateInterpretation(ratingInput.value);
+        }
+    }
+});
+</script>
 
 @endsection

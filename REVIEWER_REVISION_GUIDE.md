@@ -44,7 +44,10 @@ Complete these fields:
    - Internal observations
    - Suggestions about the overall quality
 
-4. **Rating** (Optional) - 1-5 star rating
+4. **Rating** (Optional) - 1-100 scale rating
+   - Ranges from 1 (Inadequate) to 100 (Exemplary)
+   - Use the slider to select your rating
+   - Visual band categories help guide your selection
 
 5. Click **"✓ Submit Revision Review"**
 

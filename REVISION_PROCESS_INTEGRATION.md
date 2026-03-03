@@ -62,7 +62,7 @@ Tracks reviewer feedback on revised manuscripts:
 - `recommendation` (accept, minor_revisions, major_revisions, reject)
 - `comments_for_author` (Visible to author)
 - `comments_for_editor` (Confidential)
-- `rating` (1-5 scale, optional)
+- `rating` (1-100 scale, optional)
 - `assigned_at` (Timestamp)
 - `completed_at` (Timestamp)
 - `due_at` (Timestamp)

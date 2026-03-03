@@ -546,14 +546,9 @@
                                     >
                                         Your Rating
                                     </p>
-                                    <div class="flex gap-0.5 justify-end">
-                                        @for ($s = 1; $s <= 5; $s++)
-                                            <span
-                                                class="star {{ $s <= $myReview->rating ? 'filled' : '' }}"
-                                            >
-                                                ★
-                                            </span>
-                                        @endfor
+                                    <div class="flex gap-2 justify-end items-center">
+                                        <span class="text-sm font-bold text-blue-600">{{ $myReview->rating }}/100</span>
+                                        <span class="text-xs text-blue-500">{{ $myReview->getRatingInterpretation() }}</span>
                                     </div>
                                 </div>
                             @endif
@@ -787,20 +782,12 @@
                                         >
                                             Rating
                                         </span>
-                                        <div class="flex gap-0.5">
-                                            @for ($s = 1; $s <= 5; $s++)
-                                                <span
-                                                    class="star {{ $s <= $r->rating ? 'filled' : '' }}"
-                                                >
-                                                    ★
-                                                </span>
-                                            @endfor
-                                        </div>
                                         <span
-                                            class="text-xs font-bold text-slate-600 ml-1"
+                                            class="text-xs font-bold text-slate-600"
                                         >
-                                            {{ $r->rating }}/5
+                                            {{ $r->rating }}/100
                                         </span>
+                                        <span class="text-xs text-slate-500">{{ $r->getRatingInterpretation() }}</span>
                                     </div>
                                 @endif
 

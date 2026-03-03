@@ -1124,7 +1124,7 @@
                                             <span
                                                 class="text-[#2d8176] font-bold ml-1"
                                             >
-                                                {{ $rr->rating }}/5.0
+                                                {{ $rr->rating }}/100
                                             </span>
                                         </div>
                                     @endif

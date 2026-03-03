@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('recommendation'); // accept, minor_revisions, major_revisions, reject
             $table->text('comments_for_author')->nullable();
             $table->text('comments_for_editor')->nullable();
-            $table->unsignedTinyInteger('rating')->nullable(); // 1-5 optional
+            $table->unsignedTinyInteger('rating')->nullable(); // 1-100 optional (updated to support new scale)
             $table->timestamp('submitted_at')->nullable();
             $table->timestamps();
             $table->unique(['submission_id', 'reviewer_id']);

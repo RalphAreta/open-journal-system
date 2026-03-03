@@ -61,4 +61,26 @@ class RevisionReview extends Model
     {
         return $this->belongsTo(User::class, 'reviewer_id');
     }
+
+    /**
+     * Get rating interpretation
+     */
+    public function getRatingInterpretation(): ?string
+    {
+        if (!$this->rating) {
+            return null;
+        }
+        return \App\Services\RatingScale::interpretRating($this->rating);
+    }
+
+    /**
+     * Get rating guidance
+     */
+    public function getRatingGuidance(): ?string
+    {
+        if (!$this->rating) {
+            return null;
+        }
+        return \App\Services\RatingScale::getGuidanceForRating($this->rating, 'revision_reviewer');
+    }
 }

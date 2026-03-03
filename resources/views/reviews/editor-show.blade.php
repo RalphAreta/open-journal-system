@@ -568,7 +568,7 @@
                                     <p class="text-xs text-slate-500 mb-2">
                                         Rating:
                                         <span class="font-bold text-slate-700">
-                                            {{ $rr->rating }}/5.0
+                                            {{ $rr->rating }}/100
                                         </span>
                                     </p>
                                 @endif

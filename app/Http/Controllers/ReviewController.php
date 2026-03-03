@@ -89,7 +89,7 @@ class ReviewController extends Controller
             'review_assignment_id' => ['required', 'exists:review_assignments,id'],
             'comments_for_author' => ['nullable', 'string'],
             'comments_for_editor' => ['nullable', 'string'],
-            'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
+            'rating' => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
 
         // Recommendation is required only when submitting
@@ -639,7 +639,7 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
             'revision_review_id' => ['required', 'exists:revision_reviews,id'],
             'comments_for_author' => ['nullable', 'string'],
             'comments_for_editor' => ['nullable', 'string'],
-            'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
+            'rating' => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
 
         // Recommendation is required only when submitting
