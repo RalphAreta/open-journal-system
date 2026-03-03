@@ -140,7 +140,7 @@
 
         .stat-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(7, 1fr);
             background: var(--parchment);
             border: 1px solid var(--border-dk);
             border-radius: 14px;
@@ -169,7 +169,7 @@
             background: #fff;
         }
         .stat-cell:last-child,
-        .stat-cell:nth-child(6) {
+        .stat-cell:nth-child(7) {
             border-right: none;
         }
         .stat-cell:nth-child(n + 5) {
@@ -760,7 +760,8 @@
                         'al-amber'
                     ],
                     ['Accepted', $stats['accepted'], 'sv-emerald', 'al-emerald'],
-                    ['Rejected', $stats['rejected'], 'sv-red', 'al-red']
+                    ['Rejected', $stats['rejected'], 'sv-red', 'al-red'],
+                    ['Published', $stats['published'], 'sv-teal', 'al-teal']
                 ]
                 as [$lbl, $val, $vc, $ac])
                 <div class="stat-cell">

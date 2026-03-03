@@ -467,7 +467,7 @@
                                     <div class="text-[13px] text-[#6a7890] mt-1">{{ $activity['description'] }}</div>
                                     <div class="text-[11px] text-[#a7b1c7] mt-2 font-medium">
                                         @php
-                                            $diff = $activity['timestamp']->diffForHumans();
+                                            $diff = $activity['timestamp'] ? $activity['timestamp']->diffForHumans() : 'recently';
                                         @endphp
                                         {{ $diff }} • {{ $activity['category'] }}
                                     </div>

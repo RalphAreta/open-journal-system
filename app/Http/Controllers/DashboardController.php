@@ -87,6 +87,7 @@ class DashboardController extends Controller
             'revision_under_review' => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REVISION_UNDER_REVIEW)->count(),
             'accepted'              => $user->submissionsAsAuthor()->where('status', Submission::STATUS_ACCEPTED)->count(),
             'rejected'              => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REJECTED)->count(),
+            'published'             => $user->submissionsAsAuthor()->where('status', Submission::STATUS_PUBLISHED)->count(),
         ];
 
         $notifications = Notification::where('user_id', $user->id)

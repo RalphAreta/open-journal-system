@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/author/submission/{submission}/layout-feedback', [AuthorController::class, 'viewLayoutFeedback'])->name('author.layout-feedback');
         Route::get('/author/submission/{submission}/final-layout', [AuthorController::class, 'viewFinalLayout'])->name('author.final-layout');
         Route::get('/author/submission/{submission}/download-layout', [AuthorController::class, 'downloadLayout'])->name('author.download-layout');
+        Route::post('/submissions/{submission}/confirm-layout', [SubmissionController::class, 'confirmLayout'])->name('submissions.confirm-layout');
     });
 
     Route::middleware('role:reviewer')->group(function (): void {
@@ -163,6 +164,7 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
     Route::post('/notifications/{notification}/read', [App\Http\Controllers\NotificationController::class, 'read'])->name('notifications.read');
+    Route::get('/notifications/unread-count', [App\Http\Controllers\NotificationController::class, 'getUnreadCount'])->name('notifications.unreadCount');
     Route::get('/submissions/{submission}/layout/download', [SubmissionController::class, 'downloadLayout'])
     ->name('author.layout.download');
 });

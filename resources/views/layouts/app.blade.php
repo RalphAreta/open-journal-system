@@ -232,7 +232,6 @@
                                     </div>
                                 @endif
                             </div>
-
                             {{-- Notification Bell --}}
                             @php
                                 $unreadCount = \App\Models\Notification::where('user_id', auth()->id())
@@ -246,8 +245,9 @@
                                     ->get();
                             @endphp
 
-                            <div class="relative group">
+                            <div class="relative group" id="notification-bell-wrapper">
                                 <button
+                                    id="notification-bell-btn"
                                     class="relative p-2 text-white/80 hover:text-white transition-colors"
                                 >
                                     <svg
@@ -265,6 +265,7 @@
                                     </svg>
                                     @if ($unreadCount > 0)
                                         <span
+                                            id="notification-badge"
                                             class="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center"
                                         >
                                             {{ $unreadCount }}
@@ -274,6 +275,7 @@
 
                                 {{-- Dropdown --}}
                                 <div
+                                    id="notification-dropdown"
                                     class="absolute right-0 mt-2 w-80 bg-white border border-[#ede8e0] rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden"
                                 >
                                     <div
@@ -284,60 +286,39 @@
                                         >
                                             Notifications
                                         </p>
-                                        @if ($unreadCount > 0)
-                                            <form
-                                                method="POST"
-                                                action="{{ route('notifications.markAllRead') }}"
-                                            >
-                                                @csrf
-                                                <button
-                                                    type="submit"
-                                                    style="
-                                                        background: none;
-                                                        border: none;
-                                                        cursor: pointer;
-                                                        padding: 0;
-                                                        font-family:
-                                                            'Source Sans 3',
-                                                            sans-serif;
-                                                    "
-                                                    class="text-[9px] font-bold text-[#b0aaa0] hover:text-[#2D8176] uppercase tracking-wider transition-colors"
-                                                >
-                                                    Mark all read
-                                                </button>
-                                            </form>
-                                        @endif
                                     </div>
 
-                                    @forelse ($unreadNotifs as $notif)
-                                        <div
-                                            class="px-4 py-3 border-b border-[#f0ece6] hover:bg-[#faf8f5] transition-colors {{ is_null($notif->read_at) ? 'bg-blue-50/50' : '' }}"
-                                        >
-                                            <p
-                                                class="text-[12px] font-bold text-[#0d1628]"
+                                    <div id="notification-list">
+                                        @forelse ($unreadNotifs as $notif)
+                                            <div
+                                                class="px-4 py-3 border-b border-[#f0ece6] hover:bg-[#faf8f5] transition-colors bg-blue-50/50 notification-item"
                                             >
-                                                {{ $notif->title }}
-                                            </p>
-                                            <p
-                                                class="text-[11px] text-[#6a7890] mt-0.5 leading-relaxed"
-                                            >
-                                                {{ Str::limit($notif->message, 80) }}
-                                            </p>
-                                            <p
-                                                class="text-[9px] text-[#b0aaa0] mt-1"
-                                            >
-                                                {{ $notif->created_at->diffForHumans() }}
-                                            </p>
-                                        </div>
-                                    @empty
-                                        <div class="px-4 py-8 text-center">
-                                            <p
-                                                class="text-[12px] text-[#b0aaa0]"
-                                            >
-                                                No new notifications
-                                            </p>
-                                        </div>
-                                    @endforelse
+                                                <p
+                                                    class="text-[12px] font-bold text-[#0d1628]"
+                                                >
+                                                    {{ $notif->title }}
+                                                </p>
+                                                <p
+                                                    class="text-[11px] text-[#6a7890] mt-0.5 leading-relaxed"
+                                                >
+                                                    {{ Str::limit($notif->message, 80) }}
+                                                </p>
+                                                <p
+                                                    class="text-[9px] text-[#b0aaa0] mt-1"
+                                                >
+                                                    {{ $notif->created_at->diffForHumans() }}
+                                                </p>
+                                            </div>
+                                        @empty
+                                            <div class="px-4 py-8 text-center">
+                                                <p
+                                                    class="text-[12px] text-[#b0aaa0]"
+                                                >
+                                                    No new notifications
+                                                </p>
+                                            </div>
+                                        @endforelse
+                                    </div>
 
                                     <div
                                         class="px-4 py-2.5 bg-[#faf8f5] text-center"
@@ -351,6 +332,74 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <script>
+                                let notificationHoverHandled = false;
+
+                                document.getElementById('notification-bell-wrapper').addEventListener('mouseenter', function() {
+                                    if (!notificationHoverHandled) {
+                                        notificationHoverHandled = true;
+                                        markAllNotificationsAsRead();
+                                    }
+                                });
+
+                                document.getElementById('notification-bell-wrapper').addEventListener('mouseleave', function() {
+                                    notificationHoverHandled = false;
+                                });
+
+                                function markAllNotificationsAsRead() {
+                                    fetch('{{ route("notifications.markAllRead") }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                            'Accept': 'application/json',
+                                        },
+                                        body: JSON.stringify({}),
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        // Update badge count
+                                        const badge = document.getElementById('notification-badge');
+                                        if (badge && data.unread_count === 0) {
+                                            badge.remove();
+                                        }
+
+                                        // Update notification items styling
+                                        const notifItems = document.querySelectorAll('.notification-item');
+                                        notifItems.forEach(item => {
+                                            item.classList.remove('bg-blue-50/50');
+                                        });
+                                    })
+                                    .catch(error => console.error('Error marking notifications as read:', error));
+                                }
+
+                                // Poll for new notifications every 10 seconds
+                                setInterval(function() {
+                                    fetch('{{ route("notifications.unreadCount") }}')
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            const badge = document.getElementById('notification-badge');
+                                            const count = data.unread_count;
+
+                                            if (count > 0) {
+                                                if (!badge) {
+                                                    const btn = document.getElementById('notification-bell-btn');
+                                                    const newBadge = document.createElement('span');
+                                                    newBadge.id = 'notification-badge';
+                                                    newBadge.className = 'absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center';
+                                                    newBadge.textContent = count;
+                                                    btn.appendChild(newBadge);
+                                                } else {
+                                                    badge.textContent = count;
+                                                }
+                                            } else if (badge) {
+                                                badge.remove();
+                                            }
+                                        })
+                                        .catch(error => console.error('Error fetching unread count:', error));
+                                }, 10000);
+                            </script>
 
                             <form
                                 method="POST"

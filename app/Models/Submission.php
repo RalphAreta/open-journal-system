@@ -38,6 +38,7 @@ class Submission extends Model
 'forwarded_to_layout_at',
 'ctf_file_path',
 'ctf_file_name',
+'published_at',
     ];
 
     protected function casts(): array
@@ -47,6 +48,10 @@ class Submission extends Model
             'chief_editor_review_at' => 'datetime',
             'editor_decision_at' => 'datetime',
             'initial_screening_at' => 'datetime',
+            'managing_editor_assigned_at' => 'datetime',
+            'ctf_sent_at' => 'datetime',
+            'forwarded_to_layout_at' => 'datetime',
+            'published_at' => 'datetime',
             'editor_decision_draft' => 'json',
         ];
     }
@@ -60,6 +65,7 @@ class Submission extends Model
     public const STATUS_LAYOUT_EDITING = 'layout_editing';
     public const STATUS_LAYOUT_REVIEW = 'layout_review';
     public const STATUS_AUTHOR_CONFIRMATION = 'author_confirmation';
+    public const STATUS_PUBLISHED = 'published';
     public const STATUS_REJECTED = 'rejected';
 
     public const SCREENING_STATUS_PENDING = 'pending';
@@ -77,6 +83,7 @@ class Submission extends Model
             self::STATUS_LAYOUT_EDITING => 'Layout Editing',
             self::STATUS_LAYOUT_REVIEW => 'Layout Review',
             self::STATUS_AUTHOR_CONFIRMATION => 'Author Confirmation',
+            self::STATUS_PUBLISHED => 'Published',
             self::STATUS_WITH_MANAGING_EDITOR => 'With Managing Editor',
             self::STATUS_REJECTED => 'Rejected',
         ];
@@ -164,5 +171,10 @@ class Submission extends Model
     public function hasFailedInitialScreening(): bool
     {
         return $this->initial_screening_status === self::SCREENING_STATUS_FAILED;
+    }
+
+    public function isPublished(): bool
+    {
+        return $this->status === self::STATUS_PUBLISHED;
     }
 }

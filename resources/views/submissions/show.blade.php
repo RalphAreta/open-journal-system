@@ -835,6 +835,37 @@
                                                     </p>
                                                 </div>
                                             @endif
+
+                                            {{-- Author Confirmation Button --}}
+                                            @if ($submission->status === 'author_confirmation')
+                                                <form method="POST" action="{{ route('submissions.confirm-layout', $submission) }}" class="mt-4">
+                                                    @csrf
+                                                    <div class="p-4 bg-[#e8f4f2] border border-[rgba(45,129,118,.3)] rounded-lg">
+                                                        <p class="text-[.75rem] font-semibold text-[#2d8176] mb-3">
+                                                            Ready to publish? Please review the layout above and confirm to finalize your publication.
+                                                        </p>
+                                                        <button
+                                                            type="submit"
+                                                            class="w-full px-4 py-3 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.7rem] font-bold tracking-[.08em] uppercase transition-all"
+                                                        >
+                                                            <svg
+                                                                class="w-4 h-4 inline-block mr-2"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <path
+                                                                    stroke-linecap="round"
+                                                                    stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M5 13l4 4L19 7"
+                                                                />
+                                                            </svg>
+                                                            Confirm & Publish Manuscript
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            @endif
                                         </div>
                                     @endif
                                 @endif

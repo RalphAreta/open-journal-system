@@ -172,7 +172,7 @@ class HomeController extends Controller
                 ->where('status', Review::STATUS_SUBMITTED)
                 ->count();
 
-            $daysSinceSubmit = $trackedManuscript->submitted_at->diffInDays(now());
+            $daysSinceSubmit = $trackedManuscript->submitted_at ? $trackedManuscript->submitted_at->diffInDays(now()) : 0;
 
             // Calculate progress
             $progress = 30; // submitted

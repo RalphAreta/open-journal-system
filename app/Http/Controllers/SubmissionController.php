@@ -196,23 +196,42 @@ return redirect()->route('submissions.index')->with('success', 'Submission creat
     }
 
     public function downloadLayout(Submission $submission)
-{
-    if ($submission->author_id !== Auth::id()) {
-        abort(403);
+    {
+        if ($submission->author_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $layoutAssignment = $submission->layoutEditorAssignments()
+            ->where('status', \App\Models\LayoutEditorAssignment::STATUS_COMPLETED)
+            ->latest('completed_at')
+            ->first();
+
+        if (!$layoutAssignment || !\Illuminate\Support\Facades\Storage::disk('local')->exists($layoutAssignment->layout_file_path)) {
+            abort(404, 'Layout file not found.');
+        }
+
+        return response()->download(
+            \Illuminate\Support\Facades\Storage::disk('local')->path($layoutAssignment->layout_file_path),
+            $layoutAssignment->layout_file_name ?? 'layout.pdf'
+        );
     }
 
-    $layoutAssignment = $submission->layoutEditorAssignments()
-        ->where('status', \App\Models\LayoutEditorAssignment::STATUS_COMPLETED)
-        ->latest('completed_at')
-        ->first();
+    public function confirmLayout(Submission $submission): RedirectResponse
+    {
+        if ($submission->author_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
 
-    if (!$layoutAssignment || !\Illuminate\Support\Facades\Storage::disk('local')->exists($layoutAssignment->layout_file_path)) {
-        abort(404, 'Layout file not found.');
+        if ($submission->status !== Submission::STATUS_AUTHOR_CONFIRMATION) {
+            return back()->with('error', 'This submission is not awaiting author confirmation.');
+        }
+
+        $submission->update([
+            'status' => Submission::STATUS_PUBLISHED,
+            'published_at' => now(),
+        ]);
+
+        return redirect()->route('submissions.show', $submission)
+            ->with('success', 'Congratulations! Your manuscript has been published successfully.');
     }
-
-    return response()->download(
-        \Illuminate\Support\Facades\Storage::disk('local')->path($layoutAssignment->layout_file_path),
-        $layoutAssignment->layout_file_name ?? 'layout.pdf'
-    );
-}
 }
