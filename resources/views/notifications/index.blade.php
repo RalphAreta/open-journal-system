@@ -18,7 +18,7 @@
                     class="px-6 py-4 border-b border-[#f0ece6] flex items-start gap-4 {{ is_null($notif->read_at) ? 'bg-blue-50/40' : '' }} hover:bg-[#faf8f5] transition-colors"
                 >
                     <div
-                        class="w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0 {{ is_null($notif->read_at) ? 'bg-[#2D8176]' : 'bg-[#e0dbd3]' }}"
+                        class="w-2.5 h-2.5 rounded-full mt-1.5 shrink-0 {{ is_null($notif->read_at) ? 'bg-[#2D8176]' : 'bg-[#e0dbd3]' }}"
                     ></div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-bold text-[#0d1628]">
@@ -39,7 +39,7 @@
                             @csrf
                             <button
                                 type="submit"
-                                class="text-[10px] font-bold text-[#2D8176] hover:text-[#1f5d54] uppercase tracking-wider flex-shrink-0"
+                                class="text-[10px] font-bold text-[#2D8176] hover:text-[#1f5d54] uppercase tracking-wider shrink-0"
                             >
                                 Mark read
                             </button>

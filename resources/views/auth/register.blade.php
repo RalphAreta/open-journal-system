@@ -122,7 +122,7 @@
                 "
             ></div>
             <div
-                class="absolute top-0 left-0 right-0 h-[2px] z-20 animate-lp-shimmer"
+                class="absolute top-0 left-0 right-0 h-0.5 z-20 animate-lp-shimmer"
             ></div>
 
             <div class="relative z-20">
@@ -141,7 +141,7 @@
                     Start your
                     <br />
                     <em
-                        class="not-italic font-normal block bg-gradient-to-r from-[#c9a84c] via-[#f0d678] to-[#c9a84c] bg-clip-text text-transparent drop-shadow-sm italic"
+                        class="not-italic font-normal block bg-linear-to-r from-[#c9a84c] via-[#f0d678] to-[#c9a84c] bg-clip-text text-transparent drop-shadow-sm"
                     >
                         Contribution
                     </em>
@@ -159,7 +159,7 @@
                 class="absolute -bottom-20 -left-20 opacity-10 pointer-events-none"
             >
                 <svg
-                    class="w-[300px] h-[300px]"
+                    class="w-75 h-75"
                     viewBox="0 0 400 400"
                     fill="none"
                     stroke="#ffffff"
@@ -172,10 +172,10 @@
 
         {{-- RIGHT SIDE: REGISTRATION FORM (Matched to Login Right Side) --}}
         <div
-            class="flex-1 flex items-center justify-center p-6 md:p-10 relative overflow-y-auto bg-gradient-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0] z-0"
+            class="flex-1 flex items-center justify-center p-6 md:p-10 relative overflow-y-auto bg-linear-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0] z-0"
         >
             <div
-                class="absolute rounded-full w-[500px] h-[500px] -top-40 -right-28 border border-[#a07830]/10"
+                class="absolute rounded-full w-125 h-125 -top-40 -right-28 border border-[#a07830]/10"
             ></div>
             <div
                 class="absolute inset-0 opacity-[0.035]"
@@ -191,13 +191,13 @@
             ></div>
 
             <div
-                class="relative z-10 w-full max-w-[550px] bg-white/90 border border-[#c9a84c]/20 rounded-[20px] p-8 md:p-10 backdrop-blur-xl shadow-2xl animate-lp-up"
+                class="relative z-10 w-full max-w-137.5 bg-white/90 border border-[#c9a84c]/20 rounded-[20px] p-8 md:p-10 backdrop-blur-xl shadow-2xl animate-lp-up"
             >
                 <div class="mb-6">
                     <p
                         class="text-[10px] tracking-widest uppercase text-[#a07830] font-medium mb-1 flex items-center gap-2"
                     >
-                        <span class="w-[18px] h-px bg-[#c9a84c]/60"></span>
+                        <span class="w-4.5 h-px bg-[#c9a84c]/60"></span>
                         JOURNAL SYSTEM
                     </p>
                     <h1
@@ -380,7 +380,7 @@
                     {{-- Submit --}}
                     <button
                         type="submit"
-                        class="w-full py-3 mt-2 bg-gradient-to-br from-[#c9a84c] to-[#a07830] text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-[#a07830]/20 hover:-translate-y-0.5 transition-all"
+                        class="w-full py-3 mt-2 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-[#a07830]/20 hover:-translate-y-0.5 transition-all"
                     >
                         Complete Registration
                     </button>

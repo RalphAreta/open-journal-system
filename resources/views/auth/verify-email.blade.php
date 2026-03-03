@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <div
-        class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0]"
+        class="min-h-screen flex items-center justify-center bg-linear-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0]"
     >
         <div
             class="w-full max-w-md bg-white/90 border border-[#c9a84c]/20 rounded-[20px] p-10 shadow-2xl text-center"
@@ -46,7 +46,7 @@
                 @csrf
                 <button
                     type="submit"
-                    class="w-full py-3 bg-gradient-to-br from-[#c9a84c] to-[#a07830] text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg hover:-translate-y-0.5 transition-all"
+                    class="w-full py-3 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg hover:-translate-y-0.5 transition-all"
                 >
                     Resend Verification Email
                 </button>

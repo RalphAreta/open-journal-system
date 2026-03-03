@@ -65,10 +65,10 @@
 
 @section('content')
     <div
-        class="min-h-screen bg-gradient-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0] font-['Source_Sans_3']"
+        class="min-h-screen bg-linear-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0] font-['Source_Sans_3']"
     >
         {{-- Top shimmer line --}}
-        <div class="h-[2px] w-full shimmer-bar"></div>
+        <div class="h-0.5 w-full shimmer-bar"></div>
 
         {{-- Header --}}
         <div class="bg-[#2D8176] relative overflow-hidden">
@@ -103,7 +103,7 @@
                     >
                         Welcome back,
                         <em
-                            class="not-italic bg-gradient-to-r from-[#c9a84c] via-[#f0d678] to-[#c9a84c] bg-clip-text text-transparent"
+                            class="not-italic bg-linear-to-r from-[#c9a84c] via-[#f0d678] to-[#c9a84c] bg-clip-text text-transparent"
                         >
                             {{ auth()->user()->name }}
                         </em>

@@ -30,7 +30,7 @@
                     Check your
                     <br />
                     <em
-                        class="not-italic font-normal block bg-gradient-to-r from-[#c9a84c] via-[#f0d678] to-[#c9a84c] bg-clip-text text-transparent italic"
+                        class="not-italic font-normal block bg-linear-to-r from-[#c9a84c] via-[#f0d678] to-[#c9a84c] bg-clip-text text-transparent"
                     >
                         Inbox.
                     </em>
@@ -46,10 +46,10 @@
 
         {{-- RIGHT SIDE --}}
         <div
-            class="flex-1 flex items-center justify-center p-6 md:p-10 bg-gradient-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0]"
+            class="flex-1 flex items-center justify-center p-6 md:p-10 bg-linear-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0]"
         >
             <div
-                class="relative z-10 w-full max-w-[420px] bg-white/90 border border-[#c9a84c]/20 rounded-[20px] p-8 md:p-10 backdrop-blur-xl shadow-2xl"
+                class="relative z-10 w-full max-w-105 bg-white/90 border border-[#c9a84c]/20 rounded-[20px] p-8 md:p-10 backdrop-blur-xl shadow-2xl"
             >
                 <div class="mb-6 text-center">
                     <div
@@ -115,7 +115,7 @@
 
                     <button
                         type="submit"
-                        class="w-full py-3 bg-gradient-to-br from-[#c9a84c] to-[#a07830] text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg hover:-translate-y-0.5 transition-all"
+                        class="w-full py-3 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg hover:-translate-y-0.5 transition-all"
                     >
                         Verify Email
                     </button>
