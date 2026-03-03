@@ -28,7 +28,7 @@ class RatingCriteriaSeeder extends Seeder
                 // Extract scoring guidance from criteria
                 $guidance = $criteria['scoring_guidance'] ?? [];
                 $dimensions = $criteria['evaluation_dimensions'] ?? [];
-                
+
                 foreach ($guidance as $band => $description) {
                     // Extract score range from band (e.g., "1-15" -> 1, 15)
                     [$scoreMin, $scoreMax] = explode('-', $band);

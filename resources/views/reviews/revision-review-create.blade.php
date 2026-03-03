@@ -199,7 +199,7 @@
                     Rating <span class="text-slate-500 font-normal text-xs">(1-100, optional)</span>
                 </label>
                 <div class="flex items-center gap-3">
-                    <input id="rating-revision" type="number" name="rating" min="1" max="100" 
+                    <input id="rating-revision" type="number" name="rating" min="1" max="100"
                         value="{{ old('rating', $revisionReview?->rating) }}"
                         class="w-24 px-4 py-2.5 border border-slate-300 rounded-lg text-slate-900 font-medium focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
                         placeholder="0">
@@ -239,13 +239,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     const ratingInput = document.getElementById('rating-revision');
     const interpretationDisplay = document.getElementById('ratingRevisionInterpretation');
-    
+
     function updateInterpretation(rating) {
         if (!rating || rating < 1 || rating > 100) {
             interpretationDisplay.textContent = '';
             return;
         }
-        
+
         const interpretations = {
             '1-20': 'Critical failures',
             '21-40': 'Inadequate revision',
@@ -253,22 +253,22 @@ document.addEventListener('DOMContentLoaded', function() {
             '61-80': 'Good revision work',
             '81-100': 'Exemplary revision'
         };
-        
+
         let interpretation = '';
         if (rating >= 1 && rating <= 20) interpretation = interpretations['1-20'];
         else if (rating >= 21 && rating <= 40) interpretation = interpretations['21-40'];
         else if (rating >= 41 && rating <= 60) interpretation = interpretations['41-60'];
         else if (rating >= 61 && rating <= 80) interpretation = interpretations['61-80'];
         else if (rating >= 81 && rating <= 100) interpretation = interpretations['81-100'];
-        
+
         interpretationDisplay.textContent = interpretation;
     }
-    
+
     if (ratingInput) {
         ratingInput.addEventListener('input', function() {
             updateInterpretation(this.value);
         });
-        
+
         // Initialize on page load
         if (ratingInput.value) {
             updateInterpretation(ratingInput.value);

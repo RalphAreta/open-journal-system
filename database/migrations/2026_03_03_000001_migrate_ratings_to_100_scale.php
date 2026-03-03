@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('score_min'); // Minimum score for this band (e.g., 1 for 1-10)
             $table->integer('score_max'); // Maximum score for this band (e.g., 10 for 1-10)
             $table->timestamps();
-            
+
             // Unique combination of role, context, and band
             $table->unique(['role', 'context', 'band']);
             $table->index(['role', 'context']);
