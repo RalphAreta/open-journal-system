@@ -239,7 +239,7 @@
         "
     >
         {{-- Shimmer top bar --}}
-        <div class="fixed top-0 left-0 right-0 h-[2px] shimmer-bar z-50"></div>
+        <div class="fixed top-0 left-0 right-0 h-0.5 shimmer-bar z-50"></div>
 
         <div class="max-w-6xl mx-auto py-10 px-4 space-y-6">
             {{-- Header --}}
@@ -253,7 +253,7 @@
                     >
                         <a
                             href="{{ route('dashboard.admin') }}"
-                            class="hover:text-[var(--teal)] transition-colors"
+                            class="hover:text-(--teal) transition-colors"
                         >
                             Admin
                         </a>
@@ -265,23 +265,23 @@
                         >
                             <path d="M9 5l7 7-7 7" stroke-width="2.5" />
                         </svg>
-                        <span class="text-[var(--ink)]">Directory</span>
+                        <span class="text-(--ink)">Directory</span>
                     </nav>
                     <p
-                        class="text-[10px] font-black uppercase tracking-[.2em] text-[var(--teal)] mb-1 flex items-center gap-2"
+                        class="text-[10px] font-black uppercase tracking-[.2em] text-(--teal) mb-1 flex items-center gap-2"
                     >
                         <span
-                            class="w-1.5 h-1.5 rounded-full bg-[var(--teal)]"
+                            class="w-1.5 h-1.5 rounded-full bg-(--teal)"
                             style="animation: pulse-dot 2s ease-in-out infinite"
                         ></span>
                         Journal System · Admin Panel
                     </p>
                     <h1
-                        class="font-['Libre_Baskerville'] text-4xl font-bold text-[var(--ink)] leading-tight"
+                        class="font-['Libre_Baskerville'] text-4xl font-bold text-(--ink) leading-tight"
                     >
                         User
                         <em
-                            class="not-italic bg-gradient-to-r from-[var(--teal)] to-[#1a6b62] bg-clip-text text-transparent"
+                            class="not-italic bg-linear-to-r from-(--teal) to-[#1a6b62] bg-clip-text text-transparent"
                         >
                             Directory
                         </em>
@@ -291,7 +291,7 @@
                 <div class="flex items-center gap-3">
                     <a
                         href="{{ route('dashboard.admin') }}"
-                        class="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#ddd8ce] bg-white/80 text-[10px] font-black uppercase tracking-widest text-[#9ea8b8] hover:text-[var(--teal)] hover:border-[var(--teal)] transition-all active:scale-95 backdrop-blur-sm"
+                        class="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#ddd8ce] bg-white/80 text-[10px] font-black uppercase tracking-widest text-[#9ea8b8] hover:text-(--teal) hover:border-(--teal) transition-all active:scale-95 backdrop-blur-sm"
                     >
                         <svg
                             class="w-3 h-3"
@@ -310,7 +310,7 @@
                     </a>
                     <a
                         href="{{ route('admin.users.create') }}"
-                        class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--teal)] text-white text-[10px] font-black uppercase tracking-widest hover:bg-[var(--teal-d)] transition-all shadow-lg shadow-[rgba(45,129,118,.25)] active:scale-95"
+                        class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-(--teal) text-white text-[10px] font-black uppercase tracking-widest hover:bg-(--teal-d) transition-all shadow-lg shadow-[rgba(45,129,118,.25)] active:scale-95"
                     >
                         <svg
                             class="w-3 h-3"
@@ -343,7 +343,7 @@
 
                 <div class="stat-chip">
                     <span
-                        class="font-['Libre_Baskerville'] text-2xl font-bold text-[var(--ink)]"
+                        class="font-['Libre_Baskerville'] text-2xl font-bold text-(--ink)"
                     >
                         {{ $totalUsers }}
                     </span>
@@ -356,7 +356,7 @@
                 @foreach ($roleGroups as $rg)
                     <div class="stat-chip">
                         <span
-                            class="font-['Libre_Baskerville'] text-2xl font-bold text-[var(--teal)]"
+                            class="font-['Libre_Baskerville'] text-2xl font-bold text-(--teal)"
                         >
                             {{ $rg->users_count }}
                         </span>
@@ -376,7 +376,7 @@
             >
                 <div class="md:col-span-8 search-wrap">
                     <svg
-                        class="w-4 h-4 text-[#c0b8b0] flex-shrink-0"
+                        class="w-4 h-4 text-[#c0b8b0] shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -403,7 +403,7 @@
                 <div class="md:col-span-4 filter-wrap">
                     <div class="filter-inner">
                         <svg
-                            class="w-3.5 h-3.5 text-white/60 flex-shrink-0"
+                            class="w-3.5 h-3.5 text-white/60 shrink-0"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -429,7 +429,7 @@
                             </span>
                         </div>
                         <svg
-                            class="w-3.5 h-3.5 text-white/50 flex-shrink-0"
+                            class="w-3.5 h-3.5 text-white/50 shrink-0"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -488,7 +488,7 @@
                                             </div>
                                             <div>
                                                 <p
-                                                    class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)] leading-tight"
+                                                    class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink) leading-tight"
                                                 >
                                                     {{ $u->name }}
                                                 </p>
@@ -594,7 +594,7 @@
                                         <div class="empty-state">
                                             <div class="empty-icon">👤</div>
                                             <p
-                                                class="font-['Libre_Baskerville'] font-bold text-[var(--ink)] text-sm"
+                                                class="font-['Libre_Baskerville'] font-bold text-(--ink) text-sm"
                                             >
                                                 No users found
                                             </p>
@@ -606,7 +606,7 @@
                                             </p>
                                             <a
                                                 href="{{ route('admin.users.create') }}"
-                                                class="mt-4 px-5 py-2.5 bg-[var(--teal)] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[var(--teal-d)] transition-all"
+                                                class="mt-4 px-5 py-2.5 bg-(--teal) text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-(--teal-d) transition-all"
                                             >
                                                 Add First User
                                             </a>
@@ -624,7 +624,7 @@
                         Showing
                         <span
                             id="visibleCount"
-                            class="font-black text-[var(--ink)]"
+                            class="font-black text-(--ink)"
                         >
                             {{ $users->count() }}
                         </span>

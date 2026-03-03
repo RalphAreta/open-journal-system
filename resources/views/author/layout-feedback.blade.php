@@ -58,7 +58,7 @@
                     <p class="text-xs text-[#6a7890] uppercase tracking-wider font-bold mb-4">Timeline</p>
                     <div class="space-y-3">
                         <div class="flex gap-4">
-                            <div class="flex-shrink-0">
+                            <div class="shrink-0">
                                 <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#2D8176] text-white text-sm font-bold">
                                     1
                                 </div>
@@ -70,7 +70,7 @@
                         </div>
                         @if ($assignment->started_at)
                             <div class="flex gap-4">
-                                <div class="flex-shrink-0">
+                                <div class="shrink-0">
                                     <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#2D8176] text-white text-sm font-bold">
                                         2
                                     </div>
@@ -82,7 +82,7 @@
                             </div>
                         @endif
                         <div class="flex gap-4">
-                            <div class="flex-shrink-0">
+                            <div class="shrink-0">
                                 <div class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-white text-sm font-bold">
                                     ✓
                                 </div>
@@ -129,7 +129,7 @@
         @endforelse
 
         <!-- Info Section -->
-        <div class="bg-gradient-to-r from-[#2D8176] to-[#1f5d54] rounded-xl p-8 text-white mt-8">
+        <div class="bg-linear-to-r from-[#2D8176] to-[#1f5d54] rounded-xl p-8 text-white mt-8">
             <h3 class="font-bold text-lg mb-4">What Happens Next?</h3>
             <ol class="space-y-2 text-sm">
                 <li class="flex gap-3"><span class="font-bold">✓</span> <span>Layout editor completes the editing</span></li>

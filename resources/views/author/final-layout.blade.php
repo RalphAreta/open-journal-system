@@ -87,7 +87,7 @@
         </div>
 
         <!-- Publication Info -->
-        <div class="bg-gradient-to-r from-[#2D8176] to-[#1f5d54] rounded-xl p-8 text-white">
+        <div class="bg-linear-to-r from-[#2D8176] to-[#1f5d54] rounded-xl p-8 text-white">
             <h3 class="font-bold text-lg mb-4">Publication Timeline</h3>
             <ol class="space-y-3">
                 <li class="flex gap-3"><span class="font-bold">✓</span> <span>Paper Accepted by Editor</span></li>

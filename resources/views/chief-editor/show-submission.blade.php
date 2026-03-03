@@ -415,14 +415,14 @@
             );
         "
     >
-        <div class="fixed top-0 left-0 right-0 h-[2px] shimmer-bar z-50"></div>
+        <div class="fixed top-0 left-0 right-0 h-0.5 shimmer-bar z-50"></div>
 
         <div class="max-w-6xl mx-auto py-8 px-4">
             {{-- Back + Header --}}
             <div class="fade-up mb-6">
                 <a
                     href="{{ route('chief-editor.dashboard') }}"
-                    class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[#b0aaa0] hover:text-[var(--teal)] transition-colors mb-4"
+                    class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[#b0aaa0] hover:text-(--teal) transition-colors mb-4"
                 >
                     <svg
                         class="w-3 h-3"
@@ -442,12 +442,12 @@
                 <div class="flex items-start justify-between gap-4 flex-wrap">
                     <div class="flex-1 min-w-0">
                         <p
-                            class="text-[9px] font-black uppercase tracking-[.2em] text-[var(--teal)] mb-1"
+                            class="text-[9px] font-black uppercase tracking-[.2em] text-(--teal) mb-1"
                         >
                             Chief Editor · Review & Assign
                         </p>
                         <h1
-                            class="font-['Libre_Baskerville'] text-2xl font-bold text-[var(--ink)] leading-snug"
+                            class="font-['Libre_Baskerville'] text-2xl font-bold text-(--ink) leading-snug"
                         >
                             {{ $submission->title }}
                         </h1>
@@ -482,14 +482,14 @@
                     <div class="card">
                         <div class="card-header">
                             <h2
-                                class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)]"
+                                class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
                             >
                                 Submission Details
                             </h2>
                             @if ($submission->file_name)
                                 <a
                                     href="{{ route('submissions.download-original', $submission) }}"
-                                    class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-[var(--teal)] hover:text-[var(--teal-d)] transition-colors"
+                                    class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-(--teal) hover:text-(--teal-d) transition-colors"
                                 >
                                     <svg
                                         class="w-3.5 h-3.5"
@@ -555,7 +555,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h2
-                                class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)]"
+                                class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
                             >
                                 Initial Screening
                             </h2>
@@ -702,7 +702,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <h2
-                                    class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)]"
+                                    class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
                                 >
                                     Revision History
                                 </h2>
@@ -724,7 +724,7 @@
                                             >
                                                 <div>
                                                     <span
-                                                        class="text-sm font-bold text-[var(--ink)]"
+                                                        class="text-sm font-bold text-(--ink)"
                                                     >
                                                         {{ ucfirst($rev->revision_type) }}
                                                         Revision
@@ -740,7 +740,7 @@
                                                 </div>
                                                 @if ($rev->revised_at)
                                                     <span
-                                                        class="s-badge accepted flex-shrink-0"
+                                                        class="s-badge accepted shrink-0"
                                                     >
                                                         <span
                                                             class="dot"
@@ -749,7 +749,7 @@
                                                     </span>
                                                 @else
                                                     <span
-                                                        class="s-badge under_review flex-shrink-0"
+                                                        class="s-badge under_review shrink-0"
                                                     >
                                                         <span
                                                             class="dot"
@@ -837,7 +837,7 @@
                                 @foreach ($currentAssignments as $ca)
                                     <div class="assigned-editor-card">
                                         <p
-                                            class="text-sm font-bold text-[var(--ink)]"
+                                            class="text-sm font-bold text-(--ink)"
                                         >
                                             {{ $ca->assignedTo->name }}
                                         </p>
@@ -869,7 +869,7 @@
                                         this.closest('.card').style.display =
                                             'none';
                                     "
-                                    class="w-full text-[10px] font-black uppercase tracking-widest text-[var(--teal)] hover:text-[var(--teal-d)] transition-colors pt-1"
+                                    class="w-full text-[10px] font-black uppercase tracking-widest text-(--teal) hover:text-(--teal-d) transition-colors pt-1"
                                 >
                                     Change Assignments →
                                 </button>
@@ -885,7 +885,7 @@
                     >
                         <div class="card-header">
                             <h3
-                                class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)]"
+                                class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
                             >
                                 {{ $submission->assignedEditor ? 'Reassign Editors' : 'Assign Editors' }}
                             </h3>
@@ -893,7 +893,7 @@
                         <div class="card-body">
                             <p class="text-[11px] text-[#8a96a8] mb-3">
                                 Matched to
-                                <span class="font-black text-[var(--red)]">
+                                <span class="font-black text-(--red)">
                                     {{ $researchField }}
                                 </span>
                             </p>
@@ -912,10 +912,10 @@
                                         @foreach ($editorsByField as $field => $editors)
                                             <div class="mb-2">
                                                 <p
-                                                    class="text-[9px] font-black uppercase tracking-[.15em] text-[var(--teal)] mb-1.5 flex items-center gap-1"
+                                                    class="text-[9px] font-black uppercase tracking-[.15em] text-(--teal) mb-1.5 flex items-center gap-1"
                                                 >
                                                     <span
-                                                        class="w-1.5 h-1.5 rounded-full bg-[var(--teal)]"
+                                                        class="w-1.5 h-1.5 rounded-full bg-(--teal)"
                                                     ></span>
                                                     {{ $field }} · Matched
                                                 </p>
@@ -944,7 +944,7 @@
                                                                 class="min-w-0 flex-1"
                                                             >
                                                                 <p
-                                                                    class="text-sm font-bold text-[var(--ink)] truncate"
+                                                                    class="text-sm font-bold text-(--ink) truncate"
                                                                 >
                                                                     {{ $editor->name }}
                                                                     @if ($isAssignedHere)
@@ -993,7 +993,7 @@
                                                 type="button"
                                                 onclick="toggleOthers()"
                                                 id="toggle-others-btn"
-                                                class="text-[10px] font-black uppercase tracking-wider text-[#b0aaa0] hover:text-[var(--teal)] transition-colors mt-1"
+                                                class="text-[10px] font-black uppercase tracking-wider text-[#b0aaa0] hover:text-(--teal) transition-colors mt-1"
                                             >
                                                 + Show other editors
                                             </button>
@@ -1040,7 +1040,7 @@
                                                                         class="min-w-0 flex-1"
                                                                     >
                                                                         <p
-                                                                            class="text-sm font-bold text-[var(--ink)] truncate"
+                                                                            class="text-sm font-bold text-(--ink) truncate"
                                                                         >
                                                                             {{ $editor->name }}
                                                                         </p>
@@ -1073,7 +1073,7 @@
                                         name="notes"
                                         rows="3"
                                         placeholder="Add assignment notes..."
-                                        class="w-full px-3 py-2.5 text-sm border border-[#e2ddd4] rounded-xl focus:border-[var(--teal)] focus:ring-2 focus:ring-[rgba(45,129,118,.1)] outline-none font-['Source_Sans_3'] resize-none transition-all"
+                                        class="w-full px-3 py-2.5 text-sm border border-[#e2ddd4] rounded-xl focus:border-(--teal) focus:ring-2 focus:ring-[rgba(45,129,118,.1)] outline-none font-['Source_Sans_3'] resize-none transition-all"
                                     ></textarea>
                                 </div>
 
@@ -1108,7 +1108,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3
-                                    class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)]"
+                                    class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
                                 >
                                     Assignment History
                                 </h3>
@@ -1124,7 +1124,7 @@
                                         class="hist-item {{ $ha->isAccepted() ? 'accepted' : ($ha->isRejected() ? 'rejected' : 'pending') }}"
                                     >
                                         <p
-                                            class="text-sm font-bold text-[var(--ink)]"
+                                            class="text-sm font-bold text-(--ink)"
                                         >
                                             {{ $ha->assignedTo->name }}
                                         </p>
@@ -1169,7 +1169,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h3
-                                class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)]"
+                                class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
                             >
                                 📋 Workflow
                             </h3>

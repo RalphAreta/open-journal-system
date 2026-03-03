@@ -364,7 +364,7 @@
 
 @section('content')
     <div
-        class="min-h-screen bg-[var(--mist)] py-10 px-4 font-['Source_Sans_3']"
+        class="min-h-screen bg-(--mist) py-10 px-4 font-['Source_Sans_3']"
         style="
             background: linear-gradient(
                 135deg,
@@ -375,7 +375,7 @@
         "
     >
         {{-- Top shimmer --}}
-        <div class="fixed top-0 left-0 right-0 h-[2px] shimmer-bar z-50"></div>
+        <div class="fixed top-0 left-0 right-0 h-0.5 shimmer-bar z-50"></div>
 
         <div class="max-w-5xl mx-auto">
             {{-- Breadcrumb + heading --}}
@@ -385,7 +385,7 @@
                 >
                     <a
                         href="{{ route('dashboard.admin') }}"
-                        class="hover:text-[var(--teal)] transition-colors"
+                        class="hover:text-(--teal) transition-colors"
                     >
                         Admin
                     </a>
@@ -399,7 +399,7 @@
                     </svg>
                     <a
                         href="{{ route('admin.users.index') }}"
-                        class="hover:text-[var(--teal)] transition-colors"
+                        class="hover:text-(--teal) transition-colors"
                     >
                         Directory
                     </a>
@@ -411,15 +411,15 @@
                     >
                         <path d="M9 5l7 7-7 7" stroke-width="2.5" />
                     </svg>
-                    <span class="text-[var(--ink)]">New Profile</span>
+                    <span class="text-(--ink)">New Profile</span>
                 </nav>
                 <div class="flex items-end justify-between gap-4 flex-wrap">
                     <div>
                         <p
-                            class="text-[10px] font-black uppercase tracking-[.2em] text-[var(--teal)] mb-1 flex items-center gap-2"
+                            class="text-[10px] font-black uppercase tracking-[.2em] text-(--teal) mb-1 flex items-center gap-2"
                         >
                             <span
-                                class="w-1.5 h-1.5 rounded-full bg-[var(--gold)]"
+                                class="w-1.5 h-1.5 rounded-full bg-(--gold)"
                                 style="
                                     animation: pulse-dot 2s ease-in-out infinite;
                                 "
@@ -427,11 +427,11 @@
                             Journal System · Admin Panel
                         </p>
                         <h1
-                            class="font-['Libre_Baskerville'] text-4xl font-bold text-[var(--ink)] leading-tight"
+                            class="font-['Libre_Baskerville'] text-4xl font-bold text-(--ink) leading-tight"
                         >
                             Create
                             <em
-                                class="not-italic bg-gradient-to-r from-[var(--teal)] to-[#1a6b62] bg-clip-text text-transparent"
+                                class="not-italic bg-linear-to-r from-(--teal) to-[#1a6b62] bg-clip-text text-transparent"
                             >
                                 New User
                             </em>
@@ -439,7 +439,7 @@
                     </div>
                     <a
                         href="{{ route('admin.users.index') }}"
-                        class="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#ddd8ce] bg-white/80 text-[10px] font-black uppercase tracking-widest text-[#9ea8b8] hover:text-[var(--teal)] hover:border-[var(--teal)] transition-all active:scale-95 backdrop-blur-sm"
+                        class="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#ddd8ce] bg-white/80 text-[10px] font-black uppercase tracking-widest text-[#9ea8b8] hover:text-(--teal) hover:border-(--teal) transition-all active:scale-95 backdrop-blur-sm"
                     >
                         <svg
                             class="w-3 h-3"
@@ -493,7 +493,7 @@
                             class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center mb-6"
                         >
                             <svg
-                                class="w-5 h-5 text-[var(--gold-l)]"
+                                class="w-5 h-5 text-(--gold-l)"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"

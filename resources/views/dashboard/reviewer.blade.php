@@ -410,7 +410,7 @@
             );
         "
     >
-        <div class="fixed top-0 left-0 right-0 h-[2px] shimmer-bar z-50"></div>
+        <div class="fixed top-0 left-0 right-0 h-0.5 shimmer-bar z-50"></div>
 
         <div class="max-w-5xl mx-auto py-10 px-4 space-y-6">
             {{-- ── Header ── --}}
@@ -419,19 +419,19 @@
             >
                 <div>
                     <p
-                        class="text-[10px] font-black uppercase tracking-[.2em] text-[var(--teal)] mb-1 flex items-center gap-2"
+                        class="text-[10px] font-black uppercase tracking-[.2em] text-(--teal) mb-1 flex items-center gap-2"
                     >
                         <span
-                            class="w-1.5 h-1.5 rounded-full bg-[var(--teal)] pulse-dot"
+                            class="w-1.5 h-1.5 rounded-full bg-(--teal) pulse-dot"
                         ></span>
                         Journal System · Reviewer Portal
                     </p>
                     <h1
-                        class="font-['Libre_Baskerville'] text-4xl font-bold text-[var(--ink)] leading-tight"
+                        class="font-['Libre_Baskerville'] text-4xl font-bold text-(--ink) leading-tight"
                     >
                         Reviewer
                         <em
-                            class="not-italic bg-gradient-to-r from-[var(--teal)] to-[#1a6b62] bg-clip-text text-transparent"
+                            class="not-italic bg-linear-to-r from-(--teal) to-[#1a6b62] bg-clip-text text-transparent"
                         >
                             Dashboard
                         </em>
@@ -463,16 +463,16 @@
                         </div>
                     </div>
                     <p
-                        class="font-['Libre_Baskerville'] text-4xl font-bold text-[var(--red)] leading-none"
+                        class="font-['Libre_Baskerville'] text-4xl font-bold text-(--red) leading-none"
                     >
                         {{ $stats['pending'] }}
                     </p>
                     <p class="text-[11px] text-[#b0aaa0] mt-2">
                         Awaiting your submission
                     </p>
-                    <div class="mt-3 h-[3px] rounded-full bg-red-100">
+                    <div class="mt-3 h-0.75 rounded-full bg-red-100">
                         <div
-                            class="h-full rounded-full bg-[var(--red)]"
+                            class="h-full rounded-full bg-(--red)"
                             style="
                                 width: {{ min(100, $stats['pending'] * 10) }}%;
                             "
@@ -500,7 +500,7 @@
                     <p class="text-[11px] text-[#b0aaa0] mt-2">
                         Successfully submitted
                     </p>
-                    <div class="mt-3 h-[3px] rounded-full bg-emerald-100">
+                    <div class="mt-3 h-0.75 rounded-full bg-emerald-100">
                         <div
                             class="h-full rounded-full bg-emerald-500"
                             style="
@@ -517,7 +517,7 @@
                     <div class="section-heading">
                         <h2>Review Invitations</h2>
                         <span
-                            class="pulse-badge inline-flex items-center justify-center w-5 h-5 rounded-full bg-[var(--red)] text-white text-[10px] font-black"
+                            class="pulse-badge inline-flex items-center justify-center w-5 h-5 rounded-full bg-(--red) text-white text-[10px] font-black"
                         >
                             {{ $pendingInvitations->count() }}
                         </span>
@@ -541,13 +541,13 @@
                                             class="flex items-center gap-2 mb-2"
                                         >
                                             <span
-                                                class="text-[9px] font-black uppercase tracking-[.1em] text-[var(--red)] bg-red-50 border border-red-200 px-2.5 py-1 rounded-full"
+                                                class="text-[9px] font-black uppercase tracking-widest text-(--red) bg-red-50 border border-red-200 px-2.5 py-1 rounded-full"
                                             >
                                                 New Invitation
                                             </span>
                                         </div>
                                         <h3
-                                            class="font-['Libre_Baskerville'] text-base font-bold text-[var(--ink)] leading-snug"
+                                            class="font-['Libre_Baskerville'] text-base font-bold text-(--ink) leading-snug"
                                         >
                                             {{ Str::limit($a->submission->title ?? 'Untitled', 70) }}
                                         </h3>
@@ -561,7 +561,7 @@
                                             @if ($a->submission->research_field)
                                                 ·
                                                 <span
-                                                    class="text-[var(--teal)] font-semibold"
+                                                    class="text-(--teal) font-semibold"
                                                 >
                                                     {{ $a->submission->research_field }}
                                                 </span>
@@ -574,7 +574,7 @@
                                                     class="flex items-center justify-between mb-2"
                                                 >
                                                     <span
-                                                        class="text-[9px] font-black uppercase tracking-[.1em] text-[#b0aaa0]"
+                                                        class="text-[9px] font-black uppercase tracking-widest text-[#b0aaa0]"
                                                     >
                                                         Review Deadline
                                                     </span>
@@ -583,7 +583,7 @@
                                                     >
                                                         @if ($daysLeft < 0)
                                                             <span
-                                                                class="text-[var(--red)]"
+                                                                class="text-(--red)"
                                                             >
                                                                 Overdue
                                                             </span>
@@ -591,7 +591,7 @@
                                                             {{ $dueDate->format('M d, Y') }}
                                                         @elseif ($daysLeft === 0)
                                                             <span
-                                                                class="text-[var(--red)]"
+                                                                class="text-(--red)"
                                                             >
                                                                 Due Today
                                                             </span>
@@ -601,7 +601,7 @@
                                                             {{ $dueDate->format('M d, Y') }}
                                                             ·
                                                             <span
-                                                                class="text-[var(--red)]"
+                                                                class="text-(--red)"
                                                             >
                                                                 {{ $daysLeft }}d
                                                                 left
@@ -707,7 +707,7 @@
                                 Notifications
                             </p>
                             <h2
-                                class="font-['Libre_Baskerville'] text-base font-bold text-[var(--ink)]"
+                                class="font-['Libre_Baskerville'] text-base font-bold text-(--ink)"
                             >
                                 Recent Updates
                             </h2>
@@ -727,7 +727,7 @@
                             >
                                 @if ($notif->isUnread())
                                     <span
-                                        class="w-2 h-2 rounded-full bg-[var(--red)] shrink-0 mt-1"
+                                        class="w-2 h-2 rounded-full bg-(--red) shrink-0 mt-1"
                                     ></span>
                                 @endif
 
@@ -747,7 +747,7 @@
                                         class="flex items-baseline justify-between gap-2"
                                     >
                                         <p
-                                            class="text-sm font-bold text-[var(--ink)] truncate"
+                                            class="text-sm font-bold text-(--ink) truncate"
                                         >
                                             {{ $notif->title }}
                                         </p>
@@ -768,7 +768,7 @@
                                             onclick="
                                                 markRead({{ $notif->id }})
                                             "
-                                            class="text-xs font-black uppercase tracking-wider text-[var(--teal)] hover:text-[var(--teal-d)] mt-1 inline-block transition-colors"
+                                            class="text-xs font-black uppercase tracking-wider text-(--teal) hover:text-(--teal-d) mt-1 inline-block transition-colors"
                                         >
                                             View Assignments →
                                         </a>
@@ -788,7 +788,7 @@
                                     >
                                         @if ($notif->isUnread())
                                             <span
-                                                class="w-2 h-2 rounded-full bg-[var(--red)] shrink-0 mt-1"
+                                                class="w-2 h-2 rounded-full bg-(--red) shrink-0 mt-1"
                                             ></span>
                                         @endif
 
@@ -808,7 +808,7 @@
                                                 class="flex items-baseline justify-between gap-2"
                                             >
                                                 <p
-                                                    class="text-sm font-bold text-[var(--ink)] truncate"
+                                                    class="text-sm font-bold text-(--ink) truncate"
                                                 >
                                                     {{ $notif->title }}
                                                 </p>
@@ -831,7 +831,7 @@
                                                             {{ $notif->id }},
                                                         )
                                                     "
-                                                    class="text-xs font-black uppercase tracking-wider text-[var(--teal)] hover:text-[var(--teal-d)] mt-1 inline-block"
+                                                    class="text-xs font-black uppercase tracking-wider text-(--teal) hover:text-(--teal-d) mt-1 inline-block"
                                                 >
                                                     View Assignments →
                                                 </a>
@@ -844,7 +844,7 @@
                             <button
                                 type="button"
                                 onclick="toggleMoreNotifications()"
-                                class="w-full mt-2 py-2.5 text-[10px] font-black uppercase tracking-widest text-[#9ea8b8] hover:text-[var(--teal)] bg-[#faf8f5] hover:bg-[#f5faf9] border border-[#ede8e0] hover:border-[var(--teal)] rounded-xl transition-all"
+                                class="w-full mt-2 py-2.5 text-[10px] font-black uppercase tracking-widest text-[#9ea8b8] hover:text-(--teal) bg-[#faf8f5] hover:bg-[#f5faf9] border border-[#ede8e0] hover:border-(--teal) rounded-xl transition-all"
                             >
                                 <span id="seeMoreText">See More ↓</span>
                                 <span id="seeLessText" class="hidden">
@@ -876,7 +876,7 @@
                                 Needs Attention
                             </p>
                             <h2
-                                class="font-['Libre_Baskerville'] text-base font-bold text-[var(--ink)] flex items-center gap-2"
+                                class="font-['Libre_Baskerville'] text-base font-bold text-(--ink) flex items-center gap-2"
                             >
                                 🔄 Revised Manuscripts
                             </h2>
@@ -909,7 +909,7 @@
                                         <td>
                                             <a
                                                 href="{{ route('reviews.revision-review-create', $rr) }}"
-                                                class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)] group-hover:text-purple-600 transition-colors line-clamp-2"
+                                                class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink) group-hover:text-purple-600 transition-colors line-clamp-2"
                                             >
                                                 {{ Str::limit($rr->revisionRequest->submission->title, 50) }}
                                             </a>
@@ -955,7 +955,7 @@
                                         <td>
                                             @if ($rr->revisionRequest->revision_notes)
                                                 <p
-                                                    class="text-sm text-[#6a7890] truncate max-w-[160px]"
+                                                    class="text-sm text-[#6a7890] truncate max-w-40"
                                                     title="{{ $rr->revisionRequest->revision_notes }}"
                                                 >
                                                     {{ Str::limit($rr->revisionRequest->revision_notes, 35) }}
@@ -983,7 +983,7 @@
                                             @elseif ($rr->due_at)
                                                 @if ($daysLeft < 0)
                                                     <p
-                                                        class="text-xs font-bold text-[var(--red)]"
+                                                        class="text-xs font-bold text-(--red)"
                                                     >
                                                         Overdue
                                                     </p>
@@ -1052,14 +1052,14 @@
                             Your Workload
                         </p>
                         <h2
-                            class="font-['Libre_Baskerville'] text-base font-bold text-[var(--ink)]"
+                            class="font-['Libre_Baskerville'] text-base font-bold text-(--ink)"
                         >
                             My Review Assignments
                         </h2>
                     </div>
                     <a
                         href="{{ route('reviewer.pending-assignments') }}"
-                        class="flex items-center gap-2 px-4 py-2 bg-[var(--ink)] hover:bg-[var(--teal)] text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95"
+                        class="flex items-center gap-2 px-4 py-2 bg-(--ink) hover:bg-(--teal) text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95"
                     >
                         📋 All Pending
                     </a>
@@ -1087,7 +1087,7 @@
                                 <tr class="group">
                                     <td>
                                         <p
-                                            class="font-['Libre_Baskerville'] text-sm font-bold text-[var(--ink)] group-hover:text-[var(--teal)] transition-colors leading-snug"
+                                            class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink) group-hover:text-(--teal) transition-colors leading-snug"
                                         >
                                             {{ Str::limit($a->submission->title ?? '', 45) }}
                                         </p>
@@ -1115,7 +1115,7 @@
                                             >
                                                 @if ($daysLeft < 0)
                                                     <span
-                                                        class="text-[var(--red)]"
+                                                        class="text-(--red)"
                                                     >
                                                         Overdue
                                                     </span>
@@ -1213,7 +1213,7 @@
                                                 </span>
                                                 <a
                                                     href="{{ route('reviews.peer-reviews', $a->submission) }}"
-                                                    class="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-[#6a7890] hover:text-[var(--teal)] border border-[#e2ddd4] hover:border-[var(--teal)] bg-white hover:bg-[#f5faf9] px-3 py-1.5 rounded-lg transition-all"
+                                                    class="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-[#6a7890] hover:text-(--teal) border border-[#e2ddd4] hover:border-(--teal) bg-white hover:bg-[#f5faf9] px-3 py-1.5 rounded-lg transition-all"
                                                 >
                                                     <svg
                                                         class="w-3 h-3"
@@ -1246,7 +1246,7 @@
                                                 📋
                                             </div>
                                             <p
-                                                class="font-['Libre_Baskerville'] font-bold text-[var(--ink)] text-sm"
+                                                class="font-['Libre_Baskerville'] font-bold text-(--ink) text-sm"
                                             >
                                                 No active assignments
                                             </p>

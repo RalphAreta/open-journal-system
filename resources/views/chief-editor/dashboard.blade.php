@@ -615,7 +615,7 @@
             );
         "
     >
-        <div class="fixed top-0 left-0 right-0 h-[2px] shimmer-bar z-50"></div>
+        <div class="fixed top-0 left-0 right-0 h-0.5 shimmer-bar z-50"></div>
 
         <div class="max-w-6xl mx-auto py-10 px-4 space-y-6">
             {{-- ── Header ── --}}
@@ -624,19 +624,19 @@
             >
                 <div>
                     <p
-                        class="text-[10px] font-black uppercase tracking-[.2em] text-[var(--teal)] mb-1 flex items-center gap-2"
+                        class="text-[10px] font-black uppercase tracking-[.2em] text-(--teal) mb-1 flex items-center gap-2"
                     >
                         <span
-                            class="w-1.5 h-1.5 rounded-full bg-[var(--teal)] pulse-dot"
+                            class="w-1.5 h-1.5 rounded-full bg-(--teal) pulse-dot"
                         ></span>
                         Journal System · Chief Editor Portal
                     </p>
                     <h1
-                        class="font-['Libre_Baskerville'] text-4xl font-bold text-[var(--ink)] leading-tight"
+                        class="font-['Libre_Baskerville'] text-4xl font-bold text-(--ink) leading-tight"
                     >
                         Chief Editor
                         <em
-                            class="not-italic bg-gradient-to-r from-[var(--teal)] to-[#1a6b62] bg-clip-text text-transparent"
+                            class="not-italic bg-linear-to-r from-(--teal) to-[#1a6b62] bg-clip-text text-transparent"
                         >
                             Dashboard
                         </em>
@@ -678,9 +678,9 @@
                         <p class="stat-number {{ $card['c'] }}">
                             {{ $card['value'] }}
                         </p>
-                        <div class="mt-3 h-[3px] rounded-full bg-[#f0ece6]">
+                        <div class="mt-3 h-0.75 rounded-full bg-[#f0ece6]">
                             <div
-                                class="h-full rounded-full {{ $card['c'] === 'c-teal' ? 'bg-[var(--teal)]' : ($card['c'] === 'c-red' ? 'bg-[var(--red)]' : ($card['c'] === 'c-blue' ? 'bg-blue-500' : 'bg-emerald-500')) }}"
+                                class="h-full rounded-full {{ $card['c'] === 'c-teal' ? 'bg-(--teal)' : ($card['c'] === 'c-red' ? 'bg-(--red)' : ($card['c'] === 'c-blue' ? 'bg-blue-500' : 'bg-emerald-500')) }}"
                                 style="
                                     width: {{ $stats['total_submissions'] ? min(100, ($card['value'] / $stats['total_submissions']) * 100) : 0 }}%;
                                 "
@@ -728,7 +728,7 @@
                     <div class="flex flex-col sm:flex-row gap-3 mb-4">
                         <div class="search-wrap flex-1">
                             <svg
-                                class="w-4 h-4 text-[#c0b8b0] flex-shrink-0"
+                                class="w-4 h-4 text-[#c0b8b0] shrink-0"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -851,7 +851,7 @@
                                                 <td>
                                                     <span class="field-badge">
                                                         <span
-                                                            class="w-1.5 h-1.5 rounded-full bg-[var(--teal)]"
+                                                            class="w-1.5 h-1.5 rounded-full bg-(--teal)"
                                                         ></span>
                                                         {{ $s->research_field ?? 'N/A' }}
                                                     </span>
@@ -903,7 +903,7 @@
                             <div class="empty-state">
                                 <div class="empty-icon bg-emerald-50">✅</div>
                                 <p
-                                    class="font-['Libre_Baskerville'] font-bold text-[var(--ink)] text-sm"
+                                    class="font-['Libre_Baskerville'] font-bold text-(--ink) text-sm"
                                 >
                                     All submissions assigned!
                                 </p>
@@ -920,7 +920,7 @@
                     <div class="flex flex-col sm:flex-row gap-3 mb-4">
                         <div class="search-wrap flex-1">
                             <svg
-                                class="w-4 h-4 text-[#c0b8b0] flex-shrink-0"
+                                class="w-4 h-4 text-[#c0b8b0] shrink-0"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -1109,7 +1109,7 @@
                             <div class="empty-state">
                                 <div class="empty-icon bg-[#f5f0e8]">📄</div>
                                 <p
-                                    class="font-['Libre_Baskerville'] font-bold text-[var(--ink)] text-sm"
+                                    class="font-['Libre_Baskerville'] font-bold text-(--ink) text-sm"
                                 >
                                     No assigned submissions yet
                                 </p>
@@ -1123,7 +1123,7 @@
                     <div class="flex flex-col sm:flex-row gap-3 mb-4">
                         <div class="search-wrap flex-1">
                             <svg
-                                class="w-4 h-4 text-[#c0b8b0] flex-shrink-0"
+                                class="w-4 h-4 text-[#c0b8b0] shrink-0"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -1243,7 +1243,7 @@
                             <div class="empty-state">
                                 <div class="empty-icon bg-emerald-50">✅</div>
                                 <p
-                                    class="font-['Libre_Baskerville'] font-bold text-[var(--ink)] text-sm"
+                                    class="font-['Libre_Baskerville'] font-bold text-(--ink) text-sm"
                                 >
                                     No pending appeals!
                                 </p>
