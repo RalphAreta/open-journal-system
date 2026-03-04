@@ -46,7 +46,6 @@
             font-family: 'DM Mono', monospace;
         }
 
-        /* ── Staggered fade-in ── */
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -83,7 +82,6 @@
             padding: 28px 24px 60px;
             align-items: start;
         }
-
         @media (max-width: 1100px) {
             .page-shell {
                 grid-template-columns: 1fr;
@@ -101,7 +99,6 @@
             padding: 24px;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
         }
-
         .card + .card {
             margin-top: 16px;
         }
@@ -131,7 +128,6 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 16px 24px;
         }
-
         .meta-label {
             font-size: 9px;
             font-weight: 700;
@@ -140,7 +136,6 @@
             color: var(--muted);
             margin-bottom: 4px;
         }
-
         .meta-value {
             font-size: 13px;
             font-weight: 600;
@@ -165,7 +160,6 @@
             height: 5px;
             border-radius: 50%;
         }
-
         .pill-blue {
             background: var(--blue-light);
             border-color: #bfdbfe;
@@ -281,7 +275,6 @@
             opacity: 0;
             pointer-events: none;
         }
-
         .reviewer-avatar {
             width: 34px;
             height: 34px;
@@ -294,7 +287,6 @@
             color: #fff;
             flex-shrink: 0;
         }
-
         .reviewer-check {
             width: 18px;
             height: 18px;
@@ -329,12 +321,15 @@
         .decision-option {
             position: relative;
         }
-        .decision-option input {
+        .decision-option input[type='radio'] {
             position: absolute;
             opacity: 0;
+            width: 0;
+            height: 0;
             pointer-events: none;
         }
         .decision-face {
+            display: block;
             border: 1.5px solid var(--border);
             border-radius: 10px;
             padding: 14px 12px;
@@ -347,18 +342,18 @@
         .decision-face:hover {
             border-color: var(--teal);
         }
-        .decision-option input:checked ~ .decision-face {
+        .decision-option input:checked + .decision-face {
             box-shadow: 0 2px 12px rgba(30, 122, 110, 0.15);
         }
-        .dec-accept input:checked ~ .decision-face {
+        .dec-accept input:checked + .decision-face {
             border-color: var(--emerald);
             background: var(--emerald-light);
         }
-        .dec-reject input:checked ~ .decision-face {
+        .dec-reject input:checked + .decision-face {
             border-color: var(--red);
             background: var(--red-light);
         }
-        .dec-revise input:checked ~ .decision-face {
+        .dec-revise input:checked + .decision-face {
             border-color: var(--amber);
             background: var(--amber-light);
         }
@@ -387,6 +382,17 @@
             grid-template-columns: 1fr 1fr;
             gap: 8px;
         }
+        .revision-type-grid .decision-option input:checked + .decision-face {
+            box-shadow: 0 2px 12px rgba(30, 122, 110, 0.15);
+        }
+        .revision-type-grid .dec-accept input:checked + .decision-face {
+            border-color: var(--emerald);
+            background: var(--emerald-light);
+        }
+        .revision-type-grid .dec-reject input:checked + .decision-face {
+            border-color: var(--red);
+            background: var(--red-light);
+        }
 
         /* ── Input base ── */
         .field-input {
@@ -408,7 +414,6 @@
             box-shadow: 0 0 0 3px rgba(30, 122, 110, 0.1);
             background: var(--white);
         }
-
         textarea.field-input {
             resize: none;
             line-height: 1.65;
@@ -463,7 +468,6 @@
         .btn:active {
             transform: translateY(0);
         }
-
         .btn-teal {
             background: var(--teal);
             color: #fff;
@@ -556,26 +560,6 @@
             margin: 20px 0;
         }
 
-        /* ── Timeline dots ── */
-        .timeline-item {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-        }
-        .timeline-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            margin-top: 5px;
-        }
-        .timeline-line {
-            width: 1px;
-            background: var(--border);
-            margin: 2px 0 2px 3.5px;
-            flex-shrink: 0;
-        }
-
         /* ── Progress step ── */
         .step-row {
             display: flex;
@@ -630,7 +614,7 @@
             pointer-events: none;
         }
 
-        /* ── Scrollbar for reviewer grid ── */
+        /* ── Scrollbox ── */
         .scrollbox {
             max-height: 260px;
             overflow-y: auto;
@@ -644,13 +628,16 @@
             border-radius: 4px;
         }
 
-        /* select */
         select.field-input {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 14px center;
             padding-right: 36px;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 @endpush
@@ -667,8 +654,20 @@
             <div class="mb-5 fade-up">
                 <a
                     href="{{ route('editor.submissions') }}"
-                    class="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-teal-600 transition-colors mb-3"
-                    style="text-decoration: none"
+                    style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 6px;
+                        font-size: 10px;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        letter-spacing: 0.12em;
+                        color: #94a3b8;
+                        text-decoration: none;
+                        margin-bottom: 12px;
+                    "
+                    onmouseover="this.style.color = '#1e7a6e'"
+                    onmouseout="this.style.color = '#94a3b8'"
                 >
                     <svg
                         width="12"
@@ -682,7 +681,15 @@
                     </svg>
                     Back to Submissions
                 </a>
-                <div class="flex items-start justify-between gap-4">
+
+                <div
+                    style="
+                        display: flex;
+                        align-items: flex-start;
+                        justify-content: space-between;
+                        gap: 16px;
+                    "
+                >
                     <h1
                         class="font-display"
                         style="
@@ -717,7 +724,6 @@
             {{-- ── Submission Details ── --}}
             <div class="card fade-up-1">
                 <div class="section-label">Submission Details</div>
-
                 <div class="meta-grid">
                     <div>
                         <div class="meta-label">Author</div>
@@ -727,15 +733,13 @@
                     </div>
                     <div>
                         <div class="meta-label">Research Field</div>
-                        <div>
-                            <span class="pill pill-blue">
-                                <span
-                                    class="pill-dot"
-                                    style="background: var(--blue)"
-                                ></span>
-                                {{ $submission->research_field ?? 'Not specified' }}
-                            </span>
-                        </div>
+                        <span class="pill pill-blue">
+                            <span
+                                class="pill-dot"
+                                style="background: var(--blue)"
+                            ></span>
+                            {{ $submission->research_field ?? 'Not specified' }}
+                        </span>
                     </div>
                     @if ($submission->file_path)
                         <div>
@@ -761,7 +765,6 @@
                         </div>
                     @endif
                 </div>
-
                 <div class="abstract-block">
                     <div class="meta-label" style="margin-bottom: 8px">
                         Abstract
@@ -990,23 +993,32 @@
                             </div>
                         </div>
 
-                    @php
-                        $hasActiveRevisionReviews = $latestRevision 
-                            && $latestRevision->revisionReviews()
-                                ->whereNotIn('status', ['declined'])
-                                ->exists();
-                    @endphp
-                    @if ($latestRevision && !$hasActiveRevisionReviews)
-                        <form
-                            method="POST"
-                            action="{{ route("editor.assign-reviewer", $submission) }}"
-                            class="space-y-4 revision-reviewer-form"
-                        >
-                            @csrf
+                        @php
+                            $hasActiveRevisionReviews =
+                                $latestRevision &&
+                                $latestRevision
+                                    ->revisionReviews()
+                                    ->whereNotIn('status', ['declined'])
+                                    ->exists();
+                        @endphp
 
-                            <div>
+                        @if ($latestRevision && ! $hasActiveRevisionReviews)
+                            <form
+                                method="POST"
+                                action="{{ route('editor.assign-reviewer', $submission) }}"
+                                style="
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 14px;
+                                "
+                            >
+                                @csrf
                                 <p
-                                    class="text-xs font-semibold text-blue-900 mb-3"
+                                    style="
+                                        font-size: 12px;
+                                        font-weight: 600;
+                                        color: #1e3a8a;
+                                    "
                                 >
                                     Select reviewers to evaluate this revised
                                     manuscript:
@@ -1813,7 +1825,7 @@
                                                 "
                                             >
                                                 With Managing Editor — awaiting
-                                                CTF & layout assignment
+                                                CTF &amp; layout assignment
                                             </p>
                                         </div>
                                     @elseif ($submission->status === 'layout_editing')
@@ -1914,7 +1926,7 @@
                             @endif
                         </div>
                     @else
-                        {{-- Decision Form --}}
+                        {{-- ── Decision Form ── --}}
                         @php
                             $draftData = $submission->editor_decision_draft ? json_decode(json_encode($submission->editor_decision_draft), true) : [];
                             $selectedStatus = old('status', $draftData['status'] ?? '');
@@ -1955,7 +1967,10 @@
                                             id="dec_accepted"
                                             {{ $selectedStatus === 'accepted' ? 'checked' : '' }}
                                         />
-                                        <div class="decision-face">
+                                        <label
+                                            class="decision-face"
+                                            for="dec_accepted"
+                                        >
                                             <div
                                                 class="decision-icon icon-emerald"
                                             >
@@ -1988,7 +2003,7 @@
                                             >
                                                 Accepted for publication
                                             </p>
-                                        </div>
+                                        </label>
                                     </div>
                                     <div class="decision-option dec-reject">
                                         <input
@@ -1998,7 +2013,10 @@
                                             id="dec_rejected"
                                             {{ $selectedStatus === 'rejected' ? 'checked' : '' }}
                                         />
-                                        <div class="decision-face">
+                                        <label
+                                            class="decision-face"
+                                            for="dec_rejected"
+                                        >
                                             <div class="decision-icon icon-red">
                                                 <svg
                                                     width="15"
@@ -2031,7 +2049,7 @@
                                             >
                                                 Manuscript rejected
                                             </p>
-                                        </div>
+                                        </label>
                                     </div>
                                     <div class="decision-option dec-revise">
                                         <input
@@ -2041,7 +2059,10 @@
                                             id="dec_revisions"
                                             {{ $selectedStatus === 'revisions_requested' ? 'checked' : '' }}
                                         />
-                                        <div class="decision-face">
+                                        <label
+                                            class="decision-face"
+                                            for="dec_revisions"
+                                        >
                                             <div
                                                 class="decision-icon icon-amber"
                                             >
@@ -2076,7 +2097,7 @@
                                             >
                                                 Changes required
                                             </p>
-                                        </div>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -2084,11 +2105,10 @@
                             {{-- Revision fields --}}
                             <div
                                 id="revision-fields"
-                                class="{{ $selectedStatus === 'revisions_requested' ? '' : 'hidden' }}"
                                 style="
                                     border-top: 1px solid var(--border);
                                     padding-top: 20px;
-                                    display: flex;
+                                    display: none;
                                     flex-direction: column;
                                     gap: 14px;
                                 "
@@ -2112,9 +2132,13 @@
                                                 type="radio"
                                                 name="revision_type"
                                                 value="minor"
+                                                id="rev_minor"
                                                 {{ old('revision_type', $draftData['revision_type'] ?? '') === 'minor' ? 'checked' : '' }}
                                             />
-                                            <div class="decision-face">
+                                            <label
+                                                class="decision-face"
+                                                for="rev_minor"
+                                            >
                                                 <p
                                                     style="
                                                         font-size: 13px;
@@ -2132,16 +2156,20 @@
                                                 >
                                                     Small targeted changes
                                                 </p>
-                                            </div>
+                                            </label>
                                         </div>
                                         <div class="decision-option dec-reject">
                                             <input
                                                 type="radio"
                                                 name="revision_type"
                                                 value="major"
+                                                id="rev_major"
                                                 {{ old('revision_type', $draftData['revision_type'] ?? '') === 'major' ? 'checked' : '' }}
                                             />
-                                            <div class="decision-face">
+                                            <label
+                                                class="decision-face"
+                                                for="rev_major"
+                                            >
                                                 <p
                                                     style="
                                                         font-size: 13px;
@@ -2159,7 +2187,7 @@
                                                 >
                                                     Significant restructuring
                                                 </p>
-                                            </div>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -2261,42 +2289,59 @@
                                     Record Decision
                                 </button>
                             </div>
-                        </div>
-                    </form>
-                @endif
-            </div>
-        @endif
+                        </form>
+                    @endif
+                </div>
+            @endif
 
-        {{-- ── ASSIGN REVIEWER ── --}}
-        @php
-            $hasActiveAssignments = $submission->reviewAssignments()
-                ->whereNotIn('status', ['declined'])
-                ->exists();
-        @endphp
-        @if (in_array($submission->status, ["submitted", "under_review"]) && !$hasActiveAssignments)
-            <div
-                class="bg-white border border-slate-200 rounded-2xl p-6 mb-5 shadow-sm fade-up-4"
-            >
-                <div class="flex items-center justify-between mb-5">
-                    <div>
-                        <h2
-                            class="text-[11px] font-bold uppercase tracking-[.08em] text-slate-400"
-                        >
-                            Assign Reviewer
-                        </div>
+            {{-- ── Assign Reviewer ── --}}
+            @php
+                $hasActiveAssignments = $submission
+                    ->reviewAssignments()
+                    ->whereNotIn('status', ['declined'])
+                    ->exists();
+            @endphp
 
-                        @if ($matchedReviewers->count() > 0)
-                            <span class="match-badge">
-                                {{ $matchedReviewers->count() }} matched
-                            </span>
-                        @else
-                            <span
-                                class="pill pill-amber"
-                                style="font-size: 9px"
+            @if (in_array($submission->status, ['submitted', 'under_review']) && ! $hasActiveAssignments)
+                <div class="card fade-up-4" style="margin-top: 16px">
+                    {{-- Header row --}}
+                    <div
+                        style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            margin-bottom: 20px;
+                        "
+                    >
+                        <div>
+                            <div
+                                class="section-label"
+                                style="margin-bottom: 4px"
                             >
-                                No match
-                            </span>
-                        @endif
+                                Assign Reviewer
+                            </div>
+
+                            @if ($matchedReviewers->count() > 0)
+                                <span class="match-badge">
+                                    {{ $matchedReviewers->count() }} matched
+                                </span>
+                            @else
+                                <span
+                                    class="pill pill-amber"
+                                    style="font-size: 9px"
+                                >
+                                    No match
+                                </span>
+                            @endif
+                        </div>
+                        <span
+                            id="selected-count"
+                            class="hidden pill pill-red"
+                            style="font-size: 9px"
+                        >
+                            <span id="selected-num">0</span>
+                            selected
+                        </span>
                     </div>
 
                     <form
@@ -2306,112 +2351,144 @@
                     >
                         @csrf
 
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
+                        <div>
                             <p
-                                class="text-xs font-bold uppercase tracking-[.07em] text-slate-500"
+                                style="
+                                    font-size: 9px;
+                                    font-weight: 700;
+                                    letter-spacing: 0.07em;
+                                    text-transform: uppercase;
+                                    color: var(--muted);
+                                    margin-bottom: 10px;
+                                "
                             >
                                 @if ($matchedReviewers->count() > 0)
                                     Matched for
-                                    <span class="text-blue-600">
+                                    <span style="color: var(--blue)">
                                         {{ $submission->research_field }}
                                     </span>
                                 @else
                                         All Reviewers
                                 @endif
                             </p>
-                            <span
-                                id="selected-count"
-                                class="hidden text-[10px] font-bold uppercase tracking-[.05em] bg-red-50 border border-red-200 text-red-600 px-2.5 py-1 rounded-full"
-                            >
-                                <span id="selected-num">0</span>
-                                selected
-                            </span>
-                        </div>
 
-                        @if ($matchedReviewers->count() > 0)
-                            <div
-                                class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4"
-                            >
-                                @foreach ($matchedReviewers as $u)
-                                    @php
-                                        $colors = ["bg-red-500", "bg-blue-500", "bg-violet-500", "bg-emerald-500", "bg-amber-500", "bg-pink-500"];
-                                        $bg = $colors[$loop->index % count($colors)];
-                                        $hasDeclined = in_array($u->id, $declinedReviewerIds);
-                                        $isAssigned = in_array($u->id, $assignedReviewerIds);
-                                    @endphp
+                            {{-- Matched reviewers --}}
+                            @if ($matchedReviewers->count() > 0)
+                                <div
+                                    style="
+                                        display: grid;
+                                        grid-template-columns: repeat(2, 1fr);
+                                        gap: 8px;
+                                        margin-bottom: 14px;
+                                    "
+                                >
+                                    @foreach ($matchedReviewers as $u)
+                                        @php
+                                            $colors = ['bg-red-500', 'bg-blue-500', 'bg-violet-500', 'bg-emerald-500', 'bg-amber-500', 'bg-pink-500'];
+                                            $bg = $colors[$loop->index % count($colors)];
+                                            $hasDeclined = in_array($u->id, $declinedReviewerIds);
+                                        @endphp
 
-                                    <label
-                                        class="reviewer-card {{ $hasDeclined ? 'opacity-70' : '' }}"
-                                        onclick="toggleReviewer(this)"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            name="reviewer_ids[]"
-                                            value="{{ $u->id }}"
-                                            class="reviewer-checkbox absolute opacity-0 pointer-events-none"
-                                        />
-                                        <div class="reviewer-avatar {{ $bg }}">
-                                            {{ strtoupper(substr($u->name, 0, 1)) }}
-                                        </div>
-                                        <div class="min-w-0 flex-1">
-                                            <p
-                                                class="text-sm font-bold text-slate-800 truncate"
+                                        <label
+                                            class="reviewer-card {{ $hasDeclined ? '' : '' }}"
+                                            style="{{ $hasDeclined ? 'opacity:.7;' : '' }}"
+                                            onclick="toggleReviewer(this)"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                name="reviewer_ids[]"
+                                                value="{{ $u->id }}"
+                                                class="reviewer-checkbox"
+                                            />
+                                            <div
+                                                class="reviewer-avatar {{ $bg }}"
                                             >
-                                                {{ $u->name }}
-                                                @if ($hasDeclined)
-                                                    <span
-                                                        class="text-[9px] font-black text-amber-600 ml-1 cursor-help"
-                                                        title="{{ isset($declineReasons[$u->id]) && $declineReasons[$u->id] ? $declineReasons[$u->id] : 'No reason provided' }}"
-                                                    >
-                                                        ✗ Declined
-                                                    </span>
-                                                @endif
-                                            </p>
-                                            @if ($hasDeclined && isset($declineReasons[$u->id]) && $declineReasons[$u->id])
+                                                {{ strtoupper(substr($u->name, 0, 1)) }}
+                                            </div>
+                                            <div style="min-width: 0; flex: 1">
                                                 <p
-                                                    class="text-[9px] text-amber-700 mt-1 bg-amber-50 px-2 py-1 rounded break-words"
+                                                    style="
+                                                        font-size: 12px;
+                                                        font-weight: 700;
+                                                        color: var(--ink);
+                                                    "
                                                 >
-                                                    <strong>Reason:</strong> {{ $declineReasons[$u->id] }}
+                                                    {{ $u->name }}
+                                                    @if ($hasDeclined)
+                                                        <span
+                                                            style="
+                                                                font-size: 9px;
+                                                                font-weight: 900;
+                                                                color: #d97706;
+                                                                margin-left: 4px;
+                                                            "
+                                                            title="{{ $declineReasons[$u->id] ?? 'No reason provided' }}"
+                                                        >
+                                                            ✗ Declined
+                                                        </span>
+                                                    @endif
                                                 </p>
-                                            @endif
-                                            <p
-                                                class="text-xs text-slate-400 truncate"
-                                            >
-                                                {{ $u->email }}
-                                            </p>
-                                            <p
-                                                class="text-[10px] font-bold text-slate-400 mt-0.5"
-                                            >
-                                                {{ $u->active_reviews_count }}
-                                                {{ $u->active_reviews_count == 1 ? "active review" : "active reviews" }}
-                                            </p>
-                                        </div>
-                                        <div class="reviewer-check">
-                                            <svg
-                                                class="w-3 h-3 text-white"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="3"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="M5 13l4 4L19 7"
-                                                />
-                                            </svg>
-                                        </div>
-                                    </label>
-                                @endforeach
-                            </div>
-                        @endif
+                                                @if ($hasDeclined && ! empty($declineReasons[$u->id]))
+                                                    <p
+                                                        style="
+                                                            font-size: 9px;
+                                                            color: #92400e;
+                                                            margin-top: 3px;
+                                                            background: #fffbeb;
+                                                            padding: 3px 6px;
+                                                            border-radius: 4px;
+                                                        "
+                                                    >
+                                                        <strong>Reason:</strong>
+                                                        {{ $declineReasons[$u->id] }}
+                                                    </p>
+                                                @endif
 
-                        {{-- Other reviewers --}}
-                        @if ($otherReviewers->count() > 0)
-                            <div>
+                                                <p
+                                                    style="
+                                                        font-size: 11px;
+                                                        color: var(--muted);
+                                                    "
+                                                >
+                                                    {{ $u->email }}
+                                                </p>
+                                                <p
+                                                    style="
+                                                        font-size: 10px;
+                                                        font-weight: 700;
+                                                        color: var(--muted);
+                                                        margin-top: 2px;
+                                                    "
+                                                >
+                                                    {{ $u->active_reviews_count }}
+                                                    {{ $u->active_reviews_count == 1 ? 'active review' : 'active reviews' }}
+                                                </p>
+                                            </div>
+                                            <div class="reviewer-check">
+                                                <svg
+                                                    width="10"
+                                                    height="10"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="white"
+                                                    stroke-width="3"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7"
+                                                    />
+                                                </svg>
+                                            </div>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            {{-- Other reviewers --}}
+                            @if ($otherReviewers->count() > 0)
                                 @if ($matchedReviewers->count() > 0)
-                                    <div
+                                    <p
                                         style="
                                             font-size: 9px;
                                             font-weight: 700;
@@ -2422,201 +2499,250 @@
                                         "
                                     >
                                         Other Reviewers
-                                    </div>
+                                    </p>
                                 @endif
 
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                @foreach ($otherReviewers as $u)
-                                    @php
-                                        $colors = ["bg-slate-500", "bg-cyan-500", "bg-teal-500", "bg-indigo-500", "bg-rose-500", "bg-lime-500"];
-                                        $bg = $colors[$loop->index % count($colors)];
-                                        $hasDeclined = in_array($u->id, $declinedReviewerIds);
-                                        $isAssigned = in_array($u->id, $assignedReviewerIds);
-                                    @endphp
+                                <div
+                                    style="
+                                        display: grid;
+                                        grid-template-columns: repeat(2, 1fr);
+                                        gap: 8px;
+                                    "
+                                >
+                                    @foreach ($otherReviewers as $u)
+                                        @php
+                                            $colors = ['bg-slate-500', 'bg-cyan-500', 'bg-teal-500', 'bg-indigo-500', 'bg-rose-500', 'bg-lime-500'];
+                                            $bg = $colors[$loop->index % count($colors)];
+                                            $hasDeclined = in_array($u->id, $declinedReviewerIds);
+                                        @endphp
 
-                                    <label
-                                        class="reviewer-card {{ $hasDeclined ? 'opacity-70' : '' }}"
-                                        onclick="toggleReviewer(this)"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            name="reviewer_ids[]"
-                                            value="{{ $u->id }}"
-                                            class="reviewer-checkbox absolute opacity-0 pointer-events-none"
-                                        />
-                                        <div class="reviewer-avatar {{ $bg }}">
-                                            {{ strtoupper(substr($u->name, 0, 1)) }}
-                                        </div>
-                                        <div class="min-w-0 flex-1">
-                                            <p
-                                                class="text-sm font-bold text-slate-800 truncate"
+                                        <label
+                                            class="reviewer-card"
+                                            style="{{ $hasDeclined ? 'opacity:.7;' : '' }}"
+                                            onclick="toggleReviewer(this)"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                name="reviewer_ids[]"
+                                                value="{{ $u->id }}"
+                                                class="reviewer-checkbox"
+                                            />
+                                            <div
+                                                class="reviewer-avatar {{ $bg }}"
                                             >
-                                                {{ $u->name }}
-                                                @if ($hasDeclined)
-                                                    <span
-                                                        class="text-[9px] font-black text-amber-600 ml-1 cursor-help"
-                                                        title="{{ isset($declineReasons[$u->id]) && $declineReasons[$u->id] ? $declineReasons[$u->id] : 'No reason provided' }}"
-                                                    >
-                                                        ✗ Declined
-                                                    </span>
-                                                @endif
-                                            </p>
-                                            @if ($hasDeclined && isset($declineReasons[$u->id]) && $declineReasons[$u->id])
+                                                {{ strtoupper(substr($u->name, 0, 1)) }}
+                                            </div>
+                                            <div style="min-width: 0; flex: 1">
                                                 <p
-                                                    class="text-[9px] text-amber-700 mt-1 bg-amber-50 px-2 py-1 rounded break-words"
+                                                    style="
+                                                        font-size: 12px;
+                                                        font-weight: 700;
+                                                        color: var(--ink);
+                                                    "
                                                 >
-                                                    <strong>Reason:</strong> {{ $declineReasons[$u->id] }}
+                                                    {{ $u->name }}
+                                                    @if ($hasDeclined)
+                                                        <span
+                                                            style="
+                                                                font-size: 9px;
+                                                                font-weight: 900;
+                                                                color: #d97706;
+                                                                margin-left: 4px;
+                                                            "
+                                                            title="{{ $declineReasons[$u->id] ?? 'No reason provided' }}"
+                                                        >
+                                                            ✗ Declined
+                                                        </span>
+                                                    @endif
                                                 </p>
-                                            @endif
-                                            <p
-                                                class="text-xs text-slate-400 truncate"
-                                            >
-                                                {{ $u->email }}
-                                            </p>
-                                            <p
-                                                class="text-[10px] font-bold text-slate-400 mt-0.5"
-                                            >
-                                                {{ $u->active_reviews_count }}
-                                                {{ $u->active_reviews_count == 1 ? "active review" : "active reviews" }}
-                                            </p>
-                                        </div>
-                                        <div class="reviewer-check">
-                                            <svg
-                                                class="w-3 h-3 text-white"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="3"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="M5 13l4 4L19 7"
-                                                />
-                                            </svg>
-                                        </div>
-                                    </label>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
+                                                @if ($hasDeclined && ! empty($declineReasons[$u->id]))
+                                                    <p
+                                                        style="
+                                                            font-size: 9px;
+                                                            color: #92400e;
+                                                            margin-top: 3px;
+                                                            background: #fffbeb;
+                                                            padding: 3px 6px;
+                                                            border-radius: 4px;
+                                                        "
+                                                    >
+                                                        <strong>Reason:</strong>
+                                                        {{ $declineReasons[$u->id] }}
+                                                    </p>
+                                                @endif
 
-                    <div
-                        class="border-t border-slate-100 pt-5 flex flex-col sm:flex-row sm:items-end gap-4"
-                    >
-                        <div class="flex-1">
-                            <label
-                                class="meta-label"
-                                style="display: block; margin-bottom: 6px"
-                            >
-                                Review Deadline
-                                <span style="color: var(--red)">*</span>
-                            </label>
-                            <div class="date-wrap">
+                                                <p
+                                                    style="
+                                                        font-size: 11px;
+                                                        color: var(--muted);
+                                                    "
+                                                >
+                                                    {{ $u->email }}
+                                                </p>
+                                                <p
+                                                    style="
+                                                        font-size: 10px;
+                                                        font-weight: 700;
+                                                        color: var(--muted);
+                                                        margin-top: 2px;
+                                                    "
+                                                >
+                                                    {{ $u->active_reviews_count }}
+                                                    {{ $u->active_reviews_count == 1 ? 'active review' : 'active reviews' }}
+                                                </p>
+                                            </div>
+                                            <div class="reviewer-check">
+                                                <svg
+                                                    width="10"
+                                                    height="10"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="white"
+                                                    stroke-width="3"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7"
+                                                    />
+                                                </svg>
+                                            </div>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+
+                        <div
+                            style="
+                                border-top: 1px solid var(--border);
+                                padding-top: 16px;
+                                display: flex;
+                                flex-direction: column;
+                                gap: 12px;
+                            "
+                        >
+                            <div>
+                                <label
+                                    class="meta-label"
+                                    style="display: block; margin-bottom: 6px"
+                                >
+                                    Review Deadline
+                                    <span style="color: var(--red)">*</span>
+                                </label>
+                                <div class="date-wrap">
+                                    <svg
+                                        class="date-icon"
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="var(--muted)"
+                                        stroke-width="2"
+                                    >
+                                        <rect
+                                            x="3"
+                                            y="4"
+                                            width="18"
+                                            height="18"
+                                            rx="2"
+                                            stroke-width="2"
+                                        />
+                                        <path
+                                            d="M16 2v4M8 2v4M3 10h18"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
+                                    <input
+                                        type="date"
+                                        name="due_at"
+                                        id="due_at"
+                                        required
+                                        min="{{ now()->addDay()->format('Y-m-d') }}"
+                                        class="field-input"
+                                        style="padding-left: 36px"
+                                        onchange="updateDueDateHint(this)"
+                                    />
+                                </div>
+                                <p
+                                    id="due-hint"
+                                    class="hidden"
+                                    style="
+                                        font-size: 11px;
+                                        margin-top: 6px;
+                                        color: var(--muted);
+                                    "
+                                >
+                                    Reviewer will have
+                                    <span
+                                        id="due-days"
+                                        style="font-weight: 700"
+                                    ></span>
+                                    days.
+                                    <span
+                                        id="due-date"
+                                        class="font-mono"
+                                        style="
+                                            display: block;
+                                            margin-top: 2px;
+                                            font-size: 10px;
+                                        "
+                                    ></span>
+                                </p>
+                            </div>
+
+                            <button type="submit" class="btn btn-teal btn-full">
                                 <svg
-                                    class="date-icon"
                                     width="14"
                                     height="14"
                                     viewBox="0 0 24 24"
                                     fill="none"
-                                    stroke="var(--muted)"
-                                    stroke-width="2"
+                                    stroke="currentColor"
+                                    stroke-width="2.2"
                                 >
-                                    <rect
-                                        x="3"
-                                        y="4"
-                                        width="18"
-                                        height="18"
-                                        rx="2"
-                                        stroke-width="2"
-                                    />
+                                    <path d="M12 4v16m8-8H4" />
+                                </svg>
+                                Send Assignment
+                            </button>
+
+                            <div class="hint-box">
+                                <svg
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="#3b82f6"
+                                    stroke-width="2"
+                                    style="flex-shrink: 0; margin-top: 1px"
+                                >
                                     <path
-                                        d="M16 2v4M8 2v4M3 10h18"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                     />
                                 </svg>
-                                <input
-                                    type="date"
-                                    name="due_at"
-                                    id="due_at"
-                                    required
-                                    min="{{ now()->addDay()->format('Y-m-d') }}"
-                                    class="field-input"
-                                    style="padding-left: 36px"
-                                    onchange="updateDueDateHint(this)"
-                                />
+                                <p>
+                                    The reviewer will receive an
+                                    <strong>invitation</strong>
+                                    and can
+                                    <strong>accept or decline</strong>
+                                    before proceeding.
+                                </p>
                             </div>
-                            <p
-                                id="due-hint"
-                                class="hidden"
-                                style="
-                                    font-size: 11px;
-                                    margin-top: 6px;
-                                    color: var(--muted);
-                                "
-                            >
-                                Reviewer will have
-                                <span
-                                    id="due-days"
-                                    style="font-weight: 700"
-                                ></span>
-                                days.
-                                <span
-                                    id="due-date"
-                                    class="font-mono"
-                                    style="
-                                        display: block;
-                                        margin-top: 2px;
-                                        color: var(--muted);
-                                        font-size: 10px;
-                                    "
-                                ></span>
-                            </p>
-                        </div>
-
-                        <button type="submit" class="btn btn-teal btn-full">
-                            <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2.2"
-                            >
-                                <path d="M12 4v16m8-8H4" />
-                            </svg>
-                            Send Assignment
-                        </button>
-
-                        <div class="hint-box">
-                            <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="#3b82f6"
-                                stroke-width="2"
-                                style="flex-shrink: 0; margin-top: 1px"
-                            >
-                                <path
-                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                            </svg>
-                            <p>
-                                The reviewer will receive an
-                                <strong>invitation</strong>
-                                and can
-                                <strong>accept or decline</strong>
-                                before proceeding.
-                            </p>
                         </div>
                     </form>
                 </div>
             @endif
+        </div>
+        {{-- end main-col --}}
 
+        {{--
+            ══════════════════════════════════════════
+            SIDEBAR
+            ══════════════════════════════════════════
+        --}}
+        <aside class="sidebar">
             {{-- ── Workflow Progress ── --}}
-            <div class="sidebar-card fade-up-4" style="margin-top: 0">
+            <div class="sidebar-card fade-up-4">
                 <div class="section-label">Workflow Progress</div>
                 @php
                     $steps = [
@@ -2742,103 +2868,72 @@
             </div>
         </aside>
     </div>
+    {{-- end page-shell --}}
 @endsection
 
 @push('scripts')
     <script>
         function toggleReviewer(card) {
-            const cb = card.querySelector('.reviewer-checkbox');
-            if (!cb) return;
-            cb.checked = !cb.checked;
-            card.classList.toggle('selected', cb.checked);
-            const total = document.querySelectorAll(
-                '.reviewer-checkbox:checked',
-            ).length;
-            const badge = document.getElementById('selected-count');
-            const num = document.getElementById('selected-num');
-            if (badge && num) {
-                num.textContent = total;
-                badge.classList.toggle('hidden', total === 0);
-            }
-        }
-
-        function updateDueDateHint(input) {
-            const hint = document.getElementById('due-hint');
-            const daysEl = document.getElementById('due-days');
-            const dateEl = document.getElementById('due-date');
-            if (!input.value || !hint) {
-                hint?.classList.add('hidden');
-                return;
-            }
-            const diff = Math.ceil(
-                (new Date(input.value) - new Date()) / 86400000,
-            );
-            daysEl.textContent = diff;
-            daysEl.style.color =
-                diff < 0
-                    ? 'var(--red)'
-                    : diff <= 7
-                      ? 'var(--amber)'
-                      : 'var(--emerald)';
-            const opts = { month: 'short', day: 'numeric', year: 'numeric' };
-            dateEl.textContent =
-                'Due: ' +
-                new Date(input.value).toLocaleDateString('en-US', opts) +
-                ' · 11:59 PM';
-            hint.classList.remove('hidden');
-        }
-
-        /* Decision form */
-        const dForm = document.getElementById('decision-form');
-        const revFields = document.getElementById('revision-fields');
-        const revReason = document.getElementById('revision_reason');
-
-        if (dForm && revFields) {
-            const statusRadios = dForm.querySelectorAll('input[name="status"]');
-            const revTypeRadios = dForm.querySelectorAll(
-                'input[name="revision_type"]',
-            );
-
-            function toggleRevision() {
-                const sel = dForm.querySelector('input[name="status"]:checked');
-                const isRev = sel?.value === 'revisions_requested';
-                revFields.classList.toggle('hidden', !isRev);
-                revFields.style.display = isRev ? 'flex' : 'none';
-                revTypeRadios.forEach((r) =>
-                    isRev
-                        ? r.setAttribute('required', '')
-                        : r.removeAttribute('required'),
-                );
-                if (revReason)
-                    isRev
-                        ? revReason.setAttribute('required', '')
-                        : revReason.removeAttribute('required');
-            }
-
-            statusRadios.forEach((r) =>
-                r.addEventListener('change', toggleRevision),
-            );
-
-            dForm.addEventListener('submit', () => {
-                const sel = dForm.querySelector('input[name="status"]:checked');
-                if (sel?.value !== 'revisions_requested') {
-                    revTypeRadios.forEach((r) => (r.disabled = true));
-                    if (revReason) revReason.disabled = true;
+                const cb = card.querySelector('.reviewer-checkbox');
+                if (!cb) return;
+                cb.checked = !cb.checked;
+                card.classList.toggle('selected', cb.checked);
+                const total = document.querySelectorAll('.reviewer-checkbox:checked').length;
+                const badge = document.getElementById('selected-count');
+                const num   = document.getElementById('selected-num');
+                if (badge && num) {
+                    num.textContent = total;
+                    badge.classList.toggle('hidden', total === 0);
                 }
-            });
+            }
 
-            toggleRevision();
-        }
+            function updateDueDateHint(input) {
+                const hint   = document.getElementById('due-hint');
+                const daysEl = document.getElementById('due-days');
+                const dateEl = document.getElementById('due-date');
+                if (!input.value || !hint) { hint?.classList.add('hidden'); return; }
+                const diff = Math.ceil((new Date(input.value) - new Date()) / 86400000);
+                daysEl.textContent = diff;
+                daysEl.style.color = diff < 0 ? 'var(--red)' : diff <= 7 ? 'var(--amber)' : 'var(--emerald)';
+                const opts = { month: 'short', day: 'numeric', year: 'numeric' };
+                dateEl.textContent = 'Due: ' + new Date(input.value).toLocaleDateString('en-US', opts) + ' · 11:59 PM';
+                hint.classList.remove('hidden');
+            }
 
-        /* Decision face label sync (peer-checked via label click) */
-        document
-            .querySelectorAll('.decision-option input[type="radio"]')
-            .forEach((radio) => {
-                radio.addEventListener('change', () => {
-                    document
-                        .querySelectorAll('.decision-face')
-                        .forEach((f) => (f.style.opacity = '1'));
+            /* ── Decision form ── */
+            const dForm    = document.getElementById('decision-form');
+            const revFields = document.getElementById('revision-fields');
+            const revReason = document.getElementById('revision_reason');
+
+            if (dForm && revFields) {
+                const statusRadios  = dForm.querySelectorAll('input[name="status"]');
+                const revTypeRadios = dForm.querySelectorAll('input[name="revision_type"]');
+
+                function toggleRevision() {
+                    const sel   = dForm.querySelector('input[name="status"]:checked');
+                    const isRev = sel?.value === 'revisions_requested';
+                    revFields.style.display = isRev ? 'flex' : 'none';
+                    revTypeRadios.forEach(r => isRev ? r.setAttribute('required','') : r.removeAttribute('required'));
+                    if (revReason) isRev ? revReason.setAttribute('required','') : revReason.removeAttribute('required');
+                }
+
+                statusRadios.forEach(r => r.addEventListener('change', toggleRevision));
+
+                dForm.addEventListener('submit', () => {
+                    const sel = dForm.querySelector('input[name="status"]:checked');
+                    if (sel?.value !== 'revisions_requested') {
+                        revTypeRadios.forEach(r => r.disabled = true);
+                        if (revReason) revReason.disabled = true;
+                    }
                 });
-            });
+
+                // Init on load
+                toggleRevision();
+
+                // If previously selected revisions_requested (e.g. old() data), show fields
+              @if (isset($selectedStatus) && $selectedStatus === 'revisions_requested')
+                    revFields.style.display = 'flex';
+                @endif
+            }
     </script>
 @endpush
