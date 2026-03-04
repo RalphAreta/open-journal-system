@@ -178,8 +178,7 @@ $notesPart = $notes
 $managingEditor = $submission->managingEditor;
 if ($managingEditor) {
     \App\Models\Notification::create([
-        'user_id'         => $managingEditor->id,
-        'title'           => '🎨 Layout File Ready for Review',
+        'user_id'         => $managingEditor->id,        'role'            => 'managing-editor',        'title'           => '🎨 Layout File Ready for Review',
 'message' => "The layout editor has completed formatting \"{$submission->title}\". Go to your dashboard and click 'Review Layout' to view and download the file.{$notesPart}",
         'type'            => 'info',
         'notifiable_id'   => $submission->id,
@@ -197,6 +196,7 @@ if ($author) {
 
     \App\Models\Notification::create([
         'user_id'         => $author->id,
+        'role'            => 'author',
         'title'           => '🎨 Layout Version Ready for Review',
        'message' => "The layout editor has completed formatting \"{$submission->title}\". Go to your dashboard and click 'Review Layout' to view and download the file.{$notesPart}",
         'type'            => 'info',

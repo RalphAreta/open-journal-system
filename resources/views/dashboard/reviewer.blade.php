@@ -661,6 +661,11 @@
                                             style="display: none"
                                         >
                                             @csrf
+                                            <textarea
+                                                name="decline_reason"
+                                                id="decline-reason-{{ $a->id }}"
+                                                style="display: none"
+                                            ></textarea>
                                         </form>
                                         <button
                                             type="button"
@@ -1308,7 +1313,7 @@
             if (typeof Swal !== 'undefined') {
                 Swal.fire({
                     title: 'Decline Invitation?',
-                    html: `Are you sure you want to decline the review for<br><strong>${title}</strong>?`,
+                    html: `Are you sure you want to decline the review for<br><strong>${title}</strong>?<br><br><textarea id="decline-reason-input" placeholder="Why are you declining? (Optional)" style="width: 100%; height: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-family: Arial; font-size: 14px;"></textarea>`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#dc2626',
@@ -1325,16 +1330,24 @@
                             'px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest mx-1',
                     },
                 }).then((r) => {
-                    if (r.isConfirmed)
+                    if (r.isConfirmed) {
+                        const reason = document.getElementById('decline-reason-input')?.value || '';
+                        document.getElementById(`decline-reason-${assignmentId}`).value = reason;
                         document
                             .getElementById(`decline-form-${assignmentId}`)
                             .submit();
+                    }
                 });
             } else {
-                if (confirm('Decline this review invitation?'))
-                    document
-                        .getElementById(`decline-form-${assignmentId}`)
-                        .submit();
+                if (confirm('Decline this review invitation?')) {
+                    const reason = prompt('Why are you declining? (Optional)', '');
+                    if (reason !== null) {
+                        document.getElementById(`decline-reason-${assignmentId}`).value = reason;
+                        document
+                            .getElementById(`decline-form-${assignmentId}`)
+                            .submit();
+                    }
+                }
             }
         }
     </script>

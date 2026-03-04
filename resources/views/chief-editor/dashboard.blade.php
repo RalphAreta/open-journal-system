@@ -917,7 +917,7 @@
 
                 {{-- ── ASSIGNED TAB ── --}}
                 <div id="tab-assigned" class="tab-panel">
-                    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                    <form method="GET" action="{{ route('chief-editor.dashboard') }}" class="flex flex-col sm:flex-row gap-3 mb-4" id="assigned-search-form">
                         <div class="search-wrap flex-1">
                             <svg
                                 class="w-4 h-4 text-[#c0b8b0] shrink-0"
@@ -933,11 +933,11 @@
                             </svg>
                             <input
                                 type="text"
+                                name="search"
                                 id="assigned-search"
-                                placeholder="Search by title or editor…"
-                                oninput="
-                                    filterTable('assigned-tbody', this.value)
-                                "
+                                placeholder="Search by title, abstract, or editor name…"
+                                value="{{ $searchTerm ?? '' }}"
+                                onchange="document.getElementById('assigned-search-form').submit()"
                             />
                         </div>
                         <select
@@ -958,7 +958,7 @@
                                 </option>
                             @endforeach
                         </select>
-                    </div>
+                    </form>
 
                     @if ($assignedSubmissions->count() > 0)
                         <div class="card">
@@ -1100,7 +1100,7 @@
                                     of {{ $assignedSubmissions->total() }}
                                 </span>
                                 <div>
-                                    {{ $assignedSubmissions->links('pagination::tailwind') }}
+                                    {{ $assignedSubmissions->appends(request()->query())->links('pagination::tailwind') }}
                                 </div>
                             </div>
                         </div>

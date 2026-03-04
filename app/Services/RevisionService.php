@@ -170,6 +170,7 @@ class RevisionService
 
             \App\Models\Notification::create([
                 'user_id' => $submission->author_id,
+                'role' => 'author',
                 'title' => '🔄 Revision Requested (' . ucfirst($stageLabel) . ')',
                 'message' => "A {$revisionType} revision has been requested for your manuscript \"{$submission->title}\".\n\nReason: {$reason}",
                 'type' => 'warning',
@@ -195,6 +196,7 @@ class RevisionService
 
         \App\Models\Notification::create([
             'user_id' => $chefEditor->id,
+            'role' => 'editor-in-chief',
             'title' => '📄 Revised Manuscript Submitted (Re-Screening Required)',
             'message' => "Author has submitted revision for \"{$submission->title}\" per your initial screening request.\n\nAuthor's Notes: {$revisionRequest->revision_notes}",
             'type' => 'info',
@@ -219,6 +221,7 @@ class RevisionService
 
             \App\Models\Notification::create([
                 'user_id' => $submission->assigned_editor_id,
+                'role' => 'editor',
                 'title' => '📄 Revised Manuscript Submitted - Awaiting Your Review',
                 'message' => "Author has submitted revision for \"{$submission->title}\".\n\nAuthor's Notes: {$revisionRequest->revision_notes}\n\nPlease review the revision and decide whether to forward it to original reviewers or make a final decision.",
                 'type' => 'info',
@@ -249,6 +252,7 @@ class RevisionService
             foreach ($originalReviewers as $reviewerId) {
                 \App\Models\Notification::create([
                     'user_id' => $reviewerId,
+                    'role' => 'reviewer',
                     'title' => '🔄 Revised Manuscript Ready for Re-Review',
                     'message' => "A revised manuscript for \"{$submission->title}\" is ready for your re-review.\n\nAuthor's Revision Notes: {$revisionRequest->revision_notes}",
                     'type' => 'info',

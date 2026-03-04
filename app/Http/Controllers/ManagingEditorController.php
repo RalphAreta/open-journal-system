@@ -59,6 +59,7 @@ $submission->update([
 
     \App\Models\Notification::create([
         'user_id'         => $submission->author_id,
+        'role'            => 'author',
         'title'           => '📄 Copyright Transfer Form',
         'message'         => "A Copyright Transfer Form has been uploaded for your manuscript \"{$submission->title}\". Please download and sign it.",
         'type'            => 'info',
@@ -99,6 +100,7 @@ $submission->update([
 
         \App\Models\Notification::create([
             'user_id'         => $request->input('layout_editor_id'),
+            'role'            => 'layout-editor',
             'title'           => '📋 New Layout Assignment',
             'message'         => "You have been assigned to do layout editing for \"{$submission->title}\".",
             'type'            => 'info',
@@ -158,6 +160,7 @@ public function approveLayout(Submission $submission): RedirectResponse
     if ($editor) {
         \App\Models\Notification::create([
             'user_id'         => $editor->id,
+            'role'            => 'editor',
             'title'           => '✅ Layout Approved — Action Required',
             'message'         => "The managing editor has approved the layout for \"{$submission->title}\". Please review and send to the author for final confirmation.",
             'type'            => 'success',
@@ -178,6 +181,7 @@ public function approveLayout(Submission $submission): RedirectResponse
 
         \App\Models\Notification::create([
             'user_id'         => $author->id,
+            'role'            => 'author',
             'title'           => '🎨 Layout Ready — Please Review',
             'message'         => "Your manuscript \"{$submission->title}\" has been formatted by {$layoutEditorName}. The layout file \"{$fileName}\" is now ready for your final review and confirmation.{$notesPart}",
             'type'            => 'info',

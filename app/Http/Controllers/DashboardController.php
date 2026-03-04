@@ -67,6 +67,7 @@ class DashboardController extends Controller
     public function author(Request $request): View
     {
         $request->session()->put('preferred_dashboard', 'author');
+        $request->session()->put('active_role', 'author'); // Ensure active role is set
 
         $user = $request->user();
 
@@ -91,6 +92,10 @@ class DashboardController extends Controller
         ];
 
         $notifications = Notification::where('user_id', $user->id)
+            ->where(function($q) {
+                $q->where('role', 'author')
+                  ->orWhereNull('role');
+            })
             ->latest()
             ->take(10)
             ->get();
@@ -101,6 +106,7 @@ class DashboardController extends Controller
     public function reviewer(Request $request): View
     {
         $request->session()->put('preferred_dashboard', 'reviewer');
+        $request->session()->put('active_role', 'reviewer'); // Ensure active role is set
 
         $user = $request->user();
 
@@ -130,6 +136,10 @@ class DashboardController extends Controller
         ];
 
         $notifications = Notification::where('user_id', $user->id)
+            ->where(function($q) {
+                $q->where('role', 'reviewer')
+                  ->orWhereNull('role');
+            })
             ->latest()
             ->take(10)
             ->get();
@@ -140,6 +150,7 @@ class DashboardController extends Controller
     public function editor(Request $request): View
     {
         $request->session()->put('preferred_dashboard', 'editor');
+        $request->session()->put('active_role', 'editor'); // Ensure active role is set
 
         $userId = $request->user()->id;
 
@@ -166,6 +177,7 @@ class DashboardController extends Controller
     public function admin(Request $request): View
     {
         $request->session()->put('preferred_dashboard', 'admin');
+        $request->session()->put('active_role', 'admin'); // Ensure active role is set
 
         $userCount       = \App\Models\User::count();
         $submissionCount = Submission::count();

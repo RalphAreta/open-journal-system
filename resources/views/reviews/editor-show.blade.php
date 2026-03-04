@@ -381,7 +381,13 @@
                         </div>
                     </div>
 
-                    @if ($latestRevision && $latestRevision->revisionReviews->isEmpty())
+                    @php
+                        $hasActiveRevisionReviews = $latestRevision 
+                            && $latestRevision->revisionReviews()
+                                ->whereNotIn('status', ['declined'])
+                                ->exists();
+                    @endphp
+                    @if ($latestRevision && !$hasActiveRevisionReviews)
                         <form
                             method="POST"
                             action="{{ route("editor.assign-reviewer", $submission) }}"
@@ -1134,7 +1140,12 @@
         @endif
 
         {{-- ── ASSIGN REVIEWER ── --}}
-        @if (in_array($submission->status, ["submitted", "under_review"]) && $submission->reviewAssignments->isEmpty())
+        @php
+            $hasActiveAssignments = $submission->reviewAssignments()
+                ->whereNotIn('status', ['declined'])
+                ->exists();
+        @endphp
+        @if (in_array($submission->status, ["submitted", "under_review"]) && !$hasActiveAssignments)
             <div
                 class="bg-white border border-slate-200 rounded-2xl p-6 mb-5 shadow-sm fade-up-4"
             >
@@ -1203,10 +1214,12 @@
                                     @php
                                         $colors = ["bg-red-500", "bg-blue-500", "bg-violet-500", "bg-emerald-500", "bg-amber-500", "bg-pink-500"];
                                         $bg = $colors[$loop->index % count($colors)];
+                                        $hasDeclined = in_array($u->id, $declinedReviewerIds);
+                                        $isAssigned = in_array($u->id, $assignedReviewerIds);
                                     @endphp
 
                                     <label
-                                        class="reviewer-card"
+                                        class="reviewer-card {{ $hasDeclined ? 'opacity-70' : '' }}"
                                         onclick="toggleReviewer(this)"
                                     >
                                         <input
@@ -1223,7 +1236,22 @@
                                                 class="text-sm font-bold text-slate-800 truncate"
                                             >
                                                 {{ $u->name }}
+                                                @if ($hasDeclined)
+                                                    <span
+                                                        class="text-[9px] font-black text-amber-600 ml-1 cursor-help"
+                                                        title="{{ isset($declineReasons[$u->id]) && $declineReasons[$u->id] ? $declineReasons[$u->id] : 'No reason provided' }}"
+                                                    >
+                                                        ✗ Declined
+                                                    </span>
+                                                @endif
                                             </p>
+                                            @if ($hasDeclined && isset($declineReasons[$u->id]) && $declineReasons[$u->id])
+                                                <p
+                                                    class="text-[9px] text-amber-700 mt-1 bg-amber-50 px-2 py-1 rounded break-words"
+                                                >
+                                                    <strong>Reason:</strong> {{ $declineReasons[$u->id] }}
+                                                </p>
+                                            @endif
                                             <p
                                                 class="text-xs text-slate-400 truncate"
                                             >
@@ -1270,10 +1298,12 @@
                                     @php
                                         $colors = ["bg-slate-500", "bg-cyan-500", "bg-teal-500", "bg-indigo-500", "bg-rose-500", "bg-lime-500"];
                                         $bg = $colors[$loop->index % count($colors)];
+                                        $hasDeclined = in_array($u->id, $declinedReviewerIds);
+                                        $isAssigned = in_array($u->id, $assignedReviewerIds);
                                     @endphp
 
                                     <label
-                                        class="reviewer-card"
+                                        class="reviewer-card {{ $hasDeclined ? 'opacity-70' : '' }}"
                                         onclick="toggleReviewer(this)"
                                     >
                                         <input
@@ -1290,7 +1320,22 @@
                                                 class="text-sm font-bold text-slate-800 truncate"
                                             >
                                                 {{ $u->name }}
+                                                @if ($hasDeclined)
+                                                    <span
+                                                        class="text-[9px] font-black text-amber-600 ml-1 cursor-help"
+                                                        title="{{ isset($declineReasons[$u->id]) && $declineReasons[$u->id] ? $declineReasons[$u->id] : 'No reason provided' }}"
+                                                    >
+                                                        ✗ Declined
+                                                    </span>
+                                                @endif
                                             </p>
+                                            @if ($hasDeclined && isset($declineReasons[$u->id]) && $declineReasons[$u->id])
+                                                <p
+                                                    class="text-[9px] text-amber-700 mt-1 bg-amber-50 px-2 py-1 rounded break-words"
+                                                >
+                                                    <strong>Reason:</strong> {{ $declineReasons[$u->id] }}
+                                                </p>
+                                            @endif
                                             <p
                                                 class="text-xs text-slate-400 truncate"
                                             >

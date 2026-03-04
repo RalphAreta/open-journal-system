@@ -10,18 +10,39 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        $notifications = Notification::where('user_id', auth()->id())
-            ->latest()
-            ->paginate(20);
+        $activeRole = session('active_role');
+        
+        $notifications = Notification::where('user_id', auth()->id());
+        
+        // Filter by active role if set
+        if ($activeRole) {
+            $notifications->where(function($q) use ($activeRole) {
+                $q->where('role', $activeRole)
+                  ->orWhereNull('role'); // Include role-agnostic notifications
+            });
+        }
+        
+        $notifications = $notifications->latest()->paginate(20);
 
         return view('notifications.index', compact('notifications'));
     }
 
     public function markAllRead(Request $request)
     {
-        Notification::where('user_id', auth()->id())
-            ->whereNull('read_at')
-            ->update(['read_at' => now()]);
+        $activeRole = session('active_role');
+        
+        $query = Notification::where('user_id', auth()->id())
+            ->whereNull('read_at');
+        
+        // Filter by active role if set
+        if ($activeRole) {
+            $query->where(function($q) use ($activeRole) {
+                $q->where('role', $activeRole)
+                  ->orWhereNull('role');
+            });
+        }
+        
+        $query->update(['read_at' => now()]);
 
         // Return JSON if AJAX request
         if ($request->expectsJson()) {
@@ -47,9 +68,20 @@ class NotificationController extends Controller
      */
     public function getUnreadCount(): JsonResponse
     {
+        $activeRole = session('active_role');
+        
         $count = Notification::where('user_id', auth()->id())
-            ->whereNull('read_at')
-            ->count();
+            ->whereNull('read_at');
+        
+        // Filter by active role if set
+        if ($activeRole) {
+            $count->where(function($q) use ($activeRole) {
+                $q->where('role', $activeRole)
+                  ->orWhereNull('role');
+            });
+        }
+        
+        $count = $count->count();
 
         return response()->json([
             'unread_count' => $count,

@@ -248,7 +248,8 @@
             border-color: var(--teal);
             background: rgba(45, 129, 118, 0.04);
         }
-        .editor-option input[type='checkbox'] {
+        .editor-option input[type='checkbox'],
+        .editor-option input[type='radio'] {
             width: 15px;
             height: 15px;
             accent-color: var(--teal);
@@ -825,7 +826,7 @@
                     @endphp
 
                     @if ($currentAssignments->count() > 0)
-                        <div class="card">
+                        <div class="card" id="assignments-card">
                             <div class="card-header">
                                 <h3
                                     class="font-['Libre_Baskerville'] text-sm font-bold text-emerald-700"
@@ -866,8 +867,9 @@
                                         document.getElementById(
                                             'reassign-form',
                                         ).style.display = 'block';
-                                        this.closest('.card').style.display =
-                                            'none';
+                                        document.getElementById(
+                                            'assignments-card',
+                                        ).style.display = 'none';
                                     "
                                     class="w-full text-[10px] font-black uppercase tracking-widest text-(--teal) hover:text-(--teal-d) transition-colors pt-1"
                                 >
@@ -934,8 +936,8 @@
                                                             class="editor-option"
                                                         >
                                                             <input
-                                                                type="checkbox"
-                                                                name="editor_ids[]"
+                                                                type="radio"
+                                                                name="editor_id"
                                                                 value="{{ $editor->id }}"
                                                                 class="editor-cb"
                                                                 {{ $isAssignedHere ? 'checked' : '' }}
@@ -1030,8 +1032,8 @@
                                                                     class="editor-option"
                                                                 >
                                                                     <input
-                                                                        type="checkbox"
-                                                                        name="editor_ids[]"
+                                                                        type="radio"
+                                                                        name="editor_id"
                                                                         value="{{ $editor->id }}"
                                                                         class="editor-cb"
                                                                         {{ $isAssignedHere ? 'checked' : '' }}
@@ -1092,7 +1094,10 @@
                                         onclick="
                                             document.getElementById(
                                                 'reassign-form',
-                                            ).style.display = 'none'
+                                            ).style.display = 'none';
+                                            document.getElementById(
+                                                'assignments-card',
+                                            ).style.display = 'block';
                                         "
                                         class="btn-secondary"
                                     >

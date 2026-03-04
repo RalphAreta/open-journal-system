@@ -17,6 +17,7 @@ class ChiefEditorController extends Controller
     public function dashboard(Request $request)
     {
         $request->session()->put('preferred_dashboard', 'editor-in-chief');
+        $request->session()->put('active_role', 'editor-in-chief');
 
         $pendingSubmissions = Submission::where('status', Submission::STATUS_SUBMITTED)
             ->whereNull('assigned_editor_id')
@@ -24,8 +25,23 @@ class ChiefEditorController extends Controller
             ->latest('submitted_at')
             ->paginate(10);
 
-        $assignedSubmissions = Submission::whereNotNull('assigned_editor_id')
-            ->with('assignedEditor', 'author')
+        // Assigned submissions with optional search
+        $assignedQuery = Submission::whereNotNull('assigned_editor_id')
+            ->with('assignedEditor', 'author');
+
+        // Apply search filter if provided
+        $searchTerm = $request->query('search');
+        if ($searchTerm) {
+            $assignedQuery->where(function($q) use ($searchTerm) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                  ->orWhere('abstract', 'like', "%{$searchTerm}%")
+                  ->orWhereHas('assignedEditor', function($q2) use ($searchTerm) {
+                      $q2->where('name', 'like', "%{$searchTerm}%");
+                  });
+            });
+        }
+
+        $assignedSubmissions = $assignedQuery
             ->latest('chief_editor_review_at')
             ->paginate(10, ['*'], 'assigned');
 
@@ -54,7 +70,7 @@ class ChiefEditorController extends Controller
             'pending_appeals'        => Appeal::where('status', Appeal::STATUS_PENDING)->count(),
         ];
 
-        return view('chief-editor.dashboard', compact('pendingSubmissions', 'assignedSubmissions', 'pendingAppeals', 'completedAppeals', 'stats'));
+        return view('chief-editor.dashboard', compact('pendingSubmissions', 'assignedSubmissions', 'pendingAppeals', 'completedAppeals', 'stats', 'searchTerm'));
     }
 
     public function showSubmission(Submission $submission)
@@ -190,6 +206,7 @@ class ChiefEditorController extends Controller
 
         \App\Models\Notification::create([
             'user_id'         => $submission->author_id,
+            'role'            => 'author',
             'title'           => $isPassed ? '✅ Submission Passed Initial Screening' : '❌ Submission Failed Initial Screening',
             'message'         => $isPassed
                 ? "Your manuscript \"{$submission->title}\" has passed the initial screening.\n\nComments: {$validated['comments']}"
@@ -210,49 +227,87 @@ class ChiefEditorController extends Controller
         }
 
         $validated = $request->validate([
-            'editor_ids'   => 'required|array|min:1',
-            'editor_ids.*' => 'exists:users,id',
-            'notes'        => 'nullable|string|max:1000',
+            'editor_id'   => 'required|exists:users,id',
+            'notes'       => 'nullable|string|max:1000',
         ]);
 
-        $editors = User::whereIn('id', $validated['editor_ids'])->get();
-        
+        $editor = User::findOrFail($validated['editor_id']);
         $submission->load('author');
+        $expertiseField = $editor->editorExpertise->first()?->field_name ?? 'General';
 
-        $editorNames = [];
-        $primaryEditor = null;
+        SubmissionAssignment::create([
+            'submission_id'       => $submission->id,
+            'assigned_to_user_id' => $editor->id,
+            'assigned_by_user_id' => Auth::id(),
+            'expertise_field'     => $expertiseField,
+            'assignment_notes'    => $validated['notes'] ?? null,
+            'assigned_at'         => now(),
+        ]);
 
-        foreach ($editors as $index => $editor) {
-            $expertiseField = $editor->editorExpertise->first()?->field_name ?? 'General';
-
-            SubmissionAssignment::create([
-                'submission_id'       => $submission->id,
-                'assigned_to_user_id' => $editor->id,
-                'assigned_by_user_id' => Auth::id(),
-                'expertise_field'     => $expertiseField,
-                'assignment_notes'    => $validated['notes'] ?? null,
-                'assigned_at'         => now(),
-            ]);
-
-            $editorNames[] = $editor->name;
-            if ($index === 0) $primaryEditor = $editor->id;
-
-            \App\Models\Notification::create([
-                'user_id'         => $editor->id,
-                'title'           => '📋 New Manuscript Assigned',
-                'message'         => "You have been assigned to handle the manuscript \"{$submission->title}\" by {$submission->author->name}.",
-                'type'            => 'info',
-                'notifiable_id'   => $submission->id,
-                'notifiable_type' => Submission::class,
-            ]);
-        }
+        \App\Models\Notification::create([
+            'user_id'         => $editor->id,
+            'role'            => 'editor',
+            'title'           => '📋 New Manuscript Assigned',
+            'message'         => "You have been assigned to handle the manuscript \"{$submission->title}\" by {$submission->author->name}.",
+            'type'            => 'info',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
 
         $submission->update([
-            'assigned_editor_id'     => $primaryEditor,
+            'assigned_editor_id'     => $editor->id,
             'chief_editor_review_at' => now(),
         ]);
 
         return redirect()->route('chief-editor.submission.show', $submission)
-            ->with('success', 'Submission assigned to: ' . implode(', ', $editorNames) . '.');
+            ->with('success', 'Submission assigned to: ' . $editor->name . '.');
+    }
+
+    /**
+     * Reassign submission to a different editor.
+     */
+    public function reassignSubmission(Request $request, Submission $submission)
+    {
+        $validated = $request->validate([
+            'editor_id' => 'required|exists:users,id',
+            'notes'     => 'nullable|string|max:1000',
+        ]);
+
+        $editor = User::findOrFail($validated['editor_id']);
+        $submission->load('author');
+        $expertiseField = $editor->editorExpertise->first()?->field_name ?? 'General';
+
+        // Mark all existing assignments as rejected (archived in history)
+        $submission->assignments()
+            ->whereNull('rejected_at')
+            ->update(['rejected_at' => now()]);
+
+        // Create new assignment
+        SubmissionAssignment::create([
+            'submission_id'       => $submission->id,
+            'assigned_to_user_id' => $editor->id,
+            'assigned_by_user_id' => Auth::id(),
+            'expertise_field'     => $expertiseField,
+            'assignment_notes'    => $validated['notes'] ?? null,
+            'assigned_at'         => now(),
+        ]);
+
+        \App\Models\Notification::create([
+            'user_id'         => $editor->id,
+            'role'            => 'editor',
+            'title'           => '📋 Manuscript Reassigned to You',
+            'message'         => "The manuscript \"{$submission->title}\" has been reassigned to you. Please review the assignment.",
+            'type'            => 'info',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+
+        $submission->update([
+            'assigned_editor_id'     => $editor->id,
+            'chief_editor_review_at' => now(),
+        ]);
+
+        return redirect()->route('chief-editor.submission.show', $submission)
+            ->with('success', 'Submission reassigned to: ' . $editor->name . '.');
     }
 }
