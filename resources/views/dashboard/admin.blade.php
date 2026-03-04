@@ -3,10 +3,6 @@
 @section('title', 'Admin Dashboard')
 
 @push('styles')
-    <link
-        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700;800&display=swap"
-        rel="stylesheet"
-    />
     <style>
         :root {
             --teal: #2d8176;
@@ -489,13 +485,14 @@
                 class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
             >
                 <div>
-                    <p class="hero-eyebrow">System Administration</p>
+                    <p class="hero-eyebrow">Admin Dashboard</p>
                     <h1 class="hero-title">
-                        Admin
-                        <em>Dashboard</em>
+                        System
+                        <em>Administration</em>
                     </h1>
                     <p class="hero-sub">
-                        System management, configuration and oversight
+                        Manage users, roles, submissions, and system
+                        configuration
                     </p>
                 </div>
                 <div
