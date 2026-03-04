@@ -8,6 +8,104 @@
         rel="stylesheet"
     />
     <style>
+        :root {
+            --teal: #2d8176;
+            --teal-dk: #1a4d46;
+            --teal-lt: #e8f4f2;
+            --gold: #c9a84c;
+            --gold-lt: #e8d49a;
+            --gold-dk: #8a6e28;
+            --ink: #1a1209;
+            --ink-mid: #3d2f1a;
+            --ink-soft: #6b5740;
+            --cream: #faf6ef;
+            --parchment: #f3ece0;
+            --border: #e8dfd0;
+            --border-dk: #c9b99a;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        .aw {
+            font-family: 'Source Sans 3', sans-serif;
+            color: var(--ink);
+            font-size: 16px;
+        }
+        .serif {
+            font-family: 'Libre Baskerville', serif;
+        }
+        .aw-bg {
+            background-color: var(--cream);
+            background-image:
+                radial-gradient(
+                    ellipse 80% 50% at 50% -10%,
+                    rgba(45, 129, 118, 0.08) 0%,
+                    transparent 70%
+                ),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23faf6ef'/%3E%3Ccircle cx='1' cy='1' r='.4' fill='%23e8dfd0' opacity='.5'/%3E%3C/svg%3E");
+        }
+        .hero-header {
+            position: relative;
+            padding: 44px 0 32px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 36px;
+        }
+        .hero-header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--teal), transparent);
+        }
+        .hero-eyebrow {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hero-eyebrow::before {
+            content: '';
+            width: 24px;
+            height: 1px;
+            background: var(--teal);
+        }
+        .hero-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+            line-height: 1.15;
+        }
+        .hero-title em {
+            font-style: italic;
+            color: var(--teal);
+        }
+        .hero-sub {
+            font-size: 0.98rem;
+            font-weight: 400;
+            color: var(--ink-soft);
+            margin-top: 8px;
+        }
+        .date-pill {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            background: var(--parchment);
+            border: 1px solid var(--border);
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -24,15 +122,6 @@
             }
             100% {
                 background-position: 100% 0;
-            }
-        }
-        @keyframes blink {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
             }
         }
         .fade-up {
@@ -60,82 +149,61 @@
             transform: translateY(-3px);
             box-shadow: 0 12px 40px rgba(160, 120, 48, 0.15);
         }
+
+        .fu {
+            animation: fadeUp 0.45s ease both;
+        }
+        .fu1 {
+            animation: fadeUp 0.45s 0.08s ease both;
+        }
+        .fu2 {
+            animation: fadeUp 0.45s 0.16s ease both;
+        }
+        .fu3 {
+            animation: fadeUp 0.45s 0.24s ease both;
+        }
+        .fu4 {
+            animation: fadeUp 0.45s 0.32s ease both;
+        }
     </style>
 @endpush
 
 @section('content')
-    <div
-        class="min-h-screen bg-linear-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0] font-['Source_Sans_3']"
-    >
-        {{-- Top shimmer line --}}
-        <div class="h-0.5 w-full shimmer-bar"></div>
+    {{-- Top shimmer line --}}
+    <div class="h-0.5 w-full shimmer-bar"></div>
 
-        {{-- Header --}}
-        <div class="bg-[#2D8176] relative overflow-hidden">
-            <div class="absolute inset-0 bg-black/10"></div>
+    <div class="aw aw-bg max-w-6xl mx-auto px-6">
+        {{-- Hero Header (matches Author Dashboard style) --}}
+        <div class="hero-header fu">
             <div
-                class="absolute inset-0 opacity-[0.05]"
-                style="
-                    background-image: radial-gradient(
-                        circle,
-                        #ffffff 1px,
-                        transparent 1px
-                    );
-                    background-size: 28px 28px;
-                "
-            ></div>
-
-            <div
-                class="relative z-10 max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+                class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
             >
-                <div class="fade-up" style="animation-delay: 80ms">
-                    <p
-                        class="text-[10px] tracking-widest uppercase text-[#f0d678] font-semibold flex items-center gap-2 mb-1"
-                    >
-                        <span
-                            class="w-1.5 h-1.5 rounded-full bg-[#c9a84c] shadow-[0_0_8px_rgba(201,168,76,0.8)]"
-                            style="animation: blink 2s ease-in-out infinite"
-                        ></span>
-                        Layout Editor Portal
-                    </p>
-                    <h1
-                        class="font-['Libre_Baskerville'] text-3xl font-bold text-white leading-tight"
-                    >
-                        Welcome back,
-                        <em
-                            class="not-italic bg-linear-to-r from-[#c9a84c] via-[#f0d678] to-[#c9a84c] bg-clip-text text-transparent"
-                        >
-                            {{ auth()->user()->name }}
-                        </em>
+                <div>
+                    <p class="hero-eyebrow">Layout Editor Portal</p>
+                    <h1 class="hero-title">
+                        Your
+                        <em>Layout</em>
+                        Workspace
                     </h1>
-                    <p class="text-white/70 text-sm mt-1">
+                    <p class="hero-sub">
                         Manage layouts, format submissions, and prepare
-                        publications.
+                        publications
                     </p>
                 </div>
-
                 <div
-                    class="fade-up flex items-center gap-3"
-                    style="animation-delay: 200ms"
+                    class="flex items-center gap-3 self-start md:self-auto shrink-0"
                 >
-                    <div class="text-right hidden md:block">
-                        <p
-                            class="text-white/50 text-[11px] uppercase tracking-widest"
-                        >
-                            Today
-                        </p>
-                        <p class="text-white font-semibold text-sm">
-                            {{ now()->format('F d, Y') }}
-                        </p>
-                    </div>
+                    <span class="date-pill hidden sm:inline-block">
+                        {{ now()->format('D, M j Y') }}
+                    </span>
                 </div>
             </div>
         </div>
 
         {{-- Main Content --}}
-        <div class="max-w-6xl mx-auto px-6 py-10 space-y-8">
+        <div class="space-y-8 pb-10">
             {{-- Stats Row --}}
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 fu1">
                 @php
                     $stats = [
                         ['label' => 'For Layout', 'value' => '—', 'icon' => '📐', 'delay' => '100ms'],
@@ -147,7 +215,7 @@
 
                 @foreach ($stats as $stat)
                     <div
-                        class="fade-up card-hover bg-white/90 border border-[#c9a84c]/20 rounded-2xl p-5 backdrop-blur-sm"
+                        class="card-hover bg-white/90 border border-[#c9a84c]/20 rounded-2xl p-5 backdrop-blur-sm"
                         style="animation-delay: {{ $stat['delay'] }}"
                     >
                         <div class="flex items-center justify-between mb-3">
@@ -171,7 +239,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {{-- Quick Actions --}}
                 <div
-                    class="fade-up md:col-span-1 bg-white/90 border border-[#c9a84c]/20 rounded-2xl p-6 backdrop-blur-sm"
+                    class="fu2 md:col-span-1 bg-white/90 border border-[#c9a84c]/20 rounded-2xl p-6 backdrop-blur-sm"
                     style="animation-delay: 400ms"
                 >
                     <h2
@@ -243,7 +311,7 @@
 
                 {{-- Assigned Papers Table --}}
                 <div
-                    class="fade-up md:col-span-2 bg-white/90 border border-[#c9a84c]/20 rounded-2xl p-6 backdrop-blur-sm"
+                    class="fu3 md:col-span-2 bg-white/90 border border-[#c9a84c]/20 rounded-2xl p-6 backdrop-blur-sm"
                     style="animation-delay: 500ms"
                 >
                     <div class="flex items-center justify-between mb-5">
@@ -280,6 +348,7 @@
                             Papers assigned to you will appear here.
                         </p>
                     </div>
+                    {{--
                         Uncomment when you have data:
                         <table class="w-full text-sm">
                         <thead>
@@ -305,15 +374,12 @@
                         @endforeach
                         </tbody>
                         </table>
-
+                    --}}
                 </div>
             </div>
 
             {{-- Footer note --}}
-            <div
-                class="fade-up text-center pb-4"
-                style="animation-delay: 600ms"
-            >
+            <div class="fu4 text-center pb-4" style="animation-delay: 600ms">
                 <p class="text-[11px] text-[#b8aa90] uppercase tracking-widest">
                     BatStateU · BIRJISE Journal System · Layout Editor Portal
                 </p>
@@ -321,4 +387,3 @@
         </div>
     </div>
 @endsection
-x
