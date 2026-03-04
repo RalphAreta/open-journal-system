@@ -66,6 +66,7 @@ $chiefEditors = User::whereHas('roles', fn($q) => $q->where('name', 'editor-in-c
 foreach ($chiefEditors as $ce) {
     \App\Models\Notification::create([
         'user_id'         => $ce->id,
+        'role'            => 'editor-in-chief',
         'title'           => ' New Manuscript Submitted',
         'message'         => "A new manuscript has been submitted: \"{$submission->title}\" by " . Auth::user()->name . ".",
         'type'            => 'info',

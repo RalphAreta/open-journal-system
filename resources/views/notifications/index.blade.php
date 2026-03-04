@@ -4,14 +4,16 @@
 
 @section('content')
     <div class="max-w-3xl mx-auto">
-        <h1
-            class="font-['Libre_Baskerville'] text-3xl font-bold text-[#0d1628] mb-6"
-        >
-            Notifications
-        </h1>
+        <div class="mb-6 flex items-center justify-between">
+            <h1 class="font-['Libre_Baskerville'] text-3xl font-bold text-[#0d1628]">
+                Notifications
+            </h1>
+            <div class="text-sm text-[#6a7890]">
+                Showing <span class="font-semibold text-[#0d1628]">{{ ucfirst(session('active_role', 'user')) }}</span> notifications
+            </div>
+        </div>
 
-        <div
-            class="bg-white border border-[#ede8e0] rounded-2xl overflow-hidden shadow-sm"
+        <div class="bg-white border border-[#ede8e0] rounded-2xl overflow-hidden shadow-sm"
         >
             @forelse ($notifications as $notif)
                 <div
@@ -48,7 +50,12 @@
                 </div>
             @empty
                 <div class="px-6 py-16 text-center">
-                    <p class="text-[#b0aaa0]">No notifications yet.</p>
+                    <p class="text-[#b0aaa0] mb-2">No notifications for {{ session('active_role', 'your current role') }} yet.</p>
+                    @if (auth()->user()->roles->count() > 1)
+                        <p class="text-xs text-[#6a7890] mt-4">
+                            Switch roles using the dropdown in the top navigation to see notifications for other roles.
+                        </p>
+                    @endif
                 </div>
             @endforelse
         </div>

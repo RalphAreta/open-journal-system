@@ -990,13 +990,22 @@
                             </div>
                         </div>
 
-                        @if ($latestRevision && $latestRevision->revisionReviews->isEmpty())
-                            <form
-                                method="POST"
-                                action="{{ route('editor.assign-reviewer', $submission) }}"
-                                class="space-y-4"
-                            >
-                                @csrf
+                    @if ($latestRevision && $latestRevision->revisionReviews->isEmpty())
+                        <form
+                            method="POST"
+                            action="{{ route("editor.assign-reviewer", $submission) }}"
+                            class="space-y-4 revision-reviewer-form"
+                        >
+                            @csrf
+
+                            <div>
+                                <p
+                                    class="text-xs font-semibold text-blue-900 mb-3"
+                                >
+                                    Select reviewers to evaluate this revised
+                                    manuscript:
+                                </p>
+
                                 @php
                                     $allReviewers = \App\Models\User::whereHas('roles', fn ($q) => $q->where('name', 'reviewer'))->get();
                                     $matchedIds = $matchedReviewers->pluck('id')->toArray();
@@ -2246,33 +2255,21 @@
                                     Record Decision
                                 </button>
                             </div>
-                        </form>
-                    @endif
-                </div>
-            @endif
-        </div>
-        {{-- end main-col --}}
+                        </div>
+                    </form>
+                @endif
+            </div>
+        @endif
 
-        {{--
-            ══════════════════════════════════════════
-            SIDEBAR
-            ══════════════════════════════════════════
-        --}}
-        <aside class="sidebar">
-            {{-- ── Assign Reviewer ── --}}
-            @if (in_array($submission->status, ['submitted', 'under_review']) && $submission->reviewAssignments->isEmpty())
-                <div class="sidebar-card fade-up-4">
-                    <div
-                        style="
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-                            margin-bottom: 16px;
-                        "
-                    >
-                        <div
-                            class="section-label"
-                            style="margin-bottom: 0; flex: 1"
+        {{-- ── ASSIGN REVIEWER ── --}}
+        @if (in_array($submission->status, ["submitted", "under_review"]) && $submission->reviewAssignments->isEmpty())
+            <div
+                class="bg-white border border-slate-200 rounded-2xl p-6 mb-5 shadow-sm fade-up-4"
+            >
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2
+                            class="text-[11px] font-bold uppercase tracking-[.08em] text-slate-400"
                         >
                             Assign Reviewer
                         </div>
@@ -2298,110 +2295,87 @@
                     >
                         @csrf
 
-                        {{-- Matched reviewers --}}
-                        @if ($matchedReviewers->count() > 0)
-                            <div>
-                                <div
-                                    style="
-                                        font-size: 9px;
-                                        font-weight: 700;
-                                        letter-spacing: 0.12em;
-                                        text-transform: uppercase;
-                                        color: var(--teal);
-                                        margin-bottom: 8px;
-                                    "
-                                >
-                                    Matched · {{ $submission->research_field }}
-                                </div>
-                                <div
-                                    style="
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: 6px;
-                                    "
-                                >
-                                    @foreach ($matchedReviewers as $u)
-                                        @php
-                                            $colors = [
-                                                'bg-teal-500',
-                                                'bg-blue-500',
-                                                'bg-violet-500',
-                                                'bg-emerald-500',
-                                                'bg-amber-500',
-                                                'bg-pink-500',
-                                            ];
-                                            $bg = $colors[$loop->index % count($colors)];
-                                        @endphp
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <p
+                                class="text-xs font-bold uppercase tracking-[.07em] text-slate-500"
+                            >
+                                @if ($matchedReviewers->count() > 0)
+                                    Matched for
+                                    <span class="text-blue-600">
+                                        {{ $submission->research_field }}
+                                    </span>
+                                @else
+                                        All Reviewers
+                                @endif
+                            </p>
+                            <span
+                                id="selected-count"
+                                class="hidden text-[10px] font-bold uppercase tracking-[.05em] bg-red-50 border border-red-200 text-red-600 px-2.5 py-1 rounded-full"
+                            >
+                                <span id="selected-num">0</span>
+                                selected
+                            </span>
+                        </div>
 
-                                        <label
-                                            class="reviewer-card"
-                                            onclick="toggleReviewer(this)"
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                name="reviewer_ids[]"
-                                                value="{{ $u->id }}"
-                                                class="reviewer-checkbox"
-                                            />
-                                            <div
-                                                class="reviewer-avatar {{ $bg }}"
-                                                style="
-                                                    width: 30px;
-                                                    height: 30px;
-                                                    font-size: 11px;
-                                                "
+                        @if ($matchedReviewers->count() > 0)
+                            <div
+                                class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4"
+                            >
+                                @foreach ($matchedReviewers as $u)
+                                    @php
+                                        $colors = ["bg-red-500", "bg-blue-500", "bg-violet-500", "bg-emerald-500", "bg-amber-500", "bg-pink-500"];
+                                        $bg = $colors[$loop->index % count($colors)];
+                                    @endphp
+
+                                    <label
+                                        class="reviewer-card"
+                                        onclick="toggleReviewer(this)"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            name="reviewer_ids[]"
+                                            value="{{ $u->id }}"
+                                            class="reviewer-checkbox absolute opacity-0 pointer-events-none"
+                                        />
+                                        <div class="reviewer-avatar {{ $bg }}">
+                                            {{ strtoupper(substr($u->name, 0, 1)) }}
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p
+                                                class="text-sm font-bold text-slate-800 truncate"
                                             >
-                                                {{ strtoupper(substr($u->name, 0, 1)) }}
-                                            </div>
-                                            <div style="min-width: 0; flex: 1">
-                                                <p
-                                                    style="
-                                                        font-size: 12px;
-                                                        font-weight: 600;
-                                                        color: var(--ink);
-                                                        white-space: nowrap;
-                                                        overflow: hidden;
-                                                        text-overflow: ellipsis;
-                                                    "
-                                                >
-                                                    {{ $u->name }}
-                                                </p>
-                                                <p
-                                                    style="
-                                                        font-size: 10px;
-                                                        color: var(--muted);
-                                                    "
-                                                >
-                                                    {{ $u->active_reviews_count }}
-                                                    active
-                                                    {{ Str::plural('review', $u->active_reviews_count) }}
-                                                </p>
-                                            </div>
-                                            <div
-                                                class="reviewer-check"
-                                                style="
-                                                    width: 16px;
-                                                    height: 16px;
-                                                "
+                                                {{ $u->name }}
+                                            </p>
+                                            <p
+                                                class="text-xs text-slate-400 truncate"
                                             >
-                                                <svg
-                                                    width="8"
-                                                    height="8"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="white"
-                                                    stroke-width="3"
-                                                >
-                                                    <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        d="M5 13l4 4L19 7"
-                                                    />
-                                                </svg>
-                                            </div>
-                                        </label>
-                                    @endforeach
-                                </div>
+                                                {{ $u->email }}
+                                            </p>
+                                            <p
+                                                class="text-[10px] font-bold text-slate-400 mt-0.5"
+                                            >
+                                                {{ $u->active_reviews_count }}
+                                                {{ $u->active_reviews_count == 1 ? "active review" : "active reviews" }}
+                                            </p>
+                                        </div>
+                                        <div class="reviewer-check">
+                                            <svg
+                                                class="w-3 h-3 text-white"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="3"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M5 13l4 4L19 7"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </label>
+                                @endforeach
                             </div>
                         @endif
 
@@ -2423,119 +2397,69 @@
                                     </div>
                                 @endif
 
-                                <div
-                                    class="scrollbox"
-                                    style="
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: 6px;
-                                    "
-                                >
-                                    @foreach ($otherReviewers as $u)
-                                        @php
-                                            $colors = [
-                                                'bg-slate-500',
-                                                'bg-cyan-500',
-                                                'bg-teal-500',
-                                                'bg-indigo-500',
-                                                'bg-rose-500',
-                                                'bg-lime-600',
-                                            ];
-                                            $bg = $colors[$loop->index % count($colors)];
-                                        @endphp
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                @foreach ($otherReviewers as $u)
+                                    @php
+                                        $colors = ["bg-slate-500", "bg-cyan-500", "bg-teal-500", "bg-indigo-500", "bg-rose-500", "bg-lime-500"];
+                                        $bg = $colors[$loop->index % count($colors)];
+                                    @endphp
 
-                                        <label
-                                            class="reviewer-card"
-                                            onclick="toggleReviewer(this)"
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                name="reviewer_ids[]"
-                                                value="{{ $u->id }}"
-                                                class="reviewer-checkbox"
-                                            />
-                                            <div
-                                                class="reviewer-avatar {{ $bg }}"
-                                                style="
-                                                    width: 30px;
-                                                    height: 30px;
-                                                    font-size: 11px;
-                                                "
+                                    <label
+                                        class="reviewer-card"
+                                        onclick="toggleReviewer(this)"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            name="reviewer_ids[]"
+                                            value="{{ $u->id }}"
+                                            class="reviewer-checkbox absolute opacity-0 pointer-events-none"
+                                        />
+                                        <div class="reviewer-avatar {{ $bg }}">
+                                            {{ strtoupper(substr($u->name, 0, 1)) }}
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p
+                                                class="text-sm font-bold text-slate-800 truncate"
                                             >
-                                                {{ strtoupper(substr($u->name, 0, 1)) }}
-                                            </div>
-                                            <div style="min-width: 0; flex: 1">
-                                                <p
-                                                    style="
-                                                        font-size: 12px;
-                                                        font-weight: 600;
-                                                        color: var(--ink);
-                                                        white-space: nowrap;
-                                                        overflow: hidden;
-                                                        text-overflow: ellipsis;
-                                                    "
-                                                >
-                                                    {{ $u->name }}
-                                                </p>
-                                                <p
-                                                    style="
-                                                        font-size: 10px;
-                                                        color: var(--muted);
-                                                    "
-                                                >
-                                                    {{ $u->active_reviews_count }}
-                                                    active
-                                                    {{ Str::plural('review', $u->active_reviews_count) }}
-                                                </p>
-                                            </div>
-                                            <div
-                                                class="reviewer-check"
-                                                style="
-                                                    width: 16px;
-                                                    height: 16px;
-                                                "
+                                                {{ $u->name }}
+                                            </p>
+                                            <p
+                                                class="text-xs text-slate-400 truncate"
                                             >
-                                                <svg
-                                                    width="8"
-                                                    height="8"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="white"
-                                                    stroke-width="3"
-                                                >
-                                                    <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        d="M5 13l4 4L19 7"
-                                                    />
-                                                </svg>
-                                            </div>
-                                        </label>
-                                    @endforeach
-                                </div>
+                                                {{ $u->email }}
+                                            </p>
+                                            <p
+                                                class="text-[10px] font-bold text-slate-400 mt-0.5"
+                                            >
+                                                {{ $u->active_reviews_count }}
+                                                {{ $u->active_reviews_count == 1 ? "active review" : "active reviews" }}
+                                            </p>
+                                        </div>
+                                        <div class="reviewer-check">
+                                            <svg
+                                                class="w-3 h-3 text-white"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="3"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M5 13l4 4L19 7"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </label>
+                                @endforeach
                             </div>
                         @endif
+                    </div>
 
-                        {{-- Selected count badge --}}
-                        <div
-                            style="
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-between;
-                            "
-                        >
-                            <span
-                                id="selected-count"
-                                class="pill pill-slate hidden"
-                            >
-                                <span id="selected-num">0</span>
-                                selected
-                            </span>
-                            <div style="flex: 1"></div>
-                        </div>
-
-                        {{-- Deadline --}}
-                        <div>
+                    <div
+                        class="border-t border-slate-100 pt-5 flex flex-col sm:flex-row sm:items-end gap-4"
+                    >
+                        <div class="flex-1">
                             <label
                                 class="meta-label"
                                 style="display: block; margin-bottom: 6px"

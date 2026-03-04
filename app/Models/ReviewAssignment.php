@@ -17,6 +17,7 @@ class ReviewAssignment extends Model
         'status',
         'due_at',
         'completed_at',
+        'decline_reason',
     ];
 
     protected function casts(): array

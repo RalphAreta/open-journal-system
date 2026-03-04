@@ -150,6 +150,17 @@ class ReviewController extends Controller
                 'completed_at' => now(),
             ]);
 
+            // Notify editor that reviewer has completed their review
+            \App\Models\Notification::create([
+                'user_id'         => $assignment->submission->assigned_editor_id,
+                'role'            => 'editor',
+                'title'           => '✓ Review Submitted - Action Required',
+                'message'         => "Reviewer has completed their review for \"{$assignment->submission->title}\". Recommendation: " . ucfirst(str_replace('_', ' ', $validated['recommendation'])) . ". Please review and make your decision.",
+                'type'            => 'info',
+                'notifiable_id'   => $assignment->submission_id,
+                'notifiable_type' => Submission::class,
+            ]);
+
             return redirect()->route('reviews.index')->with('success', 'Review submitted successfully.');
         } else {
             return redirect()->route('reviews.index')->with('success', 'Review saved as draft. You can continue editing it later.');
@@ -206,10 +217,27 @@ class ReviewController extends Controller
             ])
             ->get();
 
+        // Get IDs of reviewers already assigned to this submission (for display purposes)
+        $assignedReviewerIds = $submission->reviewAssignments()
+            ->pluck('reviewer_id')
+            ->toArray();
+
+        // Get IDs of reviewers with declined assignments to this submission
+        $declinedReviewerIds = $submission->reviewAssignments()
+            ->where('status', ReviewAssignment::STATUS_DECLINED)
+            ->pluck('reviewer_id')
+            ->toArray();
+
+        // Get decline reasons mapped by reviewer ID
+        $declineReasons = $submission->reviewAssignments()
+            ->where('status', ReviewAssignment::STATUS_DECLINED)
+            ->pluck('decline_reason', 'reviewer_id')
+            ->toArray();
+
         // Get all layout editors for selection
        $managingEditors = User::whereHas('roles', fn($q) => $q->where('name', 'managing-editor'))->get();
 
-return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers', 'managingEditors'));
+return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers', 'managingEditors', 'assignedReviewerIds', 'declinedReviewerIds', 'declineReasons'));
     }
 
     /**
@@ -258,6 +286,7 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
 
             \App\Models\Notification::create([
                 'user_id'         => $submission->author_id,
+                'role'            => 'author',
                 'title'           => '🔄 Revision Requested — Initial Screening',
                 'message'         => "The editor has reviewed your manuscript \"{$submission->title}\" and is requesting a " . $validated['revision_type'] . " revision before it can proceed.\n\nReason: {$validated['comments']}",
                 'type'            => 'warning',
@@ -280,6 +309,7 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
 
         \App\Models\Notification::create([
             'user_id'         => $submission->author_id,
+            'role'            => 'author',
             'title'           => $isPassed ? '✅ Submission Passed Initial Screening' : '❌ Submission Failed Initial Screening',
             'message'         => $isPassed
                 ? "Your manuscript \"{$submission->title}\" has passed the initial screening.\n\nComments: {$validated['comments']}"
@@ -332,28 +362,45 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
             $skippedCount = 0;
 
             foreach ($reviewerIds as $reviewerId) {
-                // Check if already assigned to this revision
-                $exists = RevisionReview::where('revision_request_id', $latestRevision->id)
+                // Check if already assigned to this revision (but allow reassigning if declined)
+                $existingReview = RevisionReview::where('revision_request_id', $latestRevision->id)
                     ->where('reviewer_id', $reviewerId)
-                    ->exists();
+                    ->whereNotIn('status', [RevisionReview::STATUS_DECLINED])
+                    ->first();
 
-                if ($exists) {
+                if ($existingReview) {
                     $skippedCount++;
                     continue;
                 }
 
-                // Create RevisionReview record for revised manuscript review
-                RevisionReview::create([
-                    'revision_request_id' => $latestRevision->id,
-                    'reviewer_id' => $reviewerId,
-                    'status' => RevisionReview::STATUS_ASSIGNED,
-                    'assigned_at' => now(),
-                    'due_at' => $dueAt ?? now()->addDays(14),
-                ]);
+                // If they previously declined, update that assignment; otherwise create new
+                $revisionReview = RevisionReview::where('revision_request_id', $latestRevision->id)
+                    ->where('reviewer_id', $reviewerId)
+                    ->where('status', RevisionReview::STATUS_DECLINED)
+                    ->first();
+
+                if ($revisionReview) {
+                    // Reassigning a reviewer who previously declined
+                    $revisionReview->update([
+                        'status' => RevisionReview::STATUS_ASSIGNED,
+                        'assigned_at' => now(),
+                        'due_at' => $dueAt ?? now()->addDays(14),
+                    ]);
+                } else {
+                    // Creating new assignment
+                    $revisionReview = RevisionReview::create([
+                        'revision_request_id' => $latestRevision->id,
+                        'reviewer_id' => $reviewerId,
+                        'status' => RevisionReview::STATUS_ASSIGNED,
+                        'assigned_at' => now(),
+                        'due_at' => $dueAt ?? now()->addDays(14),
+                    ]);
+                }
 
                 // Notify reviewer about revised manuscript
                 \App\Models\Notification::create([
                     'user_id' => $reviewerId,
+                    'role' => 'reviewer',
                     'title' => '🔄 Revised Manuscript Ready for Re-Review',
                     'message' => "A revised manuscript for \"{$submission->title}\" is ready for your re-review. Please log in to view and submit your feedback.",
                     'type' => 'info',
@@ -378,28 +425,46 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
             $skippedCount = 0;
 
             foreach ($reviewerIds as $reviewerId) {
-                // Check if already assigned
-                $exists = ReviewAssignment::where('submission_id', $submission->id)
+                // Check if already assigned (but allow reassigning if declined)
+                $existingAssignment = ReviewAssignment::where('submission_id', $submission->id)
                     ->where('reviewer_id', $reviewerId)
-                    ->exists();
+                    ->whereNotIn('status', [ReviewAssignment::STATUS_DECLINED])
+                    ->first();
 
-                if ($exists) {
+                if ($existingAssignment) {
                     $skippedCount++;
                     continue;
                 }
 
-                ReviewAssignment::create([
-                    'submission_id' => $submission->id,
-                    'reviewer_id' => $reviewerId,
-                    'assigned_by' => $request->user()->id,
-                    'status' => ReviewAssignment::STATUS_PENDING,
-                    'due_at' => $dueAt,
-                ]);
+                // If they previously declined, update that assignment; otherwise create new
+                $assignment = ReviewAssignment::where('submission_id', $submission->id)
+                    ->where('reviewer_id', $reviewerId)
+                    ->where('status', ReviewAssignment::STATUS_DECLINED)
+                    ->first();
+
+                if ($assignment) {
+                    // Reassigning a reviewer who previously declined
+                    $assignment->update([
+                        'status' => ReviewAssignment::STATUS_PENDING,
+                        'assigned_by' => $request->user()->id,
+                        'due_at' => $dueAt,
+                    ]);
+                } else {
+                    // Creating new assignment
+                    $assignment = ReviewAssignment::create([
+                        'submission_id' => $submission->id,
+                        'reviewer_id' => $reviewerId,
+                        'assigned_by' => $request->user()->id,
+                        'status' => ReviewAssignment::STATUS_PENDING,
+                        'due_at' => $dueAt,
+                    ]);
+                }
 
                 \App\Models\Notification::create([
                     'user_id'         => $reviewerId,
+                    'role'            => 'reviewer',
                     'title'           => '📋 New Review Assignment',
-                    'message'         => "You have been assigned to review the manuscript \"{$submission->title}\". Please log in to view and submit your review.",
+                    'message'         => "You have been assigned to review the manuscript \"{$submission->title}\". Please accept or decline the assigned manuscript.",
                     'type'            => 'info',
                     'notifiable_id'   => $submission->id,
                     'notifiable_type' => \App\Models\Submission::class,
@@ -463,6 +528,31 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
             'editor_decision_at' => now(),
             'editor_notes' => $validated['editor_notes'] ?? null,
             'editor_decision_draft' => null,
+        ]);
+
+        // Notify author of the editor's decision
+        if ($validated['status'] === Submission::STATUS_ACCEPTED) {
+            $statusText = 'Accepted';
+            $type = 'success';
+            $message = "Your manuscript \"{$submission->title}\" has been accepted and will proceed to layout editing.";
+        } elseif ($validated['status'] === Submission::STATUS_REJECTED) {
+            $statusText = 'Rejected';
+            $type = 'danger';
+            $message = "Your manuscript \"{$submission->title}\" has been rejected. Please review the editor's notes for feedback.";
+        } else {
+            $statusText = 'Revisions Requested';
+            $type = 'warning';
+            $message = "The editor has requested revisions to your manuscript \"{$submission->title}\". Please review the revision requirements and resubmit.";
+        }
+
+        \App\Models\Notification::create([
+            'user_id'         => $submission->author_id,
+            'role'            => 'author',
+            'title'           => "✅ Editor Decision: {$statusText}",
+            'message'         => $message,
+            'type'            => $type,
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
         ]);
 
         if ($validated['status'] === Submission::STATUS_REVISIONS_REQUESTED) {
@@ -683,6 +773,7 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
             $submission = $revisionReview->revisionRequest->submission;
             \App\Models\Notification::create([
                 'user_id' => $submission->assigned_editor_id,
+                'role' => 'editor',
                 'title' => '✓ Revision Review Submitted',
                 'message' => "Reviewer has completed re-review for revised manuscript \"{$submission->title}\". Recommendation: " . $validated['recommendation'],
                 'type' => 'info',
@@ -874,6 +965,7 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
             $status = $validated['decision'] === 'accepted' ? 'Accepted' : 'Rejected';
             \App\Models\Notification::create([
                 'user_id'         => $submission->author_id,
+                'role'            => 'author',
                 'title'           => "✓ Final Decision: {$status}",
                 'message'         => "Your manuscript \"{$submission->title}\" has been {$status}.",
                 'type'            => $validated['decision'] === 'accepted' ? 'success' : 'danger',
@@ -901,6 +993,7 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
 
         \App\Models\Notification::create([
             'user_id'         => $assignment->submission->assigned_editor_id,
+            'role'            => 'editor',
             'title'           => '✓ Review Invitation Accepted',
             'message'         => 'Reviewer has accepted invitation to review "' . $assignment->submission->title . '"',
             'type'            => 'success',
@@ -914,18 +1007,24 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
     /**
      * Reviewer: decline review invitation.
      */
-    public function declineInvitation(ReviewAssignment $assignment): RedirectResponse
+    public function declineInvitation(Request $request, ReviewAssignment $assignment): RedirectResponse
     {
         if ($assignment->reviewer_id !== request()->user()->id) {
             abort(403);
         }
 
+        $validated = $request->validate([
+            'decline_reason' => 'nullable|string|max:1000',
+        ]);
+
         $assignment->update([
             'status' => ReviewAssignment::STATUS_DECLINED,
+            'decline_reason' => $validated['decline_reason'] ?? null,
         ]);
 
         \App\Models\Notification::create([
             'user_id'         => $assignment->submission->assigned_editor_id,
+            'role'            => 'editor',
             'title'           => '✗ Review Invitation Declined',
             'message'         => 'Reviewer has declined invitation to review "' . $assignment->submission->title . '"',
             'type'            => 'warning',
@@ -1083,6 +1182,7 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
 
         \App\Models\Notification::create([
             'user_id'         => $request->input('managing_editor_id'),
+            'role'            => 'managing-editor',
             'title'           => '📄 New Manuscript Assignment',
             'message'         => "You have been assigned to manage the manuscript \"{$submission->title}\". Please issue the Copyright Transfer Form and assign a Layout Editor.",
             'type'            => 'info',

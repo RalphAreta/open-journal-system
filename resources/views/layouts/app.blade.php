@@ -229,13 +229,32 @@
 
                             {{-- Notification Bell --}}
                             @php
-                                $unreadCount = \App\Models\Notification::where('user_id', auth()->id())
-                                    ->whereNull('read_at')
-                                    ->count();
+                                $activeRole = session('active_role');
+                                $unreadQuery = \App\Models\Notification::where('user_id', auth()->id())
+                                    ->whereNull('read_at');
+                                
+                                // Filter by active role
+                                if ($activeRole) {
+                                    $unreadQuery->where(function($q) use ($activeRole) {
+                                        $q->where('role', $activeRole)
+                                          ->orWhereNull('role');
+                                    });
+                                }
+                                
+                                $unreadCount = $unreadQuery->count();
 
-                                $unreadNotifs = \App\Models\Notification::where('user_id', auth()->id())
-                                    ->whereNull('read_at')
-                                    ->latest()
+                                $notifQuery = \App\Models\Notification::where('user_id', auth()->id())
+                                    ->whereNull('read_at');
+                                
+                                // Filter by active role
+                                if ($activeRole) {
+                                    $notifQuery->where(function($q) use ($activeRole) {
+                                        $q->where('role', $activeRole)
+                                          ->orWhereNull('role');
+                                    });
+                                }
+                                
+                                $unreadNotifs = $notifQuery->latest()
                                     ->take(5)
                                     ->get();
                             @endphp
