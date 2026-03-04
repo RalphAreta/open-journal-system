@@ -4,754 +4,264 @@
 
 @push('styles')
     <style>
-        :root {
-            --teal: #2d8176;
-            --teal-dk: #1a4d46;
-            --teal-lt: #e8f4f2;
-            --gold: #c9a84c;
-            --gold-lt: #e8d49a;
-            --gold-dk: #8a6e28;
-            --ink: #1a1209;
-            --ink-mid: #3d2f1a;
-            --ink-soft: #6b5740;
-            --cream: #faf6ef;
-            --parchment: #f3ece0;
-            --border: #e8dfd0;
-            --border-dk: #c9b99a;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        .aw {
-            font-family: 'Source Sans 3', sans-serif;
-            color: var(--ink);
-            font-size: 16px;
-        }
-
         .aw-bg {
-            background-color: var(--cream);
+            background-color: #faf6ef;
             background-image:
-                radial-gradient(
-                    ellipse 80% 50% at 50% -10%,
-                    rgba(45, 129, 118, 0.08) 0%,
-                    transparent 70%
-                ),
+                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(45,129,118,0.08) 0%, transparent 70%),
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23faf6ef'/%3E%3Ccircle cx='1' cy='1' r='.4' fill='%23e8dfd0' opacity='.5'/%3E%3C/svg%3E");
-        }
-
-        /* ── Hero ── */
-        .hero-header {
-            position: relative;
-            padding: 44px 0 32px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 36px;
         }
         .hero-header::after {
             content: '';
             position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--teal), transparent);
-        }
-        .hero-eyebrow {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--teal);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            bottom: -1px; left: 0;
+            width: 80px; height: 3px;
+            background: linear-gradient(90deg, #2d8176, transparent);
         }
         .hero-eyebrow::before {
             content: '';
-            width: 24px;
-            height: 1px;
-            background: var(--teal);
-        }
-        .hero-title {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 2.8rem;
-            font-weight: 700;
-            color: var(--ink);
-            letter-spacing: -0.01em;
-            line-height: 1.15;
-        }
-        .hero-title em {
-            font-style: italic;
-            color: var(--teal);
-        }
-        .hero-sub {
-            font-size: 0.98rem;
-            font-weight: 400;
-            color: var(--ink-soft);
-            margin-top: 8px;
-        }
-        .date-pill {
-            font-size: 0.78rem;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--ink-soft);
-            background: var(--parchment);
-            border: 1px solid var(--border);
-            padding: 6px 16px;
-            border-radius: 20px;
-        }
-
-        /* ── Stat Grid ── */
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            background: var(--parchment);
-            border: 1px solid var(--border-dk);
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 2px 12px rgba(26, 18, 9, 0.07);
-        }
-        @media (max-width: 800px) {
-            .stat-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        @media (max-width: 480px) {
-            .stat-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .stat-cell {
-            padding: 24px 22px 18px;
-            border-right: 1px solid var(--border);
-            position: relative;
-            transition: background 0.18s;
-            cursor: default;
-        }
-        .stat-cell:last-child {
-            border-right: none;
-        }
-        .stat-cell:hover {
-            background: #fff;
-        }
-        .stat-lbl {
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--ink-soft);
-            margin-bottom: 10px;
-        }
-        .stat-val {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 2.6rem;
-            font-weight: 700;
-            line-height: 1;
-        }
-        .stat-sub {
-            font-size: 0.72rem;
-            color: var(--ink-soft);
-            margin-top: 8px;
+            width: 24px; height: 1px;
+            background: #2d8176;
         }
         .stat-cell .accent-line {
             position: absolute;
-            bottom: 0;
-            left: 22px;
-            height: 2px;
-            width: 0;
+            bottom: 0; left: 22px;
+            height: 2px; width: 0;
             border-radius: 2px;
             transition: width 0.3s ease;
         }
-        .stat-cell:hover .accent-line {
-            width: 36px;
-        }
-        .sv-teal {
-            color: var(--teal);
-        }
-        .sv-gold {
-            color: var(--gold-dk);
-        }
-        .sv-ink {
-            color: var(--ink-mid);
-        }
-        .al-teal {
-            background: var(--teal);
-        }
-        .al-gold {
-            background: var(--gold);
-        }
-        .al-ink {
-            background: var(--ink-mid);
-        }
-
-        /* ── Section label ── */
-        .section-label {
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--ink-soft);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .section-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        /* ── Two-column layout ── */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        @media (max-width: 800px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ── Quick Actions card ── */
-        .action-card {
-            background: #fff;
-            border: 1px solid var(--border-dk);
-            border-radius: 14px;
-            padding: 8px 6px;
-            box-shadow: 0 2px 12px rgba(26, 18, 9, 0.07);
-        }
-        .action-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 13px 14px;
-            border-radius: 9px;
-            text-decoration: none;
-            transition: background 0.13s;
-            margin: 2px 0;
-        }
-        .action-row:hover {
-            background: var(--teal-lt);
-        }
-        .action-row:hover .action-name {
-            color: var(--teal);
-        }
-        .action-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .action-name {
-            font-size: 0.88rem;
-            font-weight: 700;
-            color: var(--ink);
-            transition: color 0.13s;
-        }
-        .action-sub {
-            font-size: 0.72rem;
-            color: var(--ink-soft);
-            margin-top: 2px;
-        }
-
-        /* ── Table card ── */
-        .ms-table-wrap {
-            background: #fff;
-            border: 1px solid var(--border-dk);
-            border-radius: 14px;
+        .stat-cell:hover .accent-line { width: 36px; }
+        .ms-row-title { transition: color 0.12s; }
+        table.mst tbody tr:hover .ms-row-title { color: #2d8176; }
+        .note-chip-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            box-shadow: 0 2px 16px rgba(26, 18, 9, 0.07);
         }
-        .ms-table-head {
-            padding: 16px 24px 14px;
-            background: var(--parchment);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .ms-table-head-title {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--ink);
-        }
-        .ms-table-head-eyebrow {
-            font-size: 0.66rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--ink-soft);
-            margin-bottom: 2px;
-        }
-        .ms-table-head-badge {
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            padding: 4px 12px;
-            border-radius: 20px;
-            background: var(--teal-lt);
-            border: 1px solid rgba(45, 129, 118, 0.3);
-            color: var(--teal-dk);
-        }
-
-        table.mst {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table.mst thead tr {
-            background: var(--parchment);
-            border-bottom: 1.5px solid var(--border-dk);
-        }
-        table.mst th {
-            padding: 11px 22px;
-            font-size: 0.66rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--ink-soft);
-            text-align: left;
-        }
-        table.mst th:last-child {
-            text-align: right;
-        }
-        table.mst td {
-            padding: 15px 22px;
-            font-size: 0.9rem;
-            border-bottom: 1px solid #f5f0e8;
-            vertical-align: middle;
-        }
-        table.mst tbody tr:last-child td {
-            border-bottom: none;
-        }
-        table.mst tbody tr {
-            transition: background 0.1s;
-        }
-        table.mst tbody tr:hover td {
-            background: var(--teal-lt);
-        }
-        table.mst tbody tr:hover .ms-row-title {
-            color: var(--teal);
-        }
-
-        .ms-row-title {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 0.92rem;
-            font-weight: 700;
-            font-style: italic;
-            color: var(--ink);
-            transition: color 0.12s;
-            line-height: 1.4;
-        }
-        .ms-author {
-            font-size: 0.78rem;
-            color: var(--ink-soft);
-            margin-top: 2px;
-        }
-
-        /* Status badges */
-        .sbadge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 11px;
-            border-radius: 20px;
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            border: 1px solid;
-            white-space: nowrap;
-        }
-        .sbadge .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .sbadge.for_layout {
-            background: var(--teal-lt);
-            border-color: rgba(45, 129, 118, 0.3);
-            color: var(--teal-dk);
-        }
-        .sbadge.for_layout .dot {
-            background: var(--teal);
-        }
-        .sbadge.in_progress {
-            background: #fdf8ec;
-            border-color: rgba(201, 168, 76, 0.4);
-            color: var(--gold-dk);
-        }
-        .sbadge.in_progress .dot {
-            background: var(--gold);
-        }
-        .sbadge.for_review {
-            background: #fff7ed;
-            border-color: #fed7aa;
-            color: #9a3412;
-        }
-        .sbadge.for_review .dot {
-            background: #f97316;
-        }
-        .sbadge.published {
-            background: #f0fdf4;
-            border-color: #86efac;
-            color: var(--teal-dk);
-        }
-        .sbadge.published .dot {
-            background: var(--teal);
-        }
-        .sbadge.default {
-            background: var(--parchment);
-            border-color: var(--border);
-            color: var(--ink-soft);
-        }
-        .sbadge.default .dot {
-            background: var(--border-dk);
-        }
-
-        /* Buttons */
-        .btn-open {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 6px 13px;
-            border-radius: 5px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--teal);
-            text-decoration: none;
-            border: 1.5px solid rgba(45, 129, 118, 0.3);
-            background: var(--teal-lt);
-            transition: all 0.15s;
-        }
-        .btn-open:hover {
-            background: rgba(45, 129, 118, 0.2);
-            border-color: var(--teal);
-        }
-
-        /* Empty state */
-        .empty-state {
-            padding: 70px 24px;
-            text-align: center;
-        }
-        .empty-state-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--parchment);
-            border: 1.5px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 14px;
-        }
-        .empty-state-label {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 0.92rem;
-            font-weight: 700;
-            color: var(--ink);
-        }
-        .empty-state-sub {
-            font-size: 0.8rem;
-            color: #b5a595;
-            margin-top: 5px;
-        }
-
-        /* Table footer */
-        .table-footer {
-            padding: 12px 24px;
-            background: var(--parchment);
-            border-top: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .table-footer-brand {
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: #c9b99a;
-        }
-
-        /* Animations */
-        .fu {
-            animation: fu 0.45s ease both;
-        }
-        .fu1 {
-            animation: fu 0.45s 0.08s ease both;
-        }
-        .fu2 {
-            animation: fu 0.45s 0.16s ease both;
-        }
-        .fu3 {
-            animation: fu 0.45s 0.24s ease both;
-        }
-        .fu4 {
-            animation: fu 0.45s 0.32s ease both;
-        }
+        .fu  { animation: fu 0.45s ease both; }
+        .fu1 { animation: fu 0.45s 0.08s ease both; }
+        .fu2 { animation: fu 0.45s 0.16s ease both; }
+        .fu3 { animation: fu 0.45s 0.24s ease both; }
+        .fu4 { animation: fu 0.45s 0.32s ease both; }
         @keyframes fu {
-            from {
-                opacity: 0;
-                transform: translateY(16px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
     </style>
 @endpush
 
 @section('content')
-    <div class="aw aw-bg max-w-6xl mx-auto px-4">
-        {{-- ── Hero ── --}}
-        <div class="hero-header fu">
-            <div
-                class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
-            >
+    <div class="aw-bg max-w-7xl mx-auto px-1 font-['Source_Sans_3'] text-[#1a1209] text-base">
+
+        {{-- Hero --}}
+        <div class="hero-header relative pt-11 pb-8 border-b border-[#e8dfd0] mb-9 fu">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
-                    <p class="hero-eyebrow">Layout Editor Dashboard</p>
-                    <h1 class="hero-title">
-                        Welcome,
-                        <em>{{ auth()->user()->name }}</em>
+                    <p class="hero-eyebrow flex items-center gap-2.5 text-[11px] font-bold tracking-[0.2em] uppercase text-[#2d8176] mb-2.5">
+                        Layout Editor Dashboard
+                    </p>
+                    <h1 class="font-['Libre_Baskerville'] text-[2.8rem] font-bold text-[#1a1209] tracking-tight leading-[1.15]">
+                         <em class="italic text-[#2d8176]">Layout</em> Queue
                     </h1>
-                    <p class="hero-sub">
-                        Manage layouts, format submissions, and prepare
-                        publications
+                    <p class="text-[0.98rem] text-[#6b5740] mt-2">
+                        Manage assigned papers, format submissions, and prepare publications
                     </p>
                 </div>
-                <div
-                    class="flex items-center gap-3 self-start md:self-auto shrink-0"
-                >
-                    <span class="date-pill hidden sm:inline-block">
+                <div class="flex items-center gap-3 self-start md:self-auto shrink-0">
+                    <span class="hidden sm:inline-block text-[0.78rem] font-semibold tracking-[0.06em] uppercase text-[#6b5740] bg-[#f3ece0] border border-[#e8dfd0] px-4 py-1.5 rounded-full">
                         {{ now()->format('D, M j Y') }}
                     </span>
                 </div>
             </div>
         </div>
 
-        {{-- ── Stats ── --}}
-        <div class="stat-grid fu1 mb-10">
-            <div class="stat-cell">
-                <p class="stat-lbl">For Layout</p>
-                <p class="stat-val sv-teal">—</p>
-                <p class="stat-sub">Pending formatting</p>
-                <div class="accent-line al-teal"></div>
-            </div>
-            <div class="stat-cell">
-                <p class="stat-lbl">In Progress</p>
-                <p class="stat-val sv-gold">—</p>
-                <p class="stat-sub">Currently editing</p>
-                <div class="accent-line al-gold"></div>
-            </div>
-            <div class="stat-cell">
-                <p class="stat-lbl">For Review</p>
-                <p class="stat-val sv-ink">—</p>
-                <p class="stat-sub">Awaiting approval</p>
-                <div class="accent-line al-ink"></div>
-            </div>
-            <div class="stat-cell">
-                <p class="stat-lbl">Published</p>
-                <p class="stat-val sv-teal">—</p>
-                <p class="stat-sub">Completed papers</p>
-                <div class="accent-line al-teal"></div>
-            </div>
+        {{-- Stats --}}
+        <div class="fu1 mb-10 grid grid-cols-2 md:grid-cols-4 bg-[#f3ece0] border border-[#c9b99a] rounded-2xl overflow-hidden shadow-sm">
+            @foreach ([
+                ['For Layout',  $stats['for_layout']  ?? 0, 'text-[#2d8176]', 'bg-[#2d8176]'],
+                ['In Progress', $stats['in_progress'] ?? 0, 'text-[#8a6e28]', 'bg-[#c9a84c]'],
+                ['For Review',  $stats['for_review']  ?? 0, 'text-[#a07830]', 'bg-[#a07830]'],
+                ['Published',   $stats['published']   ?? 0, 'text-[#1a4d46]', 'bg-[#1a4d46]'],
+            ] as [$lbl, $val, $vc, $ac])
+                <div class="stat-cell relative p-6 pb-5 border-r border-b border-[#e8dfd0] last:border-r-0 [&:nth-child(n+3)]:border-b-0 max-md:[&:nth-child(2n)]:border-r-0 max-md:[&:nth-child(-n+2)]:border-b hover:bg-white transition-colors cursor-default">
+                    <p class="text-[0.68rem] font-bold tracking-[0.1em] uppercase text-[#6b5740] mb-2.5">{{ $lbl }}</p>
+                    <p class="font-['Libre_Baskerville'] text-[2.6rem] font-bold leading-none {{ $vc }}">
+                        {{ sprintf('%02d', $val) }}
+                    </p>
+                    <div class="accent-line {{ $ac }}"></div>
+                </div>
+            @endforeach
         </div>
 
-        {{-- ── Main Two-Column Grid ── --}}
-        <div class="main-grid fu2">
-            {{-- Quick Actions --}}
-            <div>
-                <div class="section-label">Quick Actions</div>
-                <div class="action-card">
-                    <a href="#" class="action-row">
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="action-icon"
-                                style="background: var(--teal-lt)"
-                            >
-                                <svg
-                                    width="18"
-                                    height="18"
-                                    fill="none"
-                                    stroke="var(--teal)"
-                                    stroke-width="1.8"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M4 6h16M4 10h16M4 14h10"
-                                    />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="action-name">Assigned Papers</p>
-                                <p class="action-sub">Papers pending layout</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="#" class="action-row">
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="action-icon"
-                                style="background: #fdf8ec"
-                            >
-                                <svg
-                                    width="18"
-                                    height="18"
-                                    fill="none"
-                                    stroke="var(--gold-dk)"
-                                    stroke-width="1.8"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                                    />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="action-name">Submit Layout</p>
-                                <p class="action-sub">Upload formatted file</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="#" class="action-row">
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="action-icon"
-                                style="background: var(--parchment)"
-                            >
-                                <svg
-                                    width="18"
-                                    height="18"
-                                    fill="none"
-                                    stroke="var(--ink-soft)"
-                                    stroke-width="1.8"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                                    />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="action-name">Layout History</p>
-                                <p class="action-sub">Previously completed</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
+        {{-- New Assignment Alert --}}
+        @php
+            $newAssignments = isset($papers) ? $papers->where('layout_status', 'for_layout') : collect();
+        @endphp
 
-            {{-- Assigned Papers Table --}}
-            <div>
-                <div class="section-label">Assigned Papers</div>
-                <div class="ms-table-wrap">
-                    <div class="ms-table-head">
+        @if ($newAssignments->count() > 0)
+            <div class="fu2 mb-4 rounded-[10px] overflow-hidden border border-[rgba(45,129,118,0.35)] bg-[#f5fdfb] flex items-stretch">
+                <div class="w-[5px] shrink-0 bg-[#2d8176]"></div>
+                <div class="flex-1 px-5 py-4 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-[38px] h-[38px] shrink-0 rounded-lg bg-[#e8f4f2] text-[#2d8176] flex items-center justify-center">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                        </div>
                         <div>
-                            <p class="ms-table-head-eyebrow">Your Workload</p>
-                            <span class="ms-table-head-title">
-                                Papers Requiring Layout
-                            </span>
+                            <p class="text-[0.7rem] font-[800] tracking-[0.12em] uppercase text-[#1a4d46] mb-0.5">New Assignment</p>
+                            <p class="text-[0.9rem] text-[#3d2f1a]">
+                                {{ $newAssignments->count() }} {{ $newAssignments->count() === 1 ? 'paper has' : 'papers have' }} been assigned for layout
+                            </p>
                         </div>
-                        <span class="ms-table-head-badge">Active</span>
                     </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="mst">
-                            <thead>
-                                <tr>
-                                    <th>Title &amp; Author</th>
-                                    <th>Status</th>
-                                    <th style="text-align: right">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{-- @forelse ($papers as $paper) --}}
-                                {{-- <tr> --}}
-                                {{-- <td> --}}
-                                {{-- <p class="ms-row-title">{{ $paper->title }}</p> --}}
-                                {{-- <p class="ms-author">{{ $paper->author }}</p> --}}
-                                {{-- </td> --}}
-                                {{-- <td> --}}
-                                {{-- <span class="sbadge {{ $paper->layout_status ?? 'default' }}"> --}}
-                                {{-- <span class="dot"></span> --}}
-                                {{-- {{ ucfirst(str_replace('_', ' ', $paper->layout_status ?? 'N/A')) }} --}}
-                                {{-- </span> --}}
-                                {{-- </td> --}}
-                                {{-- <td style="text-align:right"> --}}
-                                {{-- <a href="#" class="btn-open"> --}}
-                                {{-- Open → --}}
-                                {{-- </a> --}}
-                                {{-- </td> --}}
-                                {{-- </tr> --}}
-                                {{-- @empty --}}
-                                <tr>
-                                    <td colspan="3">
-                                        <div class="empty-state">
-                                            <div class="empty-state-icon">
-                                                <svg
-                                                    class="w-7 h-7"
-                                                    fill="none"
-                                                    stroke="#c9b99a"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                                        stroke-width="1.5"
-                                                        stroke-linecap="round"
-                                                    />
-                                                </svg>
-                                            </div>
-                                            <p class="empty-state-label">
-                                                No papers assigned yet
-                                            </p>
-                                            <p class="empty-state-sub">
-                                                Papers assigned to you will
-                                                appear here.
-                                            </p>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {{-- @endforelse --}}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="table-footer">
-                        <span
-                            style="font-size: 0.76rem; color: var(--ink-soft)"
-                        >
-                            0 records
-                        </span>
-                        <span class="table-footer-brand">
-                            BatStateU · BIRJISE
-                        </span>
-                    </div>
+                    <a href="#submissionsTable" class="text-[0.76rem] font-bold tracking-[0.06em] uppercase px-4 py-[7px] rounded-[5px] border border-[rgba(45,129,118,0.35)] text-[#1a4d46] hover:bg-[#e8f4f2] transition-all whitespace-nowrap">
+                        View Papers →
+                    </a>
                 </div>
             </div>
+        @endif
+
+        {{-- Search --}}
+        <div class="fu2 mb-6 relative">
+            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6b5740] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5"/>
+            </svg>
+            <input
+                type="text"
+                id="dashboardSearch"
+                class="w-full bg-white border-[1.5px] border-[#e8dfd0] rounded-lg py-[13px] pr-[18px] pl-12 font-['Source_Sans_3'] text-[0.95rem] text-[#1a1209] outline-none shadow-sm transition-all placeholder-[#b5a595] focus:border-[#2d8176] focus:shadow-[0_0_0_3px_rgba(45,129,118,0.12)]"
+                placeholder="Filter by title, reference number, author, or status…"
+                onkeyup="filterTable()"
+            />
         </div>
-        {{-- /main grid --}}
+
+        {{-- Papers Table --}}
+        <div class="fu3 bg-white border border-[#c9b99a] rounded-2xl overflow-hidden shadow-[0_2px_16px_rgba(26,18,9,0.07)]" id="submissionsTable">
+            <div class="px-7 py-4 bg-[#f3ece0] border-b border-[#e8dfd0] flex items-center justify-between">
+                <span class="font-['Libre_Baskerville'] text-[1.15rem] font-bold text-[#1a1209]">Assigned Papers</span>
+                <span class="text-[0.76rem] font-semibold text-[#6b5740] bg-[#faf6ef] border border-[#e8dfd0] px-3 py-1 rounded-full">
+                    {{ isset($papers) ? (method_exists($papers, 'total') ? $papers->total() : $papers->count()) : 0 }} records
+                </span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="mst w-full border-collapse">
+                    <thead>
+                        <tr class="bg-[#f3ece0] border-b-[1.5px] border-[#c9b99a]">
+                            <th class="px-6 py-3 text-left text-[0.68rem] font-bold tracking-[0.1em] uppercase text-[#6b5740] w-[110px]">Ref No.</th>
+                            <th class="px-6 py-3 text-left text-[0.68rem] font-bold tracking-[0.1em] uppercase text-[#6b5740]">Manuscript Title &amp; Author</th>
+                            <th class="px-6 py-3 text-left text-[0.68rem] font-bold tracking-[0.1em] uppercase text-[#6b5740] w-[170px]">Layout Status</th>
+                            <th class="px-6 py-3 text-right text-[0.68rem] font-bold tracking-[0.1em] uppercase text-[#6b5740] w-[120px]">Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($papers ?? [] as $paper)
+                            <tr
+                                class="paper-row border-b border-[#f5f0e8] last:border-b-0 hover:bg-[#e8f4f2] transition-colors cursor-pointer"
+                                onclick="window.location='{{ route('layout.papers.show', $paper) }}'"
+                            >
+                                <td class="px-6 py-[18px] text-[0.92rem] align-top">
+                                    <span class="inline-block text-[0.76rem] font-bold text-[#2d8176] tracking-[0.06em] bg-[rgba(45,129,118,0.07)] border border-[rgba(45,129,118,0.22)] px-2.5 py-[3px] rounded">
+                                        #{{ str_pad($paper->id, 5, '0', STR_PAD_LEFT) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-[18px] text-[0.92rem] align-top">
+                                    <p class="ms-row-title title-cell font-['Libre_Baskerville'] text-[1.05rem] italic text-[#1a1209] leading-[1.4] mt-1">
+                                        {{ $paper->title }}
+                                    </p>
+                                    <p class="author-cell text-[0.82rem] text-[#6b5740] mt-1">
+                                        {{ $paper->author->name ?? $paper->author_name ?? '—' }}
+                                    </p>
+
+                                    @if ($paper->layout_notes || $paper->editor_notes)
+                                        <div onclick="event.stopPropagation()" class="mt-2 space-y-1">
+                                            @if ($paper->layout_notes)
+                                                <div class="flex items-start gap-2 mt-2 px-3 py-[9px] rounded-[7px] bg-[#e8f4f2] border-l-[3px] border-[#2d8176]">
+                                                    <div class="mt-px">
+                                                        <p class="text-[0.65rem] font-[800] tracking-[0.1em] uppercase text-[#1a4d46] mb-[3px]">Layout Note</p>
+                                                        <p class="note-chip-text text-[0.85rem] text-[#6b5740] leading-[1.5]">{{ $paper->layout_notes }}</p>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            @if ($paper->editor_notes)
+                                                <div class="flex items-start gap-2 mt-2 px-3 py-[9px] rounded-[7px] bg-[#fdf8ec] border-l-[3px] border-[#c9a84c]">
+                                                    <div class="mt-px">
+                                                        <p class="text-[0.65rem] font-[800] tracking-[0.1em] uppercase text-[#8a6e28] mb-[3px]">Editor's Note</p>
+                                                        <p class="note-chip-text text-[0.85rem] text-[#6b5740] leading-[1.5]">{{ $paper->editor_notes }}</p>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-[18px] text-[0.92rem] align-top">
+                                    @php
+                                        $badge = match ($paper->layout_status ?? 'for_layout') {
+                                            'in_progress' => ['In Progress', 'bg-[#fdf8ec] border-[rgba(201,168,76,0.4)] text-[#8a6e28]', 'bg-[#c9a84c]'],
+                                            'for_review'  => ['For Review',  'bg-[#fff7ed] border-[#fed7aa] text-[#9a3412]',              'bg-[#f97316]'],
+                                            'published'   => ['Published',   'bg-[#f0fdf4] border-[#86efac] text-[#1a4d46]',              'bg-[#2d8176]'],
+                                            default       => ['For Layout',  'bg-[#e8f4f2] border-[rgba(45,129,118,0.35)] text-[#1a4d46]','bg-[#2d8176]'],
+                                        };
+                                    @endphp
+                                    <span class="status-cell inline-flex items-center gap-[7px] px-3 py-[5px] rounded-full text-[0.7rem] font-bold tracking-[0.06em] uppercase border whitespace-nowrap {{ $badge[1] }}">
+                                        <span class="w-1.5 h-1.5 rounded-full shrink-0 {{ $badge[2] }}"></span>
+                                        {{ $badge[0] }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-[18px] text-[0.92rem] align-top text-right">
+                                    <span class="text-[0.78rem] font-semibold text-[#6b5740] tracking-[0.04em] whitespace-nowrap">
+                                        {{ $paper->updated_at->format('d M Y') }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-6 py-[80px] text-center">
+                                    <div class="w-16 h-16 rounded-full bg-[#f3ece0] border border-[#e8dfd0] flex items-center justify-center mx-auto mb-4">
+                                        <svg class="w-8 h-8" fill="none" stroke="#c9b99a" viewBox="0 0 24 24">
+                                            <path d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="1.5" stroke-linecap="round"/>
+                                        </svg>
+                                    </div>
+                                    <p class="text-[0.78rem] font-bold tracking-[0.14em] uppercase text-[#c9b99a]">No papers assigned yet</p>
+                                    <p class="text-[0.88rem] text-[#b5a595] mt-1.5">Papers assigned to you will appear here</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        @if (isset($papers) && method_exists($papers, 'hasPages') && $papers->hasPages())
+            <div class="fu4 mt-5">{{ $papers->links() }}</div>
+        @endif
+
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        function filterTable() {
+            const f = document.getElementById('dashboardSearch').value.toUpperCase();
+            document.querySelectorAll('.paper-row').forEach(row => {
+                const title  = row.querySelector('.title-cell')?.innerText.toUpperCase()  ?? '';
+                const author = row.querySelector('.author-cell')?.innerText.toUpperCase() ?? '';
+                const ref    = row.cells[0]?.innerText.toUpperCase()                      ?? '';
+                const status = row.querySelector('.status-cell')?.innerText.toUpperCase() ?? '';
+                row.style.display = (title.includes(f) || author.includes(f) || ref.includes(f) || status.includes(f)) ? '' : 'none';
+            });
+        }
+
+        @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Confirmed</span>',
+            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+            confirmButtonText: 'Close',
+            confirmButtonColor: '#2d8176',
+            customClass: { popup: 'rounded-2xl', confirmButton: 'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
+            buttonsStyling: false,
+        });
+        @endif
+    </script>
+@endpush
