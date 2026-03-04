@@ -204,14 +204,14 @@
         <div class="space-y-8 pb-10">
             {{-- Stats Row --}}
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 fu1">
-                @php
-                    $stats = [
-                        ['label' => 'For Layout', 'value' => '—', 'icon' => '📐', 'delay' => '100ms'],
-                        ['label' => 'In Progress', 'value' => '—', 'icon' => '✏️', 'delay' => '180ms'],
-                        ['label' => 'For Review', 'value' => '—', 'icon' => '🔍', 'delay' => '260ms'],
-                        ['label' => 'Published', 'value' => '—', 'icon' => '📄', 'delay' => '340ms'],
-                    ];
-                @endphp
+        @php
+    $stats = [
+        ['label' => 'For Layout',  'value' => $pendingReviewCount,   'icon' => '📐', 'delay' => '100ms'],
+        ['label' => 'In Progress', 'value' => $inProgressCount,      'icon' => '✏️', 'delay' => '180ms'],
+        ['label' => 'Completed',   'value' => $completedCount,       'icon' => '🔍', 'delay' => '260ms'],
+        ['label' => 'Total',       'value' => $assignments->total(), 'icon' => '📄', 'delay' => '340ms'],
+    ];
+@endphp
 
                 @foreach ($stats as $stat)
                     <div
@@ -309,74 +309,70 @@
                     </div>
                 </div>
 
-                {{-- Assigned Papers Table --}}
-                <div
-                    class="fu3 md:col-span-2 bg-white/90 border border-[#c9a84c]/20 rounded-2xl p-6 backdrop-blur-sm"
-                    style="animation-delay: 500ms"
-                >
-                    <div class="flex items-center justify-between mb-5">
-                        <div>
-                            <h2
-                                class="font-['Libre_Baskerville'] text-lg font-bold text-[#0d1628]"
-                            >
-                                Assigned Papers
-                            </h2>
-                            <p class="text-[12px] text-[#8a96a8]">
-                                Papers requiring layout formatting
-                            </p>
-                        </div>
-                        <span
-                            class="px-3 py-1 bg-[#2D8176]/10 text-[#2D8176] text-[10px] font-black uppercase tracking-widest rounded-full"
-                        >
-                            Active
-                        </span>
-                    </div>
+              {{-- Assigned Papers Table --}}
+<div
+    class="fu3 md:col-span-2 bg-white/90 border border-[#c9a84c]/20 rounded-2xl p-6 backdrop-blur-sm"
+    style="animation-delay: 500ms"
+>
+    <div class="flex items-center justify-between mb-5">
+        <div>
+            <h2 class="font-['Libre_Baskerville'] text-lg font-bold text-[#0d1628]">
+                Assigned Papers
+            </h2>
+            <p class="text-[12px] text-[#8a96a8]">
+                Papers requiring layout formatting
+            </p>
+        </div>
+        <span class="px-3 py-1 bg-[#2D8176]/10 text-[#2D8176] text-[10px] font-black uppercase tracking-widest rounded-full">
+            Active
+        </span>
+    </div>
 
-                    {{-- Empty State --}}
-                    <div
-                        class="flex flex-col items-center justify-center py-12 text-center"
-                    >
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-[#f5f0e8] flex items-center justify-center text-2xl mb-3"
-                        >
-                            📄
-                        </div>
-                        <p class="font-semibold text-[#0d1628] text-sm">
-                            No papers assigned yet
-                        </p>
-                        <p class="text-[12px] text-[#8a96a8] mt-1">
-                            Papers assigned to you will appear here.
-                        </p>
-                    </div>
-                    {{--
-                        Uncomment when you have data:
-                        <table class="w-full text-sm">
-                        <thead>
-                        <tr class="border-b border-[#e8e0d0]">
-                        <th class="text-left text-[10px] uppercase tracking-widest text-[#a07830] pb-3 font-semibold">Title</th>
-                        <th class="text-left text-[10px] uppercase tracking-widest text-[#a07830] pb-3 font-semibold">Author</th>
-                        <th class="text-left text-[10px] uppercase tracking-widest text-[#a07830] pb-3 font-semibold">Status</th>
-                        <th class="pb-3"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($papers as $paper)
-                        <tr class="border-b border-[#f5f0e8] hover:bg-[#fafaf8] transition-colors">
-                        <td class="py-3 font-medium text-[#0d1628]">{{ $paper->title }}</td>
-                        <td class="py-3 text-[#6a7890]">{{ $paper->author }}</td>
-                        <td class="py-3">
-                        <span class="px-2 py-1 bg-[#c9a84c]/10 text-[#a07830] text-[10px] font-bold uppercase rounded-full">{{ $paper->status }}</span>
-                        </td>
-                        <td class="py-3">
-                        <a href="#" class="text-[#2D8176] text-[11px] font-semibold hover:underline">Open →</a>
-                        </td>
-                        </tr>
-                        @endforeach
-                        </tbody>
-                        </table>
-                    --}}
-                </div>
+    @if ($assignments->isEmpty())
+        <div class="flex flex-col items-center justify-center py-12 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-[#f5f0e8] flex items-center justify-center text-2xl mb-3">
+                📄
             </div>
+            <p class="font-semibold text-[#0d1628] text-sm">No papers assigned yet</p>
+            <p class="text-[12px] text-[#8a96a8] mt-1">Papers assigned to you will appear here.</p>
+        </div>
+    @else
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-[#e8e0d0]">
+                    <th class="text-left text-[10px] uppercase tracking-widest text-[#a07830] pb-3 font-semibold">Title</th>
+                    <th class="text-left text-[10px] uppercase tracking-widest text-[#a07830] pb-3 font-semibold">Author</th>
+                    <th class="text-left text-[10px] uppercase tracking-widest text-[#a07830] pb-3 font-semibold">Status</th>
+                    <th class="pb-3"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($assignments as $assignment)
+                    <tr class="border-b border-[#f5f0e8] hover:bg-[#fafaf8] transition-colors">
+                        <td class="py-3 font-medium text-[#0d1628]">
+                            {{ $assignment->submission->title }}
+                        </td>
+                        <td class="py-3 text-[#6a7890]">
+                            {{ $assignment->submission->author->name ?? 'Unknown' }}
+                        </td>
+                        <td class="py-3">
+                            <span class="px-2 py-1 bg-[#c9a84c]/10 text-[#a07830] text-[10px] font-bold uppercase rounded-full">
+                                {{ $assignment->status }}
+                            </span>
+                        </td>
+                       <td class="py-3">
+    <a href="{{ route('layout-editor.show', $assignment->id) }}" class="text-[#2D8176] text-[11px] font-semibold hover:underline">Open →</a>
+</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <div class="mt-4">
+            {{ $assignments->links() }}
+        </div>
+    @endif
+</div>
 
             {{-- Footer note --}}
             <div class="fu4 text-center pb-4" style="animation-delay: 600ms">
