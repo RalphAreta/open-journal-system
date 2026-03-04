@@ -3,10 +3,6 @@
 @section('title', 'Layout Editor Dashboard')
 
 @push('styles')
-    <link
-        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-    />
     <style>
         :root {
             --teal: #2d8176;
@@ -23,17 +19,17 @@
             --border: #e8dfd0;
             --border-dk: #c9b99a;
         }
+
         * {
             box-sizing: border-box;
         }
+
         .aw {
             font-family: 'Source Sans 3', sans-serif;
             color: var(--ink);
             font-size: 16px;
         }
-        .serif {
-            font-family: 'Libre Baskerville', serif;
-        }
+
         .aw-bg {
             background-color: var(--cream);
             background-image:
@@ -44,6 +40,8 @@
                 ),
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23faf6ef'/%3E%3Ccircle cx='1' cy='1' r='.4' fill='%23e8dfd0' opacity='.5'/%3E%3C/svg%3E");
         }
+
+        /* ── Hero ── */
         .hero-header {
             position: relative;
             padding: 44px 0 32px;
@@ -106,74 +104,423 @@
             border-radius: 20px;
         }
 
-        @keyframes fadeUp {
+        /* ── Stat Grid ── */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: var(--parchment);
+            border: 1px solid var(--border-dk);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(26, 18, 9, 0.07);
+        }
+        @media (max-width: 800px) {
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-cell {
+            padding: 24px 22px 18px;
+            border-right: 1px solid var(--border);
+            position: relative;
+            transition: background 0.18s;
+            cursor: default;
+        }
+        .stat-cell:last-child {
+            border-right: none;
+        }
+        .stat-cell:hover {
+            background: #fff;
+        }
+        .stat-lbl {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 10px;
+        }
+        .stat-val {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2.6rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .stat-sub {
+            font-size: 0.72rem;
+            color: var(--ink-soft);
+            margin-top: 8px;
+        }
+        .stat-cell .accent-line {
+            position: absolute;
+            bottom: 0;
+            left: 22px;
+            height: 2px;
+            width: 0;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        .stat-cell:hover .accent-line {
+            width: 36px;
+        }
+        .sv-teal {
+            color: var(--teal);
+        }
+        .sv-gold {
+            color: var(--gold-dk);
+        }
+        .sv-ink {
+            color: var(--ink-mid);
+        }
+        .al-teal {
+            background: var(--teal);
+        }
+        .al-gold {
+            background: var(--gold);
+        }
+        .al-ink {
+            background: var(--ink-mid);
+        }
+
+        /* ── Section label ── */
+        .section-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── Two-column layout ── */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 800px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── Quick Actions card ── */
+        .action-card {
+            background: #fff;
+            border: 1px solid var(--border-dk);
+            border-radius: 14px;
+            padding: 8px 6px;
+            box-shadow: 0 2px 12px rgba(26, 18, 9, 0.07);
+        }
+        .action-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 14px;
+            border-radius: 9px;
+            text-decoration: none;
+            transition: background 0.13s;
+            margin: 2px 0;
+        }
+        .action-row:hover {
+            background: var(--teal-lt);
+        }
+        .action-row:hover .action-name {
+            color: var(--teal);
+        }
+        .action-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .action-name {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--ink);
+            transition: color 0.13s;
+        }
+        .action-sub {
+            font-size: 0.72rem;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+
+        /* ── Table card ── */
+        .ms-table-wrap {
+            background: #fff;
+            border: 1px solid var(--border-dk);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 16px rgba(26, 18, 9, 0.07);
+        }
+        .ms-table-head {
+            padding: 16px 24px 14px;
+            background: var(--parchment);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .ms-table-head-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .ms-table-head-eyebrow {
+            font-size: 0.66rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 2px;
+        }
+        .ms-table-head-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: var(--teal-lt);
+            border: 1px solid rgba(45, 129, 118, 0.3);
+            color: var(--teal-dk);
+        }
+
+        table.mst {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table.mst thead tr {
+            background: var(--parchment);
+            border-bottom: 1.5px solid var(--border-dk);
+        }
+        table.mst th {
+            padding: 11px 22px;
+            font-size: 0.66rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            text-align: left;
+        }
+        table.mst th:last-child {
+            text-align: right;
+        }
+        table.mst td {
+            padding: 15px 22px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f5f0e8;
+            vertical-align: middle;
+        }
+        table.mst tbody tr:last-child td {
+            border-bottom: none;
+        }
+        table.mst tbody tr {
+            transition: background 0.1s;
+        }
+        table.mst tbody tr:hover td {
+            background: var(--teal-lt);
+        }
+        table.mst tbody tr:hover .ms-row-title {
+            color: var(--teal);
+        }
+
+        .ms-row-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            font-style: italic;
+            color: var(--ink);
+            transition: color 0.12s;
+            line-height: 1.4;
+        }
+        .ms-author {
+            font-size: 0.78rem;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+
+        /* Status badges */
+        .sbadge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 11px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border: 1px solid;
+            white-space: nowrap;
+        }
+        .sbadge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .sbadge.for_layout {
+            background: var(--teal-lt);
+            border-color: rgba(45, 129, 118, 0.3);
+            color: var(--teal-dk);
+        }
+        .sbadge.for_layout .dot {
+            background: var(--teal);
+        }
+        .sbadge.in_progress {
+            background: #fdf8ec;
+            border-color: rgba(201, 168, 76, 0.4);
+            color: var(--gold-dk);
+        }
+        .sbadge.in_progress .dot {
+            background: var(--gold);
+        }
+        .sbadge.for_review {
+            background: #fff7ed;
+            border-color: #fed7aa;
+            color: #9a3412;
+        }
+        .sbadge.for_review .dot {
+            background: #f97316;
+        }
+        .sbadge.published {
+            background: #f0fdf4;
+            border-color: #86efac;
+            color: var(--teal-dk);
+        }
+        .sbadge.published .dot {
+            background: var(--teal);
+        }
+        .sbadge.default {
+            background: var(--parchment);
+            border-color: var(--border);
+            color: var(--ink-soft);
+        }
+        .sbadge.default .dot {
+            background: var(--border-dk);
+        }
+
+        /* Buttons */
+        .btn-open {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 13px;
+            border-radius: 5px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--teal);
+            text-decoration: none;
+            border: 1.5px solid rgba(45, 129, 118, 0.3);
+            background: var(--teal-lt);
+            transition: all 0.15s;
+        }
+        .btn-open:hover {
+            background: rgba(45, 129, 118, 0.2);
+            border-color: var(--teal);
+        }
+
+        /* Empty state */
+        .empty-state {
+            padding: 70px 24px;
+            text-align: center;
+        }
+        .empty-state-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--parchment);
+            border: 1.5px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+        }
+        .empty-state-label {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .empty-state-sub {
+            font-size: 0.8rem;
+            color: #b5a595;
+            margin-top: 5px;
+        }
+
+        /* Table footer */
+        .table-footer {
+            padding: 12px 24px;
+            background: var(--parchment);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .table-footer-brand {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #c9b99a;
+        }
+
+        /* Animations */
+        .fu {
+            animation: fu 0.45s ease both;
+        }
+        .fu1 {
+            animation: fu 0.45s 0.08s ease both;
+        }
+        .fu2 {
+            animation: fu 0.45s 0.16s ease both;
+        }
+        .fu3 {
+            animation: fu 0.45s 0.24s ease both;
+        }
+        .fu4 {
+            animation: fu 0.45s 0.32s ease both;
+        }
+        @keyframes fu {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(16px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        @keyframes shimmer {
-            0% {
-                background-position: -100% 0;
-            }
-            100% {
-                background-position: 100% 0;
-            }
-        }
-        .fade-up {
-            opacity: 0;
-            animation: fadeUp 0.6s ease forwards;
-        }
-        .shimmer-bar {
-            background: linear-gradient(
-                90deg,
-                transparent,
-                #c9a84c,
-                #f0d678,
-                #c9a84c,
-                transparent
-            );
-            background-size: 200% 100%;
-            animation: shimmer 3s linear infinite;
-        }
-        .card-hover {
-            transition:
-                transform 0.2s ease,
-                box-shadow 0.2s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(160, 120, 48, 0.15);
-        }
-
-        .fu {
-            animation: fadeUp 0.45s ease both;
-        }
-        .fu1 {
-            animation: fadeUp 0.45s 0.08s ease both;
-        }
-        .fu2 {
-            animation: fadeUp 0.45s 0.16s ease both;
-        }
-        .fu3 {
-            animation: fadeUp 0.45s 0.24s ease both;
-        }
-        .fu4 {
-            animation: fadeUp 0.45s 0.32s ease both;
-        }
     </style>
 @endpush
 
 @section('content')
-    {{-- Top shimmer line --}}
-    <div class="h-0.5 w-full shimmer-bar"></div>
-
-    <div class="aw aw-bg max-w-6xl mx-auto px-6">
-        {{-- Hero Header (matches Author Dashboard style) --}}
+    <div class="aw aw-bg max-w-6xl mx-auto px-4">
+        {{-- ── Hero ── --}}
         <div class="hero-header fu">
             <div
                 class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
@@ -181,8 +528,8 @@
                 <div>
                     <p class="hero-eyebrow">Layout Editor Dashboard</p>
                     <h1 class="hero-title">
-                        <em>Layout</em>
-                        Workspace
+                        Welcome,
+                        <em>{{ auth()->user()->name }}</em>
                     </h1>
                     <p class="hero-sub">
                         Manage layouts, format submissions, and prepare
@@ -199,190 +546,212 @@
             </div>
         </div>
 
-        {{-- Main Content --}}
-        <div class="space-y-8 pb-10">
-            {{-- Stats Row --}}
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 fu1">
-                @php
-                    $stats = [
-                        ['label' => 'For Layout', 'value' => '—', 'icon' => '📐', 'delay' => '100ms'],
-                        ['label' => 'In Progress', 'value' => '—', 'icon' => '✏️', 'delay' => '180ms'],
-                        ['label' => 'For Review', 'value' => '—', 'icon' => '🔍', 'delay' => '260ms'],
-                        ['label' => 'Published', 'value' => '—', 'icon' => '📄', 'delay' => '340ms'],
-                    ];
-                @endphp
-
-                @foreach ($stats as $stat)
-                    <div
-                        class="card-hover bg-white/90 border border-[#c9a84c]/20 rounded-2xl p-5 backdrop-blur-sm"
-                        style="animation-delay: {{ $stat['delay'] }}"
-                    >
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-2xl">{{ $stat['icon'] }}</span>
-                            <span
-                                class="text-[10px] uppercase tracking-widest text-[#a07830] font-semibold"
-                            >
-                                {{ $stat['label'] }}
-                            </span>
-                        </div>
-                        <p
-                            class="font-['Libre_Baskerville'] text-3xl font-bold text-[#0d1628]"
-                        >
-                            {{ $stat['value'] }}
-                        </p>
-                    </div>
-                @endforeach
+        {{-- ── Stats ── --}}
+        <div class="stat-grid fu1 mb-10">
+            <div class="stat-cell">
+                <p class="stat-lbl">For Layout</p>
+                <p class="stat-val sv-teal">—</p>
+                <p class="stat-sub">Pending formatting</p>
+                <div class="accent-line al-teal"></div>
             </div>
-
-            {{-- Main Grid --}}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {{-- Quick Actions --}}
-                <div
-                    class="fu2 md:col-span-1 bg-white/90 border border-[#c9a84c]/20 rounded-2xl p-6 backdrop-blur-sm"
-                    style="animation-delay: 400ms"
-                >
-                    <h2
-                        class="font-['Libre_Baskerville'] text-lg font-bold text-[#0d1628] mb-1"
-                    >
-                        Quick Actions
-                    </h2>
-                    <p class="text-[12px] text-[#8a96a8] mb-5">
-                        Common layout editor tasks
-                    </p>
-
-                    <div class="space-y-3">
-                        <a
-                            href="#"
-                            class="flex items-center gap-3 p-3 rounded-xl bg-[#2D8176]/5 hover:bg-[#2D8176]/10 border border-[#2D8176]/10 transition-all group"
-                        >
-                            <span
-                                class="w-8 h-8 rounded-lg bg-[#2D8176] flex items-center justify-center text-white text-sm"
-                            >
-                                📐
-                            </span>
-                            <div>
-                                <p class="text-sm font-semibold text-[#0d1628]">
-                                    View Assigned Papers
-                                </p>
-                                <p class="text-[11px] text-[#8a96a8]">
-                                    Papers pending layout
-                                </p>
-                            </div>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex items-center gap-3 p-3 rounded-xl bg-[#c9a84c]/5 hover:bg-[#c9a84c]/10 border border-[#c9a84c]/10 transition-all group"
-                        >
-                            <span
-                                class="w-8 h-8 rounded-lg bg-[#c9a84c] flex items-center justify-center text-white text-sm"
-                            >
-                                ✏️
-                            </span>
-                            <div>
-                                <p class="text-sm font-semibold text-[#0d1628]">
-                                    Submit Layout
-                                </p>
-                                <p class="text-[11px] text-[#8a96a8]">
-                                    Upload formatted file
-                                </p>
-                            </div>
-                        </a>
-                        <a
-                            href="#"
-                            class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-100 transition-all group"
-                        >
-                            <span
-                                class="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center text-slate-600 text-sm"
-                            >
-                                📋
-                            </span>
-                            <div>
-                                <p class="text-sm font-semibold text-[#0d1628]">
-                                    Layout History
-                                </p>
-                                <p class="text-[11px] text-[#8a96a8]">
-                                    Previously completed
-                                </p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                {{-- Assigned Papers Table --}}
-                <div
-                    class="fu3 md:col-span-2 bg-white/90 border border-[#c9a84c]/20 rounded-2xl p-6 backdrop-blur-sm"
-                    style="animation-delay: 500ms"
-                >
-                    <div class="flex items-center justify-between mb-5">
-                        <div>
-                            <h2
-                                class="font-['Libre_Baskerville'] text-lg font-bold text-[#0d1628]"
-                            >
-                                Assigned Papers
-                            </h2>
-                            <p class="text-[12px] text-[#8a96a8]">
-                                Papers requiring layout formatting
-                            </p>
-                        </div>
-                        <span
-                            class="px-3 py-1 bg-[#2D8176]/10 text-[#2D8176] text-[10px] font-black uppercase tracking-widest rounded-full"
-                        >
-                            Active
-                        </span>
-                    </div>
-
-                    {{-- Empty State --}}
-                    <div
-                        class="flex flex-col items-center justify-center py-12 text-center"
-                    >
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-[#f5f0e8] flex items-center justify-center text-2xl mb-3"
-                        >
-                            📄
-                        </div>
-                        <p class="font-semibold text-[#0d1628] text-sm">
-                            No papers assigned yet
-                        </p>
-                        <p class="text-[12px] text-[#8a96a8] mt-1">
-                            Papers assigned to you will appear here.
-                        </p>
-                    </div>
-                    {{--
-                        Uncomment when you have data:
-                        <table class="w-full text-sm">
-                        <thead>
-                        <tr class="border-b border-[#e8e0d0]">
-                        <th class="text-left text-[10px] uppercase tracking-widest text-[#a07830] pb-3 font-semibold">Title</th>
-                        <th class="text-left text-[10px] uppercase tracking-widest text-[#a07830] pb-3 font-semibold">Author</th>
-                        <th class="text-left text-[10px] uppercase tracking-widest text-[#a07830] pb-3 font-semibold">Status</th>
-                        <th class="pb-3"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($papers as $paper)
-                        <tr class="border-b border-[#f5f0e8] hover:bg-[#fafaf8] transition-colors">
-                        <td class="py-3 font-medium text-[#0d1628]">{{ $paper->title }}</td>
-                        <td class="py-3 text-[#6a7890]">{{ $paper->author }}</td>
-                        <td class="py-3">
-                        <span class="px-2 py-1 bg-[#c9a84c]/10 text-[#a07830] text-[10px] font-bold uppercase rounded-full">{{ $paper->status }}</span>
-                        </td>
-                        <td class="py-3">
-                        <a href="#" class="text-[#2D8176] text-[11px] font-semibold hover:underline">Open →</a>
-                        </td>
-                        </tr>
-                        @endforeach
-                        </tbody>
-                        </table>
-                    --}}
-                </div>
+            <div class="stat-cell">
+                <p class="stat-lbl">In Progress</p>
+                <p class="stat-val sv-gold">—</p>
+                <p class="stat-sub">Currently editing</p>
+                <div class="accent-line al-gold"></div>
             </div>
-
-            {{-- Footer note --}}
-            <div class="fu4 text-center pb-4" style="animation-delay: 600ms">
-                <p class="text-[11px] text-[#b8aa90] uppercase tracking-widest">
-                    BatStateU · BIRJISE Journal System · Layout Editor Portal
-                </p>
+            <div class="stat-cell">
+                <p class="stat-lbl">For Review</p>
+                <p class="stat-val sv-ink">—</p>
+                <p class="stat-sub">Awaiting approval</p>
+                <div class="accent-line al-ink"></div>
+            </div>
+            <div class="stat-cell">
+                <p class="stat-lbl">Published</p>
+                <p class="stat-val sv-teal">—</p>
+                <p class="stat-sub">Completed papers</p>
+                <div class="accent-line al-teal"></div>
             </div>
         </div>
+
+        {{-- ── Main Two-Column Grid ── --}}
+        <div class="main-grid fu2">
+            {{-- Quick Actions --}}
+            <div>
+                <div class="section-label">Quick Actions</div>
+                <div class="action-card">
+                    <a href="#" class="action-row">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="action-icon"
+                                style="background: var(--teal-lt)"
+                            >
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    fill="none"
+                                    stroke="var(--teal)"
+                                    stroke-width="1.8"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M4 6h16M4 10h16M4 14h10"
+                                    />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="action-name">Assigned Papers</p>
+                                <p class="action-sub">Papers pending layout</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#" class="action-row">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="action-icon"
+                                style="background: #fdf8ec"
+                            >
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    fill="none"
+                                    stroke="var(--gold-dk)"
+                                    stroke-width="1.8"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                    />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="action-name">Submit Layout</p>
+                                <p class="action-sub">Upload formatted file</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#" class="action-row">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="action-icon"
+                                style="background: var(--parchment)"
+                            >
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    fill="none"
+                                    stroke="var(--ink-soft)"
+                                    stroke-width="1.8"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                                    />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="action-name">Layout History</p>
+                                <p class="action-sub">Previously completed</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            {{-- Assigned Papers Table --}}
+            <div>
+                <div class="section-label">Assigned Papers</div>
+                <div class="ms-table-wrap">
+                    <div class="ms-table-head">
+                        <div>
+                            <p class="ms-table-head-eyebrow">Your Workload</p>
+                            <span class="ms-table-head-title">
+                                Papers Requiring Layout
+                            </span>
+                        </div>
+                        <span class="ms-table-head-badge">Active</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="mst">
+                            <thead>
+                                <tr>
+                                    <th>Title &amp; Author</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{-- @forelse ($papers as $paper) --}}
+                                {{-- <tr> --}}
+                                {{-- <td> --}}
+                                {{-- <p class="ms-row-title">{{ $paper->title }}</p> --}}
+                                {{-- <p class="ms-author">{{ $paper->author }}</p> --}}
+                                {{-- </td> --}}
+                                {{-- <td> --}}
+                                {{-- <span class="sbadge {{ $paper->layout_status ?? 'default' }}"> --}}
+                                {{-- <span class="dot"></span> --}}
+                                {{-- {{ ucfirst(str_replace('_', ' ', $paper->layout_status ?? 'N/A')) }} --}}
+                                {{-- </span> --}}
+                                {{-- </td> --}}
+                                {{-- <td style="text-align:right"> --}}
+                                {{-- <a href="#" class="btn-open"> --}}
+                                {{-- Open → --}}
+                                {{-- </a> --}}
+                                {{-- </td> --}}
+                                {{-- </tr> --}}
+                                {{-- @empty --}}
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="empty-state">
+                                            <div class="empty-state-icon">
+                                                <svg
+                                                    class="w-7 h-7"
+                                                    fill="none"
+                                                    stroke="#c9b99a"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                        stroke-width="1.5"
+                                                        stroke-linecap="round"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <p class="empty-state-label">
+                                                No papers assigned yet
+                                            </p>
+                                            <p class="empty-state-sub">
+                                                Papers assigned to you will
+                                                appear here.
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {{-- @endforelse --}}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-footer">
+                        <span
+                            style="font-size: 0.76rem; color: var(--ink-soft)"
+                        >
+                            0 records
+                        </span>
+                        <span class="table-footer-brand">
+                            BatStateU · BIRJISE
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- /main grid --}}
     </div>
 @endsection
