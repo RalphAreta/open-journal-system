@@ -154,12 +154,6 @@
                                 @endif
 
                                 @if ($activeRole === 'editor-in-chief')
-                                    <a
-                                        href="{{ route('editor.submissions') }}"
-                                        class="{{ $linkBase . $inactive }}"
-                                    >
-                                        EDITORIAL
-                                    </a>
                                     @if (Route::has('appeals.index'))
                                         <a
                                             href="{{ route('appeals.index') }}"
@@ -232,6 +226,7 @@
                                     </div>
                                 @endif
                             </div>
+
                             {{-- Notification Bell --}}
                             @php
                                 $unreadCount = \App\Models\Notification::where('user_id', auth()->id())
@@ -245,7 +240,10 @@
                                     ->get();
                             @endphp
 
-                            <div class="relative group" id="notification-bell-wrapper">
+                            <div
+                                class="relative group"
+                                id="notification-bell-wrapper"
+                            >
                                 <button
                                     id="notification-bell-btn"
                                     class="relative p-2 text-white/80 hover:text-white transition-colors"
@@ -336,59 +334,103 @@
                             <script>
                                 let notificationHoverHandled = false;
 
-                                document.getElementById('notification-bell-wrapper').addEventListener('mouseenter', function() {
-                                    if (!notificationHoverHandled) {
-                                        notificationHoverHandled = true;
-                                        markAllNotificationsAsRead();
-                                    }
-                                });
+                                document
+                                    .getElementById('notification-bell-wrapper')
+                                    .addEventListener(
+                                        'mouseenter',
+                                        function () {
+                                            if (!notificationHoverHandled) {
+                                                notificationHoverHandled = true;
+                                                markAllNotificationsAsRead();
+                                            }
+                                        },
+                                    );
 
-                                document.getElementById('notification-bell-wrapper').addEventListener('mouseleave', function() {
-                                    notificationHoverHandled = false;
-                                });
+                                document
+                                    .getElementById('notification-bell-wrapper')
+                                    .addEventListener(
+                                        'mouseleave',
+                                        function () {
+                                            notificationHoverHandled = false;
+                                        },
+                                    );
 
                                 function markAllNotificationsAsRead() {
-                                    fetch('{{ route("notifications.markAllRead") }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                                            'Accept': 'application/json',
+                                    fetch(
+                                        '{{ route('notifications.markAllRead') }}',
+                                        {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type':
+                                                    'application/json',
+                                                'X-CSRF-TOKEN': document
+                                                    .querySelector(
+                                                        'meta[name="csrf-token"]',
+                                                    )
+                                                    .getAttribute('content'),
+                                                Accept: 'application/json',
+                                            },
+                                            body: JSON.stringify({}),
                                         },
-                                        body: JSON.stringify({}),
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        // Update badge count
-                                        const badge = document.getElementById('notification-badge');
-                                        if (badge && data.unread_count === 0) {
-                                            badge.remove();
-                                        }
-
-                                        // Update notification items styling
-                                        const notifItems = document.querySelectorAll('.notification-item');
-                                        notifItems.forEach(item => {
-                                            item.classList.remove('bg-blue-50/50');
-                                        });
-                                    })
-                                    .catch(error => console.error('Error marking notifications as read:', error));
+                                    )
+                                        .then((response) => response.json())
+                                        .then((data) => {
+                                            const badge =
+                                                document.getElementById(
+                                                    'notification-badge',
+                                                );
+                                            if (
+                                                badge &&
+                                                data.unread_count === 0
+                                            ) {
+                                                badge.remove();
+                                            }
+                                            const notifItems =
+                                                document.querySelectorAll(
+                                                    '.notification-item',
+                                                );
+                                            notifItems.forEach((item) => {
+                                                item.classList.remove(
+                                                    'bg-blue-50/50',
+                                                );
+                                            });
+                                        })
+                                        .catch((error) =>
+                                            console.error(
+                                                'Error marking notifications as read:',
+                                                error,
+                                            ),
+                                        );
                                 }
 
-                                // Poll for new notifications every 10 seconds
-                                setInterval(function() {
-                                    fetch('{{ route("notifications.unreadCount") }}')
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            const badge = document.getElementById('notification-badge');
+                                setInterval(function () {
+                                    fetch(
+                                        '{{ route('notifications.unreadCount') }}',
+                                    )
+                                        .then((response) => response.json())
+                                        .then((data) => {
+                                            const badge =
+                                                document.getElementById(
+                                                    'notification-badge',
+                                                );
                                             const count = data.unread_count;
 
                                             if (count > 0) {
                                                 if (!badge) {
-                                                    const btn = document.getElementById('notification-bell-btn');
-                                                    const newBadge = document.createElement('span');
-                                                    newBadge.id = 'notification-badge';
-                                                    newBadge.className = 'absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center';
-                                                    newBadge.textContent = count;
+                                                    const btn =
+                                                        document.getElementById(
+                                                            'notification-bell-btn',
+                                                        );
+                                                    const newBadge =
+                                                        document.createElement(
+                                                            'span',
+                                                        );
+                                                    newBadge.id =
+                                                        'notification-badge';
+                                                    newBadge.className =
+                                                        'absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center';
+                                                    newBadge.textContent =
+                                                        count;
                                                     btn.appendChild(newBadge);
                                                 } else {
                                                     badge.textContent = count;
@@ -397,7 +439,12 @@
                                                 badge.remove();
                                             }
                                         })
-                                        .catch(error => console.error('Error fetching unread count:', error));
+                                        .catch((error) =>
+                                            console.error(
+                                                'Error fetching unread count:',
+                                                error,
+                                            ),
+                                        );
                                 }, 10000);
                             </script>
 
