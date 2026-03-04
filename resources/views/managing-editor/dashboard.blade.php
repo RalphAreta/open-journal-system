@@ -736,7 +736,7 @@
                 class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
             >
                 <div>
-                    <p class="hero-eyebrow">Managing Editor Workspace</p>
+                    <p class="hero-eyebrow">Managing Editor Dashboard</p>
                     <h1 class="hero-title">
                         Editorial
                         <em>Production</em>

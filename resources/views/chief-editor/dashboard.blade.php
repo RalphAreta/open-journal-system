@@ -692,7 +692,7 @@
                 class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
             >
                 <div>
-                    <p class="hero-eyebrow">Chief Editor Portal</p>
+                    <p class="hero-eyebrow">Chief Editor Dashboard</p>
                     <h1 class="hero-title">
                         <em>Editorial</em>
                         Command
