@@ -4,18 +4,24 @@
 
 @push('styles')
     <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
         rel="stylesheet"
     />
     <style>
         :root {
-            --teal: #1e7a6e;
-            --teal-dark: #0f4d45;
-            --teal-light: #e8f5f3;
-            --gold: #b8963e;
-            --ink: #0d1628;
+            --teal: #2d8176;
+            --teal-dark: #1a4d46;
+            --teal-light: #e8f4f2;
+            --gold: #c9a84c;
+            --gold-dk: #8a6e28;
+            --ink: #1a1209;
+            --ink-mid: #3d2f1a;
+            --ink-soft: #6b5740;
+            --cream: #faf6ef;
+            --parchment: #f3ece0;
+            --border: #e8dfd0;
+            --border-dk: #c9b99a;
             --muted: #64748b;
-            --border: #e2e8f0;
             --surface: #f8fafc;
             --white: #ffffff;
             --red: #dc2626;
@@ -29,17 +35,86 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: #f1f5f9;
+        .aw {
+            font-family: 'Source Sans 3', sans-serif;
             color: var(--ink);
+            font-size: 16px;
         }
-
-        .font-display {
-            font-family: 'Cormorant Garamond', serif;
+        .aw-bg {
+            background-color: var(--cream);
+            background-image:
+                radial-gradient(
+                    ellipse 80% 50% at 50% -10%,
+                    rgba(45, 129, 118, 0.08) 0%,
+                    transparent 70%
+                ),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23faf6ef'/%3E%3Ccircle cx='1' cy='1' r='.4' fill='%23e8dfd0' opacity='.5'/%3E%3C/svg%3E");
         }
         .font-mono {
             font-family: 'DM Mono', monospace;
+        }
+
+        /* ── Hero Header (matches Author Dashboard) ── */
+        .hero-header {
+            position: relative;
+            padding: 44px 0 32px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 36px;
+        }
+        .hero-header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--teal), transparent);
+        }
+        .hero-eyebrow {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hero-eyebrow::before {
+            content: '';
+            width: 24px;
+            height: 1px;
+            background: var(--teal);
+        }
+        .hero-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+            line-height: 1.15;
+        }
+        .hero-title em {
+            font-style: italic;
+            color: var(--teal);
+        }
+        .hero-sub {
+            font-size: 0.98rem;
+            font-weight: 400;
+            color: var(--ink-soft);
+            margin-top: 8px;
+        }
+        .date-pill {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            background: var(--parchment);
+            border: 1px solid var(--border);
+            padding: 6px 16px;
+            border-radius: 20px;
         }
 
         @keyframes fadeUp {
@@ -52,33 +127,17 @@
                 transform: translateY(0);
             }
         }
-        .fade-up {
-            animation: fadeUp 0.4s ease both;
+        .fu {
+            animation: fadeUp 0.45s ease both;
         }
-        .fade-up-1 {
-            animation: fadeUp 0.4s 0.07s ease both;
+        .fu1 {
+            animation: fadeUp 0.45s 0.08s ease both;
         }
-        .fade-up-2 {
-            animation: fadeUp 0.4s 0.14s ease both;
+        .fu2 {
+            animation: fadeUp 0.45s 0.16s ease both;
         }
-        .fade-up-3 {
-            animation: fadeUp 0.4s 0.21s ease both;
-        }
-
-        /* ── Page shell ── */
-        .page-shell {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 28px 24px 60px;
-        }
-
-        /* ── Header ── */
-        .page-header {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 20px;
-            margin-bottom: 24px;
+        .fu3 {
+            animation: fadeUp 0.45s 0.24s ease both;
         }
 
         /* ── Stat strip ── */
@@ -113,7 +172,7 @@
         }
         .stat-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+            box-shadow: 0 6px 20px rgba(26, 18, 9, 0.08);
         }
         .stat-icon {
             width: 36px;
@@ -125,11 +184,11 @@
             flex-shrink: 0;
         }
         .stat-num {
+            font-family: 'Libre Baskerville', serif;
             font-size: 22px;
             font-weight: 700;
             color: var(--ink);
             line-height: 1;
-            font-family: 'Cormorant Garamond', serif;
         }
         .stat-label {
             font-size: 10px;
@@ -148,7 +207,6 @@
             margin-bottom: 14px;
             flex-wrap: wrap;
         }
-
         .search-wrap {
             position: relative;
             flex: 1;
@@ -164,39 +222,40 @@
         }
         .search-input {
             width: 100%;
-            padding: 9px 14px 9px 36px;
+            padding: 10px 14px 10px 36px;
             border: 1.5px solid var(--border);
             border-radius: 9px;
             background: var(--white);
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Source Sans 3', sans-serif;
             font-size: 13px;
             color: var(--ink);
             outline: none;
             transition:
                 border-color 0.15s,
                 box-shadow 0.15s;
+            box-shadow: 0 1px 4px rgba(26, 18, 9, 0.05);
         }
         .search-input:focus {
             border-color: var(--teal);
-            box-shadow: 0 0 0 3px rgba(30, 122, 110, 0.1);
+            box-shadow: 0 0 0 3px rgba(45, 129, 118, 0.12);
         }
         .search-input::placeholder {
-            color: #94a3b8;
+            color: #b5a595;
         }
 
         .filter-select {
-            padding: 9px 32px 9px 12px;
+            padding: 10px 32px 10px 12px;
             border: 1.5px solid var(--border);
             border-radius: 9px;
             background: var(--white);
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Source Sans 3', sans-serif;
             font-size: 12px;
             font-weight: 500;
             color: var(--ink);
             outline: none;
             cursor: pointer;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%236b5740' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 11px center;
             transition: border-color 0.15s;
@@ -210,22 +269,19 @@
         /* ── Table card ── */
         .table-card {
             background: var(--white);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-dk);
             border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 2px 16px rgba(26, 18, 9, 0.07);
         }
-
         .tbl {
             width: 100%;
             border-collapse: collapse;
         }
-
         .tbl thead tr {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
+            background: var(--parchment);
+            border-bottom: 1.5px solid var(--border-dk);
         }
-
         .tbl th {
             padding: 12px 18px;
             text-align: left;
@@ -233,24 +289,22 @@
             font-weight: 700;
             letter-spacing: 0.14em;
             text-transform: uppercase;
-            color: var(--muted);
+            color: var(--ink-soft);
             white-space: nowrap;
         }
         .tbl th:last-child {
             text-align: right;
         }
-
         .tbl tbody tr {
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #f5f0e8;
             transition: background 0.12s;
         }
         .tbl tbody tr:last-child {
             border-bottom: none;
         }
         .tbl tbody tr:hover {
-            background: #fafcff;
+            background: var(--teal-light);
         }
-
         .tbl td {
             padding: 14px 18px;
             vertical-align: middle;
@@ -268,15 +322,17 @@
         .title-index {
             font-size: 10px;
             font-weight: 600;
-            color: #cbd5e1;
+            color: #c9b99a;
             font-family: 'DM Mono', monospace;
             margin-top: 2px;
             flex-shrink: 0;
             min-width: 24px;
         }
         .title-text {
+            font-family: 'Libre Baskerville', serif;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 400;
+            font-style: italic;
             color: var(--ink);
             line-height: 1.4;
             transition: color 0.15s;
@@ -284,7 +340,6 @@
         tr:hover .title-text {
             color: var(--teal);
         }
-
         .title-field {
             display: inline-flex;
             align-items: center;
@@ -339,7 +394,6 @@
             height: 5px;
             border-radius: 50%;
         }
-
         .s-submitted {
             background: #eff6ff;
             border-color: #bfdbfe;
@@ -357,17 +411,17 @@
             background: #d97706;
         }
         .s-accepted {
-            background: #ecfdf5;
-            border-color: #a7f3d0;
-            color: #059669;
+            background: #f0fdf4;
+            border-color: #86efac;
+            color: var(--teal-dark);
         }
         .s-accepted .pill-dot {
-            background: #059669;
+            background: var(--teal);
         }
         .s-rejected {
             background: #fef2f2;
             border-color: #fecaca;
-            color: #dc2626;
+            color: #991b1b;
         }
         .s-rejected .pill-dot {
             background: #dc2626;
@@ -375,13 +429,13 @@
         .s-revisions {
             background: #fff7ed;
             border-color: #fed7aa;
-            color: #ea580c;
+            color: #9a3412;
         }
         .s-revisions .pill-dot {
-            background: #ea580c;
+            background: #f97316;
         }
         .s-default {
-            background: var(--surface);
+            background: var(--parchment);
             border-color: var(--border);
             color: var(--muted);
         }
@@ -422,7 +476,7 @@
             color: #ea580c;
         }
         .rb-pending {
-            background: var(--surface);
+            background: var(--parchment);
             color: var(--muted);
         }
         .rb-icon {
@@ -448,13 +502,13 @@
                 transform 0.14s,
                 filter 0.14s,
                 box-shadow 0.14s;
-            box-shadow: 0 2px 8px rgba(30, 122, 110, 0.2);
+            box-shadow: 0 2px 8px rgba(45, 129, 118, 0.25);
             white-space: nowrap;
         }
         .btn-manage:hover {
             transform: translateY(-1px);
             filter: brightness(1.08);
-            box-shadow: 0 4px 14px rgba(30, 122, 110, 0.3);
+            box-shadow: 0 4px 14px rgba(45, 129, 118, 0.35);
         }
 
         /* ── Empty state ── */
@@ -465,7 +519,7 @@
         .empty-icon {
             width: 56px;
             height: 56px;
-            background: var(--surface);
+            background: var(--parchment);
             border-radius: 14px;
             display: flex;
             align-items: center;
@@ -474,10 +528,10 @@
             border: 1px solid var(--border);
         }
 
-        /* ── Pagination footer ── */
+        /* ── Table footer ── */
         .table-footer {
             padding: 12px 18px;
-            background: var(--surface);
+            background: var(--parchment);
             border-top: 1px solid var(--border);
             display: flex;
             align-items: center;
@@ -510,76 +564,45 @@
             color: var(--muted);
             margin-right: 6px;
         }
-
-        /* ── Date badge ── */
-        .date-badge {
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--muted);
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            padding: 5px 12px;
-            font-family: 'DM Mono', monospace;
-        }
     </style>
 @endpush
 
 @section('content')
-    <div class="page-shell">
+    <div class="aw aw-bg max-w-7xl mx-auto px-6">
         {{-- Validation errors --}}
         <x-validation-errors />
 
-        {{-- ── Page Header ── --}}
-        <div class="page-header fade-up">
-            <div>
-                <h1
-                    class="font-display"
-                    style="
-                        font-size: 30px;
-                        font-weight: 600;
-                        color: var(--teal-dark);
-                        line-height: 1.1;
-                        letter-spacing: -0.01em;
-                    "
+        {{-- ── Hero Header ── --}}
+        <div class="hero-header fu">
+            <div
+                class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
+            >
+                <div>
+                    <p class="hero-eyebrow">Editorial Office</p>
+                    <h1 class="hero-title">
+                        Manage
+                        <em>Submissions</em>
+                    </h1>
+                    <p class="hero-sub">
+                        Review, assign, and track manuscript progress
+                    </p>
+                </div>
+                <div
+                    class="flex items-center gap-3 self-start md:self-auto shrink-0"
                 >
-                    Manage Submissions
-                </h1>
-                <p
-                    style="
-                        font-size: 13px;
-                        color: var(--muted);
-                        margin-top: 5px;
-                    "
-                >
-                    Review, assign, and track manuscript progress
-                </p>
+                    <span class="date-pill hidden sm:inline-block">
+                        {{ now()->format('D, M j Y') }}
+                    </span>
+                </div>
             </div>
-            <span class="date-badge">{{ now()->format('D, M j Y') }}</span>
         </div>
 
         {{-- ── Stats Strip ── --}}
         @php
             $total = $submissions->total() ?? $submissions->count();
-            $submitted = $submissions
-                ->getCollection()
-                ->where('status', 'submitted')
-                ->count();
-            $underReview = $submissions
-                ->getCollection()
-                ->where('status', 'under_review')
-                ->count();
-            $accepted = $submissions
-                ->getCollection()
-                ->where('status', 'accepted')
-                ->count();
-            $rejected = $submissions
-                ->getCollection()
-                ->where('status', 'rejected')
-                ->count();
         @endphp
 
-        <div class="stat-strip fade-up-1">
+        <div class="stat-strip fu1">
             <div class="stat-card">
                 <div class="stat-icon" style="background: #f0fdf4">
                     <svg
@@ -643,13 +666,13 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon" style="background: #ecfdf5">
+                <div class="stat-icon" style="background: var(--teal-light)">
                     <svg
                         width="17"
                         height="17"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="var(--emerald)"
+                        stroke="var(--teal)"
                         stroke-width="1.8"
                     >
                         <path
@@ -689,7 +712,7 @@
         </div>
 
         {{-- ── Toolbar ── --}}
-        <div class="toolbar fade-up-1">
+        <div class="toolbar fu1">
             <div class="search-wrap">
                 <svg
                     class="search-icon"
@@ -730,7 +753,7 @@
         </div>
 
         {{-- ── Table Card ── --}}
-        <div class="table-card fade-up-2">
+        <div class="table-card fu2">
             <div style="overflow-x: auto">
                 <table class="tbl" id="submissions-table">
                     <thead>
@@ -763,7 +786,7 @@
                                     default => 's-default',
                                 };
 
-                                $avatarColors = ['#0f4d45', '#1e7a6e', '#b8963e', '#2563eb', '#7c3aed', '#db2777'];
+                                $avatarColors = ['#0f4d45', '#1a4d46', '#8a6e28', '#2563eb', '#7c3aed', '#db2777'];
                                 $avatarBg = $avatarColors[$loop->index % count($avatarColors)];
                                 $initial = strtoupper(substr($s->author->name ?? '?', 0, 1));
                             @endphp
@@ -931,7 +954,7 @@
                                         <span
                                             style="
                                                 font-size: 11px;
-                                                color: #cbd5e1;
+                                                color: #c9b99a;
                                                 font-weight: 500;
                                             "
                                         >
@@ -968,7 +991,7 @@
                                                 height="24"
                                                 viewBox="0 0 24 24"
                                                 fill="none"
-                                                stroke="#cbd5e1"
+                                                stroke="#c9b99a"
                                                 stroke-width="1.5"
                                             >
                                                 <path
@@ -989,7 +1012,7 @@
                                         <p
                                             style="
                                                 font-size: 12px;
-                                                color: #cbd5e1;
+                                                color: #c9b99a;
                                             "
                                         >
                                             Submissions will appear here once
@@ -1015,7 +1038,7 @@
                         height="22"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="#cbd5e1"
+                        stroke="#c9b99a"
                         stroke-width="1.5"
                     >
                         <circle cx="11" cy="11" r="8" />
@@ -1054,7 +1077,7 @@
         </div>
 
         {{-- ── Legend ── --}}
-        <div class="legend-bar fade-up-3">
+        <div class="legend-bar fu3">
             <span class="legend-label">Reviews</span>
             <span class="rbadge rb-accept">
                 <svg
@@ -1120,7 +1143,6 @@
                 </svg>
                 Pending
             </span>
-
             <span style="margin-left: auto" class="legend-label">Status</span>
             <span
                 class="pill s-submitted"
@@ -1178,10 +1200,8 @@
             const query = searchInput.value.toLowerCase().trim();
             const status = statusFilter.value;
             const sort = sortSelect.value;
-
             let rows = getRows();
 
-            // Filter
             let visible = rows.filter((row) => {
                 const matchSearch =
                     !query ||
@@ -1191,7 +1211,6 @@
                 return matchSearch && matchStatus;
             });
 
-            // Sort
             if (sort === 'title') {
                 visible.sort((a, b) =>
                     a.dataset.title.localeCompare(b.dataset.title),
@@ -1199,22 +1218,17 @@
             } else if (sort === 'oldest') {
                 visible.sort((a, b) => a.rowIndex - b.rowIndex);
             }
-            // newest = default DOM order
 
-            // Hide all, show matching
             rows.forEach((r) => (r.style.display = 'none'));
-            visible.forEach((r) => (r.style.display = ''));
-
-            // Reorder
-            visible.forEach((r) => tableBody.appendChild(r));
-
-            // Update row indices
+            visible.forEach((r) => {
+                r.style.display = '';
+                tableBody.appendChild(r);
+            });
             visible.forEach((r, i) => {
                 const idx = r.querySelector('.title-index');
                 if (idx) idx.textContent = String(i + 1).padStart(2, '0');
             });
 
-            // No-results
             noResults.classList.toggle('hidden', visible.length > 0);
             if (rowsCount)
                 rowsCount.textContent = `Showing ${visible.length} of ${rows.length} submissions`;
