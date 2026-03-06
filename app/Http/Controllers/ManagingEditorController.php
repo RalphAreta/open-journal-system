@@ -217,7 +217,7 @@ public function downloadLayout(Submission $submission)
 
 public function downloadCtf(Submission $submission)
 {
-    if (auth()->id() !== $submission->author_id && 
+    if (auth()->id() !== $submission->author_id &&
         auth()->id() !== $submission->managing_editor_id) {
         abort(403);
     }
@@ -236,7 +236,7 @@ public function publishPaper(Submission $submission): RedirectResponse
         abort(403, 'Unauthorized');
     }
 
-    if ($submission->status !== Submission::STATUS_WITH_MANAGING_EDITOR || 
+    if ($submission->status !== Submission::STATUS_WITH_MANAGING_EDITOR ||
         $submission->managing_editor_status !== 'ready_to_publish') {
         return back()->with('error', 'This submission is not ready for publishing.');
     }
