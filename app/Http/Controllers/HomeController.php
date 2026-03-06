@@ -235,8 +235,8 @@ class HomeController extends Controller
 
     public function showPublicPaper(Submission $submission)
     {
-        // Only allow viewing accepted papers publicly
-        if ($submission->status !== Submission::STATUS_ACCEPTED) {
+        // Only allow viewing published papers publicly
+        if ($submission->status !== Submission::STATUS_PUBLISHED) {
             abort(403, 'This paper is not published yet.');
         }
 
@@ -253,7 +253,7 @@ class HomeController extends Controller
                 'category' => $submission->research_field,
                 'author' => $submission->author->name ?? 'Anonymous',
                 'authorId' => $submission->author_id,
-                'publishedAt' => $submission->editor_decision_at,
+                'publishedAt' => $submission->published_at,
                 'citations' => rand(50, 200),
                 'downloads' => rand(1000, 5000),
                 'reviews' => $reviewCount,
@@ -265,8 +265,8 @@ class HomeController extends Controller
 
     public function downloadPublicPaper(Submission $submission)
     {
-        // Only allow downloading accepted papers publicly
-        if ($submission->status !== Submission::STATUS_ACCEPTED) {
+        // Only allow downloading published papers publicly
+        if ($submission->status !== Submission::STATUS_PUBLISHED) {
             abort(403, 'This paper is not available for download.');
         }
 
@@ -282,10 +282,10 @@ class HomeController extends Controller
 
     public function publishedPapers()
     {
-        // Get all published (accepted) papers with pagination
-        $papers = Submission::where('status', Submission::STATUS_ACCEPTED)
+        // Get all published papers with pagination
+        $papers = Submission::where('status', Submission::STATUS_PUBLISHED)
             ->with('author')
-            ->latest('editor_decision_at')
+            ->latest('published_at')
             ->paginate(12);
 
         // Map the papers to include additional data
@@ -301,7 +301,7 @@ class HomeController extends Controller
                 'keywords' => $submission->keywords,
                 'category' => $submission->research_field,
                 'author' => $submission->author->name ?? 'Anonymous',
-                'publishedAt' => $submission->editor_decision_at,
+                'publishedAt' => $submission->published_at,
                 'downloads' => rand(1000, 5000),
                 'reviews' => $reviewCount,
             ];
