@@ -27,6 +27,7 @@ class Appeal extends Model
     public const STATUS_PENDING = 'pending';
     public const STATUS_APPROVED = 'approved';
     public const STATUS_REJECTED = 'rejected';
+    public const MAX_APPEALS = 2;
 
     public static function statusOptions(): array
     {

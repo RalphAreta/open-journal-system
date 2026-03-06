@@ -25,10 +25,10 @@ class AppealController extends Controller
             return redirect()->back()->with('error', 'This submission is not eligible for appeal.');
         }
 
-        // Check if an appeal already exists
-        $existingAppeal = Appeal::where('submission_id', $submission->id)->first();
-        if ($existingAppeal) {
-            return redirect()->back()->with('error', 'You have already submitted an appeal for this submission.');
+        // Check if max appeals have been reached
+        $appealCount = Appeal::where('submission_id', $submission->id)->count();
+        if ($appealCount >= Appeal::MAX_APPEALS) {
+            return redirect()->back()->with('error', 'You have exhausted the maximum number of appeals for this submission.');
         }
 
         // Validate the request
@@ -106,7 +106,20 @@ class AppealController extends Controller
             
             $message = 'Appeal approved. The submission will now proceed to the review stage.';
         } else {
-            $message = 'Appeal rejected. The author has been notified.';
+            // Check if this is the second rejection
+            $rejectedCount = Appeal::where('submission_id', $appeal->submission_id)
+                ->where('status', Appeal::STATUS_REJECTED)
+                ->count();
+            
+            // If this is the second rejection, set status to failed to prevent further appeals
+            if ($rejectedCount + 1 >= Appeal::MAX_APPEALS) {
+                $appeal->submission->update([
+                    'initial_screening_status' => Submission::SCREENING_STATUS_FAILED,
+                ]);
+                $message = 'Appeal rejected. The submission has completed the appeal process and cannot be appealed further.';
+            } else {
+                $message = 'Appeal rejected. The author may submit one additional appeal.';
+            }
         }
 
         return redirect()->route('appeals.index')

@@ -216,14 +216,14 @@
 
                                 <!-- Published Date -->
                                 <div class="text-[10px] text-[#a7b1c7] mb-4 font-medium">
-                                    Published: {{ $paper['publishedAt']->format('M d, Y') }}
+                                    Published: {{ $paper['publishedAt']?->format('M d, Y') ?? 'N/A' }}
                                 </div>
 
                                 <!-- Citation -->
                                 <div class="bg-[#f9f7f2] p-3 rounded-lg mb-4 border-l-4 border-[#c9a84c]">
                                     <p class="text-[10px] font-bold text-[#2D8176] uppercase mb-2">Citation</p>
                                     <p class="text-[11px] text-[#6a7890] italic font-medium">
-                                        {{ $paper['author'] }} ({{ $paper['publishedAt']->format('Y') }}). {{ $paper['title'] }}. Journal System.
+                                        {{ $paper['author'] }} ({{ $paper['publishedAt']?->format('Y') ?? 'N/A' }}). {{ $paper['title'] }}. Journal System.
                                     </p>
                                 </div>
 
