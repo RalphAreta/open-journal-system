@@ -98,12 +98,12 @@
 
                         <div class="mb-4">
                             <label class="block text-xs text-[#6a7890] uppercase tracking-wider font-bold mb-2">Upload File</label>
-                            <input type="file" name="file" accept=".pdf,.doc,.docx" required
+                            <input type="file" name="file" accept=".pdf" required
                                    class="w-full px-3 py-2 border border-[#e0d8cc] rounded-lg focus:border-[#2D8176] focus:outline-none">
                             @error('file')
                                 <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                             @enderror
-                            <p class="text-xs text-[#6a7890] mt-1">Accepted: PDF, DOC, DOCX (Max 10MB)</p>
+                            <p class="text-xs text-[#6a7890] mt-1">Accepted: PDF only (Max 10MB)</p>
                         </div>
 
                         <div class="mb-4">
