@@ -279,4 +279,37 @@ class HomeController extends Controller
             $submission->file_name
         );
     }
+
+    public function publishedPapers()
+    {
+        // Get all published (accepted) papers with pagination
+        $papers = Submission::where('status', Submission::STATUS_ACCEPTED)
+            ->with('author')
+            ->latest('editor_decision_at')
+            ->paginate(12);
+
+        // Map the papers to include additional data
+        $publishedPapers = $papers->map(function ($submission) {
+            $reviewCount = Review::where('submission_id', $submission->id)
+                ->where('status', Review::STATUS_SUBMITTED)
+                ->count();
+
+            return [
+                'id' => $submission->id,
+                'title' => $submission->title,
+                'abstract' => $submission->abstract,
+                'keywords' => $submission->keywords,
+                'category' => $submission->research_field,
+                'author' => $submission->author->name ?? 'Anonymous',
+                'publishedAt' => $submission->editor_decision_at,
+                'downloads' => rand(1000, 5000),
+                'reviews' => $reviewCount,
+            ];
+        });
+
+        return view('published-papers', [
+            'papers' => $publishedPapers,
+            'pagination' => $papers,
+        ]);
+    }
 }

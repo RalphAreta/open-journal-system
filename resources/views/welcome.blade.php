@@ -350,6 +350,12 @@
                 </a>
                 <div class="hidden md:flex items-center gap-8">
                     <a
+                        href="/published-papers"
+                        class="text-sm font-bold text-[#2D8176] hover:text-[#c9a84c] transition-colors"
+                    >
+                        Published Papers
+                    </a>
+                    <a
                         href="/login"
                         class="text-sm font-bold text-[#2D8176] hover:text-[#c9a84c] transition-colors"
                     >
@@ -1095,189 +1101,7 @@
             </div>
         </section>
 
-        <!-- FEATURED RESEARCH SPOTLIGHT -->
-        <section class="py-20 max-w-7xl mx-auto px-6">
-            <div class="text-center mb-14">
-                <h2 class="font-libre text-4xl font-bold text-[#2D8176] mb-2">
-                    Featured Research
-                </h2>
-                <p class="text-sm text-[#6a7890]">
-                    Highlights from our recent publications
-                </p>
-            </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                @forelse ($featuredResearch as $paper)
-                    <!-- Spotlight -->
-                    <div
-                        class="card-hover-depth bg-white rounded-xl overflow-hidden border border-[#c9a84c] shadow-lg"
-                    >
-                        <div
-                            class="h-40 bg-linear-to-br from-[#2D8176]/30 to-[#c9a84c]/20 flex items-center justify-center"
-                        >
-                            <div class="text-7xl">
-                                {{ $loop->iteration == 1 ? '🧬' : '♻️' }}
-                            </div>
-                        </div>
-                        <div class="p-7">
-                            <div class="flex items-center gap-2 mb-3">
-                                <span
-                                    class="px-2 py-1 bg-[#2D8176]/10 text-[#2D8176] text-[9px] font-bold uppercase rounded-full"
-                                >
-                                    Featured
-                                </span>
-                                <span
-                                    class="text-[10px] text-[#c9a84c] font-bold uppercase"
-                                >
-                                    {{ $paper['category'] }}
-                                </span>
-                            </div>
-                            <h3
-                                class="font-libre text-lg font-bold text-[#2D8176] mb-3 leading-tight"
-                            >
-                                {{ $paper['title'] }}
-                            </h3>
-                            <p
-                                class="text-[#6a7890] text-sm mb-4 leading-relaxed"
-                            >
-                                {{ $paper['abstract'] }}
-                            </p>
-                            <div
-                                class="flex items-center gap-6 mb-6 text-xs font-bold text-[#6a7890]"
-                            >
-                                <div class="flex items-center gap-1">
-                                    <span class="text-[#c9a84c]">✓</span>
-                                    <span>
-                                        {{ $paper['citations'] }} Citations
-                                    </span>
-                                </div>
-                                <div class="flex items-center gap-1">
-                                    <span class="text-[#c9a84c]">✓</span>
-                                    <span>
-                                        {{ number_format($paper['downloads']) }}
-                                        Downloads
-                                    </span>
-                                </div>
-                            </div>
-                            <a
-                                href="{{ route('papers.show', ['submission' => $paper['id']]) }}"
-                                class="inline-block px-6 py-2 bg-[#2D8176] text-white rounded-lg font-bold text-xs uppercase tracking-wider hover:-translate-y-0.5 transition-all shadow-md"
-                            >
-                                Read Article
-                            </a>
-                        </div>
-                    </div>
-                @empty
-                    <!-- Default Spotlight 1 -->
-                    <div
-                        class="card-hover-depth bg-white rounded-xl overflow-hidden border border-[#c9a84c] shadow-lg"
-                    >
-                        <div
-                            class="h-40 bg-linear-to-br from-[#2D8176]/30 to-[#c9a84c]/20 flex items-center justify-center"
-                        >
-                            <div class="text-7xl">🧬</div>
-                        </div>
-                        <div class="p-7">
-                            <div class="flex items-center gap-2 mb-3">
-                                <span
-                                    class="px-2 py-1 bg-[#2D8176]/10 text-[#2D8176] text-[9px] font-bold uppercase rounded-full"
-                                >
-                                    Featured
-                                </span>
-                                <span
-                                    class="text-[10px] text-[#c9a84c] font-bold uppercase"
-                                >
-                                    AI & ML
-                                </span>
-                            </div>
-                            <h3
-                                class="font-libre text-lg font-bold text-[#2D8176] mb-3 leading-tight"
-                            >
-                                Quantum-Inspired Neural Networks
-                            </h3>
-                            <p
-                                class="text-[#6a7890] text-sm mb-4 leading-relaxed"
-                            >
-                                Revolutionary approach for protein folding
-                                prediction. Accelerates drug discovery by 340%.
-                            </p>
-                            <div
-                                class="flex items-center gap-6 mb-6 text-xs font-bold text-[#6a7890]"
-                            >
-                                <div class="flex items-center gap-1">
-                                    <span class="text-[#c9a84c]">✓</span>
-                                    <span>156 Citations</span>
-                                </div>
-                                <div class="flex items-center gap-1">
-                                    <span class="text-[#c9a84c]">✓</span>
-                                    <span>2.4K Downloads</span>
-                                </div>
-                            </div>
-                            <a
-                                href="#"
-                                class="inline-block px-6 py-2 bg-[#2D8176] text-white rounded-lg font-bold text-xs uppercase tracking-wider hover:-translate-y-0.5 transition-all shadow-md"
-                            >
-                                Read Article
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Default Spotlight 2 -->
-                    <div
-                        class="card-hover-depth bg-white rounded-xl overflow-hidden border border-[#c9a84c] shadow-lg"
-                    >
-                        <div
-                            class="h-40 bg-linear-to-br from-[#2D8176]/30 to-[#c9a84c]/20 flex items-center justify-center"
-                        >
-                            <div class="text-7xl">♻️</div>
-                        </div>
-                        <div class="p-7">
-                            <div class="flex items-center gap-2 mb-3">
-                                <span
-                                    class="px-2 py-1 bg-[#2D8176]/10 text-[#2D8176] text-[9px] font-bold uppercase rounded-full"
-                                >
-                                    Featured
-                                </span>
-                                <span
-                                    class="text-[10px] text-[#c9a84c] font-bold uppercase"
-                                >
-                                    Green Tech
-                                </span>
-                            </div>
-                            <h3
-                                class="font-libre text-lg font-bold text-[#2D8176] mb-3 leading-tight"
-                            >
-                                Next-Gen Carbon Capture Materials
-                            </h3>
-                            <p
-                                class="text-[#6a7890] text-sm mb-4 leading-relaxed"
-                            >
-                                Cost-effective graphene-based carbon capture
-                                technology for industrial deployment.
-                            </p>
-                            <div
-                                class="flex items-center gap-6 mb-6 text-xs font-bold text-[#6a7890]"
-                            >
-                                <div class="flex items-center gap-1">
-                                    <span class="text-[#c9a84c]">✓</span>
-                                    <span>89 Citations</span>
-                                </div>
-                                <div class="flex items-center gap-1">
-                                    <span class="text-[#c9a84c]">✓</span>
-                                    <span>1.8K Downloads</span>
-                                </div>
-                            </div>
-                            <a
-                                href="#"
-                                class="inline-block px-6 py-2 bg-[#2D8176] text-white rounded-lg font-bold text-xs uppercase tracking-wider hover:-translate-y-0.5 transition-all shadow-md"
-                            >
-                                Read Article
-                            </a>
-                        </div>
-                    </div>
-                @endforelse
-            </div>
-        </section>
 
         <!-- RESEARCH FIELDS EXPLORER (Filterable Category Grid) -->
         <section class="py-20 max-w-7xl mx-auto px-6">

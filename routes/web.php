@@ -24,6 +24,7 @@ Route::get('/', function () {
 });
 
 // Public routes for viewing published papers
+Route::get('/published-papers', [HomeController::class, 'publishedPapers'])->name('published-papers');
 Route::get('/papers/{submission}', [HomeController::class, 'showPublicPaper'])->name('papers.show');
 Route::get('/papers/{submission}/download', [HomeController::class, 'downloadPublicPaper'])->name('papers.download');
 
