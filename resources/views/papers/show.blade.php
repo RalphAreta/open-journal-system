@@ -288,9 +288,9 @@
     <div id="citationModal" class="citation-modal">
         <div class="citation-modal-content">
             <button class="close-citation-modal" onclick="closeCitationModal()">&times;</button>
-            
+
             <h2 class="font-libre text-2xl font-bold text-[#2D8176] mb-4">Cite This Paper</h2>
-            
+
             <div class="citation-tabs">
                 <button class="citation-tab-btn active" onclick="switchCitationStyle(this, 'apa')">APA Style</button>
                 <button class="citation-tab-btn" onclick="switchCitationStyle(this, 'chicago')">Chicago Style</button>
@@ -357,12 +357,12 @@
             document.querySelectorAll('.citation-tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
+
             // Remove active class from all content divs
             document.querySelectorAll('.citation-content').forEach(div => {
                 div.classList.remove('active');
             });
-            
+
             // Add active class to clicked button and corresponding content
             button.classList.add('active');
             document.getElementById(style).classList.add('active');
