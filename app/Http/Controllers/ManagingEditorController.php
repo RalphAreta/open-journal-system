@@ -230,4 +230,55 @@ public function downloadCtf(Submission $submission)
     );
 }
 
+public function publishPaper(Submission $submission): RedirectResponse
+{
+    if ($submission->managing_editor_id !== auth()->id()) {
+        abort(403, 'Unauthorized');
+    }
+
+    if ($submission->status !== Submission::STATUS_WITH_MANAGING_EDITOR || 
+        $submission->managing_editor_status !== 'ready_to_publish') {
+        return back()->with('error', 'This submission is not ready for publishing.');
+    }
+
+    // Publish the paper
+    $submission->update([
+        'status' => Submission::STATUS_PUBLISHED,
+        'published_at' => now(),
+        'managing_editor_status' => 'published',
+    ]);
+
+    // Notify author of publication
+    $author = $submission->author;
+    if ($author) {
+        \App\Models\Notification::create([
+            'user_id'         => $author->id,
+            'role'            => 'author',
+            'title'           => '🎉 Paper Published Successfully!',
+            'message'         => "Congratulations! Your manuscript \"{$submission->title}\" has been officially published and is now available to the public.",
+            'type'            => 'success',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    // Notify assigned editor
+    $editor = $submission->assignedEditor;
+    if ($editor) {
+        \App\Models\Notification::create([
+            'user_id'         => $editor->id,
+            'role'            => 'editor',
+            'title'           => '📰 Paper Published',
+            'message'         => "\"{$submission->title}\" has been published and is now live.",
+            'type'            => 'info',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    return redirect()
+        ->route('managing-editor.dashboard')
+        ->with('success', 'Paper published successfully!');
+}
+
 }

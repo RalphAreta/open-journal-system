@@ -227,12 +227,27 @@ return redirect()->route('submissions.index')->with('success', 'Submission creat
             return back()->with('error', 'This submission is not awaiting author confirmation.');
         }
 
+        // Update status to ready for publishing (goes back to managing editor)
         $submission->update([
-            'status' => Submission::STATUS_PUBLISHED,
-            'published_at' => now(),
+            'status' => Submission::STATUS_WITH_MANAGING_EDITOR,
+            'managing_editor_status' => 'ready_to_publish',
         ]);
 
+        // Notify managing editor that author confirmed layout
+        $managingEditor = $submission->managingEditor;
+        if ($managingEditor) {
+            \App\Models\Notification::create([
+                'user_id'         => $managingEditor->id,
+                'role'            => 'managing-editor',
+                'title'           => '✅ Author Confirmed Layout — Ready to Publish',
+                'message'         => "Author has confirmed the layout for \"{$submission->title}\". The manuscript is now ready for final publishing.",
+                'type'            => 'success',
+                'notifiable_id'   => $submission->id,
+                'notifiable_type' => Submission::class,
+            ]);
+        }
+
         return redirect()->route('submissions.show', $submission)
-            ->with('success', 'Congratulations! Your manuscript has been published successfully.');
+            ->with('success', 'Layout confirmed! Your manuscript is now awaiting final publishing by the managing editor.');
     }
 }

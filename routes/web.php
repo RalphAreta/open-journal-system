@@ -189,5 +189,8 @@ Route::post('/managing-editor/submissions/{submission}/layout/approve', [Managin
 
 Route::get('/managing-editor/submissions/{submission}/layout/download', [ManagingEditorController::class, 'downloadLayout'])
     ->name('managing-editor.layout.download');
+
+Route::post('/managing-editor/submissions/{submission}/publish', [ManagingEditorController::class, 'publishPaper'])
+    ->name('managing-editor.publish');
 });
 });
