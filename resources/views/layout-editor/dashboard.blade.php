@@ -172,7 +172,7 @@
     {{-- Top shimmer line --}}
     <div class="h-0.5 w-full shimmer-bar"></div>
 
-    <div class="aw aw-bg max-w-6xl mx-auto px-6">
+    <div class="aw aw-bg max-w-7xl mx-auto px-4">
         {{-- Hero Header (matches Author Dashboard style) --}}
         <div class="hero-header fu">
             <div

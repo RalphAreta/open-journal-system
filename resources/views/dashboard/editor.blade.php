@@ -516,7 +516,7 @@
 @endpush
 
 @section('content')
-    <div class="aw aw-bg max-w-6xl mx-auto px-4">
+    <div class="aw aw-bg max-w-7xl mx-auto px-4">
         {{-- ── Hero ── --}}
         <div class="hero-header fu">
             <div
