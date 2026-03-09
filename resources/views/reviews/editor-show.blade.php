@@ -33,11 +33,9 @@
             --blue: #2563eb;
             --blue-light: #eff6ff;
         }
-
         * {
             box-sizing: border-box;
         }
-
         .aw {
             font-family: 'Source Sans 3', sans-serif;
             color: var(--ink);
@@ -56,8 +54,6 @@
         .font-mono {
             font-family: 'DM Mono', monospace;
         }
-
-        /* ── Hero Header ── */
         .hero-header {
             position: relative;
             padding: 44px 0 32px;
@@ -135,7 +131,6 @@
         .back-link:hover {
             color: var(--teal);
         }
-
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -161,8 +156,6 @@
         .fu4 {
             animation: fadeUp 0.35s 0.24s ease both;
         }
-
-        /* ── Layout shell ── */
         .page-shell {
             display: grid;
             grid-template-columns: 1fr 360px;
@@ -177,8 +170,6 @@
                 order: -1;
             }
         }
-
-        /* ── Card base ── */
         .card {
             background: var(--white);
             border: 1px solid var(--border-dk);
@@ -189,8 +180,6 @@
         .card + .card {
             margin-top: 16px;
         }
-
-        /* ── Section label ── */
         .section-label {
             font-size: 9px;
             font-weight: 700;
@@ -208,8 +197,6 @@
             height: 1px;
             background: var(--border);
         }
-
-        /* ── Meta grid ── */
         .meta-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -228,8 +215,6 @@
             font-weight: 600;
             color: var(--ink);
         }
-
-        /* ── Status pill ── */
         .pill {
             display: inline-flex;
             align-items: center;
@@ -272,8 +257,6 @@
             border-color: var(--border);
             color: var(--muted);
         }
-
-        /* ── Abstract block ── */
         .abstract-block {
             background: var(--parchment);
             border-radius: 10px;
@@ -284,8 +267,6 @@
             margin-top: 20px;
             border: 1px solid var(--border);
         }
-
-        /* ── Download link ── */
         .dl-link {
             display: inline-flex;
             align-items: center;
@@ -299,8 +280,6 @@
         .dl-link:hover {
             color: var(--teal-dark);
         }
-
-        /* ── Review card ── */
         .review-card {
             background: var(--parchment);
             border: 1px solid var(--border);
@@ -310,8 +289,6 @@
         .review-card + .review-card {
             margin-top: 10px;
         }
-
-        /* ── Reviewer selector ── */
         .reviewer-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -330,7 +307,6 @@
             background: var(--border);
             border-radius: 4px;
         }
-
         .reviewer-card {
             border: 1.5px solid var(--border);
             border-radius: 10px;
@@ -398,8 +374,6 @@
         .reviewer-card.selected .reviewer-check svg {
             display: block;
         }
-
-        /* ── Decision radio cards ── */
         .decision-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -444,7 +418,6 @@
             border-color: var(--amber);
             background: var(--amber-light);
         }
-
         .decision-icon {
             width: 32px;
             height: 32px;
@@ -463,7 +436,6 @@
         .icon-amber {
             background: var(--amber-light);
         }
-
         .revision-type-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -480,8 +452,6 @@
             border-color: var(--red);
             background: var(--red-light);
         }
-
-        /* ── Input base ── */
         .field-input {
             width: 100%;
             padding: 10px 14px;
@@ -512,8 +482,6 @@
             background-position: right 14px center;
             padding-right: 36px;
         }
-
-        /* ── State blocks ── */
         .state-block {
             border-radius: 10px;
             padding: 18px 20px;
@@ -534,8 +502,6 @@
             background: var(--blue-light);
             border: 1px solid #bfdbfe;
         }
-
-        /* ── Buttons ── */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -605,8 +571,6 @@
         .btn-full {
             width: 100%;
         }
-
-        /* ── Info hint ── */
         .hint-box {
             display: flex;
             gap: 10px;
@@ -621,8 +585,6 @@
             color: #1d4ed8;
             line-height: 1.6;
         }
-
-        /* ── Sidebar cards ── */
         .sidebar-card {
             background: var(--white);
             border: 1px solid var(--border-dk);
@@ -633,8 +595,6 @@
         .sidebar-card + .sidebar-card {
             margin-top: 14px;
         }
-
-        /* ── Match badge ── */
         .match-badge {
             font-size: 9px;
             font-weight: 700;
@@ -646,8 +606,6 @@
             border: 1px solid #a7f3d0;
             border-radius: 100px;
         }
-
-        /* ── Step row ── */
         .step-row {
             display: flex;
             align-items: center;
@@ -685,8 +643,6 @@
             color: var(--muted);
             margin-top: 1px;
         }
-
-        /* ── Date wrap ── */
         .date-wrap {
             position: relative;
         }
@@ -700,8 +656,6 @@
         input[type='date'].field-input {
             padding-left: 38px;
         }
-
-        /* ── Scrollbox ── */
         .scrollbox {
             max-height: 260px;
             overflow-y: auto;
@@ -714,7 +668,6 @@
             background: var(--border);
             border-radius: 4px;
         }
-
         .hidden {
             display: none !important;
         }
@@ -723,7 +676,7 @@
 
 @section('content')
     <div class="aw aw-bg max-w-7xl mx-auto px-6 pb-16">
-        {{-- ── Hero Header ── --}}
+        {{-- Hero Header --}}
         <div class="hero-header fu">
             <a href="{{ route('editor.submissions') }}" class="back-link">
                 <svg
@@ -778,11 +731,11 @@
             </div>
         </div>
 
-        {{-- ── Two-column shell ── --}}
+        {{-- Two-column shell --}}
         <div class="page-shell">
-            {{-- ══ MAIN COLUMN ══ --}}
+            {{-- MAIN COLUMN --}}
             <div class="main-col">
-                {{-- ── Submission Details ── --}}
+                {{-- Submission Details --}}
                 <div class="card fu1">
                     <div class="section-label">Submission Details</div>
                     <div class="meta-grid">
@@ -834,7 +787,7 @@
                     </div>
                 </div>
 
-                {{-- ── Revision Re-Review ── --}}
+                {{-- Revision Re-Review --}}
                 @if ($submission->status === 'revision_under_review' && $submission->revisionRequests->isNotEmpty())
                     @php
                         $latestRevision = $submission->revisionRequests->last();
@@ -842,7 +795,6 @@
 
                     <div class="card fu1" style="margin-top: 16px">
                         <div class="section-label">Revision Files</div>
-
                         <div
                             style="
                                 display: grid;
@@ -907,7 +859,6 @@
                                     </p>
                                 @endif
                             </div>
-
                             <div
                                 style="
                                     background: var(--parchment);
@@ -1186,7 +1137,6 @@
                                             @endforeach
                                         </div>
                                     </div>
-
                                     <div>
                                         <label
                                             class="meta-label"
@@ -1342,6 +1292,16 @@
                                                 >
                                                     {{ $rr->rating }}/100
                                                 </strong>
+                                                @if (method_exists($rr, 'getRatingInterpretation'))
+                                                    <span
+                                                        style="
+                                                            color: var(--muted);
+                                                        "
+                                                    >
+                                                        ·
+                                                        {{ $rr->getRatingInterpretation() }}
+                                                    </span>
+                                                @endif
                                             </p>
                                         @endif
 
@@ -1402,7 +1362,7 @@
                     </div>
                 @endif
 
-                {{-- ── Reviewer Feedback ── --}}
+                {{-- Reviewer Feedback --}}
                 @if ($submission->reviews->isNotEmpty())
                     <div class="card fu1" style="margin-top: 16px">
                         <div class="section-label">Reviewer Feedback</div>
@@ -1429,6 +1389,27 @@
                                         {{ \App\Models\Review::recommendationOptions()[$r->recommendation] ?? $r->recommendation }}
                                     </span>
                                 </div>
+                                @if ($r->rating)
+                                    <p
+                                        style="
+                                            font-size: 11px;
+                                            color: var(--muted);
+                                            margin-bottom: 8px;
+                                        "
+                                    >
+                                        Rating:
+                                        <strong style="color: var(--ink)">
+                                            {{ $r->rating }}/100
+                                        </strong>
+                                        @if (method_exists($r, 'getRatingInterpretation'))
+                                            <span style="color: var(--muted)">
+                                                ·
+                                                {{ $r->getRatingInterpretation() }}
+                                            </span>
+                                        @endif
+                                    </p>
+                                @endif
+
                                 @if ($r->comments_for_editor)
                                     <p
                                         style="
@@ -1462,7 +1443,7 @@
                     </div>
                 @endif
 
-                {{-- ── Initial Screening ── --}}
+                {{-- Initial Screening --}}
                 <div class="card fu2" style="margin-top: 16px">
                     <div class="section-label">Initial Screening</div>
 
@@ -1712,11 +1693,10 @@
                     @endif
                 </div>
 
-                {{-- ── Editor Decision ── --}}
+                {{-- Editor Decision --}}
                 @if ($submission->reviews->isNotEmpty())
                     <div class="card fu3" style="margin-top: 16px">
                         <div class="section-label">Editor Decision</div>
-
                         @if (in_array($submission->status, ['accepted', 'rejected', 'revisions_requested', 'with_managing_editor', 'layout_editing', 'layout_review', 'author_confirmation']))
                             <div class="state-block state-blue">
                                 <div
@@ -2039,7 +2019,6 @@
                                 "
                             >
                                 @csrf
-
                                 <div>
                                     <label
                                         style="
@@ -2399,15 +2378,16 @@
                     </div>
                 @endif
 
-                {{-- ── Assign Reviewer ── --}}
                 @php
-                    $hasActiveAssignments = $submission
+                    $activeAssignments = $submission
                         ->reviewAssignments()
                         ->whereNotIn('status', ['declined'])
-                        ->exists();
+                        ->with('reviewer')
+                        ->get();
+                    $hasActiveAssignments = $activeAssignments->count() > 0;
                 @endphp
 
-                @if (in_array($submission->status, ['submitted', 'under_review']) && ! $hasActiveAssignments)
+                @if (in_array($submission->status, ['submitted', 'under_review']))
                     <div class="card fu4" style="margin-top: 16px">
                         <div
                             style="
@@ -2448,6 +2428,81 @@
                                 selected
                             </span>
                         </div>
+
+                        @if ($activeAssignments->count() > 0)
+                            <div
+                                style="
+                                    background: #f0fdf4;
+                                    border: 1px solid #86efac;
+                                    border-radius: 8px;
+                                    padding: 12px 14px;
+                                    margin-bottom: 12px;
+                                "
+                            >
+                                <p
+                                    style="
+                                        font-size: 11px;
+                                        font-weight: 700;
+                                        color: #065f46;
+                                        margin-bottom: 8px;
+                                        text-transform: uppercase;
+                                        letter-spacing: 0.08em;
+                                    "
+                                >
+                                    ✅ Current Reviewers
+                                </p>
+                                <div
+                                    style="
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: 6px;
+                                    "
+                                >
+                                    @foreach ($activeAssignments as $ra)
+                                        <div
+                                            style="
+                                                display: flex;
+                                                align-items: center;
+                                                justify-content: space-between;
+                                            "
+                                        >
+                                            <span
+                                                style="
+                                                    font-size: 12px;
+                                                    font-weight: 600;
+                                                    color: #1a1209;
+                                                "
+                                            >
+                                                {{ $ra->reviewer->name }}
+                                            </span>
+                                            <span
+                                                class="pill {{
+                                                    match ($ra->status) {
+                                                        'assigned' => 'pill-emerald',
+                                                        'pending' => 'pill-amber',
+                                                        'completed' => 'pill-blue',
+                                                        default => 'pill-slate',
+                                                    }
+                                                }}"
+                                                style="font-size: 9px"
+                                            >
+                                                {{ ucfirst($ra->status) }}
+                                            </span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <p
+                                    style="
+                                        font-size: 11px;
+                                        color: #6b5740;
+                                        margin-top: 8px;
+                                    "
+                                >
+                                    You may assign an additional or new reviewer
+                                    below.
+                                </p>
+                            </div>
+                        @endif
 
                         <form
                             method="POST"
@@ -2819,7 +2874,6 @@
                                         ></span>
                                     </p>
                                 </div>
-
                                 <button
                                     type="submit"
                                     class="btn btn-teal btn-full"
@@ -2836,7 +2890,6 @@
                                     </svg>
                                     Send Assignment
                                 </button>
-
                                 <div class="hint-box">
                                     <svg
                                         width="14"
@@ -2866,7 +2919,7 @@
             </div>
             {{-- end main-col --}}
 
-            {{-- ══ SIDEBAR ══ --}}
+            {{-- SIDEBAR --}}
             <aside class="sidebar">
                 <div class="sidebar-card fu4">
                     <div class="section-label">Workflow Progress</div>
@@ -2994,69 +3047,67 @@
                 </div>
             </aside>
         </div>
+        {{-- end page-shell --}}
     </div>
 @endsection
 
 @push('scripts')
     <script>
         function toggleReviewer(card) {
-            const cb = card.querySelector('.reviewer-checkbox');
-            if (!cb) return;
-            cb.checked = !cb.checked;
-            card.classList.toggle('selected', cb.checked);
-            const total = document.querySelectorAll('.reviewer-checkbox:checked').length;
-            const badge = document.getElementById('selected-count');
-            const num   = document.getElementById('selected-num');
-            if (badge && num) {
-                num.textContent = total;
-                badge.classList.toggle('hidden', total === 0);
-            }
-        }
-
-        function updateDueDateHint(input) {
-            const hint   = document.getElementById('due-hint');
-            const daysEl = document.getElementById('due-days');
-            const dateEl = document.getElementById('due-date');
-            if (!input.value || !hint) { hint?.classList.add('hidden'); return; }
-            const diff = Math.ceil((new Date(input.value) - new Date()) / 86400000);
-            daysEl.textContent = diff;
-            daysEl.style.color = diff < 0 ? 'var(--red)' : diff <= 7 ? 'var(--amber)' : 'var(--emerald)';
-            const opts = { month: 'short', day: 'numeric', year: 'numeric' };
-            dateEl.textContent = 'Due: ' + new Date(input.value).toLocaleDateString('en-US', opts) + ' · 11:59 PM';
-            hint.classList.remove('hidden');
-        }
-
-        const dForm     = document.getElementById('decision-form');
-        const revFields = document.getElementById('revision-fields');
-        const revReason = document.getElementById('revision_reason');
-
-        if (dForm && revFields) {
-            const statusRadios  = dForm.querySelectorAll('input[name="status"]');
-            const revTypeRadios = dForm.querySelectorAll('input[name="revision_type"]');
-
-            function toggleRevision() {
-                const sel   = dForm.querySelector('input[name="status"]:checked');
-                const isRev = sel?.value === 'revisions_requested';
-                revFields.style.display = isRev ? 'flex' : 'none';
-                revTypeRadios.forEach(r => isRev ? r.setAttribute('required','') : r.removeAttribute('required'));
-                if (revReason) isRev ? revReason.setAttribute('required','') : revReason.removeAttribute('required');
+                const cb = card.querySelector('.reviewer-checkbox');
+                if (!cb) return;
+                cb.checked = !cb.checked;
+                card.classList.toggle('selected', cb.checked);
+                const total = document.querySelectorAll('.reviewer-checkbox:checked').length;
+                const badge = document.getElementById('selected-count');
+                const num   = document.getElementById('selected-num');
+                if (badge && num) { num.textContent = total; badge.classList.toggle('hidden', total === 0); }
             }
 
-            statusRadios.forEach(r => r.addEventListener('change', toggleRevision));
+            function updateDueDateHint(input) {
+                const hint   = document.getElementById('due-hint');
+                const daysEl = document.getElementById('due-days');
+                const dateEl = document.getElementById('due-date');
+                if (!input.value || !hint) { hint?.classList.add('hidden'); return; }
+                const diff = Math.ceil((new Date(input.value) - new Date()) / 86400000);
+                daysEl.textContent = diff;
+                daysEl.style.color = diff < 0 ? 'var(--red)' : diff <= 7 ? 'var(--amber)' : 'var(--emerald)';
+                const opts = { month:'short', day:'numeric', year:'numeric' };
+                dateEl.textContent = 'Due: ' + new Date(input.value).toLocaleDateString('en-US', opts) + ' · 11:59 PM';
+                hint.classList.remove('hidden');
+            }
 
-            dForm.addEventListener('submit', () => {
-                const sel = dForm.querySelector('input[name="status"]:checked');
-                if (sel?.value !== 'revisions_requested') {
-                    revTypeRadios.forEach(r => r.disabled = true);
-                    if (revReason) revReason.disabled = true;
+            const dForm     = document.getElementById('decision-form');
+            const revFields = document.getElementById('revision-fields');
+            const revReason = document.getElementById('revision_reason');
+
+            if (dForm && revFields) {
+                const statusRadios  = dForm.querySelectorAll('input[name="status"]');
+                const revTypeRadios = dForm.querySelectorAll('input[name="revision_type"]');
+
+                function toggleRevision() {
+                    const sel   = dForm.querySelector('input[name="status"]:checked');
+                    const isRev = sel?.value === 'revisions_requested';
+                    revFields.style.display = isRev ? 'flex' : 'none';
+                    revTypeRadios.forEach(r => isRev ? r.setAttribute('required','') : r.removeAttribute('required'));
+                    if (revReason) isRev ? revReason.setAttribute('required','') : revReason.removeAttribute('required');
                 }
-            });
 
-            toggleRevision();
+                statusRadios.forEach(r => r.addEventListener('change', toggleRevision));
 
-            @if (isset($selectedStatus) && $selectedStatus === 'revisions_requested')
-                revFields.style.display = 'flex';
-            @endif
-        }
+                dForm.addEventListener('submit', () => {
+                    const sel = dForm.querySelector('input[name="status"]:checked');
+                    if (sel?.value !== 'revisions_requested') {
+                        revTypeRadios.forEach(r => r.disabled = true);
+                        if (revReason) revReason.disabled = true;
+                    }
+                });
+
+                toggleRevision();
+
+                @if(isset($selectedStatus) && $selectedStatus === 'revisions_requested')
+                    revFields.style.display = 'flex';
+                @endif
+            }
     </script>
 @endpush

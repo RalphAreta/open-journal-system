@@ -61,6 +61,9 @@ Route::middleware('auth')->group(function (): void {
 
     Route::middleware('role:author')->group(function (): void {
         Route::get('/dashboard/author', [DashboardController::class, 'author'])->name('dashboard.author');
+        Route::get('submissions/check-similarity', [SubmissionController::class, 'checkSimilarity'])
+    ->name('submissions.check-similarity')
+    ->middleware('auth');
         Route::resource('submissions', SubmissionController::class)->except('destroy');
         Route::get('/submissions/{submission}/revisions', [SubmissionController::class, 'revisions'])->name('submissions.revisions');
         Route::post('/submissions/{submission}/submit-revision', [SubmissionController::class, 'submitRevision'])->name('submissions.submit-revision');
