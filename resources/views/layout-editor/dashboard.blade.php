@@ -374,6 +374,62 @@
     @endif
 </div>
 
+{{-- Author Revision Notes --}}
+@php
+    $revisionAssignments = $assignments->filter(fn($a) => 
+        $a->status === 'pending' && str_starts_with($a->notes ?? '', 'Author revision request:')
+    );
+@endphp
+
+@if ($revisionAssignments->count())
+<div class="fu3 md:col-span-3 bg-white/90 border border-[#c9a84c]/30 rounded-2xl p-6 backdrop-blur-sm">
+    <div class="flex items-center gap-3 mb-4">
+        <span class="text-xl">⚠️</span>
+        <div>
+            <h2 class="font-['Libre_Baskerville'] text-lg font-bold text-[#0d1628]">
+                Revision Requests from Author
+            </h2>
+            <p class="text-[12px] text-[#8a96a8]">
+                These papers need layout revision based on author feedback
+            </p>
+        </div>
+    </div>
+
+    <div class="space-y-3">
+        @foreach ($revisionAssignments as $ra)
+        <div class="p-4 rounded-xl border border-[#c9a84c]/40 bg-[#fffdf9]">
+            <div class="flex items-start justify-between gap-4 flex-wrap">
+                <div class="flex-1">
+                    <p class="font-['Libre_Baskerville'] text-[.95rem] font-bold text-[#1a1209] italic">
+                        {{ $ra->submission->title }}
+                    </p>
+                    <p class="text-[.75rem] text-[#6b5740] mt-0.5">
+                        by {{ $ra->submission->author->name ?? 'Unknown' }}
+                    </p>
+
+                    {{-- Author's reason --}}
+                    @if ($ra->notes)
+                    <div class="mt-3 p-3 bg-white border-l-4 border-[#c9a84c] rounded-lg">
+                        <p class="text-[.65rem] font-extrabold tracking-widest uppercase text-[#8a6e28] mb-1">
+                            Author's Revision Note
+                        </p>
+                        <p class="text-[.85rem] italic text-[#3d2f1a] leading-relaxed">
+                            {{ str_replace('Author revision request: ', '', $ra->notes) }}
+                        </p>
+                    </div>
+                    @endif
+                </div>
+                <a href="{{ route('layout-editor.show', $ra->id) }}"
+                    class="shrink-0 px-4 py-2 bg-[#c9a84c] hover:bg-[#a07830] text-white text-[.7rem] font-bold uppercase tracking-wider rounded-lg transition-all">
+                    Open & Revise →
+                </a>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
             {{-- Footer note --}}
             <div class="fu4 text-center pb-4" style="animation-delay: 600ms">
                 <p class="text-[11px] text-[#b8aa90] uppercase tracking-widest">

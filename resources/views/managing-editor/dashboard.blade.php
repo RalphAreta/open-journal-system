@@ -833,6 +833,76 @@
             </div>
         @endif
 
+        {{-- Author Feedback Section --}}
+        @php
+            $authorFeedbacks = \App\Models\LayoutEditorAssignment::with('submission')
+                ->whereNotNull('author_status')
+                ->whereIn('author_status', ['confirmed', 'revision_requested'])
+                ->latest('author_feedback_at')
+                ->get();
+        @endphp
+
+        @if ($authorFeedbacks->count())
+            <div class="mb-6">
+                <h2
+                    class="text-[.7rem] font-bold tracking-widest uppercase text-[#2d8176] mb-3"
+                >
+                    Author Responses
+                </h2>
+                @foreach ($authorFeedbacks as $fb)
+                    <div
+                        class="p-4 rounded-lg border mb-3 {{ $fb->author_status === 'revision_requested' ? 'border-[#c9a84c] bg-[#fdf8ee]' : 'border-[rgba(45,129,118,.3)] bg-[#e8f4f2]' }}"
+                    >
+                        <p class="text-[.75rem] font-bold text-[#1a4d46]">
+                            {{ $fb->submission->title }}
+                        </p>
+                        <p class="text-[.7rem] mt-1">
+                            @if ($fb->author_status === 'confirmed')
+                                <span class="text-[#2d8176] font-semibold">
+                                    ✓ Author confirmed layout.
+                                </span>
+                                {{-- ME Publish Button --}}
+                                <form
+                                    method="POST"
+                                    action="{{ route('managing-editor.publish', $fb->submission) }}"
+                                    class="mt-2"
+                                >
+                                    @csrf
+                                    <button
+                                        class="px-4 py-2 bg-[#2d8176] text-white text-[.7rem] font-bold rounded-lg hover:bg-[#1a4d46] uppercase tracking-wider"
+                                    >
+                                        Publish Now
+                                    </button>
+                                </form>
+                            @else
+                                <span class="text-[#c9a84c] font-semibold">
+                                    ⚠ Revision Requested:
+                                </span>
+                                <span class="text-[#444] block mt-1">
+                                    {{ $fb->author_feedback }}
+                                </span>
+                                {{-- Forward to Layout Editor — opens modal --}}
+                                <button
+                                    type="button"
+                                    class="px-4 py-2 bg-[#c9a84c] text-white text-[.7rem] font-bold rounded-lg hover:bg-[#a8873a] uppercase tracking-wider mt-2"
+                                    onclick="
+                                        openReassignModal(
+                                            {{ $fb->submission->id }},
+                                            '{{ addslashes($fb->submission->title) }}',
+                                            {{ $fb->id }},
+                                            '{{ addslashes($fb->author_feedback) }}',
+                                        )
+                                    "
+                                >
+                                    Forward to Layout Editor
+                                </button>
+                            @endif
+                        </p>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
         {{-- Search --}}
         <div class="fu2 mb-6">
             <div class="search-wrap">
@@ -877,8 +947,10 @@
                         @forelse ($submissions as $s)
                             @php
                                 $meStatus = $s->managing_editor_status ?? 'pending';
+                                // Palitan yung match:
                                 [$cls, $label] = match ($meStatus) {
-                                    'ctf_sent' => ['ctf-sent', 'CTF Uploaded'],
+                                    'ctf_sent' => ['ctf-sent', 'Awaiting Signed CTF'],
+                                    'ctf_returned' => ['forwarded', 'Signed CTF Received'],
                                     'forwarded' => ['forwarded', 'Sent to Layout'],
                                     default => ['pending-me', 'Awaiting CTF'],
                                 };
@@ -960,11 +1032,31 @@
                                             </button>
                                         @endif
 
-                                        {{-- Send to Layout (ctf_sent only) --}}
-                                        @if ($meStatus === 'ctf_sent')
+                                        {{-- Download Signed CTF + Send to Layout (ctf_returned only) --}}
+                                        @if ($meStatus === 'ctf_returned')
+                                            <a
+                                                href="{{ route('managing-editor.download-signed-ctf', $s) }}"
+                                                class="btn-action teal"
+                                            >
+                                                <svg
+                                                    width="12"
+                                                    height="12"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                    />
+                                                </svg>
+                                                Download Signed CTF
+                                            </a>
                                             <button
                                                 type="button"
-                                                class="btn-action teal"
+                                                class="btn-action gold"
                                                 onclick="
                                                     openLayoutModal(
                                                         {{ $s->id }},
@@ -1313,95 +1405,220 @@
             </form>
         </div>
     </div>
+    \
+    {{-- ── Reassign Layout Modal ── --}}
+    <div
+        class="modal-backdrop"
+        id="reassignModal"
+        onclick="closeOnBackdrop(event, 'reassignModal')"
+    >
+        <div class="modal-box">
+            <div class="modal-head">
+                <span class="modal-head-title">
+                    Forward Revision to Layout Editor
+                </span>
+                <button class="modal-close" onclick="closeReassignModal()">
+                    <svg
+                        width="14"
+                        height="14"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6 18L18 6M6 6l12 12"
+                        />
+                    </svg>
+                </button>
+            </div>
+            <form method="POST" id="reassignModalForm" action="">
+                @csrf
+                <input
+                    type="hidden"
+                    name="assignment_id"
+                    id="reassignAssignmentId"
+                />
+                <div class="modal-body">
+                    <p
+                        class="modal-manuscript-title"
+                        id="reassignManuscriptTitle"
+                    >
+                        —
+                    </p>
+
+                    {{-- Author's reason --}}
+                    <div
+                        class="mb-4 p-3 rounded-lg border border-[rgba(201,168,76,.4)] bg-[#fffdf9]"
+                    >
+                        <p class="modal-label" style="color: var(--gold-dk)">
+                            ⚠ Author's Revision Note
+                        </p>
+                        <p
+                            class="text-[.85rem] text-[var(--ink-mid)] italic leading-relaxed"
+                            id="reassignAuthorFeedback"
+                        >
+                            —
+                        </p>
+                    </div>
+
+                    <label class="modal-label" for="reassign_layout_editor_id">
+                        Select Layout Editor
+                    </label>
+                    <select
+                        name="layout_editor_id"
+                        id="reassign_layout_editor_id"
+                        class="modal-select"
+                        required
+                    >
+                        <option value="">— Choose a Layout Editor —</option>
+                        @foreach ($layoutEditors as $le)
+                            <option value="{{ $le->id }}">
+                                {{ $le->name }} — {{ $le->email }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn-modal-cancel"
+                        onclick="closeReassignModal()"
+                    >
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-modal-submit gold-btn">
+                        <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M13 5l7 7-7 7M5 5l7 7-7 7"
+                            />
+                        </svg>
+                        Forward with Author Note
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     <script>
         // ── Filter ──
-        function filterTable() {
-            const f = document.getElementById('dashboardSearch').value.toUpperCase();
-            document.querySelectorAll('.submission-row').forEach(row => {
-                const title  = row.querySelector('.title-cell')?.innerText.toUpperCase() ?? '';
-                const ref    = row.cells[0]?.innerText.toUpperCase() ?? '';
-                const status = row.querySelector('.status-cell')?.innerText.toUpperCase() ?? '';
-                row.style.display = (title.includes(f)||ref.includes(f)||status.includes(f)) ? '' : 'none';
-            });
-        }
+                                        function filterTable() {
+                                            const f = document.getElementById('dashboardSearch').value.toUpperCase();
+                                            document.querySelectorAll('.submission-row').forEach(row => {
+                                                const title  = row.querySelector('.title-cell')?.innerText.toUpperCase() ?? '';
+                                                const ref    = row.cells[0]?.innerText.toUpperCase() ?? '';
+                                                const status = row.querySelector('.status-cell')?.innerText.toUpperCase() ?? '';
+                                                row.style.display = (title.includes(f)||ref.includes(f)||status.includes(f)) ? '' : 'none';
+                                            });
+                                        }
 
-        // ── CTF routes ──
-        const ctfRoutes = @json(
-            $submissions->filter(fn($s) => is_null($s->managing_editor_status) || $s->managing_editor_status === 'pending')
-                ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.ctf.generate', $s)])
-        );
+                                        // ── CTF routes ──
+                                        const ctfRoutes = @json(
+                                            $submissions->filter(fn($s) => is_null($s->managing_editor_status) || $s->managing_editor_status === 'pending')
+                                                ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.ctf.generate', $s)])
+                                        );
 
-        function openCtfModal(id, title) {
-            document.getElementById('ctfManuscriptTitle').textContent = title;
-            document.getElementById('ctfModalForm').action = ctfRoutes[id] ?? '#';
-            document.getElementById('ctfFileInput').value = '';
-            document.getElementById('ctfFileSelected').classList.remove('show');
-            document.getElementById('ctfModal').classList.add('open');
-        }
-        function closeCtfModal() { document.getElementById('ctfModal').classList.remove('open'); }
+                                        function openCtfModal(id, title) {
+                                            document.getElementById('ctfManuscriptTitle').textContent = title;
+                                            document.getElementById('ctfModalForm').action = ctfRoutes[id] ?? '#';
+                                            document.getElementById('ctfFileInput').value = '';
+                                            document.getElementById('ctfFileSelected').classList.remove('show');
+                                            document.getElementById('ctfModal').classList.add('open');
+                                        }
+                                        function closeCtfModal() { document.getElementById('ctfModal').classList.remove('open'); }
 
-        function onCtfFileSelected(input) {
-            const file = input.files[0];
-            if (!file) return;
-            const sel = document.getElementById('ctfFileSelected');
-            document.getElementById('ctfFileName').textContent = file.name;
-            document.getElementById('ctfFileSize').textContent = (file.size/1024/1024).toFixed(2)+' MB';
-            sel.classList.add('show');
-        }
+                                        function onCtfFileSelected(input) {
+                                            const file = input.files[0];
+                                            if (!file) return;
+                                            const sel = document.getElementById('ctfFileSelected');
+                                            document.getElementById('ctfFileName').textContent = file.name;
+                                            document.getElementById('ctfFileSize').textContent = (file.size/1024/1024).toFixed(2)+' MB';
+                                            sel.classList.add('show');
+                                        }
 
-        // Drag & drop
-        const dropZone = document.getElementById('ctfDropZone');
-        if (dropZone) {
-            dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-            dropZone.addEventListener('drop', e => {
-                e.preventDefault(); dropZone.classList.remove('dragover');
-                const file = e.dataTransfer.files[0];
-                if (file) {
-                    const input = document.getElementById('ctfFileInput');
-                    const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files;
-                    onCtfFileSelected(input);
-                }
-            });
-        }
+                                        // Drag & drop
+                                        const dropZone = document.getElementById('ctfDropZone');
+                                        if (dropZone) {
+                                            dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+                                            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+                                            dropZone.addEventListener('drop', e => {
+                                                e.preventDefault(); dropZone.classList.remove('dragover');
+                                                const file = e.dataTransfer.files[0];
+                                                if (file) {
+                                                    const input = document.getElementById('ctfFileInput');
+                                                    const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files;
+                                                    onCtfFileSelected(input);
+                                                }
+                                            });
+                                        }
 
-        // ── Layout routes ──
-        const layoutRoutes = @json(
-            $submissions->filter(fn($s) => $s->managing_editor_status === 'ctf_sent')
-                ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.forward', $s)])
-        );
+                                        // ── Layout routes ──
+                                      const layoutRoutes = @json(
+                                    $submissions->filter(fn($s) => $s->managing_editor_status === 'ctf_returned')
+                                        ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.forward', $s)])
+                                );
 
-        function openLayoutModal(id, title) {
-            document.getElementById('modalManuscriptTitle').textContent = title;
-            document.getElementById('layoutModalForm').action = layoutRoutes[id] ?? '#';
-            document.getElementById('layout_editor_id').value = '';
-            document.getElementById('layoutModal').classList.add('open');
-        }
-        function closeLayoutModal() { document.getElementById('layoutModal').classList.remove('open'); }
+                                     function openLayoutModal(id, title) {
+                            const route = layoutRoutes[id];
+                            if (!route) {
+                                alert('Route not found for id: ' + id + '\nAvailable: ' + JSON.stringify(layoutRoutes));
+                                return;
+                            }
+                            document.getElementById('modalManuscriptTitle').textContent = title;
+                            document.getElementById('layoutModalForm').action = route;
+                            document.getElementById('layout_editor_id').value = '';
+                            document.getElementById('layoutModal').classList.add('open');
+                        }
+                                        function closeLayoutModal() { document.getElementById('layoutModal').classList.remove('open'); }
 
-        function closeOnBackdrop(e, id) {
+                                      function closeOnBackdrop(e, id) {
             if (e.target === document.getElementById(id)) {
-                id === 'ctfModal' ? closeCtfModal() : closeLayoutModal();
+                if (id === 'ctfModal') closeCtfModal();
+                else if (id === 'reassignModal') closeReassignModal();
+                else closeLayoutModal();
             }
         }
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') { closeCtfModal(); closeLayoutModal(); }
-        });
+                                        document.addEventListener('keydown', e => {
+                                            if (e.key === 'Escape') { closeCtfModal(); closeLayoutModal(); }
+                                        });
 
-        // ── Toast ──
-        @if(session('success'))
-        Swal.fire({
-            icon:'success',
-            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
-            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
-            confirmButtonText:'Close',
-            confirmButtonColor:'#2d8176',
-            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
-            buttonsStyling:false,
-        });
-        @endif
+                                        // ── Reassign Layout Modal ──
+                function openReassignModal(submissionId, title, assignmentId, authorFeedback) {
+                    document.getElementById('reassignManuscriptTitle').textContent = title;
+                    document.getElementById('reassignAssignmentId').value = assignmentId;
+                    document.getElementById('reassignAuthorFeedback').textContent = authorFeedback || '—';
+                    document.getElementById('reassignModalForm').action = `/managing-editor/submissions/${submissionId}/reassign-layout`;
+                    document.getElementById('reassign_layout_editor_id').value = '';
+                    document.getElementById('reassignModal').classList.add('open');
+                }
+                function closeReassignModal() {
+                    document.getElementById('reassignModal').classList.remove('open');
+                }
+
+                                        // ── Toast ──
+                                        @if(session('success'))
+                                        Swal.fire({
+                                            icon:'success',
+                                            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
+                                            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+                                            confirmButtonText:'Close',
+                                            confirmButtonColor:'#2d8176',
+                                            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+                                            buttonsStyling:false,
+                                        });
+                                        @endif
     </script>
 @endpush

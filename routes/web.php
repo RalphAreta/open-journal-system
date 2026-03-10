@@ -61,6 +61,9 @@ Route::middleware('auth')->group(function (): void {
 
     Route::middleware('role:author')->group(function (): void {
         Route::get('/dashboard/author', [DashboardController::class, 'author'])->name('dashboard.author');
+        Route::get('submissions/check-similarity', [SubmissionController::class, 'checkSimilarity'])
+    ->name('submissions.check-similarity')
+    ->middleware('auth');
         Route::resource('submissions', SubmissionController::class)->except('destroy');
         Route::get('/submissions/{submission}/revisions', [SubmissionController::class, 'revisions'])->name('submissions.revisions');
         Route::post('/submissions/{submission}/submit-revision', [SubmissionController::class, 'submitRevision'])->name('submissions.submit-revision');
@@ -69,6 +72,9 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/author/submission/{submission}/final-layout', [AuthorController::class, 'viewFinalLayout'])->name('author.final-layout');
         Route::get('/author/submission/{submission}/download-layout', [AuthorController::class, 'downloadLayout'])->name('author.download-layout');
         Route::post('/submissions/{submission}/confirm-layout', [SubmissionController::class, 'confirmLayout'])->name('submissions.confirm-layout');
+        Route::post('/submissions/{submission}/upload-signed-ctf', [SubmissionController::class, 'uploadSignedCtf'])->name('submissions.upload-signed-ctf'); // ← dagdag
+        Route::post('/submissions/{submission}/author-confirm', [SubmissionController::class, 'authorConfirm'])->name('submissions.author-confirm');
+    Route::post('/submissions/{submission}/author-request-revision', [SubmissionController::class, 'authorRequestRevision'])->name('submissions.author-request-revision');
     });
 
     Route::middleware('role:reviewer')->group(function (): void {
@@ -192,5 +198,10 @@ Route::get('/managing-editor/submissions/{submission}/layout/download', [Managin
 
 Route::post('/managing-editor/submissions/{submission}/publish', [ManagingEditorController::class, 'publishPaper'])
     ->name('managing-editor.publish');
+Route::get('/managing-editor/submissions/{submission}/download-signed-ctf', [ManagingEditorController::class, 'downloadSignedCtf'])
+    ->name('managing-editor.download-signed-ctf'); // ← dagdag
+Route::post('/managing-editor/submissions/{submission}/reassign-layout', [ManagingEditorController::class, 'reassignLayout'])
+        ->name('managing-editor.reassign-layout');
+
 });
 });

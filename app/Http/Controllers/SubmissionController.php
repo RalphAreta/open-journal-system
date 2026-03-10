@@ -5,16 +5,39 @@ namespace App\Http\Controllers;
 use App\Models\Submission;
 use App\Models\RevisionRequest;
 use App\Models\RevisionReview;
-use App\Models\User; // Added for type hinting
+use App\Models\User;
 use App\Services\RevisionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Added for direct ID access
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use App\Models\LayoutEditorAssignment;
 
 class SubmissionController extends Controller
 {
+    // ─── Statuses that mean "still active / in-progress" ───────────────────
+    private const ACTIVE_STATUSES = [
+        Submission::STATUS_SUBMITTED,
+        Submission::STATUS_UNDER_REVIEW,
+        Submission::STATUS_REVISIONS_REQUESTED,
+        'revision_under_review',
+        'with_managing_editor',
+        'layout_editing',
+        'layout_review',
+        Submission::STATUS_AUTHOR_CONFIRMATION,
+    ];
+
+    // ─── Similarity scoring ─────────────────────────────────────────────────
+    private const SIMILARITY_THRESHOLD = 3; // shared meaningful words needed
+    private const SIMILARITY_STOP_WORDS = [
+        'about','after','again','among','being','between','during','every',
+        'further','having','other','their','there','these','through','under',
+        'using','where','which','while','with','that','this','from','have',
+        'will','been','were','they','than','into','more','also','such','both',
+        'then','when','study','analysis','research','paper','review','based',
+    ];
+
     public function index(Request $request): View
     {
         /** @var User $user */
@@ -27,57 +50,126 @@ class SubmissionController extends Controller
         return view('submissions.index', compact('submissions'));
     }
 
+    // ───────────────────────────────────────────────────────────────────────
+    //  CREATE
+    // ───────────────────────────────────────────────────────────────────────
     public function create(): View
     {
         $fieldOptions = \App\Models\EditorExpertise::getFieldOptions();
-        return view('submissions.create', compact('fieldOptions'));
+
+        // Restriction 1: one active submission at a time
+        $activeSubmission = Submission::where('author_id', Auth::id())
+            ->whereIn('status', self::ACTIVE_STATUSES)
+            ->latest()
+            ->first();
+
+        return view('submissions.create', compact('fieldOptions', 'activeSubmission'));
     }
 
-    public function store(Request $request): RedirectResponse
+    // ───────────────────────────────────────────────────────────────────────
+    //  STORE
+    // ───────────────────────────────────────────────────────────────────────
+    public function store(Request $request): RedirectResponse|View
     {
+        // ── Restriction 1 (server-side guard) ──────────────────────────────
+        $activeSubmission = Submission::where('author_id', Auth::id())
+            ->whereIn('status', self::ACTIVE_STATUSES)
+            ->first();
+
+        if ($activeSubmission) {
+            return redirect()->route('submissions.create')
+                ->with('error', 'You already have an active submission. Please wait until it is published or rejected before submitting a new manuscript.');
+        }
+
+        // ── Validate ────────────────────────────────────────────────────────
         $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'abstract' => ['required', 'string'],
-            'keywords' => ['nullable', 'string', 'max:255'],
-            'research_field' => ['required', 'string', 'in:' . implode(',', array_keys(\App\Models\EditorExpertise::getFieldOptions()))],
-            'file' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+            'title'                   => ['required', 'string', 'max:255'],
+            'abstract'                => ['required', 'string'],
+            'keywords'                => ['nullable', 'string', 'max:255'],
+            'research_field'          => ['required', 'string', 'in:' . implode(',', array_keys(\App\Models\EditorExpertise::getFieldOptions()))],
+            'file'                    => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+            'similarity_acknowledged' => ['nullable', 'in:1'],
         ]);
 
+        // ── Restriction 2: similar article check ───────────────────────────
+        $similarSubmissions = $this->findSimilarSubmissions(
+            $validated['title'],
+            $validated['abstract'] ?? ''
+        );
+
+        if ($similarSubmissions->isNotEmpty() && ! $request->boolean('similarity_acknowledged')) {
+            $fieldOptions = \App\Models\EditorExpertise::getFieldOptions();
+            return view('submissions.create', compact('fieldOptions', 'similarSubmissions'))
+                ->withInput();
+        }
+
+        // ── File upload ─────────────────────────────────────────────────────
         $file = $request->file('file');
-        // Using Auth::id() prevents the 'Undefined method id' error
         $path = $file->store('submissions/' . Auth::id(), 'local');
 
-       $submission = Submission::create([
-    'author_id' => Auth::id(),
-    'title' => $validated['title'],
-    'abstract' => $validated['abstract'],
-    'keywords' => $validated['keywords'] ?? null,
-    'research_field' => $validated['research_field'],
-    'file_path' => $path,
-    'file_name' => $file->getClientOriginalName(),
-    'original_file_path' => $path,
-    'original_file_name' => $file->getClientOriginalName(),
-    'status' => Submission::STATUS_SUBMITTED,
-    'submitted_at' => now(),
-]);
+        // ── Persist ─────────────────────────────────────────────────────────
+        $submission = Submission::create([
+            'author_id'          => Auth::id(),
+            'title'              => $validated['title'],
+            'abstract'           => $validated['abstract'],
+            'keywords'           => $validated['keywords'] ?? null,
+            'research_field'     => $validated['research_field'],
+            'file_path'          => $path,
+            'file_name'          => $file->getClientOriginalName(),
+            'original_file_path' => $path,
+            'original_file_name' => $file->getClientOriginalName(),
+            'status'             => Submission::STATUS_SUBMITTED,
+            'submitted_at'       => now(),
+        ]);
 
-// Notify all chief editors
-$chiefEditors = User::whereHas('roles', fn($q) => $q->where('name', 'editor-in-chief'))->get();
-foreach ($chiefEditors as $ce) {
-    \App\Models\Notification::create([
-        'user_id'         => $ce->id,
-        'role'            => 'editor-in-chief',
-        'title'           => ' New Manuscript Submitted',
-        'message'         => "A new manuscript has been submitted: \"{$submission->title}\" by " . Auth::user()->name . ".",
-        'type'            => 'info',
-        'notifiable_id'   => $submission->id,
-        'notifiable_type' => Submission::class,
-    ]);
-}
+        // ── Notify chief editors ────────────────────────────────────────────
+        $chiefEditors = User::whereHas('roles', fn ($q) => $q->where('name', 'editor-in-chief'))->get();
+        foreach ($chiefEditors as $ce) {
+            \App\Models\Notification::create([
+                'user_id'         => $ce->id,
+                'role'            => 'editor-in-chief',
+                'title'           => 'New Manuscript Submitted',
+                'message'         => "A new manuscript has been submitted: \"{$submission->title}\" by " . Auth::user()->name . ".",
+                'type'            => 'info',
+                'notifiable_id'   => $submission->id,
+                'notifiable_type' => Submission::class,
+            ]);
+        }
 
-return redirect()->route('submissions.index')->with('success', 'Submission created successfully.');
+        return redirect()->route('submissions.index')
+            ->with('success', 'Submission created successfully.');
     }
 
+    // ───────────────────────────────────────────────────────────────────────
+    //  AJAX – real-time similarity check
+    //  Route: GET /submissions/check-similarity
+    // ───────────────────────────────────────────────────────────────────────
+    public function checkSimilarity(Request $request)
+    {
+        $request->validate([
+            'title'    => 'nullable|string|max:500',
+            'abstract' => 'nullable|string|max:3000',
+        ]);
+
+        $similar = $this->findSimilarSubmissions(
+            $request->input('title', ''),
+            $request->input('abstract', '')
+        );
+
+        return response()->json([
+            'similar' => $similar->map(fn ($s) => [
+                'id'             => $s->id,
+                'title'          => $s->title,
+                'status'         => Submission::statusOptions()[$s->status] ?? $s->status,
+                'research_field' => $s->research_field,
+                'created_at'     => $s->created_at->format('M d, Y'),
+            ]),
+        ]);
+    }
+
+    // ───────────────────────────────────────────────────────────────────────
+    //  SHOW
+    // ───────────────────────────────────────────────────────────────────────
     public function show(Submission $submission): View|RedirectResponse
     {
         $this->authorizeView($submission);
@@ -86,12 +178,15 @@ return redirect()->route('submissions.index')->with('success', 'Submission creat
             'reviews.reviewer',
             'reviewAssignments.reviewer',
             'revisionRequests.revisionReviews.reviewer',
-            'appeals'
+            'appeals',
         ]);
 
         return view('submissions.show', compact('submission'));
     }
 
+    // ───────────────────────────────────────────────────────────────────────
+    //  EDIT / UPDATE
+    // ───────────────────────────────────────────────────────────────────────
     public function edit(Submission $submission): View|RedirectResponse
     {
         $this->authorizeView($submission);
@@ -113,17 +208,17 @@ return redirect()->route('submissions.index')->with('success', 'Submission creat
         }
 
         $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'abstract' => ['required', 'string'],
-            'keywords' => ['nullable', 'string', 'max:255'],
+            'title'          => ['required', 'string', 'max:255'],
+            'abstract'       => ['required', 'string'],
+            'keywords'       => ['nullable', 'string', 'max:255'],
             'research_field' => ['required', 'string', 'in:' . implode(',', array_keys(\App\Models\EditorExpertise::getFieldOptions()))],
-            'file' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+            'file'           => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
         ]);
 
         $data = [
-            'title' => $validated['title'],
-            'abstract' => $validated['abstract'],
-            'keywords' => $validated['keywords'] ?? null,
+            'title'          => $validated['title'],
+            'abstract'       => $validated['abstract'],
+            'keywords'       => $validated['keywords'] ?? null,
             'research_field' => $validated['research_field'],
         ];
 
@@ -131,26 +226,20 @@ return redirect()->route('submissions.index')->with('success', 'Submission creat
             if ($submission->file_path) {
                 Storage::disk('local')->delete($submission->file_path);
             }
-            $file = $request->file('file');
+            $file            = $request->file('file');
             $data['file_path'] = $file->store('submissions/' . Auth::id(), 'local');
             $data['file_name'] = $file->getClientOriginalName();
         }
 
         $submission->update($data);
 
-        return redirect()->route('submissions.show', $submission)->with('success', 'Submission updated.');
+        return redirect()->route('submissions.show', $submission)
+            ->with('success', 'Submission updated.');
     }
 
-    private function authorizeView(Submission $submission): void
-    {
-        /** @var User $user */
-        $user = Auth::user();
-
-        if ($submission->author_id !== $user->id && ! $user->isEditor() && ! $user->isAdmin()) {
-            abort(403);
-        }
-    }
-
+    // ───────────────────────────────────────────────────────────────────────
+    //  REVISIONS
+    // ───────────────────────────────────────────────────────────────────────
     public function revisions(Submission $submission): View|RedirectResponse
     {
         if ($submission->author_id !== Auth::id()) {
@@ -172,8 +261,8 @@ return redirect()->route('submissions.index')->with('success', 'Submission creat
         }
 
         $validated = $request->validate([
-            'file' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
-            'revision_notes' => ['required', 'string', 'max:1000'],
+            'file'                => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+            'revision_notes'      => ['required', 'string', 'max:1000'],
             'revision_request_id' => ['required', 'exists:revision_requests,id'],
         ]);
 
@@ -196,6 +285,9 @@ return redirect()->route('submissions.index')->with('success', 'Submission creat
             ->with('success', 'Revised manuscript submitted successfully. Awaiting review.');
     }
 
+    // ───────────────────────────────────────────────────────────────────────
+    //  LAYOUT
+    // ───────────────────────────────────────────────────────────────────────
     public function downloadLayout(Submission $submission)
     {
         if ($submission->author_id !== Auth::id()) {
@@ -207,12 +299,12 @@ return redirect()->route('submissions.index')->with('success', 'Submission creat
             ->latest('completed_at')
             ->first();
 
-        if (!$layoutAssignment || !\Illuminate\Support\Facades\Storage::disk('local')->exists($layoutAssignment->layout_file_path)) {
+        if (! $layoutAssignment || ! Storage::disk('local')->exists($layoutAssignment->layout_file_path)) {
             abort(404, 'Layout file not found.');
         }
 
         return response()->download(
-            \Illuminate\Support\Facades\Storage::disk('local')->path($layoutAssignment->layout_file_path),
+            Storage::disk('local')->path($layoutAssignment->layout_file_path),
             $layoutAssignment->layout_file_name ?? 'layout.pdf'
         );
     }
@@ -227,13 +319,11 @@ return redirect()->route('submissions.index')->with('success', 'Submission creat
             return back()->with('error', 'This submission is not awaiting author confirmation.');
         }
 
-        // Update status to ready for publishing (goes back to managing editor)
         $submission->update([
-            'status' => Submission::STATUS_WITH_MANAGING_EDITOR,
+            'status'                 => Submission::STATUS_WITH_MANAGING_EDITOR,
             'managing_editor_status' => 'ready_to_publish',
         ]);
 
-        // Notify managing editor that author confirmed layout
         $managingEditor = $submission->managingEditor;
         if ($managingEditor) {
             \App\Models\Notification::create([
@@ -250,4 +340,196 @@ return redirect()->route('submissions.index')->with('success', 'Submission creat
         return redirect()->route('submissions.show', $submission)
             ->with('success', 'Layout confirmed! Your manuscript is now awaiting final publishing by the managing editor.');
     }
+
+    // ───────────────────────────────────────────────────────────────────────
+    //  PRIVATE HELPERS
+    // ───────────────────────────────────────────────────────────────────────
+
+    private function authorizeView(Submission $submission): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if ($submission->author_id !== $user->id && ! $user->isEditor() && ! $user->isAdmin()) {
+            abort(403);
+        }
+    }
+
+    /**
+     * Find existing submissions whose title/abstract share significant
+     * keywords with the given text.
+     *
+     * Scoring:
+     *   - Title match  → +2 pts per shared word
+     *   - Abstract match → +1 pt per shared word
+     *   - Threshold: SIMILARITY_THRESHOLD points to be included
+     *
+     * Excludes the current author's own submissions and already-rejected ones.
+     */
+    private function findSimilarSubmissions(string $title, string $abstract = ''): \Illuminate\Support\Collection
+    {
+        if (strlen(trim($title)) < 5) {
+            return collect();
+        }
+
+        // Extract meaningful words (≥5 chars, not in stop list)
+        $words = collect(preg_split('/\W+/', strtolower($title . ' ' . $abstract)))
+            ->filter(fn ($w) => strlen($w) >= 5 && ! in_array($w, self::SIMILARITY_STOP_WORDS))
+            ->unique()
+            ->values();
+
+        if ($words->isEmpty()) {
+            return collect();
+        }
+
+        // Fetch candidates — exclude current author's own and rejected submissions
+        $candidates = Submission::where('author_id', '!=', Auth::id())
+            ->where('status', '!=', 'rejected')
+            ->where(function ($q) use ($words) {
+                foreach ($words->take(10) as $word) {
+                    $q->orWhere('title', 'like', '%' . $word . '%');
+                }
+            })
+            ->get();
+
+        // Score and filter
+        return $candidates->map(function ($sub) use ($words) {
+            $titleHaystack    = strtolower($sub->title);
+            $abstractHaystack = strtolower($sub->abstract ?? '');
+            $score = 0;
+
+            foreach ($words as $word) {
+                if (str_contains($titleHaystack, $word)) {
+                    $score += 2;
+                } elseif (str_contains($abstractHaystack, $word)) {
+                    $score += 1;
+                }
+            }
+
+            $sub->_similarity_score = $score;
+            return $sub;
+        })
+        ->filter(fn ($s) => $s->_similarity_score >= self::SIMILARITY_THRESHOLD)
+        ->sortByDesc('_similarity_score')
+        ->take(5)
+        ->values();
+    }
+
+    public function uploadSignedCtf(Request $request, Submission $submission): RedirectResponse
+{
+    if ($submission->author_id !== Auth::id()) {
+        abort(403);
+    }
+
+    if ($submission->managing_editor_status !== 'ctf_sent') {
+        return back()->with('error', 'No CTF is awaiting your signature.');
+    }
+
+    $request->validate([
+        'signed_ctf_file' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+    ]);
+
+    $file = $request->file('signed_ctf_file');
+    $path = $file->storeAs(
+        'ctf-signed',
+        'signed-ctf-' . $submission->id . '-' . time() . '.' . $file->getClientOriginalExtension(),
+        'local'
+    );
+
+    $submission->update([
+        'managing_editor_status' => 'ctf_returned',
+        'ctf_signed_file_path'   => $path,
+        'ctf_signed_file_name'   => $file->getClientOriginalName(),
+        'ctf_returned_at'        => now(),
+    ]);
+
+    $managingEditor = $submission->managingEditor;
+    if ($managingEditor) {
+        \App\Models\Notification::create([
+            'user_id'         => $managingEditor->id,
+            'role'            => 'managing-editor',
+            'title'           => '✅ Signed CTF Returned by Author',
+            'message'         => "The author has uploaded the signed Copyright Transfer Form for \"{$submission->title}\". You may now assign a layout editor.",
+            'type'            => 'success',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    return redirect()->route('submissions.index')
+        ->with('success', 'Signed CTF uploaded. The managing editor has been notified.');
+}
+public function authorConfirm(Request $request, Submission $submission)
+{
+    if ($submission->author_id !== Auth::id()) {
+        abort(403);
+    }
+
+    $assignment = LayoutEditorAssignment::findOrFail($request->assignment_id);
+
+  \Illuminate\Support\Facades\DB::table('layout_editor_assignments')
+    ->where('id', $assignment->id)
+    ->update([
+        'author_status'      => 'confirmed',
+        'author_feedback_at' => now(),
+    ]);
+
+    // Update submission status para hindi mag-conflict sa confirmLayout
+    $submission->update([
+        'status'                 => Submission::STATUS_WITH_MANAGING_EDITOR,
+        'managing_editor_status' => 'ready_to_publish',
+    ]);
+
+    // Notify ME
+    $managingEditor = $submission->managingEditor;
+    if ($managingEditor) {
+        \App\Models\Notification::create([
+            'user_id'         => $managingEditor->id,
+            'role'            => 'managing-editor',
+            'title'           => '✅ Author Confirmed Layout — Ready to Publish',
+            'message'         => "Author has confirmed the layout for \"{$submission->title}\". The manuscript is now ready for final publishing.",
+            'type'            => 'success',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    return back()->with('success', 'Layout confirmed. The Managing Editor will proceed with publication.');
+}
+public function authorRequestRevision(Request $request, Submission $submission)
+{
+    if ($submission->author_id !== Auth::id()) {
+        abort(403);
+    }
+
+    $request->validate([
+        'author_feedback' => 'required|string|max:2000',
+    ]);
+
+    $assignment = LayoutEditorAssignment::findOrFail($request->assignment_id);
+
+    \Illuminate\Support\Facades\DB::table('layout_editor_assignments')
+        ->where('id', $assignment->id)
+        ->update([
+            'author_status'      => 'revision_requested',
+            'author_feedback'    => $request->author_feedback,
+            'author_feedback_at' => now(),
+        ]);
+
+    // Notify ME
+    $managingEditor = $submission->managingEditor;
+    if ($managingEditor) {
+        \App\Models\Notification::create([
+            'user_id'         => $managingEditor->id,
+            'role'            => 'managing-editor',
+            'title'           => '⚠ Author Requested Layout Revision',
+            'message'         => "The author has requested revisions for \"{$submission->title}\".",
+            'type'            => 'warning',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    return back()->with('success', 'Revision request sent to the Managing Editor.');
+}
 }

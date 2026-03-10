@@ -230,31 +230,28 @@
                             {{-- Notification Bell --}}
                             @php
                                 $activeRole = session('active_role');
-                                $unreadQuery = \App\Models\Notification::where('user_id', auth()->id())
-                                    ->whereNull('read_at');
-                                
+                                $unreadQuery = \App\Models\Notification::where('user_id', auth()->id())->whereNull('read_at');
+
                                 // Filter by active role
                                 if ($activeRole) {
-                                    $unreadQuery->where(function($q) use ($activeRole) {
-                                        $q->where('role', $activeRole)
-                                          ->orWhereNull('role');
+                                    $unreadQuery->where(function ($q) use ($activeRole) {
+                                        $q->where('role', $activeRole)->orWhereNull('role');
                                     });
                                 }
-                                
+
                                 $unreadCount = $unreadQuery->count();
 
-                                $notifQuery = \App\Models\Notification::where('user_id', auth()->id())
-                                    ->whereNull('read_at');
-                                
+                                $notifQuery = \App\Models\Notification::where('user_id', auth()->id())->whereNull('read_at');
+
                                 // Filter by active role
                                 if ($activeRole) {
-                                    $notifQuery->where(function($q) use ($activeRole) {
-                                        $q->where('role', $activeRole)
-                                          ->orWhereNull('role');
+                                    $notifQuery->where(function ($q) use ($activeRole) {
+                                        $q->where('role', $activeRole)->orWhereNull('role');
                                     });
                                 }
-                                
-                                $unreadNotifs = $notifQuery->latest()
+
+                                $unreadNotifs = $notifQuery
+                                    ->latest()
                                     ->take(5)
                                     ->get();
                             @endphp
@@ -582,6 +579,10 @@
                 });
             }
         </script>
+        <script
+            defer
+            src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+        ></script>
         @stack('scripts')
     </body>
 </html>

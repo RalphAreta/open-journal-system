@@ -365,7 +365,6 @@
                         $isYou = $a->reviewer_id === auth()->id();
                         $isDone = $a->status === \App\Models\ReviewAssignment::STATUS_COMPLETED;
                         $pipClass = $isDone ? ($isYou ? 'yours' : 'done') : 'wait';
-                        // Label: own name for me, Reviewer N for others
                         $label = $isYou ? auth()->user()->name : 'Reviewer ' . $peerNum;
                         if (! $isYou) {
                             $peerNum++;
@@ -539,19 +538,6 @@
                                     {{ $myRec['label'] }}
                                 </span>
                             </div>
-                            @if ($myReview->rating)
-                                <div class="text-right">
-                                    <p
-                                        class="text-[10px] font-bold uppercase tracking-[.07em] text-blue-500 mb-1"
-                                    >
-                                        Your Rating
-                                    </p>
-                                    <div class="flex gap-2 justify-end items-center">
-                                        <span class="text-sm font-bold text-blue-600">{{ $myReview->rating }}/100</span>
-                                        <span class="text-xs text-blue-500">{{ $myReview->getRatingInterpretation() }}</span>
-                                    </div>
-                                </div>
-                            @endif
                         </div>
                         @if ($myReview->comments_for_author)
                             <div class="mb-3 pt-3 border-t border-blue-200">
@@ -721,7 +707,6 @@
                                 ];
                                 $rec = $recMap[$r->recommendation] ?? ['label' => $r->recommendation ?? '—', 'cls' => 'rec-default'];
 
-                                // Name: own name for me, Reviewer N for others
                                 $displayName = $isYou ? auth()->user()->name : 'Reviewer ' . $peerNum3;
                                 $avatarLabel = $isYou ? strtoupper(substr(auth()->user()->name, 0, 2)) : 'R' . $peerNum3;
                                 if (! $isYou) {
@@ -772,24 +757,6 @@
                                         {{ $rec['label'] }}
                                     </span>
                                 </div>
-
-                                @if ($r->rating)
-                                    <div
-                                        class="flex items-center gap-2 mb-3 pb-3 border-b border-slate-100"
-                                    >
-                                        <span
-                                            class="text-[10px] font-bold uppercase tracking-[.07em] text-slate-400"
-                                        >
-                                            Rating
-                                        </span>
-                                        <span
-                                            class="text-xs font-bold text-slate-600"
-                                        >
-                                            {{ $r->rating }}/100
-                                        </span>
-                                        <span class="text-xs text-slate-500">{{ $r->getRatingInterpretation() }}</span>
-                                    </div>
-                                @endif
 
                                 {{-- View Comments button --}}
 

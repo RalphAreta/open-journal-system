@@ -4,23 +4,41 @@
 
 @push('styles')
     <style>
-        /* Only non-Tailwind things: custom focus ring color & animations */
         .field:focus {
             outline: none;
             border-color: #2d8176 !important;
             background: #fff !important;
-            box-shadow: 0 0 0 3px rgba(45,129,118,.12);
+            box-shadow: 0 0 0 3px rgba(45, 129, 118, 0.12);
         }
-        select { appearance: none; -webkit-appearance: none; }
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+        }
 
-        .fu  { animation: fu .45s ease both; }
-        .fu1 { animation: fu .45s .07s ease both; }
-        .fu2 { animation: fu .45s .14s ease both; }
-        .fu3 { animation: fu .45s .21s ease both; }
-        .fu4 { animation: fu .45s .28s ease both; }
+        .fu {
+            animation: fu 0.45s ease both;
+        }
+        .fu1 {
+            animation: fu 0.45s 0.07s ease both;
+        }
+        .fu2 {
+            animation: fu 0.45s 0.14s ease both;
+        }
+        .fu3 {
+            animation: fu 0.45s 0.21s ease both;
+        }
+        .fu4 {
+            animation: fu 0.45s 0.28s ease both;
+        }
         @keyframes fu {
-            from { opacity: 0; transform: translateY(14px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .dropzone:hover .dropzone-icon,
@@ -31,378 +49,855 @@
             border-color: #2d8176;
             background-color: #e8f4f2;
         }
+
+        /* similarity warning */
+        .sim-warning {
+            background: #fffbeb;
+            border: 1.5px solid #fde68a;
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+        .sim-item {
+            background: #fff;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 8px;
+        }
     </style>
 @endpush
 
 @section('content')
-{{-- Page wrapper: cream bg + subtle dot texture via inline bg --}}
-<div class="font-['Source_Sans_3',sans-serif] text-[#1a1209] max-w-7xl mx-auto px-1"
-     style="background-color:#faf6ef;background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(45,129,118,.08) 0%,transparent 70%)">
+    <div
+        class="font-['Source_Sans_3',sans-serif] text-[#1a1209] max-w-7xl mx-auto px-1"
+        style="
+            background-color: #faf6ef;
+            background-image: radial-gradient(
+                ellipse 80% 50% at 50% -10%,
+                rgba(45, 129, 118, 0.08) 0%,
+                transparent 70%
+            );
+        "
+    >
+        {{-- ── Page Header ── --}}
+        <div class="relative pt-10 pb-7 mb-9 border-b border-[#e8dfd0] fu">
+            <div
+                class="absolute bottom-[-1px] left-0 w-20 h-[3px]"
+                style="background: linear-gradient(90deg, #2d8176, transparent)"
+            ></div>
 
-    {{-- ── Page Header ── --}}
-    <div class="relative pt-10 pb-7 mb-9 border-b border-[#e8dfd0] fu">
-        {{-- teal accent underline --}}
-        <div class="absolute bottom-[-1px] left-0 w-20 h-[3px]"
-             style="background:linear-gradient(90deg,#2d8176,transparent)"></div>
-
-        {{-- Breadcrumb --}}
-        <nav class="flex items-center gap-2 mb-3
-                    text-[11px] font-bold tracking-[.18em] uppercase text-[#6b5740]">
-            <a href="{{ route('submissions.index') }}"
-               class="hover:text-[#2d8176] transition-colors">Dashboard</a>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M9 5l7 7-7 7" stroke-width="2.5"/>
-            </svg>
-            <span class="text-[#1a1209]">New Submission</span>
-        </nav>
-
-        {{-- Eyebrow --}}
-        <p class="flex items-center gap-2 mb-2
-                   text-[11px] font-bold tracking-[.2em] uppercase text-[#2d8176]">
-            <span class="inline-block w-6 h-px bg-[#2d8176]"></span>
-            Author Workspace
-        </p>
-
-        <h1 class="font-['Libre_Baskerville',serif] text-[2.4rem] font-bold
-                   text-[#1a1209] leading-tight tracking-tight">
-            Submit Your <em class="italic text-[#2d8176]">Research</em>
-        </h1>
-        <p class="mt-2 text-[.98rem] text-[#6b5740]">
-            Join our global community of researchers. Ensure all fields are accurate before submitting.
-        </p>
-    </div>
-
-    {{-- ── Form ── --}}
-    <form method="POST" action="{{ route('submissions.store') }}"
-          enctype="multipart/form-data"
-          class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        @csrf
-
-        {{-- ════════════════════ LEFT: Form ════════════════════ --}}
-        <div class="lg:col-span-8 space-y-6">
-
-            {{-- ── Card 01: Core Information ── --}}
-            <div class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden
-                        shadow-[0_2px_16px_rgba(26,18,9,.07)] fu1">
-
-                {{-- Card Header --}}
-                <div class="flex items-center gap-4 px-7 py-4
-                            bg-[#f3ece0] border-b border-[#e8dfd0]">
-                    <div class="w-[30px] h-[30px] rounded-lg bg-[#2d8176] text-white
-                                flex items-center justify-center shrink-0
-                                text-[.68rem] font-extrabold tracking-wider">
-                        01
-                    </div>
-                    <h2 class="font-['Libre_Baskerville',serif] text-[1rem] font-bold
-                               text-[#1a1209] tracking-wide flex-1">
-                        Core Information
-                    </h2>
-                </div>
-
-                {{-- Card Body --}}
-                <div class="px-7 py-7 space-y-6">
-
-                    {{-- Manuscript Title --}}
-                    <div>
-                        <label for="title"
-                               class="block mb-[7px] text-[.7rem] font-bold
-                                      tracking-[.12em] uppercase text-[#6b5740]">
-                            Manuscript Title
-                            <span class="text-[#2d8176] ml-0.5">*</span>
-                        </label>
-                        <textarea name="title" id="title" rows="3" required
-                            class="field w-full px-4 py-3 border rounded-lg
-                                   bg-[#faf6ef] text-[.95rem] text-[#1a1209]
-                                   leading-relaxed resize-none transition-all
-                                   placeholder:text-[#b5a595]
-                                   {{ $errors->has('title')
-                                      ? 'border-red-300 bg-red-50'
-                                      : 'border-[#e8dfd0]' }}"
-                            placeholder="e.g., Quantum Computing Advancements in 2026">{{ old('title') }}</textarea>
-                        @error('title')
-                            <p class="mt-1.5 text-[.8rem] text-red-600 font-medium">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Research Field + Keywords --}}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                        {{-- Research Field --}}
-                        <div>
-                            <label for="research_field"
-                                   class="block mb-[7px] text-[.7rem] font-bold
-                                          tracking-[.12em] uppercase text-[#6b5740]">
-                                Research Field
-                                <span class="text-[#2d8176] ml-0.5">*</span>
-                            </label>
-                            <div class="relative">
-                                <select name="research_field" id="research_field" required
-                                    class="field w-full px-4 py-3 pr-10 border rounded-lg
-                                           bg-[#faf6ef] text-[.95rem] text-[#1a1209]
-                                           cursor-pointer transition-all
-                                           {{ $errors->has('research_field')
-                                              ? 'border-red-300 bg-red-50'
-                                              : 'border-[#e8dfd0]' }}">
-                                    <option value="">— Select Field —</option>
-                                    @foreach ($fieldOptions as $value => $label)
-                                        <option value="{{ $value }}"
-                                            {{ old('research_field') === $value ? 'selected' : '' }}>
-                                            {{ $label }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <svg class="absolute right-3.5 top-1/2 -translate-y-1/2
-                                            w-[17px] h-[17px] text-[#6b5740] pointer-events-none"
-                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                          stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </div>
-                            @error('research_field')
-                                <p class="mt-1.5 text-[.8rem] text-red-600 font-medium">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        {{-- Keywords --}}
-                        <div>
-                            <label for="keywords"
-                                   class="block mb-[7px] text-[.7rem] font-bold
-                                          tracking-[.12em] uppercase text-[#6b5740]">
-                                Keywords
-                            </label>
-                            <input type="text" name="keywords" id="keywords"
-                                value="{{ old('keywords') }}"
-                                class="field w-full px-4 py-3 border border-[#e8dfd0]
-                                       rounded-lg bg-[#faf6ef] text-[.95rem] text-[#1a1209]
-                                       transition-all placeholder:text-[#b5a595]"
-                                placeholder="e.g., Quantum, AI, Physics">
-                        </div>
-                    </div>
-
-                    {{-- Abstract --}}
-                    <div>
-                        <label for="abstract"
-                               class="block mb-[7px] text-[.7rem] font-bold
-                                      tracking-[.12em] uppercase text-[#6b5740]">
-                            Abstract
-                            <span class="text-[#2d8176] ml-0.5">*</span>
-                        </label>
-                        <textarea name="abstract" id="abstract" rows="7" required
-                            class="field w-full px-4 py-3 border rounded-lg
-                                   bg-[#faf6ef] text-[.95rem] text-[#1a1209]
-                                   leading-relaxed resize-y transition-all
-                                   placeholder:text-[#b5a595]
-                                   {{ $errors->has('abstract')
-                                      ? 'border-red-300 bg-red-50'
-                                      : 'border-[#e8dfd0]' }}"
-                            placeholder="Provide a concise summary of your research (max 300 words)…">{{ old('abstract') }}</textarea>
-                        @error('abstract')
-                            <p class="mt-1.5 text-[.8rem] text-red-600 font-medium">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                </div>
-            </div>
-
-            {{-- ── Card 02: File Upload ── --}}
-            <div class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden
-                        shadow-[0_2px_16px_rgba(26,18,9,.07)] fu2">
-
-                {{-- Card Header --}}
-                <div class="flex items-center gap-4 px-7 py-4
-                            bg-[#f3ece0] border-b border-[#e8dfd0]">
-                    <div class="w-[30px] h-[30px] rounded-lg bg-[#2d8176] text-white
-                                flex items-center justify-center shrink-0
-                                text-[.68rem] font-extrabold tracking-wider">
-                        02
-                    </div>
-                    <h2 class="font-['Libre_Baskerville',serif] text-[1rem] font-bold
-                               text-[#1a1209] tracking-wide flex-1">
-                        Manuscript File
-                    </h2>
-                </div>
-
-                {{-- Card Body --}}
-                <div class="px-7 py-7">
-                    <div class="dropzone relative cursor-pointer
-                                border-2 border-dashed border-[#c9b99a] rounded-[10px]
-                                bg-[#faf6ef] text-center
-                                transition-all duration-200
-                                hover:border-[#2d8176] hover:bg-[#e8f4f2]
-                                {{ $errors->has('file') ? 'border-red-300' : '' }}"
-                         id="dropzone">
-
-                        <input type="file" name="file" id="file"
-                               accept=".pdf,.doc,.docx" required
-                               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-
-                        <div class="py-10 px-6">
-                            {{-- Icon --}}
-                            <div class="dropzone-icon w-[52px] h-[52px] mx-auto mb-4
-                                        bg-white border border-[#c9b99a] rounded-xl
-                                        flex items-center justify-center
-                                        shadow-[0_2px_8px_rgba(26,18,9,.06)]
-                                        transition-transform duration-200">
-                                <svg class="w-6 h-6 text-[#2d8176]"
-                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-
-                            <p class="font-['Libre_Baskerville',serif] text-[1rem] font-bold
-                                      text-[#1a1209] mb-1">
-                                Click or drag file to upload
-                            </p>
-                            <p class="text-[.85rem] text-[#6b5740]">
-                                PDF, DOC, or DOCX — maximum 10 MB
-                            </p>
-
-                            {{-- Selected file pill --}}
-                            <div id="file-name-display"
-                                 class="hidden mt-4 inline-flex items-center gap-2
-                                        bg-[#e8f4f2] border border-[rgba(45,129,118,.3)]
-                                        text-[#1a4d46] text-[.8rem] font-bold
-                                        px-4 py-1.5 rounded-full">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                          stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                                </svg>
-                                <span id="file-name-text"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    @error('file')
-                        <p class="mt-2 text-center text-[.8rem] text-red-600 font-medium">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-
-            {{-- ── Action Buttons ── --}}
-            <div class="flex items-center justify-end gap-3 pt-1 fu3">
-
-                <a href="{{ route('submissions.index') }}"
-                   class="px-5 py-3 rounded-lg
-                          text-[.82rem] font-semibold tracking-[.06em] uppercase
-                          text-[#6b5740] transition-all
-                          hover:text-[#1a1209] hover:bg-[#f3ece0]">
-                    Cancel
+            <nav
+                class="flex items-center gap-2 mb-3 text-[11px] font-bold tracking-[.18em] uppercase text-[#6b5740]"
+            >
+                <a
+                    href="{{ route('submissions.index') }}"
+                    class="hover:text-[#2d8176] transition-colors"
+                >
+                    Dashboard
                 </a>
+                <svg
+                    class="w-3 h-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path d="M9 5l7 7-7 7" stroke-width="2.5" />
+                </svg>
+                <span class="text-[#1a1209]">New Submission</span>
+            </nav>
 
-                <button type="submit"
-                    class="relative overflow-hidden inline-flex items-center gap-2
-                           px-8 py-3 rounded-lg
-                           bg-[#2d8176] hover:bg-[#1a4d46] text-white
-                           text-[.82rem] font-bold tracking-[.1em] uppercase
-                           transition-all duration-150
-                           shadow-[0_4px_14px_rgba(45,129,118,.30)]
-                           hover:-translate-y-0.5
-                           hover:shadow-[0_8px_22px_rgba(45,129,118,.36)]">
-                    {{-- gold shimmer overlay --}}
-                    <span class="absolute inset-0 pointer-events-none"
-                          style="background:linear-gradient(135deg,rgba(201,168,76,.18) 0%,transparent 60%)"></span>
-                    <svg class="w-4 h-4 relative z-10" fill="none"
-                         stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                    </svg>
-                    <span class="relative z-10">Submit Manuscript</span>
-                </button>
+            <p
+                class="flex items-center gap-2 mb-2 text-[11px] font-bold tracking-[.2em] uppercase text-[#2d8176]"
+            >
+                <span class="inline-block w-6 h-px bg-[#2d8176]"></span>
+                Author Workspace
+            </p>
 
-            </div>
+            <h1
+                class="font-['Libre_Baskerville',serif] text-[2.4rem] font-bold text-[#1a1209] leading-tight tracking-tight"
+            >
+                Submit Your
+                <em class="italic text-[#2d8176]">Research</em>
+            </h1>
+            <p class="mt-2 text-[.98rem] text-[#6b5740]">
+                Join our global community of researchers. Ensure all fields are
+                accurate before submitting.
+            </p>
         </div>
 
-        {{-- ════════════════════ RIGHT: Sidebar ════════════════════ --}}
-        <div class="lg:col-span-4 fu1">
-            <div class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden
-                        shadow-[0_2px_16px_rgba(26,18,9,.07)] sticky top-7">
+        {{--
+            ══════════════════════════════════════════════════════════
+            RESTRICTION 1: Active submission block
+            ══════════════════════════════════════════════════════════
+        --}}
+        @if (isset($activeSubmission) && $activeSubmission)
+            <div class="mb-8 fu">
+                <div
+                    class="bg-white border-2 border-amber-300 rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(217,119,6,.12)]"
+                >
+                    {{-- Block header --}}
+                    <div
+                        class="flex items-center gap-4 px-7 py-4 bg-amber-50 border-b border-amber-200"
+                    >
+                        <div
+                            class="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center shrink-0"
+                        >
+                            <svg
+                                class="w-5 h-5 text-amber-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                                />
+                            </svg>
+                        </div>
+                        <div>
+                            <p
+                                class="text-[.7rem] font-extrabold tracking-[.16em] uppercase text-amber-600 mb-0.5"
+                            >
+                                Submission Limit Reached
+                            </p>
+                            <p class="text-[1rem] font-bold text-amber-900">
+                                You already have an active submission in
+                                progress
+                            </p>
+                        </div>
+                    </div>
 
-                {{-- Sidebar Header --}}
-                <div class="px-6 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]">
-                    <p class="text-[.68rem] font-extrabold tracking-[.16em] uppercase
-                              text-[#6b5740]">
-                        Author Checklist
-                    </p>
+                    {{-- Active submission details --}}
+                    <div class="px-7 py-6">
+                        <p
+                            class="text-[.9rem] text-[#6b5740] mb-5 leading-relaxed"
+                        >
+                            Our policy allows
+                            <strong class="text-[#1a1209]">
+                                one manuscript per author
+                            </strong>
+                            at a time. You may submit a new manuscript once your
+                            current submission has been
+                            <strong class="text-emerald-700">published</strong>
+                            or
+                            <strong class="text-red-600">rejected</strong>
+                            .
+                        </p>
+
+                        {{-- Current submission card --}}
+                        <div
+                            class="bg-[#faf6ef] border border-[#e8dfd0] rounded-xl p-5"
+                        >
+                            <p
+                                class="text-[.65rem] font-extrabold tracking-[.16em] uppercase text-[#6b5740] mb-3"
+                            >
+                                Your Current Submission
+                            </p>
+                            <p
+                                class="font-['Libre_Baskerville',serif] text-[1.05rem] font-bold text-[#1a1209] mb-3 leading-snug"
+                            >
+                                {{ $activeSubmission->title }}
+                            </p>
+                            <div class="flex flex-wrap items-center gap-3">
+                                @php
+                                    $statusColors = [
+                                        'submitted' => 'bg-blue-50 border-blue-200 text-blue-700',
+                                        'under_review' => 'bg-violet-50 border-violet-200 text-violet-700',
+                                        'revisions_requested' => 'bg-amber-50 border-amber-200 text-amber-700',
+                                        'revision_under_review' => 'bg-orange-50 border-orange-200 text-orange-700',
+                                        'with_managing_editor' => 'bg-cyan-50 border-cyan-200 text-cyan-700',
+                                        'layout_editing' => 'bg-teal-50 border-teal-200 text-teal-700',
+                                        'layout_review' => 'bg-teal-50 border-teal-200 text-teal-700',
+                                        'author_confirmation' => 'bg-emerald-50 border-emerald-200 text-emerald-700',
+                                    ];
+                                    $sc = $statusColors[$activeSubmission->status] ?? 'bg-slate-50 border-slate-200 text-slate-600';
+                                @endphp
+
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.68rem] font-extrabold tracking-[.06em] uppercase {{ $sc }}"
+                                >
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-current opacity-70 inline-block"
+                                    ></span>
+                                    {{ \App\Models\Submission::statusOptions()[$activeSubmission->status] ?? $activeSubmission->status }}
+                                </span>
+                                <span class="text-[.75rem] text-[#6b5740]">
+                                    Submitted
+                                    {{ $activeSubmission->created_at->format('M d, Y') }}
+                                </span>
+                            </div>
+                        </div>
+
+                        {{-- CTA --}}
+                        <div class="mt-5 flex flex-wrap items-center gap-3">
+                            <a
+                                href="{{ route('submissions.show', $activeSubmission) }}"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.75rem] font-bold tracking-[.08em] uppercase transition-all shadow-[0_2px_10px_rgba(45,129,118,.25)] hover:-translate-y-0.5"
+                            >
+                                <svg
+                                    class="w-3.5 h-3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2.5"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                    />
+                                </svg>
+                                View My Submission
+                            </a>
+                            <a
+                                href="{{ route('submissions.index') }}"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#f3ece0] hover:bg-[#e8dfd0] text-[#6b5740] text-[.75rem] font-bold tracking-[.08em] uppercase border border-[#c9b99a] transition-all"
+                            >
+                                Back to Dashboard
+                            </a>
+                        </div>
+                    </div>
                 </div>
+            </div>
 
-                {{-- Checklist Items --}}
-                <div class="px-6 py-5">
-                    <ul class="divide-y divide-[#e8dfd0]">
-                        @foreach([
-                            'Anonymize the manuscript file for double-blind peer review.',
-                            'The abstract must not exceed 300 words.',
-                            'Ensure all authors are properly acknowledged.',
-                            'Verify references follow the required citation format.',
-                            'Confirm the manuscript has not been submitted elsewhere.',
-                        ] as $item)
-                            <li class="flex items-start gap-3 py-3
-                                       first:pt-0 last:pb-0">
-                                {{-- Teal check marker --}}
-                                <div class="mt-0.5 w-5 h-5 rounded-full shrink-0
-                                            bg-[#e8f4f2] border border-[rgba(45,129,118,.35)]
-                                            flex items-center justify-center">
-                                    <svg class="w-[10px] h-[10px] text-[#2d8176]"
-                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                              stroke-width="3" d="M5 13l4 4L19 7"/>
+            {{--
+                ══════════════════════════════════════════════════════════
+                NORMAL FORM (no active submission)
+                ══════════════════════════════════════════════════════════
+            --}}
+        @else
+            <form
+                method="POST"
+                action="{{ route('submissions.store') }}"
+                enctype="multipart/form-data"
+                class="grid grid-cols-1 lg:grid-cols-12 gap-8"
+                id="submission-form"
+            >
+                @csrf
+
+                {{-- ════ LEFT: Form ════ --}}
+                <div class="lg:col-span-8 space-y-6">
+                    {{-- RESTRICTION 2: Similar articles warning --}}
+                    @if (isset($similarSubmissions) && $similarSubmissions->isNotEmpty())
+                        <div class="sim-warning fu">
+                            <div class="flex items-start gap-3 mb-2">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-amber-100 border border-amber-300 flex items-center justify-center shrink-0 mt-0.5"
+                                >
+                                    <svg
+                                        class="w-4 h-4 text-amber-600"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                                        />
                                     </svg>
                                 </div>
-                                <p class="text-[.9rem] text-[#6b5740] leading-[1.55]">
-                                    {{ $item }}
-                                </p>
-                            </li>
-                        @endforeach
-                    </ul>
+                                <div>
+                                    <p
+                                        class="text-[.72rem] font-extrabold tracking-[.14em] uppercase text-amber-700 mb-0.5"
+                                    >
+                                        Similar Articles Detected
+                                    </p>
+                                    <p
+                                        class="text-[.88rem] text-amber-900 leading-relaxed"
+                                    >
+                                        We found
+                                        {{ $similarSubmissions->count() }}
+                                        submission(s) with a similar title or
+                                        topic already in our system. Please
+                                        review them before proceeding to avoid
+                                        duplication.
+                                    </p>
+                                </div>
+                            </div>
 
-                    {{-- Policy note --}}
-                    <div class="mt-5 pt-5 border-t border-[#e8dfd0]">
-                        <p class="text-[.82rem] italic text-[#6b5740] leading-relaxed">
-                            By submitting, you agree to the journal's peer-review policy
-                            and copyright transfer agreement.
-                        </p>
+                            @foreach ($similarSubmissions as $sim)
+                                <div class="sim-item">
+                                    <p
+                                        class="text-[.85rem] font-bold text-[#1a1209] leading-snug mb-1"
+                                    >
+                                        {{ $sim->title }}
+                                    </p>
+                                    <div
+                                        class="flex flex-wrap items-center gap-2"
+                                    >
+                                        <span
+                                            class="text-[.68rem] font-bold uppercase tracking-[.06em] bg-amber-50 border border-amber-200 text-amber-700 px-2.5 py-0.5 rounded-full"
+                                        >
+                                            {{ \App\Models\Submission::statusOptions()[$sim->status] ?? $sim->status }}
+                                        </span>
+                                        @if ($sim->research_field)
+                                            <span
+                                                class="text-[.68rem] font-bold uppercase tracking-[.06em] bg-blue-50 border border-blue-200 text-blue-600 px-2.5 py-0.5 rounded-full"
+                                            >
+                                                {{ $sim->research_field }}
+                                            </span>
+                                        @endif
+
+                                        <span
+                                            class="text-[.72rem] text-[#6b5740]"
+                                        >
+                                            Submitted
+                                            {{ $sim->created_at->format('M d, Y') }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            <p
+                                class="mt-3 text-[.78rem] text-amber-700 leading-relaxed"
+                            >
+                                If your manuscript is
+                                <strong>genuinely different</strong>
+                                from the above, you may proceed. Otherwise,
+                                consider revising your title or abstract to
+                                clearly distinguish your work, or contact the
+                                editorial office.
+                            </p>
+
+                            {{-- Acknowledgement checkbox --}}
+                            <label
+                                class="flex items-start gap-3 mt-4 cursor-pointer group"
+                            >
+                                <input
+                                    type="checkbox"
+                                    id="sim-ack"
+                                    name="similarity_acknowledged"
+                                    value="1"
+                                    class="mt-0.5 w-4 h-4 accent-amber-600 cursor-pointer shrink-0"
+                                />
+                                <span
+                                    class="text-[.82rem] font-semibold text-amber-900 leading-relaxed group-hover:text-amber-700"
+                                >
+                                    I have reviewed the similar submissions
+                                    above and confirm my manuscript is
+                                    <strong>original and distinct</strong>
+                                    from those listed.
+                                </span>
+                            </label>
+                        </div>
+                    @endif
+
+                    {{-- ── Card 01: Core Information ── --}}
+                    <div
+                        class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden shadow-[0_2px_16px_rgba(26,18,9,.07)] fu1"
+                    >
+                        <div
+                            class="flex items-center gap-4 px-7 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]"
+                        >
+                            <div
+                                class="w-[30px] h-[30px] rounded-lg bg-[#2d8176] text-white flex items-center justify-center shrink-0 text-[.68rem] font-extrabold tracking-wider"
+                            >
+                                01
+                            </div>
+                            <h2
+                                class="font-['Libre_Baskerville',serif] text-[1rem] font-bold text-[#1a1209] tracking-wide flex-1"
+                            >
+                                Core Information
+                            </h2>
+                        </div>
+
+                        <div class="px-7 py-7 space-y-6">
+                            {{-- Manuscript Title --}}
+                            <div>
+                                <label
+                                    for="title"
+                                    class="block mb-[7px] text-[.7rem] font-bold tracking-[.12em] uppercase text-[#6b5740]"
+                                >
+                                    Manuscript Title
+                                    <span class="text-[#2d8176] ml-0.5">*</span>
+                                </label>
+                                <textarea
+                                    name="title"
+                                    id="title"
+                                    rows="3"
+                                    required
+                                    class="field w-full px-4 py-3 border rounded-lg bg-[#faf6ef] text-[.95rem] text-[#1a1209] leading-relaxed resize-none transition-all placeholder:text-[#b5a595] {{ $errors->has('title') ? 'border-red-300 bg-red-50' : 'border-[#e8dfd0]' }}"
+                                    placeholder="e.g., Quantum Computing Advancements in 2026"
+                                    id="title-input"
+                                >
+{{ old('title') }}</textarea
+                                >
+                                @error('title')
+                                    <p
+                                        class="mt-1.5 text-[.8rem] text-red-600 font-medium"
+                                    >
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+
+                            {{-- Research Field + Keywords --}}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label
+                                        for="research_field"
+                                        class="block mb-[7px] text-[.7rem] font-bold tracking-[.12em] uppercase text-[#6b5740]"
+                                    >
+                                        Research Field
+                                        <span class="text-[#2d8176] ml-0.5">
+                                            *
+                                        </span>
+                                    </label>
+                                    <div class="relative">
+                                        <select
+                                            name="research_field"
+                                            id="research_field"
+                                            required
+                                            class="field w-full px-4 py-3 pr-10 border rounded-lg bg-[#faf6ef] text-[.95rem] text-[#1a1209] cursor-pointer transition-all {{ $errors->has('research_field') ? 'border-red-300 bg-red-50' : 'border-[#e8dfd0]' }}"
+                                        >
+                                            <option value="">
+                                                — Select Field —
+                                            </option>
+                                            @foreach ($fieldOptions as $value => $label)
+                                                <option
+                                                    value="{{ $value }}"
+                                                    {{ old('research_field') === $value ? 'selected' : '' }}
+                                                >
+                                                    {{ $label }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <svg
+                                            class="absolute right-3.5 top-1/2 -translate-y-1/2 w-[17px] h-[17px] text-[#6b5740] pointer-events-none"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M19 9l-7 7-7-7"
+                                            />
+                                        </svg>
+                                    </div>
+                                    @error('research_field')
+                                        <p
+                                            class="mt-1.5 text-[.8rem] text-red-600 font-medium"
+                                        >
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label
+                                        for="keywords"
+                                        class="block mb-[7px] text-[.7rem] font-bold tracking-[.12em] uppercase text-[#6b5740]"
+                                    >
+                                        Keywords
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="keywords"
+                                        id="keywords"
+                                        value="{{ old('keywords') }}"
+                                        class="field w-full px-4 py-3 border border-[#e8dfd0] rounded-lg bg-[#faf6ef] text-[.95rem] text-[#1a1209] transition-all placeholder:text-[#b5a595]"
+                                        placeholder="e.g., Quantum, AI, Physics"
+                                    />
+                                </div>
+                            </div>
+
+                            {{-- Abstract --}}
+                            <div>
+                                <label
+                                    for="abstract"
+                                    class="block mb-[7px] text-[.7rem] font-bold tracking-[.12em] uppercase text-[#6b5740]"
+                                >
+                                    Abstract
+                                    <span class="text-[#2d8176] ml-0.5">*</span>
+                                </label>
+                                <textarea
+                                    name="abstract"
+                                    id="abstract"
+                                    rows="7"
+                                    required
+                                    class="field w-full px-4 py-3 border rounded-lg bg-[#faf6ef] text-[.95rem] text-[#1a1209] leading-relaxed resize-y transition-all placeholder:text-[#b5a595] {{ $errors->has('abstract') ? 'border-red-300 bg-red-50' : 'border-[#e8dfd0]' }}"
+                                    placeholder="Provide a concise summary of your research (max 300 words)…"
+                                >
+{{ old('abstract') }}</textarea
+                                >
+                                @error('abstract')
+                                    <p
+                                        class="mt-1.5 text-[.8rem] text-red-600 font-medium"
+                                    >
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- ── Card 02: File Upload ── --}}
+                    <div
+                        class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden shadow-[0_2px_16px_rgba(26,18,9,.07)] fu2"
+                    >
+                        <div
+                            class="flex items-center gap-4 px-7 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]"
+                        >
+                            <div
+                                class="w-[30px] h-[30px] rounded-lg bg-[#2d8176] text-white flex items-center justify-center shrink-0 text-[.68rem] font-extrabold tracking-wider"
+                            >
+                                02
+                            </div>
+                            <h2
+                                class="font-['Libre_Baskerville',serif] text-[1rem] font-bold text-[#1a1209] tracking-wide flex-1"
+                            >
+                                Manuscript File
+                            </h2>
+                        </div>
+
+                        <div class="px-7 py-7">
+                            <div
+                                class="dropzone relative cursor-pointer border-2 border-dashed border-[#c9b99a] rounded-[10px] bg-[#faf6ef] text-center transition-all duration-200 hover:border-[#2d8176] hover:bg-[#e8f4f2] {{ $errors->has('file') ? 'border-red-300' : '' }}"
+                                id="dropzone"
+                            >
+                                <input
+                                    type="file"
+                                    name="file"
+                                    id="file"
+                                    accept=".pdf,.doc,.docx"
+                                    required
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                />
+                                <div class="py-10 px-6">
+                                    <div
+                                        class="dropzone-icon w-[52px] h-[52px] mx-auto mb-4 bg-white border border-[#c9b99a] rounded-xl flex items-center justify-center shadow-[0_2px_8px_rgba(26,18,9,.06)] transition-transform duration-200"
+                                    >
+                                        <svg
+                                            class="w-6 h-6 text-[#2d8176]"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <p
+                                        class="font-['Libre_Baskerville',serif] text-[1rem] font-bold text-[#1a1209] mb-1"
+                                    >
+                                        Click or drag file to upload
+                                    </p>
+                                    <p class="text-[.85rem] text-[#6b5740]">
+                                        PDF, DOC, or DOCX — maximum 10 MB
+                                    </p>
+                                    <div
+                                        id="file-name-display"
+                                        class="hidden mt-4 inline-flex items-center gap-2 bg-[#e8f4f2] border border-[rgba(45,129,118,.3)] text-[#1a4d46] text-[.8rem] font-bold px-4 py-1.5 rounded-full"
+                                    >
+                                        <svg
+                                            class="w-4 h-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2.5"
+                                                d="M5 13l4 4L19 7"
+                                            />
+                                        </svg>
+                                        <span id="file-name-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            @error('file')
+                                <p
+                                    class="mt-2 text-center text-[.8rem] text-red-600 font-medium"
+                                >
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- ── Action Buttons ── --}}
+                    <div class="flex items-center justify-end gap-3 pt-1 fu3">
+                        <a
+                            href="{{ route('submissions.index') }}"
+                            class="px-5 py-3 rounded-lg text-[.82rem] font-semibold tracking-[.06em] uppercase text-[#6b5740] transition-all hover:text-[#1a1209] hover:bg-[#f3ece0]"
+                        >
+                            Cancel
+                        </a>
+                        <button
+                            type="submit"
+                            id="submit-btn"
+                            class="relative overflow-hidden inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.82rem] font-bold tracking-[.1em] uppercase transition-all duration-150 shadow-[0_4px_14px_rgba(45,129,118,.30)] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(45,129,118,.36)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                        >
+                            <span
+                                class="absolute inset-0 pointer-events-none"
+                                style="
+                                    background: linear-gradient(
+                                        135deg,
+                                        rgba(201, 168, 76, 0.18) 0%,
+                                        transparent 60%
+                                    );
+                                "
+                            ></span>
+                            <svg
+                                class="w-4 h-4 relative z-10"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2.5"
+                                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                                />
+                            </svg>
+                            <span class="relative z-10">Submit Manuscript</span>
+                        </button>
                     </div>
                 </div>
 
-            </div>
-        </div>
+                {{-- ════ RIGHT: Sidebar ════ --}}
+                <div class="lg:col-span-4 fu1">
+                    <div
+                        class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden shadow-[0_2px_16px_rgba(26,18,9,.07)] sticky top-7"
+                    >
+                        <div
+                            class="px-6 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]"
+                        >
+                            <p
+                                class="text-[.68rem] font-extrabold tracking-[.16em] uppercase text-[#6b5740]"
+                            >
+                                Author Checklist
+                            </p>
+                        </div>
 
-    </form>
-</div>
+                        <div class="px-6 py-5">
+                            <ul class="divide-y divide-[#e8dfd0]">
+                                @foreach ([
+                                        'Anonymize the manuscript file for double-blind peer review.',
+                                        'The abstract must not exceed 300 words.',
+                                        'Ensure all authors are properly acknowledged.',
+                                        'Verify references follow the required citation format.',
+                                        'Confirm the manuscript has not been submitted elsewhere.'
+                                    ]
+                                    as $item)
+                                    <li
+                                        class="flex items-start gap-3 py-3 first:pt-0 last:pb-0"
+                                    >
+                                        <div
+                                            class="mt-0.5 w-5 h-5 rounded-full shrink-0 bg-[#e8f4f2] border border-[rgba(45,129,118,.35)] flex items-center justify-center"
+                                        >
+                                            <svg
+                                                class="w-[10px] h-[10px] text-[#2d8176]"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="3"
+                                                    d="M5 13l4 4L19 7"
+                                                />
+                                            </svg>
+                                        </div>
+                                        <p
+                                            class="text-[.9rem] text-[#6b5740] leading-[1.55]"
+                                        >
+                                            {{ $item }}
+                                        </p>
+                                    </li>
+                                @endforeach
+                            </ul>
+
+                            {{-- One-submission policy note --}}
+                            <div class="mt-5 pt-5 border-t border-[#e8dfd0]">
+                                <div class="flex items-start gap-2 mb-3">
+                                    <svg
+                                        class="w-4 h-4 text-amber-500 shrink-0 mt-0.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                    </svg>
+                                    <p
+                                        class="text-[.78rem] font-bold text-amber-700 uppercase tracking-[.08em]"
+                                    >
+                                        One Submission at a Time
+                                    </p>
+                                </div>
+                                <p
+                                    class="text-[.82rem] text-[#6b5740] leading-relaxed mb-4"
+                                >
+                                    You may only have
+                                    <strong class="text-[#1a1209]">
+                                        one active manuscript
+                                    </strong>
+                                    in the system at a time. A new submission
+                                    can be made once your current manuscript is
+                                    published or rejected.
+                                </p>
+                                <p
+                                    class="text-[.82rem] italic text-[#6b5740] leading-relaxed"
+                                >
+                                    By submitting, you agree to the journal's
+                                    peer-review policy and copyright transfer
+                                    agreement.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        @endif
+    </div>
 @endsection
 
 @push('scripts')
     <script>
         // File name display
-        document.getElementById('file').addEventListener('change', function () {
-            const display = document.getElementById('file-name-display');
-            const text    = document.getElementById('file-name-text');
-            if (this.files.length > 0) {
-                text.textContent = this.files[0].name;
-                display.classList.remove('hidden');
-                display.style.display = 'inline-flex';
-            }
-        });
+                    const fileInput = document.getElementById('file');
+                    if (fileInput) {
+                        fileInput.addEventListener('change', function () {
+                            const display = document.getElementById('file-name-display');
+                            const text    = document.getElementById('file-name-text');
+                            if (this.files.length > 0) {
+                                text.textContent = this.files[0].name;
+                                display.classList.remove('hidden');
+                                display.style.display = 'inline-flex';
+                            }
+                        });
+                    }
 
-        // Drag visual feedback
-        const dz = document.getElementById('dropzone');
-        dz.addEventListener('dragover',  (e) => { e.preventDefault(); dz.classList.add('dragover'); });
-        dz.addEventListener('dragleave', ()  => dz.classList.remove('dragover'));
-        dz.addEventListener('drop',      ()  => dz.classList.remove('dragover'));
+                    // Drag visual feedback
+                    const dz = document.getElementById('dropzone');
+                    if (dz) {
+                        dz.addEventListener('dragover',  (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+                        dz.addEventListener('dragleave', ()  => dz.classList.remove('dragover'));
+                        dz.addEventListener('drop',      ()  => dz.classList.remove('dragover'));
+                    }
+                      (function () {
+                const titleEl   = document.getElementById('title');
+                const submitBtn = document.getElementById('submit-btn');
+                if (!titleEl) return;
 
-        @if(session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Submitted</span>',
-                html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
-                confirmButtonText: 'Close',
-                confirmButtonColor: '#2d8176',
-                customClass: {
-                    popup: 'rounded-2xl',
-                    confirmButton: 'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'
-                },
-                buttonsStyling: false,
-            });
-        @endif
+                let debounceTimer = null;
+                let liveWarning   = null;
+
+                titleEl.addEventListener('input', () => {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(runCheck, 800);
+                });
+
+                async function runCheck() {
+                    const title    = titleEl.value.trim();
+                    const abstract = document.getElementById('abstract')?.value?.trim() ?? '';
+                    if (title.length < 10) { clearWarning(); return; }
+                    try {
+                        const res  = await fetch(
+                            `{{ route('submissions.check-similarity') }}?title=${encodeURIComponent(title)}&abstract=${encodeURIComponent(abstract)}`,
+                            { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
+                        );
+                        const data = await res.json();
+                        if (data.similar && data.similar.length > 0) renderWarning(data.similar);
+                        else clearWarning();
+                    } catch (e) {}
+                }
+
+                function renderWarning(similar) {
+                    if (!liveWarning) {
+                        liveWarning = document.createElement('div');
+                        liveWarning.id = 'live-sim-warning';
+                        const leftCol = document.querySelector('.lg\\:col-span-8');
+                        if (leftCol) leftCol.prepend(liveWarning);
+                    }
+                    const items = similar.map(s => `
+                        <div class="sim-item">
+                            <p style="font-size:.85rem;font-weight:700;color:#1a1209;margin-bottom:4px">${s.title}</p>
+                            <span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#fffbeb;border:1px solid #fde68a;color:#b45309;padding:2px 8px;border-radius:999px">${s.status}</span>
+                            ${s.research_field ? `<span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;padding:2px 8px;border-radius:999px;margin-left:4px">${s.research_field}</span>` : ''}
+                            <span style="font-size:.72rem;color:#6b5740;margin-left:6px">${s.created_at}</span>
+                        </div>`).join('');
+                    liveWarning.innerHTML = `
+                        <div class="sim-warning" style="margin-bottom:20px">
+                            <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:8px">
+                                <svg style="width:18px;height:18px;color:#d97706;flex-shrink:0;margin-top:2px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                                </svg>
+                                <div>
+                                    <p style="font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#b45309;margin-bottom:2px">Similar Articles Detected</p>
+                                    <p style="font-size:.88rem;color:#92400e">${similar.length} submission(s) with a similar title found.</p>
+                                </div>
+                            </div>
+                            ${items}
+                            <label style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer">
+                                <input type="checkbox" id="live-sim-ack" name="similarity_acknowledged" value="1"
+                                       style="margin-top:3px;width:16px;height:16px;accent-color:#d97706;cursor:pointer;flex-shrink:0"/>
+                                <span style="font-size:.82rem;font-weight:600;color:#92400e;line-height:1.5">
+                                    I confirm my manuscript is <strong>original and distinct</strong> from the listed submissions.
+                                </span>
+                            </label>
+                        </div>`;
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        document.getElementById('live-sim-ack')?.addEventListener('change', function () {
+                            submitBtn.disabled = !this.checked;
+                        });
+                    }
+                }
+
+                function clearWarning() {
+                    if (liveWarning) { liveWarning.remove(); liveWarning = null; }
+                    if (submitBtn && !document.getElementById('sim-ack')) submitBtn.disabled = false;
+                }
+            })();
+
+                    // Similarity acknowledgement gate:
+                    // If there are similar articles shown, disable submit until checkbox is ticked
+                    const simAck    = document.getElementById('sim-ack');
+                    const submitBtn = document.getElementById('submit-btn');
+
+                    if (simAck && submitBtn) {
+                        // Start disabled
+                        submitBtn.disabled = true;
+                        submitBtn.title = 'Please acknowledge the similar submissions above first.';
+
+                        simAck.addEventListener('change', function () {
+                            submitBtn.disabled = !this.checked;
+                            submitBtn.title = '';
+                        });
+                    }
+
+                    @if(session('success'))
+                        Swal.fire({
+                            icon: 'success',
+                            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Submitted</span>',
+                            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+                            confirmButtonText: 'Close',
+                            confirmButtonColor: '#2d8176',
+                            customClass: {
+                                popup: 'rounded-2xl',
+                                confirmButton: 'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'
+                            },
+                            buttonsStyling: false,
+                        });
+                    @endif
     </script>
 @endpush

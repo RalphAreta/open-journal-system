@@ -74,44 +74,49 @@ $submission->update([
     /**
      * Assign a Layout Editor and forward the manuscript.
      */
-    public function forwardToLayout(Request $request, Submission $submission): RedirectResponse
-    {
-        if ($submission->managing_editor_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $request->validate([
-            'layout_editor_id' => ['required', 'exists:users,id'],
-        ]);
-
-        // Create layout editor assignment
-        LayoutEditorAssignment::create([
-            'submission_id'    => $submission->id,
-            'layout_editor_id' => $request->input('layout_editor_id'),
-            'assigned_at'      => now(),
-            'status'           => LayoutEditorAssignment::STATUS_PENDING,
-        ]);
-
-        $submission->update([
-            'managing_editor_status' => 'forwarded',
-            'forwarded_to_layout_at' => now(),
-            'status'                 => Submission::STATUS_LAYOUT_EDITING,
-        ]);
-
-        \App\Models\Notification::create([
-            'user_id'         => $request->input('layout_editor_id'),
-            'role'            => 'layout-editor',
-            'title'           => '📋 New Layout Assignment',
-            'message'         => "You have been assigned to do layout editing for \"{$submission->title}\".",
-            'type'            => 'info',
-            'notifiable_id'   => $submission->id,
-            'notifiable_type' => Submission::class,
-        ]);
-
-        return redirect()
-            ->route('managing-editor.dashboard')
-            ->with('success', 'Manuscript forwarded to Layout Editor.');
+   public function forwardToLayout(Request $request, Submission $submission): RedirectResponse
+{
+    if ($submission->managing_editor_id !== auth()->id()) {
+        abort(403);
     }
+
+    $request->validate([
+        'layout_editor_id' => ['required', 'exists:users,id'],
+    ]);
+
+    // ← dagdag dito, pagkatapos ng validate
+    if ($submission->managing_editor_status !== 'ctf_returned') {
+        return back()->with('error', 'Cannot forward until the author returns the signed CTF.');
+    }
+
+    // Create layout editor assignment
+    LayoutEditorAssignment::create([
+        'submission_id'    => $submission->id,
+        'layout_editor_id' => $request->input('layout_editor_id'),
+        'assigned_at'      => now(),
+        'status'           => LayoutEditorAssignment::STATUS_PENDING,
+    ]);
+
+    $submission->update([
+        'managing_editor_status' => 'forwarded',
+        'forwarded_to_layout_at' => now(),
+        'status'                 => Submission::STATUS_LAYOUT_EDITING,
+    ]);
+
+    \App\Models\Notification::create([
+        'user_id'         => $request->input('layout_editor_id'),
+        'role'            => 'layout-editor',
+        'title'           => '📋 New Layout Assignment',
+        'message'         => "You have been assigned to do layout editing for \"{$submission->title}\".",
+        'type'            => 'info',
+        'notifiable_id'   => $submission->id,
+        'notifiable_type' => Submission::class,
+    ]);
+
+    return redirect()
+        ->route('managing-editor.dashboard')
+        ->with('success', 'Manuscript forwarded to Layout Editor.');
+}
 
     public function show(Submission $submission): View
 {
@@ -147,7 +152,6 @@ public function approveLayout(Submission $submission): RedirectResponse
         abort(403);
     }
 
-    // Get layout assignment before status change
     $layoutAssignment = $submission->layoutEditorAssignments()
         ->where('status', LayoutEditorAssignment::STATUS_COMPLETED)
         ->latest('completed_at')
@@ -169,15 +173,13 @@ public function approveLayout(Submission $submission): RedirectResponse
         ]);
     }
 
-    // Notify author with layout file info
+    // Notify author
     $author = $submission->author;
     if ($author) {
         $layoutEditorName = $layoutAssignment?->layoutEditor->name ?? 'the layout editor';
         $fileName = $layoutAssignment?->layout_file_name ?? 'layout file';
         $notes = $layoutAssignment?->notes;
-        $notesPart = $notes
-            ? "\n\nLayout Editor's Notes:\n\"{$notes}\""
-            : "";
+        $notesPart = $notes ? "\n\nLayout Editor's Notes:\n\"{$notes}\"" : "";
 
         \App\Models\Notification::create([
             'user_id'         => $author->id,
@@ -190,9 +192,23 @@ public function approveLayout(Submission $submission): RedirectResponse
         ]);
     }
 
+    // ✅ DAGDAG: Notify layout editor
+    $layoutEditor = $layoutAssignment?->layoutEditor;
+    if ($layoutEditor) {
+        \App\Models\Notification::create([
+            'user_id'         => $layoutEditor->id,
+            'role'            => 'layout-editor',
+            'title'           => '✅ Layout Approved by Managing Editor',
+            'message'         => "Your layout work for \"{$submission->title}\" has been approved by the managing editor and forwarded to the author for final confirmation.",
+            'type'            => 'success',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
     return redirect()
         ->route('managing-editor.dashboard')
-        ->with('success', 'Layout approved. Editor and author have been notified.');
+        ->with('success', 'Layout approved. Editor, author, and layout editor have been notified.');
 }
 public function downloadLayout(Submission $submission)
 {
@@ -279,6 +295,62 @@ public function publishPaper(Submission $submission): RedirectResponse
     return redirect()
         ->route('managing-editor.dashboard')
         ->with('success', 'Paper published successfully!');
+}
+// Dagdag na method:
+public function downloadSignedCtf(Submission $submission)
+{
+    if ($submission->managing_editor_id !== auth()->id()) {
+        abort(403);
+    }
+    if (!$submission->ctf_signed_file_path) {
+        abort(404, 'Signed CTF not found.');
+    }
+    return response()->download(
+        \Illuminate\Support\Facades\Storage::disk('local')->path($submission->ctf_signed_file_path),
+        $submission->ctf_signed_file_name ?? 'signed-ctf.pdf'
+    );
+}
+public function reassignLayout(Request $request, Submission $submission)
+{
+    $request->validate([
+        'layout_editor_id' => 'required|exists:users,id',
+        'assignment_id'    => 'required|exists:layout_editor_assignments,id',
+    ]);
+
+    $oldAssignment = \App\Models\LayoutEditorAssignment::findOrFail($request->assignment_id);
+    
+    // ← I-clear ang author_status para mawala sa Author Responses
+    \Illuminate\Support\Facades\DB::table('layout_editor_assignments')
+        ->where('id', $oldAssignment->id)
+        ->update([
+            'status'         => \App\Models\LayoutEditorAssignment::STATUS_REJECTED,
+            'author_status'  => null,
+            'author_feedback' => null,
+        ]);
+
+    // Create new assignment with author's feedback as notes
+    \App\Models\LayoutEditorAssignment::create([
+        'submission_id'    => $submission->id,
+        'layout_editor_id' => $request->layout_editor_id,
+        'assigned_at'      => now(),
+        'status'           => \App\Models\LayoutEditorAssignment::STATUS_PENDING,
+        'notes'            => 'Author revision request: ' . $oldAssignment->author_feedback,
+    ]);
+
+    $submission->update(['status' => 'layout_editing']);
+
+    // Notify layout editor
+    \App\Models\Notification::create([
+        'user_id'         => $request->layout_editor_id,
+        'role'            => 'layout-editor',
+        'title'           => '📋 New Layout Assignment',
+        'message'         => "You have been assigned to revise the layout for \"{$submission->title}\". Author note: {$oldAssignment->author_feedback}",
+        'type'            => 'info',
+        'notifiable_id'   => $submission->id,
+        'notifiable_type' => Submission::class,
+    ]);
+
+    return back()->with('success', 'Revision forwarded to layout editor with author\'s comments.');
 }
 
 }
