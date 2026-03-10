@@ -838,6 +838,10 @@
             $authorFeedbacks = \App\Models\LayoutEditorAssignment::with('submission')
                 ->whereNotNull('author_status')
                 ->whereIn('author_status', ['confirmed', 'revision_requested'])
+                ->whereHas('submission', function($query) {
+                    $query->where('managing_editor_id', auth()->id())
+                        ->where('status', '!=', \App\Models\Submission::STATUS_PUBLISHED);
+                })
                 ->latest('author_feedback_at')
                 ->get();
         @endphp
