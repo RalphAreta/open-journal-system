@@ -3,114 +3,208 @@
 @section('title', 'Edit Role: ' . $role->display_name)
 
 @section('content')
-<div class="max-w-4xl mx-auto py-8 px-4" x-data="{ tab: 'settings' }">
-    {{-- Header Section --}}
-    <div class="flex items-start justify-between mb-8">
-        <div>
-            <nav class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
-                <a href="{{ route('dashboard.admin') }}">Admin</a>
-                <span>&gt;</span>
-                <a href="{{ route('admin.roles.index') }}">Roles</a>
-                <span>&gt;</span>
-                <span class="text-slate-900">{{ $role->name }}</span>
-            </nav>
-            <h1 class="text-6xl font-black text-red-600 uppercase italic tracking-tighter">{{ $role->display_name }}</h1>
-        </div>
+<div class="min-h-screen bg-[#faf6ef] font-sans text-[#1a1209]" x-data="{ tab: 'settings' }">
+<div class="max-w-4xl mx-auto px-4">
 
-        {{-- Added Back Button --}}
-        <a href="{{ route('admin.roles.index') }}" class="px-6 py-3 bg-white border border-slate-200 text-slate-500 rounded-2xl text-xs font-bold uppercase tracking-wide hover:bg-slate-50 transition-all flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Back
-        </a>
+    {{-- ── Hero Header ── --}}
+    <div class="relative pt-11 pb-8 mb-9 border-b border-[#e8dfd0]">
+        <div class="absolute bottom-[-1px] left-0 w-20 h-[3px] bg-gradient-to-r from-[#c9a84c] to-transparent"></div>
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <div>
+                {{-- Breadcrumb --}}
+                <nav class="flex items-center gap-2 mb-3.5">
+                    <a href="{{ route('dashboard.admin') }}" class="text-[11px] font-bold tracking-[0.14em] uppercase text-[#2d8176] hover:opacity-70 transition-opacity">Admin</a>
+                    <svg class="w-2.5 h-2.5 text-[#c9b99a]" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+                    <a href="{{ route('admin.roles.index') }}" class="text-[11px] font-bold tracking-[0.14em] uppercase text-[#2d8176] hover:opacity-70 transition-opacity">Roles</a>
+                    <svg class="w-2.5 h-2.5 text-[#c9b99a]" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+                    <span class="text-[11px] font-bold tracking-[0.14em] uppercase text-[#1a1209]">{{ $role->name }}</span>
+                </nav>
+
+                {{-- Eyebrow --}}
+                <div class="flex items-center gap-2.5 mb-2.5">
+                    <div class="w-6 h-px bg-[#c9a84c]"></div>
+                    <p class="text-[11px] font-bold tracking-[0.2em] uppercase text-[#8a6e28]">Role Configuration</p>
+                </div>
+
+                <h1 class="font-serif text-[2.8rem] font-bold text-[#1a1209] tracking-[-0.01em] leading-[1.15]">
+                    <em class="italic text-[#8a6e28]">{{ $role->display_name }}</em>
+                </h1>
+                <p class="text-[0.98rem] text-[#6b5740] mt-2">Update role details and manage assigned members</p>
+            </div>
+
+            <a href="{{ route('admin.roles.index') }}"
+               class="self-start md:self-auto shrink-0 inline-flex items-center gap-2 bg-[#f3ece0] border border-[#c9b99a] text-[#6b5740] text-[0.68rem] font-bold tracking-[0.1em] uppercase px-5 py-2.5 rounded-md hover:bg-white hover:text-[#1a1209] transition-all">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back to Roles
+            </a>
+        </div>
     </div>
 
-    {{-- Tab Switcher --}}
-    <div class="flex gap-2 mb-6">
+    {{-- ── Tabs ── --}}
+    <div class="flex items-center gap-2 mb-6">
         <button @click="tab = 'settings'"
-            :class="tab === 'settings' ? 'bg-red-600 text-white shadow-lg shadow-red-100' : 'bg-white text-slate-400 border border-slate-200'"
-            class="px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
+            :class="tab === 'settings'
+                ? 'bg-[#2d8176] text-white shadow-[0_4px_14px_rgba(45,129,118,0.28)]'
+                : 'bg-white border border-[#e8dfd0] text-[#6b5740] hover:border-[#c9b99a] hover:text-[#1a1209]'"
+            class="inline-flex items-center gap-2 text-[0.68rem] font-bold tracking-[0.1em] uppercase px-5 py-2.5 rounded-md transition-all">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <circle cx="12" cy="12" r="3"/>
+            </svg>
             Settings
         </button>
+
         <button @click="tab = 'members'"
-            :class="tab === 'members' ? 'bg-red-600 text-white shadow-lg shadow-red-100' : 'bg-white text-slate-400 border border-slate-200'"
-            class="px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2">
+            :class="tab === 'members'
+                ? 'bg-[#2d8176] text-white shadow-[0_4px_14px_rgba(45,129,118,0.28)]'
+                : 'bg-white border border-[#e8dfd0] text-[#6b5740] hover:border-[#c9b99a] hover:text-[#1a1209]'"
+            class="inline-flex items-center gap-2 text-[0.68rem] font-bold tracking-[0.1em] uppercase px-5 py-2.5 rounded-md transition-all">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-4a4 4 0 11-8 0 4 4 0 018 0zm6 4a2 2 0 11-4 0 2 2 0 014 0zM7 16a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
             Members
-            <span class="bg-black/20 px-2 py-0.5 rounded text-[8px]">{{ $role->users->count() }}</span>
+            <span :class="tab === 'members' ? 'bg-white/20 text-white' : 'bg-[#f3ece0] text-[#6b5740]'"
+                  class="text-[0.6rem] font-bold px-2 py-0.5 rounded-full transition-all">
+                {{ $role->users->count() }}
+            </span>
         </button>
     </div>
 
-    {{-- Tab 1: Settings Form --}}
-    <div x-show="tab === 'settings'" x-transition class="space-y-6">
-        <div class="bg-white border border-slate-200 rounded-[2.5rem] p-10 shadow-sm">
-            <form method="POST" action="{{ route('admin.roles.update', $role) }}" class="space-y-8">
-                @csrf @method('PUT')
+    {{-- ── Tab: Settings ── --}}
+    <div x-show="tab === 'settings'" x-transition class="space-y-4 mb-12">
 
-                <div class="space-y-2">
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Display Name</label>
-                    <input type="text" name="display_name" value="{{ old('display_name', $role->display_name) }}" required
-                        class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-red-600 focus:bg-white transition-all outline-none">
+        {{-- Form Card --}}
+        <div class="bg-white border border-[#e8dfd0] rounded-2xl shadow-[0_1px_6px_rgba(26,18,9,0.05)] overflow-hidden">
+
+            {{-- Card Top Bar --}}
+            <div class="h-[3px] bg-gradient-to-r from-[#c9a84c] to-[#2d8176]"></div>
+
+            <div class="p-8">
+                {{-- Section label --}}
+                <div class="flex items-center gap-3 mb-7">
+                    <span class="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-[#6b5740] whitespace-nowrap">Role Details</span>
+                    <div class="flex-1 h-px bg-[#e8dfd0]"></div>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Scope Description</label>
-                    <textarea name="description" rows="3"
-                        class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-red-600 focus:bg-white transition-all outline-none resize-none">{{ old('description', $role->description) }}</textarea>
-                </div>
+                <form method="POST" action="{{ route('admin.roles.update', $role) }}" class="space-y-5">
+                    @csrf
+                    @method('PUT')
 
-                <div class="flex items-center gap-4 pt-4 border-t border-slate-50">
-                    <button type="submit" class="px-10 py-4 bg-red-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-xl shadow-red-100 active:scale-95">
-                        Update Details
-                    </button>
-                    <a href="{{ route('admin.roles.index') }}" class="px-10 py-4 bg-slate-100 text-slate-400 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">
-                        Cancel
-                    </a>
-                </div>
-            </form>
+                    {{-- Display Name --}}
+                    <div>
+                        <label class="block text-[0.64rem] font-bold tracking-[0.14em] uppercase text-[#6b5740] mb-2">
+                            Display Name
+                        </label>
+                        <input type="text" name="display_name"
+                               value="{{ old('display_name', $role->display_name) }}"
+                               required
+                               class="w-full px-4 py-3 bg-[#f3ece0] border border-[#e8dfd0] rounded-lg text-[0.92rem] font-semibold text-[#1a1209] font-sans focus:outline-none focus:border-[#c9a84c] focus:bg-white focus:ring-2 focus:ring-[rgba(201,168,76,0.12)] transition-all">
+                        @error('display_name')
+                            <p class="mt-1.5 text-[0.72rem] text-red-600 font-semibold">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Description --}}
+                    <div>
+                        <label class="block text-[0.64rem] font-bold tracking-[0.14em] uppercase text-[#6b5740] mb-2">
+                            Scope Description
+                        </label>
+                        <textarea name="description" rows="4"
+                                  class="w-full px-4 py-3 bg-[#f3ece0] border border-[#e8dfd0] rounded-lg text-[0.92rem] font-semibold text-[#1a1209] font-sans focus:outline-none focus:border-[#c9a84c] focus:bg-white focus:ring-2 focus:ring-[rgba(201,168,76,0.12)] transition-all resize-none">{{ old('description', $role->description) }}</textarea>
+                        @error('description')
+                            <p class="mt-1.5 text-[0.72rem] text-red-600 font-semibold">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Actions --}}
+                    <div class="flex items-center gap-3 pt-2 border-t border-[#e8dfd0]">
+                        <button type="submit"
+                                class="relative overflow-hidden inline-flex items-center gap-2 bg-[#2d8176] text-white text-[0.68rem] font-bold tracking-[0.1em] uppercase px-6 py-3 rounded-md shadow-[0_4px_14px_rgba(45,129,118,0.25)] hover:bg-[#1a4d46] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(45,129,118,0.3)] transition-all">
+                            <span class="absolute inset-0 bg-gradient-to-br from-[rgba(201,168,76,0.15)] to-transparent pointer-events-none"></span>
+                            <svg class="w-3.5 h-3.5 relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span class="relative z-10">Update Details</span>
+                        </button>
+                        <a href="{{ route('admin.roles.index') }}"
+                           class="inline-flex items-center gap-2 bg-[#f3ece0] border border-[#c9b99a] text-[#6b5740] text-[0.68rem] font-bold tracking-[0.1em] uppercase px-6 py-3 rounded-md hover:bg-white hover:text-[#1a1209] transition-all">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
 
         {{-- Danger Zone --}}
-        <div class="bg-red-50 border border-red-100 rounded-4xl p-8 flex items-center justify-between">
+        <div class="bg-red-50 border border-red-100 rounded-2xl px-8 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
             <div>
-                <p class="text-[10px] font-black text-red-600 uppercase tracking-widest mb-1">Danger Zone</p>
-                <p class="text-xs text-red-400 font-medium">Permanently remove this role from the system.</p>
+                <p class="text-[0.64rem] font-bold tracking-[0.14em] uppercase text-red-500 mb-1.5">Danger Zone</p>
+                <p class="text-[0.84rem] text-red-400 font-medium">Permanently remove this role from the system.</p>
             </div>
-
-            <form id="delete-role-form" action="{{ route('admin.roles.destroy', $role) }}" method="POST">
-                @csrf @method('DELETE')
+            <form id="delete-role-form" action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="shrink-0">
+                @csrf
+                @method('DELETE')
                 <button type="button"
-                    onclick="confirmRoleDeletion('{{ $role->display_name }}')"
-                    class="text-[10px] font-black text-red-600 uppercase tracking-widest hover:underline">
+                        onclick="confirmRoleDeletion('{{ $role->display_name }}')"
+                        class="inline-flex items-center gap-2 bg-white border border-red-200 text-red-500 text-[0.68rem] font-bold tracking-[0.1em] uppercase px-5 py-2.5 rounded-md hover:border-red-400 hover:text-red-600 hover:-translate-y-px transition-all whitespace-nowrap">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                     Delete Role
                 </button>
             </form>
         </div>
     </div>
 
-    {{-- Tab 2: User List --}}
-    <div x-show="tab === 'members'" x-transition class="bg-white border border-slate-200 rounded-[2.5rem] p-10 shadow-sm">
-        <div class="space-y-4">
-            @forelse($role->users as $u)
-                <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl group hover:bg-white border border-transparent hover:border-slate-200 transition-all">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center text-xs font-black uppercase">
+    {{-- ── Tab: Members ── --}}
+    <div x-show="tab === 'members'" x-transition class="mb-12">
+        <div class="bg-white border border-[#e8dfd0] rounded-2xl shadow-[0_1px_6px_rgba(26,18,9,0.05)] overflow-hidden">
+
+            {{-- Card Top Bar --}}
+            <div class="h-[3px] bg-gradient-to-r from-[#c9a84c] to-[#2d8176]"></div>
+
+            {{-- Card Header --}}
+            <div class="px-8 py-5 border-b border-[#e8dfd0] bg-[#faf6ef] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-[#6b5740]">Assigned Members</span>
+                    <div class="w-8 h-px bg-[#e8dfd0]"></div>
+                </div>
+                <span class="text-[0.64rem] font-bold bg-[#f3ece0] border border-[#e8dfd0] text-[#6b5740] px-3 py-1 rounded-full tracking-[0.08em] uppercase">
+                    {{ $role->users->count() }} {{ Str::plural('user', $role->users->count()) }}
+                </span>
+            </div>
+
+            {{-- Member List --}}
+            <div class="p-6 space-y-1.5">
+                @forelse($role->users as $u)
+                <div class="flex items-center justify-between px-4 py-3.5 rounded-lg border border-transparent hover:bg-[#e8f4f2] hover:border-[#e8dfd0] transition-all group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 bg-[#1a4d46] text-white rounded-lg flex items-center justify-center font-serif text-sm font-bold uppercase shrink-0">
                             {{ substr($u->name, 0, 1) }}
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-slate-900">{{ $u->name }}</p>
-                            <p class="text-[10px] font-medium text-slate-400 lowercase">{{ $u->email }}</p>
+                            <p class="text-[0.88rem] font-bold text-[#1a1209] leading-tight">{{ $u->name }}</p>
+                            <p class="text-[0.72rem] text-[#6b5740] leading-tight mt-0.5">{{ $u->email }}</p>
                         </div>
                     </div>
-                    <a href="{{ route('admin.users.edit', $u) }}" class="text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                    <a href="{{ route('admin.users.edit', $u) }}"
+                       class="opacity-0 group-hover:opacity-100 inline-flex items-center gap-1.5 text-[0.62rem] font-bold tracking-[0.1em] uppercase text-[#2d8176] transition-opacity shrink-0">
                         View Profile
+                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
                     </a>
                 </div>
-            @empty
-                <div class="text-center py-20 text-slate-300 font-black uppercase text-[10px]">
-                    No Users Found
+                @empty
+                <div class="text-center py-16">
+                    <svg class="w-12 h-12 mx-auto text-[#e8dfd0] mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-4a4 4 0 11-8 0 4 4 0 018 0zm6 4a2 2 0 11-4 0 2 2 0 014 0zM7 16a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <p class="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-[#c9b99a]">No Users Assigned</p>
                 </div>
-            @endforelse
+                @endforelse
+            </div>
         </div>
     </div>
+
+</div>
 </div>
 
 @push('scripts')
@@ -121,20 +215,13 @@
             text: `Are you sure you want to permanently remove the "${roleName}" role?`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#dc2626',
-            cancelButtonColor: '#64748b',
+            confirmButtonColor: '#2d8176',
+            cancelButtonColor: '#c9b99a',
             confirmButtonText: 'Yes, Delete it',
             cancelButtonText: 'Cancel',
             reverseButtons: true,
-            customClass: {
-                popup: 'rounded-[2.5rem] border border-slate-100 shadow-2xl p-6',
-                title: 'text-2xl font-black tracking-tighter uppercase italic text-slate-900',
-                confirmButton: 'px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest mx-2',
-                cancelButton: 'px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest mx-2'
-            }
         }).then((result) => {
             if (result.isConfirmed) {
-                // Submit the form
                 document.getElementById('delete-role-form').submit();
             }
         });

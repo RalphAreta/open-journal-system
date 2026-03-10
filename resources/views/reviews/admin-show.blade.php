@@ -3,111 +3,209 @@
 @section('title', 'Submission Details')
 
 @section('content')
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="mb-6">
-        <a href="{{ route('admin.submissions') }}" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-red-600 transition-colors">
-            <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to submissions
-        </a>
+<div class="min-h-screen bg-[#faf6ef] font-sans text-[#1a1209]">
+<div class="max-w-4xl mx-auto px-4">
+
+    {{-- ── Hero Header ── --}}
+    <div class="relative pt-11 pb-8 mb-9 border-b border-[#e8dfd0]">
+        <div class="absolute bottom-[-1px] left-0 w-20 h-[3px] bg-gradient-to-r from-[#2d8176] to-transparent"></div>
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <div>
+                {{-- Breadcrumb --}}
+                <nav class="flex items-center gap-2 mb-3.5">
+                    <a href="{{ route('dashboard.admin') }}" class="text-[11px] font-bold tracking-[0.14em] uppercase text-[#2d8176] hover:opacity-70 transition-opacity">Admin</a>
+                    <svg class="w-2.5 h-2.5 text-[#c9b99a]" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+                    <a href="{{ route('admin.submissions') }}" class="text-[11px] font-bold tracking-[0.14em] uppercase text-[#2d8176] hover:opacity-70 transition-opacity">Submissions</a>
+                    <svg class="w-2.5 h-2.5 text-[#c9b99a]" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+                    <span class="text-[11px] font-bold tracking-[0.14em] uppercase text-[#1a1209]">Details</span>
+                </nav>
+
+                {{-- Eyebrow --}}
+                <div class="flex items-center gap-2.5 mb-2.5">
+                    <div class="w-6 h-px bg-[#2d8176]"></div>
+                    <p class="text-[11px] font-bold tracking-[0.2em] uppercase text-[#2d8176]">Submission Details</p>
+                </div>
+
+                <h1 class="font-serif text-[2rem] font-bold text-[#1a1209] tracking-[-0.01em] leading-[1.2] max-w-xl">
+                    <em class="italic text-[#2d8176] not-italic">{{ $submission->title }}</em>
+                </h1>
+            </div>
+
+            <div class="flex items-center gap-3 self-start md:self-auto shrink-0">
+                {{-- Status Badge --}}
+                @php
+                    $statusMap = match(strtolower($submission->status)) {
+                        'accepted'            => 'bg-[#e8f4f2] text-[#2d8176] border-[#b8ddd9] dot:bg-[#2d8176]',
+                        'submitted'           => 'bg-[#e8f4f2] text-[#2d8176] border-[#b8ddd9]',
+                        'under_review'        => 'bg-[#fef9ec] text-[#8a6e28] border-[#e8d49a]',
+                        'revisions_requested' => 'bg-[#fff7ed] text-[#9a5a1a] border-[#fdd9aa]',
+                        'rejected'            => 'bg-[#fef2f2] text-[#b91c1c] border-[#fecaca]',
+                        default               => 'bg-[#f3ece0] text-[#6b5740] border-[#e8dfd0]',
+                    };
+                    $dotColor = match(strtolower($submission->status)) {
+                        'accepted', 'submitted' => 'bg-[#2d8176]',
+                        'under_review'          => 'bg-[#c9a84c]',
+                        'revisions_requested'   => 'bg-[#f97316]',
+                        'rejected'              => 'bg-[#b91c1c]',
+                        default                 => 'bg-[#c9b99a]',
+                    };
+                @endphp
+                <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border text-[0.62rem] font-bold tracking-[0.08em] uppercase {{ $statusMap }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ $dotColor }}"></span>
+                    {{ str_replace('_', ' ', $submission->status) }}
+                </span>
+
+                <a href="{{ route('admin.submissions') }}"
+                   class="inline-flex items-center gap-2 bg-[#f3ece0] border border-[#c9b99a] text-[#6b5740] text-[0.68rem] font-bold tracking-[0.1em] uppercase px-5 py-2.5 rounded-md hover:bg-white hover:text-[#1a1209] transition-all">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">{{ $submission->title }}</h1>
+    {{-- ── Main Card ── --}}
+    <div class="bg-white border border-[#e8dfd0] rounded-2xl shadow-[0_1px_6px_rgba(26,18,9,0.05)] overflow-hidden mb-6">
+        <div class="h-[3px] bg-gradient-to-r from-[#2d8176] to-[#c9a84c]"></div>
 
-        @php
-            $statusClasses = match(strtolower($submission->status)) {
-                'approved' => 'bg-emerald-50 text-emerald-700 border-emerald-100',
-                'rejected' => 'bg-rose-50 text-rose-700 border-rose-100',
-                'submitted', 'pending' => 'bg-amber-50 text-amber-700 border-amber-100',
-                default => 'bg-slate-50 text-slate-700 border-slate-100',
-            };
-        @endphp
-        <span class="inline-flex items-center px-4 py-1.5 rounded-full border text-sm font-bold uppercase tracking-wide {{ $statusClasses }}">
-            {{ $submission->status }}
-        </span>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-6">
         <div class="p-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+
+            {{-- Author + Date --}}
+            <div class="flex items-center gap-3 mb-2">
+                <span class="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-[#6b5740] whitespace-nowrap">Submission Info</span>
+                <div class="flex-1 h-px bg-[#e8dfd0]"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5 mb-8">
+                {{-- Author --}}
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Author</label>
-                    <div class="flex items-center">
-                        <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold mr-3 shadow-sm">
+                    <label class="block text-[0.62rem] font-bold tracking-[0.14em] uppercase text-[#6b5740] mb-2">Author</label>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-[#1a4d46] text-white rounded-lg flex items-center justify-center font-serif text-sm font-bold uppercase shrink-0">
                             {{ strtoupper(substr($submission->author->name ?? 'U', 0, 1)) }}
                         </div>
-                        <p class="text-lg font-semibold text-slate-800">{{ $submission->author->name }}</p>
+                        <p class="text-[0.95rem] font-bold text-[#1a1209]">{{ $submission->author->name }}</p>
                     </div>
                 </div>
+
+                {{-- Date --}}
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Submission Date</label>
-                    <p class="text-lg font-semibold text-slate-800">{{ $submission->created_at->format('M d, Y') }}</p>
-                </div>
-            </div>
-
-            <div class="border-t border-slate-100 pt-8 mb-8">
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Abstract</label>
-                <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed bg-slate-50/50 p-6 rounded-xl border border-slate-100 italic">
-                    "{{ $submission->abstract }}"
-                </div>
-            </div>
-
-            <div class="bg-slate-50 rounded-xl p-6 border border-slate-100">
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Submission File</label>
-                @if($submission->file_path)
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-lg border border-slate-200 shadow-sm transition-all hover:border-blue-200">
-                        <div class="flex items-center overflow-hidden">
-                            <div class="p-2 bg-blue-50 rounded-lg mr-3 text-blue-600">
-                                <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                            </div>
-                            <div class="overflow-hidden">
-                                <span class="block text-sm font-semibold text-slate-700 truncate">{{ $submission->file_name }}</span>
-                                <span class="text-xs text-slate-400 font-medium">Research Manuscript</span>
-                            </div>
-                        </div>
-                        <a href="{{ route('submissions.download', ['submission' => $submission]) }}" class="inline-flex items-center justify-center px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg transition-all shadow-lg shadow-blue-100">
-                            Download file
-                        </a>
+                    <label class="block text-[0.62rem] font-bold tracking-[0.14em] uppercase text-[#6b5740] mb-2">Submission Date</label>
+                    <div class="flex items-center gap-2 mt-1">
+                        <svg class="w-4 h-4 text-[#c9b99a]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <p class="text-[0.95rem] font-bold text-[#1a1209]">{{ $submission->created_at->format('M d, Y') }}</p>
                     </div>
+                </div>
+            </div>
+
+            {{-- Abstract --}}
+            <div class="border-t border-[#e8dfd0] pt-7 mb-7">
+                <div class="flex items-center gap-3 mb-5">
+                    <span class="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-[#6b5740] whitespace-nowrap">Abstract</span>
+                    <div class="flex-1 h-px bg-[#e8dfd0]"></div>
+                </div>
+                <div class="bg-[#f3ece0] border border-[#e8dfd0] rounded-xl p-6">
+                    <p class="text-[0.92rem] text-[#3d2f1a] leading-relaxed italic font-medium">
+                        "{{ $submission->abstract }}"
+                    </p>
+                </div>
+            </div>
+
+            {{-- File --}}
+            <div class="border-t border-[#e8dfd0] pt-7">
+                <div class="flex items-center gap-3 mb-5">
+                    <span class="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-[#6b5740] whitespace-nowrap">Submission File</span>
+                    <div class="flex-1 h-px bg-[#e8dfd0]"></div>
+                </div>
+
+                @if($submission->file_path)
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#faf6ef] border border-[#e8dfd0] rounded-xl p-4 hover:border-[#c9b99a] transition-all">
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <div class="w-11 h-11 bg-[#e8f4f2] border border-[#b8ddd9] rounded-lg flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5 text-[#2d8176]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="overflow-hidden">
+                            <p class="text-[0.88rem] font-bold text-[#1a1209] truncate">{{ $submission->file_name }}</p>
+                            <p class="text-[0.68rem] font-bold tracking-[0.08em] uppercase text-[#6b5740] mt-0.5">Research Manuscript</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('submissions.download', ['submission' => $submission]) }}"
+                       class="relative overflow-hidden inline-flex items-center gap-2 bg-[#2d8176] text-white text-[0.68rem] font-bold tracking-[0.1em] uppercase px-5 py-2.5 rounded-md shadow-[0_4px_14px_rgba(45,129,118,0.25)] hover:bg-[#1a4d46] hover:-translate-y-0.5 transition-all whitespace-nowrap shrink-0">
+                        <span class="absolute inset-0 bg-gradient-to-br from-[rgba(201,168,76,0.15)] to-transparent pointer-events-none"></span>
+                        <svg class="w-3.5 h-3.5 relative z-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="relative z-10">Download File</span>
+                    </a>
+                </div>
                 @else
-                    <p class="text-slate-500 italic text-sm">No file submitted.</p>
+                <div class="bg-[#f3ece0] border border-[#e8dfd0] rounded-xl p-6 text-center">
+                    <p class="text-[0.72rem] font-bold tracking-[0.1em] uppercase text-[#c9b99a]">No file submitted</p>
+                </div>
                 @endif
             </div>
 
-            @if($submission->reviews->isNotEmpty())
-                <div class="mt-10 pt-8 border-t border-slate-100">
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Reviewer Feedback</label>
-                    <div class="space-y-4">
-                        @foreach($submission->reviews as $r)
-                            <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-sm font-bold text-slate-900">{{ $r->reviewer->name }}</span>
-                                    <span class="px-3 py-1 text-xs font-bold bg-slate-100 text-slate-700 rounded-md border border-slate-200">
-                                        {{ \App\Models\Review::recommendationOptions()[$r->recommendation] ?? $r->recommendation }}
-                                    </span>
-                                </div>
-                                @if($r->comments_for_editor)
-                                    <div class="mb-2">
-                                        <span class="text-[10px] font-bold text-slate-400 uppercase">Editor Notes:</span>
-                                        <p class="text-sm text-slate-600 italic">{{ $r->comments_for_editor }}</p>
-                                    </div>
-                                @endif
-                                @if($r->comments_for_author)
-                                    <div>
-                                        <span class="text-[10px] font-bold text-slate-400 uppercase">Author Feedback:</span>
-                                        <p class="text-sm text-slate-500 leading-relaxed">{{ Str::limit($r->comments_for_author, 150) }}</p>
-                                    </div>
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
         </div>
     </div>
+
+    {{-- ── Reviewer Feedback ── --}}
+    @if($submission->reviews->isNotEmpty())
+    <div class="bg-white border border-[#e8dfd0] rounded-2xl shadow-[0_1px_6px_rgba(26,18,9,0.05)] overflow-hidden mb-12">
+        <div class="h-[3px] bg-gradient-to-r from-[#c9a84c] to-[#2d8176]"></div>
+
+        <div class="px-8 py-5 border-b border-[#e8dfd0] bg-[#faf6ef] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-[#6b5740]">Reviewer Feedback</span>
+                <div class="w-8 h-px bg-[#e8dfd0]"></div>
+            </div>
+            <span class="text-[0.64rem] font-bold bg-[#f3ece0] border border-[#e8dfd0] text-[#6b5740] px-3 py-1 rounded-full tracking-[0.08em] uppercase">
+                {{ $submission->reviews->count() }} {{ Str::plural('review', $submission->reviews->count()) }}
+            </span>
+        </div>
+
+        <div class="p-6 space-y-4">
+            @foreach($submission->reviews as $r)
+            <div class="bg-[#faf6ef] border border-[#e8dfd0] rounded-xl p-5 hover:border-[#c9b99a] transition-all">
+
+                {{-- Reviewer header --}}
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-[#1a4d46] text-white rounded-md flex items-center justify-center font-serif text-xs font-bold uppercase shrink-0">
+                            {{ substr($r->reviewer->name, 0, 1) }}
+                        </div>
+                        <span class="text-[0.88rem] font-bold text-[#1a1209]">{{ $r->reviewer->name }}</span>
+                    </div>
+                    <span class="inline-flex items-center px-3 py-1 text-[0.62rem] font-bold tracking-[0.08em] uppercase bg-[#f3ece0] border border-[#e8dfd0] text-[#6b5740] rounded-full">
+                        {{ \App\Models\Review::recommendationOptions()[$r->recommendation] ?? $r->recommendation }}
+                    </span>
+                </div>
+
+                {{-- Editor Notes --}}
+                @if($r->comments_for_editor)
+                <div class="mb-3">
+                    <p class="text-[0.62rem] font-bold tracking-[0.12em] uppercase text-[#6b5740] mb-1.5">Editor Notes</p>
+                    <p class="text-[0.84rem] text-[#3d2f1a] italic leading-relaxed">{{ $r->comments_for_editor }}</p>
+                </div>
+                @endif
+
+                {{-- Author Feedback --}}
+                @if($r->comments_for_author)
+                <div class="{{ $r->comments_for_editor ? 'border-t border-[#e8dfd0] pt-3' : '' }}">
+                    <p class="text-[0.62rem] font-bold tracking-[0.12em] uppercase text-[#6b5740] mb-1.5">Author Feedback</p>
+                    <p class="text-[0.84rem] text-[#6b5740] leading-relaxed">{{ Str::limit($r->comments_for_author, 150) }}</p>
+                </div>
+                @endif
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+</div>
 </div>
 @endsection

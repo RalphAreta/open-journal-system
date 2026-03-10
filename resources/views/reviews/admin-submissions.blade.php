@@ -3,66 +3,83 @@
 @section('title', 'Manage Submissions')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="flex justify-between items-center mb-8">
-        <div>
-            <nav class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
-                <a href="{{ route('dashboard.admin') }}" class="hover:text-red-600 transition-colors">Admin</a>
-                <span>&gt;</span>
-                <span class="text-slate-900">Submissions</span>
-            </nav>
-            <h1 class="text-2xl font-bold text-slate-900">Manage Submissions</h1>
-            <p class="text-sm text-slate-500 mt-1">View and manage all incoming user submissions.</p>
-        </div>
+<div class="min-h-screen bg-[#faf6ef] font-sans text-[#1a1209]">
+<div class="max-w-7xl mx-auto px-4">
 
-        <div class="flex items-center gap-3">
-            {{-- Added Back Button --}}
-            <a href="{{ route('dashboard.admin') }}" class="px-4 py-2 bg-white border border-slate-200 text-slate-500 rounded-lg text-sm font-medium hover:bg-slate-50 transition-all flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Back
-            </a>
+    {{-- ── Hero Header ── --}}
+    <div class="relative pt-11 pb-8 mb-9 border-b border-[#e8dfd0]">
+        <div class="absolute bottom-[-1px] left-0 w-20 h-[3px] bg-gradient-to-r from-[#2d8176] to-transparent"></div>
 
-            <div class="bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
-                <span class="text-sm font-medium text-slate-600">Total: {{ $submissions->total() }}</span>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <div>
+                {{-- Breadcrumb --}}
+                <nav class="flex items-center gap-2 mb-3.5">
+                    <a href="{{ route('dashboard.admin') }}" class="text-[11px] font-bold tracking-[0.14em] uppercase text-[#2d8176] hover:opacity-70 transition-opacity">Admin</a>
+                    <svg class="w-2.5 h-2.5 text-[#c9b99a]" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+                    <span class="text-[11px] font-bold tracking-[0.14em] uppercase text-[#1a1209]">Submissions</span>
+                </nav>
+
+                {{-- Eyebrow --}}
+                <div class="flex items-center gap-2.5 mb-2.5">
+                    <div class="w-6 h-px bg-[#2d8176]"></div>
+                    <p class="text-[11px] font-bold tracking-[0.2em] uppercase text-[#2d8176]">System Administration</p>
+                </div>
+
+                <h1 class="font-serif text-[2.8rem] font-bold text-[#1a1209] tracking-[-0.01em] leading-[1.15]">
+                    Manage <em class="italic text-[#2d8176]">Submissions</em>
+                </h1>
+                <p class="text-[0.98rem] text-[#6b5740] mt-2">View and manage all incoming manuscript submissions</p>
+            </div>
+
+            <div class="flex items-center gap-3 self-start md:self-auto shrink-0">
+                {{-- Total Count Pill --}}
+                <div class="bg-[#e8f4f2] border border-[#b8ddd9] rounded-full px-4 py-2 flex items-center gap-2">
+                    <span class="font-serif text-[1.1rem] font-bold text-[#2d8176] leading-none">{{ $submissions->total() }}</span>
+                    <span class="text-[0.64rem] font-bold tracking-[0.1em] uppercase text-[#2d8176]/70">Total</span>
+                </div>
+
+                <a href="{{ route('dashboard.admin') }}"
+                   class="inline-flex items-center gap-2 bg-[#f3ece0] border border-[#c9b99a] text-[#6b5740] text-[0.68rem] font-bold tracking-[0.1em] uppercase px-5 py-2.5 rounded-md hover:bg-white hover:text-[#1a1209] transition-all">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back
+                </a>
             </div>
         </div>
     </div>
 
-    {{-- Search & Filter Section --}}
+    {{-- ── Search & Filter ── --}}
     <div class="grid grid-cols-1 md:grid-cols-12 gap-3 mb-6">
-        {{-- Search Input --}}
-        <div class="md:col-span-8 bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm flex items-center">
-            <div class="relative w-full">
-                <input type="text" id="submissionSearch" onkeyup="applyFilters()"
-                    placeholder="Search by title or author..."
-                    class="w-full pl-10 pr-4 py-2 bg-transparent border-none text-sm font-bold text-slate-900 focus:ring-0 outline-none">
-                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round"/>
-                    </svg>
-                </div>
-            </div>
+
+        {{-- Search --}}
+        <div class="md:col-span-8 bg-white border border-[#e8dfd0] rounded-xl shadow-[0_1px_4px_rgba(26,18,9,0.05)] flex items-center gap-3 px-4 py-1">
+            <svg class="w-4 h-4 text-[#c9b99a] shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round"/>
+            </svg>
+            <input type="text" id="submissionSearch" onkeyup="applyFilters()"
+                placeholder="Search by title or author..."
+                class="w-full py-2.5 bg-transparent border-none text-[0.88rem] font-semibold text-[#1a1209] placeholder-[#c9b99a] focus:ring-0 outline-none">
         </div>
 
         {{-- Status Filter --}}
-        <div class="md:col-span-4 relative group">
-            <div class="absolute inset-0 bg-slate-900 border border-slate-900 rounded-2xl shadow-md group-hover:bg-red-600 group-hover:border-red-600 transition-all pointer-events-none"></div>
+        <div class="md:col-span-4 relative">
+            {{-- Background layer --}}
+            <div class="absolute inset-0 bg-[#1a1209] rounded-xl pointer-events-none group-hover:bg-[#2d8176] transition-all"></div>
 
-            <div class="absolute inset-0 flex items-center px-5 pointer-events-none">
-                <svg class="w-3.5 h-3.5 text-white/50 mr-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            {{-- Display labels --}}
+            <div class="absolute inset-0 flex items-center px-4 gap-3 pointer-events-none">
+                <svg class="w-3.5 h-3.5 text-white/40 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <div class="flex flex-col grow">
-                    <span class="text-[6px] font-black text-white/40 uppercase tracking-[0.2em] leading-tight">Filter</span>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-white leading-tight" id="filterLabel">All Status</span>
+                <div class="flex flex-col grow min-w-0">
+                    <span class="text-[9px] font-bold text-white/40 uppercase tracking-[0.2em] leading-none mb-0.5">Filter by Status</span>
+                    <span class="text-[11px] font-bold uppercase tracking-[0.1em] text-white leading-none truncate" id="filterLabel">All Status</span>
                 </div>
-                <svg class="w-3.5 h-3.5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3"/></svg>
+                <svg class="w-3 h-3 text-white/40 shrink-0" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
             </div>
 
-            <select id="statusFilter" onchange="applyFilters(); document.getElementById('filterLabel').innerText = this.options[this.selectedIndex].text"
-                class="relative z-10 w-full h-full py-4 opacity-0 cursor-pointer">
+            <select id="statusFilter"
+                onchange="applyFilters(); document.getElementById('filterLabel').innerText = this.options[this.selectedIndex].text"
+                class="relative z-10 w-full py-4 opacity-0 cursor-pointer rounded-xl">
                 <option value="">All Status</option>
                 <option value="submitted">Submitted</option>
                 <option value="under_review">Under Review</option>
@@ -73,67 +90,100 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    {{-- ── Table Card ── --}}
+    <div class="bg-white border border-[#e8dfd0] rounded-2xl shadow-[0_1px_6px_rgba(26,18,9,0.05)] overflow-hidden mb-12">
+
+        {{-- Top accent bar --}}
+        <div class="h-[3px] bg-gradient-to-r from-[#2d8176] to-[#c9a84c]"></div>
+
+        {{-- Table Header --}}
+        <div class="px-6 py-4 border-b border-[#e8dfd0] bg-[#faf6ef] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-[#6b5740]">All Submissions</span>
+                <div class="w-8 h-px bg-[#e8dfd0]"></div>
+            </div>
+            <span class="text-[0.64rem] font-bold bg-[#e8f4f2] border border-[#b8ddd9] text-[#2d8176] px-3 py-1 rounded-full tracking-[0.08em] uppercase">
+                {{ $submissions->total() }} {{ Str::plural('entry', $submissions->total()) }}
+            </span>
+        </div>
+
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200">
-                <thead class="bg-slate-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Title</th>
-                        <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Author</th>
-                        <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                        <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+            <table class="min-w-full">
+                <thead>
+                    <tr class="border-b border-[#e8dfd0]">
+                        <th class="px-6 py-3.5 text-left text-[0.62rem] font-bold tracking-[0.14em] uppercase text-[#6b5740]">Title</th>
+                        <th class="px-6 py-3.5 text-left text-[0.62rem] font-bold tracking-[0.14em] uppercase text-[#6b5740]">Author</th>
+                        <th class="px-6 py-3.5 text-left text-[0.62rem] font-bold tracking-[0.14em] uppercase text-[#6b5740]">Status</th>
+                        <th class="px-6 py-3.5 text-right text-[0.62rem] font-bold tracking-[0.14em] uppercase text-[#6b5740]">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-slate-200">
+                <tbody class="divide-y divide-[#f0e8dc]">
                     @forelse($submissions as $s)
-                        <tr class="hover:bg-slate-50/50 transition-colors submission-row"
-                            data-searchtext="{{ strtolower($s->title . ' ' . ($s->author->name ?? '')) }}"
-                            data-status="{{ strtolower($s->status) }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
-                                {{ Str::limit($s->title, 50) }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                                {{ $s->author->name ?? '—' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @php
-                                    $statusColor = match(strtolower($s->status)) {
-                                        'approved' => 'bg-emerald-50 text-emerald-700 border-emerald-100',
-                                        'pending'  => 'bg-amber-50 text-amber-700 border-amber-100',
-                                        'rejected' => 'bg-rose-50 text-rose-700 border-rose-100',
-                                        default    => 'bg-slate-50 text-slate-700 border-slate-100',
-                                    };
-                                @endphp
-                                <span class="px-2.5 py-1 text-xs font-bold rounded-full border {{ $statusColor }} uppercase">
-                                    {{ $s->status }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('admin.submissions.show', $s) }}" class="inline-flex items-center text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md transition-colors">
-                                    View Details
-                                </a>
-                            </td>
-                        </tr>
+                    @php
+                        $statusMap = match(strtolower($s->status)) {
+                            'accepted'            => ['bg-[#e8f4f2] text-[#2d8176] border-[#b8ddd9]',   'dot' => 'bg-[#2d8176]'],
+                            'submitted'           => ['bg-[#e8f4f2] text-[#2d8176] border-[#b8ddd9]',   'dot' => 'bg-[#2d8176]'],
+                            'under_review'        => ['bg-[#fef9ec] text-[#8a6e28] border-[#e8d49a]',   'dot' => 'bg-[#c9a84c]'],
+                            'revisions_requested' => ['bg-[#fff7ed] text-[#9a5a1a] border-[#fdd9aa]',   'dot' => 'bg-[#f97316]'],
+                            'rejected'            => ['bg-[#fef2f2] text-[#b91c1c] border-[#fecaca]',   'dot' => 'bg-[#b91c1c]'],
+                            default               => ['bg-[#f3ece0] text-[#6b5740] border-[#e8dfd0]',   'dot' => 'bg-[#c9b99a]'],
+                        };
+                    @endphp
+                    <tr class="hover:bg-[#faf6ef] transition-colors submission-row group"
+                        data-searchtext="{{ strtolower($s->title . ' ' . ($s->author->name ?? '')) }}"
+                        data-status="{{ strtolower($s->status) }}">
+
+                        <td class="px-6 py-4">
+                            <p class="text-[0.88rem] font-bold text-[#1a1209] leading-tight">{{ Str::limit($s->title, 50) }}</p>
+                        </td>
+
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-7 h-7 bg-[#1a4d46] text-white rounded-md flex items-center justify-center font-serif text-xs font-bold uppercase shrink-0">
+                                    {{ substr($s->author->name ?? '?', 0, 1) }}
+                                </div>
+                                <span class="text-[0.84rem] font-semibold text-[#6b5740]">{{ $s->author->name ?? '—' }}</span>
+                            </div>
+                        </td>
+
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 text-[0.62rem] font-bold tracking-[0.08em] uppercase rounded-full border {{ $statusMap[0] }}">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $statusMap['dot'] }}"></span>
+                                {{ str_replace('_', ' ', $s->status) }}
+                            </span>
+                        </td>
+
+                        <td class="px-6 py-4 text-right">
+                            <a href="{{ route('admin.submissions.show', $s) }}"
+                               class="inline-flex items-center gap-1.5 bg-[#f3ece0] border border-[#c9b99a] text-[#6b5740] text-[0.62rem] font-bold tracking-[0.1em] uppercase px-4 py-2 rounded-md hover:bg-[#2d8176] hover:border-[#2d8176] hover:text-white transition-all">
+                                View Details
+                                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+                            </a>
+                        </td>
+                    </tr>
                     @empty
-                        <tr>
-                            <td colspan="4" class="px-6 py-12 text-center">
-                                <svg class="mx-auto h-12 w-12 text-slate-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                <p class="text-slate-500 font-medium">No submissions found.</p>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="4" class="px-6 py-20 text-center">
+                            <svg class="w-12 h-12 mx-auto text-[#e8dfd0] mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <p class="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-[#c9b99a]">No Submissions Found</p>
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
+        {{-- Pagination --}}
         @if($submissions->hasPages())
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200">
-                {{ $submissions->links() }}
-            </div>
+        <div class="px-6 py-4 border-t border-[#e8dfd0] bg-[#faf6ef]">
+            {{ $submissions->links() }}
+        </div>
         @endif
     </div>
+
+</div>
 </div>
 @endsection
 
@@ -147,15 +197,9 @@
         rows.forEach(row => {
             const rowSearchText = row.getAttribute('data-searchtext');
             const rowStatus = row.getAttribute('data-status');
-
             const matchesSearch = rowSearchText.includes(searchText);
-            const matchesStatus = statusFilter === "" || rowStatus === statusFilter;
-
-            if (matchesSearch && matchesStatus) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
+            const matchesStatus = statusFilter === '' || rowStatus === statusFilter;
+            row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
         });
     }
 </script>

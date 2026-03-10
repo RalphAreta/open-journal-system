@@ -16,7 +16,7 @@
             --ink-soft: #6b5740;
             --cream: #faf6ef;
             --parchment: #f3ece0;
-            --border: #e8dfd0;
+            --border: #e8dfd0;     
             --border-dk: #c9b99a;
         }
         * {

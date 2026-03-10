@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Initial Screening')
+    @section('title', 'Initial Screening')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+9link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..  40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
     .font-serif-display { font-family: 'Instrument Serif', serif; }
     .font-body          { font-family: 'DM Sans', sans-serif; }
