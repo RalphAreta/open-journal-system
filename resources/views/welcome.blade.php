@@ -989,7 +989,7 @@
     </head>
     <body>
         {{-- Shimmer --}}
-        <div class="shimmer-bar sticky top-0 z-[60]"></div>
+        <div class="shimmer-bar sticky top-0 z-60"></div>
 
         {{-- Navbar --}}
         <nav class="navbar">
