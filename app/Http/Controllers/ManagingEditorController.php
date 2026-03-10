@@ -318,7 +318,7 @@ public function reassignLayout(Request $request, Submission $submission)
     ]);
 
     $oldAssignment = \App\Models\LayoutEditorAssignment::findOrFail($request->assignment_id);
-    
+
     // ← I-clear ang author_status para mawala sa Author Responses
     \Illuminate\Support\Facades\DB::table('layout_editor_assignments')
         ->where('id', $oldAssignment->id)
