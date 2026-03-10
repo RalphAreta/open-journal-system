@@ -13,10 +13,8 @@ class ManagingEditorController extends Controller
 {
     public function dashboard(): View
 {
-    // BUG FIX: Exclude published submissions from managing editor dashboard
     $submissions = Submission::with('author')
         ->where('managing_editor_id', auth()->id())
-        ->where('status', '!=', Submission::STATUS_PUBLISHED)
         ->orderBy('updated_at', 'desc')
         ->get();
 
@@ -266,14 +264,6 @@ public function publishPaper(Submission $submission): RedirectResponse
         'managing_editor_status' => 'published',
     ]);
 
-    // BUG FIX: Clear author_status from layout assignments so they don't show in Author Responses section
-    \Illuminate\Support\Facades\DB::table('layout_editor_assignments')
-        ->where('submission_id', $submission->id)
-        ->update([
-            'author_status' => null,
-            'author_feedback' => null,
-        ]);
-
     // Notify author of publication
     $author = $submission->author;
     if ($author) {
@@ -328,7 +318,7 @@ public function reassignLayout(Request $request, Submission $submission)
     ]);
 
     $oldAssignment = \App\Models\LayoutEditorAssignment::findOrFail($request->assignment_id);
-
+    
     // ← I-clear ang author_status para mawala sa Author Responses
     \Illuminate\Support\Facades\DB::table('layout_editor_assignments')
         ->where('id', $oldAssignment->id)
@@ -347,12 +337,7 @@ public function reassignLayout(Request $request, Submission $submission)
         'notes'            => 'Author revision request: ' . $oldAssignment->author_feedback,
     ]);
 
-    // BUG FIX: Keep managing_editor_status as 'ctf_returned' since CTF is already done
-    // Don't reset to 'forwarded' to avoid re-asking for CTF
-    $submission->update([
-        'status' => 'layout_editing',
-        'managing_editor_status' => 'ctf_returned',
-    ]);
+    $submission->update(['status' => 'layout_editing']);
 
     // Notify layout editor
     \App\Models\Notification::create([
