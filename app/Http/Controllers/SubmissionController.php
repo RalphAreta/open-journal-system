@@ -99,8 +99,11 @@ class SubmissionController extends Controller
 
         if ($similarSubmissions->isNotEmpty() && ! $request->boolean('similarity_acknowledged')) {
             $fieldOptions = \App\Models\EditorExpertise::getFieldOptions();
-            return view('submissions.create', compact('fieldOptions', 'similarSubmissions'))
-                ->withInput();
+            return redirect()->back()
+                ->with('warning', 'Similar submissions found. Please review them before acknowledging.')
+                ->withInput()
+                ->with('similarSubmissions', $similarSubmissions)
+                ->with('fieldOptions', $fieldOptions);
         }
 
         // ── File upload ─────────────────────────────────────────────────────

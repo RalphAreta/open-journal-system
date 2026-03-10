@@ -7,6 +7,7 @@ use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class ManagingEditorController extends Controller
@@ -14,7 +15,7 @@ class ManagingEditorController extends Controller
     public function dashboard(): View
 {
     $submissions = Submission::with('author')
-        ->where('managing_editor_id', auth()->id())
+        ->where('managing_editor_id', Auth::id())
         ->orderBy('updated_at', 'desc')
         ->get();
 
@@ -34,7 +35,7 @@ class ManagingEditorController extends Controller
      */
    public function generateCtf(Request $request, Submission $submission): RedirectResponse
 {
-    if ($submission->managing_editor_id !== auth()->id()) {
+    if ($submission->managing_editor_id !== Auth::id()) {
         abort(403);
     }
 
@@ -76,7 +77,7 @@ $submission->update([
      */
    public function forwardToLayout(Request $request, Submission $submission): RedirectResponse
 {
-    if ($submission->managing_editor_id !== auth()->id()) {
+    if ($submission->managing_editor_id !== Auth::id()) {
         abort(403);
     }
 
@@ -121,7 +122,7 @@ $submission->update([
     public function show(Submission $submission): View
 {
     // Only the assigned managing editor can view
-    if ($submission->managing_editor_id !== auth()->id()) {
+    if ($submission->managing_editor_id !== Auth::id()) {
         abort(403);
     }
 
@@ -131,7 +132,7 @@ $submission->update([
 }
 public function showLayout(Submission $submission): View
 {
-    if ($submission->managing_editor_id !== auth()->id()) {
+    if ($submission->managing_editor_id !== Auth::id()) {
         abort(403);
     }
 
@@ -148,7 +149,7 @@ public function showLayout(Submission $submission): View
 
 public function approveLayout(Submission $submission): RedirectResponse
 {
-    if ($submission->managing_editor_id !== auth()->id()) {
+    if ($submission->managing_editor_id !== Auth::id()) {
         abort(403);
     }
 
@@ -212,7 +213,7 @@ public function approveLayout(Submission $submission): RedirectResponse
 }
 public function downloadLayout(Submission $submission)
 {
-    if ($submission->managing_editor_id !== auth()->id()) {
+    if ($submission->managing_editor_id !== Auth::id()) {
         abort(403);
     }
 
@@ -233,8 +234,8 @@ public function downloadLayout(Submission $submission)
 
 public function downloadCtf(Submission $submission)
 {
-    if (auth()->id() !== $submission->author_id &&
-        auth()->id() !== $submission->managing_editor_id) {
+    if (Auth::id() !== $submission->author_id &&
+        Auth::id() !== $submission->managing_editor_id) {
         abort(403);
     }
     if (!$submission->ctf_file_path) {
@@ -248,7 +249,7 @@ public function downloadCtf(Submission $submission)
 
 public function publishPaper(Submission $submission): RedirectResponse
 {
-    if ($submission->managing_editor_id !== auth()->id()) {
+    if ($submission->managing_editor_id !== Auth::id()) {
         abort(403, 'Unauthorized');
     }
 
@@ -299,7 +300,7 @@ public function publishPaper(Submission $submission): RedirectResponse
 // Dagdag na method:
 public function downloadSignedCtf(Submission $submission)
 {
-    if ($submission->managing_editor_id !== auth()->id()) {
+    if ($submission->managing_editor_id !== Auth::id()) {
         abort(403);
     }
     if (!$submission->ctf_signed_file_path) {
