@@ -516,6 +516,11 @@ public function authorRequestRevision(Request $request, Submission $submission)
             'author_feedback_at' => now(),
         ]);
 
+    // BUG FIX: Reset managing_editor_status so "Publish Now" button doesn't show
+    $submission->update([
+        'managing_editor_status' => 'layout_review',
+    ]);
+
     // Notify ME
     $managingEditor = $submission->managingEditor;
     if ($managingEditor) {
