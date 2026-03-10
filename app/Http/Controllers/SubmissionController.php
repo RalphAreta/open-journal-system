@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use App\Models\LayoutEditorAssignment;
 
 class SubmissionController extends Controller
 {
@@ -413,4 +414,122 @@ class SubmissionController extends Controller
         ->take(5)
         ->values();
     }
+
+    public function uploadSignedCtf(Request $request, Submission $submission): RedirectResponse
+{
+    if ($submission->author_id !== Auth::id()) {
+        abort(403);
+    }
+
+    if ($submission->managing_editor_status !== 'ctf_sent') {
+        return back()->with('error', 'No CTF is awaiting your signature.');
+    }
+
+    $request->validate([
+        'signed_ctf_file' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+    ]);
+
+    $file = $request->file('signed_ctf_file');
+    $path = $file->storeAs(
+        'ctf-signed',
+        'signed-ctf-' . $submission->id . '-' . time() . '.' . $file->getClientOriginalExtension(),
+        'local'
+    );
+
+    $submission->update([
+        'managing_editor_status' => 'ctf_returned',
+        'ctf_signed_file_path'   => $path,
+        'ctf_signed_file_name'   => $file->getClientOriginalName(),
+        'ctf_returned_at'        => now(),
+    ]);
+
+    $managingEditor = $submission->managingEditor;
+    if ($managingEditor) {
+        \App\Models\Notification::create([
+            'user_id'         => $managingEditor->id,
+            'role'            => 'managing-editor',
+            'title'           => '✅ Signed CTF Returned by Author',
+            'message'         => "The author has uploaded the signed Copyright Transfer Form for \"{$submission->title}\". You may now assign a layout editor.",
+            'type'            => 'success',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    return redirect()->route('submissions.index')
+        ->with('success', 'Signed CTF uploaded. The managing editor has been notified.');
+}
+public function authorConfirm(Request $request, Submission $submission)
+{
+    if ($submission->author_id !== Auth::id()) {
+        abort(403);
+    }
+
+    $assignment = LayoutEditorAssignment::findOrFail($request->assignment_id);
+
+  \Illuminate\Support\Facades\DB::table('layout_editor_assignments')
+    ->where('id', $assignment->id)
+    ->update([
+        'author_status'      => 'confirmed',
+        'author_feedback_at' => now(),
+    ]);
+
+    // Update submission status para hindi mag-conflict sa confirmLayout
+    $submission->update([
+        'status'                 => Submission::STATUS_WITH_MANAGING_EDITOR,
+        'managing_editor_status' => 'ready_to_publish',
+    ]);
+
+    // Notify ME
+    $managingEditor = $submission->managingEditor;
+    if ($managingEditor) {
+        \App\Models\Notification::create([
+            'user_id'         => $managingEditor->id,
+            'role'            => 'managing-editor',
+            'title'           => '✅ Author Confirmed Layout — Ready to Publish',
+            'message'         => "Author has confirmed the layout for \"{$submission->title}\". The manuscript is now ready for final publishing.",
+            'type'            => 'success',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    return back()->with('success', 'Layout confirmed. The Managing Editor will proceed with publication.');
+}
+public function authorRequestRevision(Request $request, Submission $submission)
+{
+    if ($submission->author_id !== Auth::id()) {
+        abort(403);
+    }
+
+    $request->validate([
+        'author_feedback' => 'required|string|max:2000',
+    ]);
+
+    $assignment = LayoutEditorAssignment::findOrFail($request->assignment_id);
+
+    \Illuminate\Support\Facades\DB::table('layout_editor_assignments')
+        ->where('id', $assignment->id)
+        ->update([
+            'author_status'      => 'revision_requested',
+            'author_feedback'    => $request->author_feedback,
+            'author_feedback_at' => now(),
+        ]);
+
+    // Notify ME
+    $managingEditor = $submission->managingEditor;
+    if ($managingEditor) {
+        \App\Models\Notification::create([
+            'user_id'         => $managingEditor->id,
+            'role'            => 'managing-editor',
+            'title'           => '⚠ Author Requested Layout Revision',
+            'message'         => "The author has requested revisions for \"{$submission->title}\".",
+            'type'            => 'warning',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    return back()->with('success', 'Revision request sent to the Managing Editor.');
+}
 }

@@ -15,37 +15,42 @@ class LayoutEditorController extends Controller
     /**
      * Show layout editor dashboard with pending assignments
      */
-    public function dashboard(Request $request): View
-    {
-        $user = $request->user();
+  public function dashboard(Request $request): View
+{
+    $user = $request->user();
 
-        // Get all layout assignments for this layout editor
-        $assignments = LayoutEditorAssignment::where('layout_editor_id', $user->id)
-            ->with(['submission.author'])
-            ->latest('assigned_at')
-            ->paginate(15);
+    $assignments = LayoutEditorAssignment::where('layout_editor_id', $user->id)
+        ->with(['submission.author'])
+        ->latest('assigned_at')
+        ->paginate(15);
 
-        // Calculate stats
-        $inProgressCount = LayoutEditorAssignment::where('layout_editor_id', $user->id)
-            ->where('status', LayoutEditorAssignment::STATUS_IN_PROGRESS)
-            ->count();
+    $inProgressCount = LayoutEditorAssignment::where('layout_editor_id', $user->id)
+        ->where('status', LayoutEditorAssignment::STATUS_IN_PROGRESS)
+        ->count();
 
-        $completedCount = LayoutEditorAssignment::where('layout_editor_id', $user->id)
-            ->where('status', LayoutEditorAssignment::STATUS_COMPLETED)
-            ->count();
+    $completedCount = LayoutEditorAssignment::where('layout_editor_id', $user->id)
+        ->where('status', LayoutEditorAssignment::STATUS_COMPLETED)
+        ->count();
 
-        $pendingReviewCount = LayoutEditorAssignment::where('layout_editor_id', $user->id)
-            ->where('status', LayoutEditorAssignment::STATUS_PENDING)
-            ->count();
+    $pendingReviewCount = LayoutEditorAssignment::where('layout_editor_id', $user->id)
+        ->where('status', LayoutEditorAssignment::STATUS_PENDING)
+        ->count();
 
-        return view('layout-editor.dashboard', [
-            'assignments' => $assignments,
-            'inProgressCount' => $inProgressCount,
-            'completedCount' => $completedCount,
-            'pendingReviewCount' => $pendingReviewCount,
-        ]);
-    }
+    // ← DAGDAG DITO bago ang return
+    $revisionAssignments = LayoutEditorAssignment::with(['submission.author'])
+        ->where('layout_editor_id', $user->id)
+        ->where('status', LayoutEditorAssignment::STATUS_PENDING)
+        ->where('notes', 'like', 'Author revision request:%')
+        ->get();
 
+    return view('layout-editor.dashboard', [
+        'assignments'        => $assignments,
+        'inProgressCount'    => $inProgressCount,
+        'completedCount'     => $completedCount,
+        'pendingReviewCount' => $pendingReviewCount,
+        'revisionAssignments' => $revisionAssignments, // ← dagdag
+    ]);
+}
     /**
      * Show a specific layout assignment details
      */

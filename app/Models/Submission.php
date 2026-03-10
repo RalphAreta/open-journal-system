@@ -38,7 +38,13 @@ class Submission extends Model
 'forwarded_to_layout_at',
 'ctf_file_path',
 'ctf_file_name',
+'ctf_signed_file_path',   // ← dagdag
+'ctf_signed_file_name',   // ← dagdag
+'ctf_returned_at',   
 'published_at',
+  'author_feedback',
+    'author_feedback_at',
+    'author_status',
     ];
 
     protected function casts(): array
@@ -50,9 +56,11 @@ class Submission extends Model
             'initial_screening_at' => 'datetime',
             'managing_editor_assigned_at' => 'datetime',
             'ctf_sent_at' => 'datetime',
+            'ctf_returned_at' => 'datetime', 
             'forwarded_to_layout_at' => 'datetime',
             'published_at' => 'datetime',
             'editor_decision_draft' => 'json',
+            'author_feedback_at' => 'datetime',
         ];
     }
 
@@ -71,6 +79,9 @@ class Submission extends Model
     public const SCREENING_STATUS_PENDING = 'pending';
     public const SCREENING_STATUS_PASSED = 'passed';
     public const SCREENING_STATUS_FAILED = 'failed';
+
+    public const AUTHOR_STATUS_CONFIRMED = 'confirmed';
+public const AUTHOR_STATUS_REVISION = 'revision_requested';
 
     public static function statusOptions(): array
     {

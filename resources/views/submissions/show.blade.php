@@ -836,35 +836,120 @@
                                                 </div>
                                             @endif
 
-                                            {{-- Author Confirmation Button --}}
+                                            {{-- Author Confirmation --}}
                                             @if ($submission->status === 'author_confirmation')
-                                                <form method="POST" action="{{ route('submissions.confirm-layout', $submission) }}" class="mt-4">
-                                                    @csrf
-                                                    <div class="p-4 bg-[#e8f4f2] border border-[rgba(45,129,118,.3)] rounded-lg">
-                                                        <p class="text-[.75rem] font-semibold text-[#2d8176] mb-3">
-                                                            Ready to publish? Please review the layout above and confirm to finalize your publication.
-                                                        </p>
-                                                        <button
-                                                            type="submit"
-                                                            class="w-full px-4 py-3 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.7rem] font-bold tracking-[.08em] uppercase transition-all"
+                                                @php
+                                                    $latestLayoutForFeedback = $submission
+                                                        ->layoutEditorAssignments()
+                                                        ->where('status', 'completed')
+                                                        ->whereNull('author_status')
+                                                        ->latest('completed_at')
+                                                        ->first();
+                                                @endphp
+
+                                                @if ($latestLayoutForFeedback)
+                                                    <div
+                                                        class="mt-4 p-4 bg-[#e8f4f2] border border-[rgba(45,129,118,.3)] rounded-lg"
+                                                    >
+                                                        <p
+                                                            class="text-[.75rem] font-semibold text-[#2d8176] mb-4"
                                                         >
-                                                            <svg
-                                                                class="w-4 h-4 inline-block mr-2"
-                                                                fill="none"
-                                                                stroke="currentColor"
-                                                                viewBox="0 0 24 24"
+                                                            Please review the
+                                                            layout above. You
+                                                            may confirm it or
+                                                            request revisions.
+                                                        </p>
+
+                                                        {{-- Confirm button --}}
+                                                        <form
+                                                            method="POST"
+                                                            action="{{ route('submissions.author-confirm', $submission) }}"
+                                                        >
+                                                            @csrf
+                                                            <input
+                                                                type="hidden"
+                                                                name="assignment_id"
+                                                                value="{{ $latestLayoutForFeedback->id }}"
+                                                            />
+                                                            <button
+                                                                type="submit"
+                                                                class="w-full px-4 py-3 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.7rem] font-bold tracking-[.08em] uppercase transition-all mb-3"
                                                             >
-                                                                <path
-                                                                    stroke-linecap="round"
-                                                                    stroke-linejoin="round"
-                                                                    stroke-width="2"
-                                                                    d="M5 13l4 4L19 7"
+                                                                <svg
+                                                                    class="w-4 h-4 inline-block mr-2"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <path
+                                                                        stroke-linecap="round"
+                                                                        stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                        d="M5 13l4 4L19 7"
+                                                                    />
+                                                                </svg>
+                                                                Confirm Layout
+                                                            </button>
+                                                        </form>
+
+                                                        {{-- Request revision --}}
+                                                        <div
+                                                            x-data="{ open: false }"
+                                                        >
+                                                            <button
+                                                                @click="open = !open"
+                                                                class="w-full px-4 py-3 rounded-lg bg-white border border-[#c9b99a] hover:border-[#f97316] text-[#6b5740] hover:text-[#f97316] text-[.7rem] font-bold tracking-[.08em] uppercase transition-all"
+                                                            >
+                                                                <svg
+                                                                    class="w-4 h-4 inline-block mr-2"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <path
+                                                                        stroke-linecap="round"
+                                                                        stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                                                    />
+                                                                </svg>
+                                                                Request Layout
+                                                                Revision
+                                                            </button>
+
+                                                            {{-- ← PALITAN NG: --}}
+                                                            <form
+                                                                x-show="open"
+                                                                x-transition
+                                                                method="POST"
+                                                                action="{{ route('submissions.author-request-revision', $submission) }}"
+                                                                class="mt-3"
+                                                            >
+                                                                @csrf
+                                                                <input
+                                                                    type="hidden"
+                                                                    name="assignment_id"
+                                                                    value="{{ $latestLayoutForFeedback->id }}"
                                                                 />
-                                                            </svg>
-                                                            Confirm & Publish Manuscript
-                                                        </button>
+                                                                <textarea
+                                                                    name="author_feedback"
+                                                                    required
+                                                                    rows="3"
+                                                                    placeholder="Describe what needs to be revised in the layout…"
+                                                                    class="w-full px-3 py-2.5 rounded-lg border border-[#e8dfd0] bg-white text-[.85rem] text-[#1a1209] outline-none focus:border-[#f97316] focus:ring-2 focus:ring-[#f97316]/10 resize-none mb-2"
+                                                                ></textarea>
+                                                                <button
+                                                                    type="submit"
+                                                                    class="w-full px-4 py-2.5 rounded-lg bg-[#f97316] hover:bg-[#ea580c] text-white text-[.7rem] font-bold tracking-[.08em] uppercase transition-all"
+                                                                >
+                                                                    Send
+                                                                    Revision
+                                                                    Request
+                                                                </button>
+                                                            </form>
+                                                        </div>
                                                     </div>
-                                                </form>
+                                                @endif
                                             @endif
                                         </div>
                                     @endif

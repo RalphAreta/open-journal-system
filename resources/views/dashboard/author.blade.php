@@ -867,33 +867,121 @@
                         </div>
                         <div class="ctf-list mt-2 w-full">
                             @foreach ($ctfPending as $cs)
-                                <div class="ctf-item">
-                                    <span class="ctf-item-ref">
-                                        #{{ str_pad($cs->id, 5, '0', STR_PAD_LEFT) }}
-                                    </span>
-                                    <span class="ctf-item-title">
-                                        {{ Str::limit($cs->title, 60) }}
-                                    </span>
-                                    <a
-                                        href="{{ route('submissions.download-ctf', $cs) }}"
-                                        class="btn-ctf-download"
+                                <div
+                                    class="ctf-item"
+                                    style="
+                                        flex-direction: column;
+                                        align-items: flex-start;
+                                        gap: 10px;
+                                    "
+                                >
+                                    <div
+                                        style="
+                                            display: flex;
+                                            align-items: center;
+                                            gap: 10px;
+                                            width: 100%;
+                                        "
                                     >
-                                        <svg
-                                            width="13"
-                                            height="13"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2.5"
-                                            viewBox="0 0 24 24"
+                                        <span class="ctf-item-ref">
+                                            #{{ str_pad($cs->id, 5, '0', STR_PAD_LEFT) }}
+                                        </span>
+                                        <span class="ctf-item-title">
+                                            {{ Str::limit($cs->title, 60) }}
+                                        </span>
+                                        <a
+                                            href="{{ route('submissions.download-ctf', $cs) }}"
+                                            class="btn-ctf-download"
+                                            style="margin-left: auto"
                                         >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                                            />
-                                        </svg>
-                                        Download CTF
-                                    </a>
+                                            <svg
+                                                width="13"
+                                                height="13"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                />
+                                            </svg>
+                                            Download CTF
+                                        </a>
+                                    </div>
+
+                                    {{-- Instructions --}}
+                                    <div
+                                        style="
+                                            background: #fffbf0;
+                                            border: 1px solid
+                                                rgba(201, 168, 76, 0.3);
+                                            border-radius: 8px;
+                                            padding: 10px 14px;
+                                            font-size: 0.82rem;
+                                            color: var(--ink-mid);
+                                            line-height: 1.6;
+                                            width: 100%;
+                                        "
+                                    >
+                                        <strong style="color: var(--gold-dk)">
+                                            Instructions:
+                                        </strong>
+                                        Download the form above, fill it out
+                                        completely, sign it, then upload the
+                                        completed form below.
+                                    </div>
+
+                                    {{-- Upload signed CTF --}}
+                                    <form
+                                        method="POST"
+                                        action="{{ route('submissions.upload-signed-ctf', $cs) }}"
+                                        enctype="multipart/form-data"
+                                        style="
+                                            width: 100%;
+                                            display: flex;
+                                            align-items: center;
+                                            gap: 10px;
+                                            flex-wrap: wrap;
+                                        "
+                                    >
+                                        @csrf
+                                        <input
+                                            type="file"
+                                            name="signed_ctf_file"
+                                            accept=".pdf,.doc,.docx"
+                                            required
+                                            style="
+                                                font-size: 0.82rem;
+                                                color: var(--ink);
+                                                flex: 1;
+                                                min-width: 200px;
+                                            "
+                                        />
+                                        <button
+                                            type="submit"
+                                            class="btn-ctf-download"
+                                            style="background: var(--teal)"
+                                        >
+                                            <svg
+                                                width="13"
+                                                height="13"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                                />
+                                            </svg>
+                                            Upload Signed CTF
+                                        </button>
+                                    </form>
                                 </div>
                             @endforeach
                         </div>

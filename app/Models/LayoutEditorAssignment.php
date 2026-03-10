@@ -33,6 +33,10 @@ class LayoutEditorAssignment extends Model
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_REJECTED = 'rejected';
 
+    // ← DAGDAG DITO
+public const AUTHOR_STATUS_CONFIRMED = 'confirmed';
+public const AUTHOR_STATUS_REVISION = 'revision_requested';
+
     public static function statusOptions(): array
     {
         return [

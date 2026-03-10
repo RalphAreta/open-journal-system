@@ -681,7 +681,9 @@
         @if ($layoutAssignment && $layoutAssignment->layout_file_path && $submission->status === \App\Models\Submission::STATUS_LAYOUT_REVIEW)
             <div class="approve-section fu3">
                 <div>
-                    <p class="approve-title">✅ Approve & Forward to Editor</p>
+                    <p class="approve-title">
+                        ✅ Approve & Forward to Layout Editor
+                    </p>
                     <p class="approve-desc">
                         After reviewing the layout file, approve it to notify
                         the assigned editor for final review before sending to
@@ -708,7 +710,7 @@
                                 d="M5 13l4 4L19 7"
                             />
                         </svg>
-                        Approve Layout & Notify Editor
+                        Approve Layout & Notify Layout Editor
                     </button>
                 </form>
             </div>
