@@ -790,7 +790,20 @@
                 {{-- Revision Re-Review --}}
                 @if ($submission->status === 'revision_under_review' && $submission->revisionRequests->isNotEmpty())
                     @php
-                        $latestRevision = $submission->revisionRequests->last();
+                        // Get all revisions with files, sorted by creation date
+                        $allRevisions = $submission->revisionRequests()
+                            ->whereNotNull('revised_file_path')
+                            ->orderBy('created_at')
+                            ->get();
+                        
+                        $latestRevision = $allRevisions->last();
+                        $previousRevision = null;
+                        
+                        if ($allRevisions->count() > 1) {
+                            $previousRevision = $allRevisions->slice(-2, 1)->first();
+                        }
+                        
+                        $hasMultipleRevisions = $allRevisions->count() > 1;
                     @endphp
 
                     <div class="card fu1" style="margin-top: 16px">
@@ -803,6 +816,7 @@
                                 margin-bottom: 20px;
                             "
                         >
+                            {{-- Current/Latest Revision --}}
                             <div
                                 style="
                                     background: var(--parchment);
@@ -813,12 +827,21 @@
                             >
                                 <div
                                     class="meta-label"
-                                    style="margin-bottom: 10px"
+                                    style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;"
                                 >
-                                    Original Manuscript
+                                    <span>
+                                        @if($hasMultipleRevisions)
+                                            Current Revision
+                                        @else
+                                            Submitted Manuscript
+                                        @endif
+                                    </span>
+                                    @if($allRevisions->count() > 1)
+                                        <span style="font-size: 11px; background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 4px; font-weight: normal;">v{{ $allRevisions->count() }}</span>
+                                    @endif
                                 </div>
 
-                                @if ($originalFileExists)
+                                @if ($latestRevision && $latestRevision->revised_at && $latestRevision->revised_file_path)
                                     <p
                                         style="
                                             font-size: 12px;
@@ -827,66 +850,10 @@
                                             word-break: break-all;
                                         "
                                     >
-                                        {{ $submission->original_file_name }}
+                                        {{ $latestRevision->revised_file_name }}
                                     </p>
                                     <a
-                                        href="{{ route('submissions.download-original', ['submission' => $submission]) }}"
-                                        class="dl-link btn btn-sm btn-ghost"
-                                    >
-                                        <svg
-                                            width="13"
-                                            height="13"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                        >
-                                            <path
-                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                                            />
-                                        </svg>
-                                        Download
-                                    </a>
-                                @else
-                                    <p
-                                        style="
-                                            font-size: 12px;
-                                            color: var(--muted);
-                                            font-style: italic;
-                                        "
-                                    >
-                                        No original file available
-                                    </p>
-                                @endif
-                            </div>
-                            <div
-                                style="
-                                    background: var(--parchment);
-                                    border: 1px solid var(--border);
-                                    border-radius: 10px;
-                                    padding: 16px;
-                                "
-                            >
-                                <div
-                                    class="meta-label"
-                                    style="margin-bottom: 10px"
-                                >
-                                    Revised Manuscript
-                                </div>
-
-                                @if ($latestRevision && $latestRevision->revised_at && $submission->file_path)
-                                    <p
-                                        style="
-                                            font-size: 12px;
-                                            color: var(--ink);
-                                            margin-bottom: 10px;
-                                            word-break: break-all;
-                                        "
-                                    >
-                                        {{ $submission->file_name }}
-                                    </p>
-                                    <a
-                                        href="{{ route('submissions.download', ['submission' => $submission]) }}"
+                                        href="{{ route('submissions.revision-file.download', ['submission' => $submission, 'revisionRequest' => $latestRevision]) }}"
                                         class="dl-link btn btn-sm btn-ghost"
                                     >
                                         <svg
@@ -913,6 +880,118 @@
                                     >
                                         Awaiting revised submission
                                     </p>
+                                @endif
+                            </div>
+
+                            {{-- Previous Revision or Original --}}
+                            <div
+                                style="
+                                    background: var(--parchment);
+                                    border: 1px solid var(--border);
+                                    border-radius: 10px;
+                                    padding: 16px;
+                                "
+                            >
+                                <div
+                                    class="meta-label"
+                                    style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;"
+                                >
+                                    <span>
+                                        @if($previousRevision)
+                                            Previous Revision
+                                        @else
+                                            Original Manuscript
+                                        @endif
+                                    </span>
+                                    @if($previousRevision && $allRevisions->count() > 1)
+                                        <span style="font-size: 11px; background: #f3f4f6; color: #374151; padding: 2px 8px; border-radius: 4px; font-weight: normal;">v{{ $allRevisions->count() - 1 }}</span>
+                                    @endif
+                                </div>
+
+                                @if($previousRevision)
+                                    {{-- Show Previous Revision --}}
+                                    @if ($previousRevision->revised_file_path)
+                                        <p
+                                            style="
+                                                font-size: 12px;
+                                                color: var(--ink);
+                                                margin-bottom: 10px;
+                                                word-break: break-all;
+                                            "
+                                        >
+                                            {{ $previousRevision->revised_file_name }}
+                                        </p>
+                                        <a
+                                            href="{{ route('submissions.revision-file.download', ['submission' => $submission, 'revisionRequest' => $previousRevision]) }}"
+                                            class="dl-link btn btn-sm btn-ghost"
+                                        >
+                                            <svg
+                                                width="13"
+                                                height="13"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                            >
+                                                <path
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                />
+                                            </svg>
+                                            Download
+                                        </a>
+                                    @else
+                                        <p
+                                            style="
+                                                font-size: 12px;
+                                                color: var(--muted);
+                                                font-style: italic;
+                                            "
+                                        >
+                                            No file available
+                                        </p>
+                                    @endif
+                                @else
+                                    {{-- Show Original File (only if no previous revision) --}}
+                                    @if ($originalFileExists && !$hasMultipleRevisions)
+                                        <p
+                                            style="
+                                                font-size: 12px;
+                                                color: var(--ink);
+                                                margin-bottom: 10px;
+                                                word-break: break-all;
+                                            "
+                                        >
+                                            {{ $submission->original_file_name }}
+                                        </p>
+                                        <a
+                                            href="{{ route('submissions.download-original', ['submission' => $submission]) }}"
+                                            class="dl-link btn btn-sm btn-ghost"
+                                        >
+                                            <svg
+                                                width="13"
+                                                height="13"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                            >
+                                                <path
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                />
+                                            </svg>
+                                            Download
+                                        </a>
+                                    @else
+                                        <p
+                                            style="
+                                                font-size: 12px;
+                                                color: var(--muted);
+                                                font-style: italic;
+                                            "
+                                        >
+                                            No original file available
+                                        </p>
+                                    @endif
                                 @endif
                             </div>
                         </div>

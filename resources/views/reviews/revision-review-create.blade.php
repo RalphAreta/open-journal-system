@@ -57,40 +57,56 @@
     </div>
 
     {{-- Files Section --}}
+    @php
+        // Get all revisions with files, sorted by creation date
+        $revisions = $submission->revisionRequests()
+            ->whereNotNull('revised_file_path')
+            ->orderBy('created_at')
+            ->get();
+        
+        // Current/Latest revision is the one being reviewed
+        $currentRevision = $revisionReview->revisionRequest;
+        
+        // Previous revision is the one before the current one
+        $previousRevision = null;
+        if ($revisions->count() > 1) {
+            // Find the index of current revision and get the one before it
+            $currentIndex = $revisions->search(function ($rev) use ($currentRevision) {
+                return $rev->id === $currentRevision->id;
+            });
+            
+            if ($currentIndex > 0) {
+                $previousRevision = $revisions[$currentIndex - 1];
+            }
+        }
+        
+        // Determine what to show
+        $hasMultipleRevisions = $revisions->count() > 1;
+    @endphp
+    
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {{-- Original Manuscript --}}
+        {{-- Latest/Current Manuscript (Always show) --}}
         <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
-            <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-4">Original Manuscript</p>
-            @if($submission->original_file_path)
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-xs font-bold text-slate-600 uppercase tracking-widest">
+                    @if($hasMultipleRevisions)
+                        Current Revision
+                    @else
+                        Submitted Manuscript
+                    @endif
+                </p>
+                @if($revisions->count() > 1)
+                    <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">v{{ $revisions->count() }}</span>
+                @endif
+            </div>
+            @if($currentRevision->revised_file_path)
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-slate-700 mb-1">{{ $submission->original_file_name }}</p>
-                        <p class="text-xs text-slate-500">Submitted on {{ $submission->created_at->format('M d, Y') }}</p>
+                        <p class="text-sm font-medium text-slate-700 mb-1">{{ $currentRevision->revised_file_name }}</p>
+                        <p class="text-xs text-slate-500">Revised on {{ $currentRevision->revised_at->format('M d, Y') }}</p>
                     </div>
                 </div>
-                <a href="{{ route('submissions.download-original', $submission) }}"
-                   class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                    </svg>
-                    Download
-                </a>
-            @else
-                <p class="text-slate-700 italic text-sm">No original file available.</p>
-            @endif
-        </div>
-
-        {{-- Revised Manuscript --}}
-        <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
-            <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-4">Revised Manuscript</p>
-            @if($submission->file_path && $revisionReview->revisionRequest->revised_at)
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-slate-700 mb-1">{{ $submission->file_name }}</p>
-                        <p class="text-xs text-slate-500">Revised on {{ $revisionReview->revisionRequest->revised_at->format('M d, Y') }}</p>
-                    </div>
-                </div>
-                <a href="{{ route('submissions.download', $submission) }}"
+                <a href="{{ route('submissions.revision-file.download', ['submission' => $submission, 'revisionRequest' => $currentRevision]) }}"
                    class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -101,6 +117,53 @@
                 <p class="text-slate-700 italic text-sm">No revised file submitted yet.</p>
             @endif
         </div>
+
+        {{-- Previous Revision (Show if exists) --}}
+        @if($previousRevision)
+            <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase tracking-widest">Previous Revision</p>
+                    <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">v{{ $revisions->count() - 1 }}</span>
+                </div>
+                @if($previousRevision->revised_file_path)
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-700 mb-1">{{ $previousRevision->revised_file_name }}</p>
+                            <p class="text-xs text-slate-500">Revised on {{ $previousRevision->revised_at->format('M d, Y') }}</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('submissions.revision-file.download', ['submission' => $submission, 'revisionRequest' => $previousRevision]) }}"
+                       class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        Download
+                    </a>
+                @else
+                    <p class="text-slate-700 italic text-sm">No file available.</p>
+                @endif
+            </div>
+        @else
+            {{-- Original Manuscript (Show only if this is the first revision) --}}
+            @if($submission->original_file_path && !$hasMultipleRevisions)
+                <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
+                    <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-4">Original Manuscript</p>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-700 mb-1">{{ $submission->original_file_name }}</p>
+                            <p class="text-xs text-slate-500">Submitted on {{ $submission->created_at->format('M d, Y') }}</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('submissions.download-original', $submission) }}"
+                       class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        Download
+                    </a>
+                </div>
+            @endif
+        @endif
     </div>
 
     {{-- Review Form --}}
