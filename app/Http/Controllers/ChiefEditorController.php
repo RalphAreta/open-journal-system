@@ -76,9 +76,9 @@ class ChiefEditorController extends Controller
     public function showSubmission(Submission $submission)
     {
         $researchField = $submission->research_field;
-        
+
         // Check if original file exists
-        $originalFileExists = $submission->original_file_path && 
+        $originalFileExists = $submission->original_file_path &&
                              \Illuminate\Support\Facades\Storage::disk('local')->exists($submission->original_file_path);
 
         // 1. MATCHING editors
@@ -165,9 +165,9 @@ class ChiefEditorController extends Controller
         }
 
         return view('chief-editor.initial-screening', compact(
-            'submission', 
-            'researchField', 
-            'editorsByField', 
+            'submission',
+            'researchField',
+            'editorsByField',
             'allEditorsByField'
         ));
     }
