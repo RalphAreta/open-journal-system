@@ -1390,25 +1390,6 @@
                                         Initial Screening Decision
                                     </p>
                                 </div>
-                                @if ($submission->initial_screening_status === 'passed')
-                                    <span
-                                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.58rem] font-extrabold tracking-[.08em] uppercase bg-[#f0fdf4] border-[#86efac] text-[#065f46]"
-                                    >
-                                        <span
-                                            class="w-[5px] h-[5px] rounded-full bg-[#2d8176]"
-                                        ></span>
-                                        Passed
-                                    </span>
-                                @elseif ($submission->initial_screening_status === 'failed')
-                                    <span
-                                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.58rem] font-extrabold tracking-[.08em] uppercase bg-[#fef2f2] border-[#fecaca] text-[#991b1b]"
-                                    >
-                                        <span
-                                            class="w-[5px] h-[5px] rounded-full bg-[#c0392b]"
-                                        ></span>
-                                        Failed
-                                    </span>
-                                @endif
                             </div>
                             @if ($submission->initial_screening_comments)
                                 <div class="px-5 py-5">
