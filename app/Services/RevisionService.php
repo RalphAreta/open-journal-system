@@ -22,16 +22,14 @@ class RevisionService
         string $revisionStage = 'review'
     ): RevisionRequest {
         return DB::transaction(function () use ($submission, $requestedBy, $revisionType, $reason, $revisionStage) {
-            
-            // Determine assignee for next stage
+
             $assignee = null;
             if ($revisionStage === 'initial_screening') {
-                $assignee = $submission->initialScreeningBy; // Back to chief editor
+                $assignee = $submission->initialScreeningBy;
             } elseif ($revisionStage === 'review') {
-                $assignee = $submission->assignedEditor; // Back to editor
+                $assignee = $submission->assignedEditor;
             }
 
-            // Create revision request
             $revisionRequest = RevisionRequest::create([
                 'submission_id' => $submission->id,
                 'requested_by_user_id' => $requestedBy->id,
@@ -42,14 +40,12 @@ class RevisionService
                 'current_stage_assignee_id' => $assignee?->id,
             ]);
 
-            // Update submission status
             $submission->update([
                 'status' => Submission::STATUS_REVISIONS_REQUESTED,
                 'editor_id' => $requestedBy->id,
                 'editor_decision_at' => now(),
             ]);
 
-            // Send notification to author
             self::notifyAuthorOfRevisionRequest($submission, $revisionType, $reason, $revisionStage);
 
             return $revisionRequest;
@@ -57,23 +53,23 @@ class RevisionService
     }
 
     /**
-     * Process revised manuscript submission
-     * NEW WORKFLOW: Revised manuscripts go to assigned editor first for review,
-     * then editor decides whether to forward to original reviewers or make final decision
+     * Process revised manuscript submission.
+     * Saves the revised file path/name into the revision_requests row so
+     * the sidebar can list and download each revision file independently.
      */
     public static function processRevisionSubmission(
         RevisionRequest $revisionRequest,
         string $filePath,
-        string $revisionNotes
+        string $revisionNotes,
+        string $originalFileName = ''
     ): void {
-        DB::transaction(function () use ($revisionRequest, $filePath, $revisionNotes) {
+        DB::transaction(function () use ($revisionRequest, $filePath, $revisionNotes, $originalFileName) {
             try {
                 $submission = $revisionRequest->submission;
 
-                // Preserve original file info and update only the file path
+                // Preserve original file info
                 $updateData = [
                     'file_path' => $filePath,
-                    // Keep the same file_name (don't use basename hash)
                     'status' => Submission::STATUS_REVISION_UNDER_REVIEW,
                 ];
 
@@ -84,21 +80,31 @@ class RevisionService
 
                 $submission->update($updateData);
 
-                // Update revision request
-                $revisionRequest->update([
-                    'revised_at' => now(),
-                    'revision_notes' => $revisionNotes,
-                ]);
+                // ── SAVE file info on the revision request itself ─────────
+                // Build R{n} prefix based on how many revisions this submission already has.
+                $revisionNumber = RevisionRequest::where('submission_id', $submission->id)
+                    ->whereNotNull('revised_file_path')
+                    ->count() + 1;
 
-                // If initial screening revision, go back to chief editor only
+                $displayName = $originalFileName
+                    ? 'R' . $revisionNumber . ' - ' . $originalFileName
+                    : 'R' . $revisionNumber . ' - revision.pdf';
+
+                $revisionRequest->update([
+                    'revised_at'        => now(),
+                    'revision_notes'    => $revisionNotes,
+                    'revised_file_path' => $filePath,
+                    'revised_file_name' => $displayName,
+                ]);
+                // ─────────────────────────────────────────────────────────
+
                 if ($revisionRequest->revision_stage === 'initial_screening') {
                     self::notifyChiefEditorOfRevision($submission, $revisionRequest);
                     return;
                 }
 
-                // For review-stage revisions: notify editor that revision is awaiting their review
-                // DO NOT automatically assign reviewers - editor will decide after reviewing
                 self::notifyEditorOfSubmittedRevisionAwaitingReview($submission, $revisionRequest);
+
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error('Error processing revision submission', [
                     'revision_request_id' => $revisionRequest->id,
@@ -112,9 +118,6 @@ class RevisionService
 
     /**
      * Assign original reviewers to revision review
-     * Called by editor when they decide to forward revision to original reviewers
-     * 
-     * @throws \RuntimeException if no reviewers found
      */
     public static function assignOriginalReviewersForRevision(RevisionRequest $revisionRequest): void
     {
@@ -140,7 +143,6 @@ class RevisionService
                 ]);
             }
 
-            // Notify reviewers after successful assignment
             self::notifyReviewersOfRevision($submission, $revisionRequest);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Error assigning original reviewers for revision', [
@@ -152,9 +154,8 @@ class RevisionService
         }
     }
 
-    /**
-     * Notify author of revision request
-     */
+    // ── Private helpers ──────────────────────────────────────────────────────
+
     private static function notifyAuthorOfRevisionRequest(
         Submission $submission,
         string $revisionType,
@@ -182,13 +183,9 @@ class RevisionService
                 'submission_id' => $submission->id,
                 'error' => $e->getMessage(),
             ]);
-            // Don't throw - notification failure shouldn't block the process
         }
     }
 
-    /**
-     * Notify chief editor that author submitted revision
-     */
     private static function notifyChiefEditorOfRevision(Submission $submission, RevisionRequest $revisionRequest): void
     {
         $chefEditor = $submission->initialScreeningBy;
@@ -205,10 +202,6 @@ class RevisionService
         ]);
     }
 
-    /**
-     * Notify editor that author submitted revision (awaiting editor review)
-     * NEW WORKFLOW: Editor must review revision first before deciding to forward to reviewers
-     */
     private static function notifyEditorOfSubmittedRevisionAwaitingReview(Submission $submission, RevisionRequest $revisionRequest): void
     {
         try {
@@ -233,14 +226,9 @@ class RevisionService
                 'submission_id' => $submission->id,
                 'error' => $e->getMessage(),
             ]);
-            // Don't throw - notification failure shouldn't block the process
         }
     }
 
-    /**
-     * Notify reviewers of revision to review
-     * Called automatically when editor forwards revision to original reviewers
-     */
     private static function notifyReviewersOfRevision(Submission $submission, RevisionRequest $revisionRequest): void
     {
         try {
@@ -265,7 +253,6 @@ class RevisionService
                 'submission_id' => $submission->id,
                 'error' => $e->getMessage(),
             ]);
-            // Don't throw - notification failure shouldn't block the process
         }
     }
 }

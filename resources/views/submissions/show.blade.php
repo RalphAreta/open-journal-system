@@ -925,7 +925,6 @@
                                                                 Revision
                                                             </button>
 
-                                                            {{-- ← PALITAN NG: --}}
                                                             <form
                                                                 x-show="open"
                                                                 x-transition
@@ -962,6 +961,81 @@
                                         </div>
                                     @endif
                                 @endif
+                            </div>
+                        @endif
+
+                        {{-- ── Revision Files ── --}}
+                        @php
+                            $revisionFilesWithFile = $submission->revisionRequests
+                                ->filter(fn ($r) => ! empty($r->revised_file_path))
+                                ->sortBy('created_at')
+                                ->values();
+                        @endphp
+
+                        @if ($revisionFilesWithFile->isNotEmpty())
+                            <div class="py-4 last:pb-0">
+                                <p
+                                    class="text-[.6rem] font-extrabold tracking-[.12em] uppercase text-[#6b5740] mb-2"
+                                >
+                                    Revision Files
+                                </p>
+                                <div class="space-y-2">
+                                    @foreach ($revisionFilesWithFile as $i => $rev)
+                                        <div
+                                            class="flex items-center gap-3 px-4 py-3 bg-[#f3ece0] border border-[#e8dfd0] rounded-xl"
+                                        >
+                                            <div
+                                                class="w-[38px] h-[38px] rounded-lg shrink-0 bg-white border border-[#e8dfd0] flex items-center justify-center text-[#8a6e28]"
+                                            >
+                                                <svg
+                                                    class="w-5 h-5"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                                                        stroke-width="1.5"
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <div class="overflow-hidden flex-1">
+                                                <p
+                                                    class="text-[.78rem] font-semibold text-[#1a1209] truncate"
+                                                >
+                                                    {{ $rev->revised_file_name ?? 'revision-' . ($i + 1) . '.pdf' }}
+                                                </p>
+                                                <p
+                                                    class="text-[.62rem] text-[#6b5740] tracking-[.06em] uppercase mt-0.5"
+                                                >
+                                                    Revision {{ $i + 1 }} ·
+                                                    {{ $rev->revised_at ? $rev->revised_at->format('d M Y') : $rev->updated_at->format('d M Y') }}
+                                                </p>
+                                            </div>
+                                            <a
+                                                href="{{ route('submissions.revision-file.download', [$submission, $rev]) }}"
+                                                class="shrink-0 w-8 h-8 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white flex items-center justify-center transition-all"
+                                                title="Download Revision {{ $i + 1 }}"
+                                            >
+                                                <svg
+                                                    class="w-4 h-4"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                    />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         @endif
                     </div>

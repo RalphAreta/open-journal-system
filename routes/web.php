@@ -174,6 +174,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/notifications/unread-count', [App\Http\Controllers\NotificationController::class, 'getUnreadCount'])->name('notifications.unreadCount');
     Route::get('/submissions/{submission}/layout/download', [SubmissionController::class, 'downloadLayout'])
     ->name('author.layout.download');
+    Route::get('submissions/{submission}/revision/{revisionRequest}/download', [SubmissionController::class, 'downloadRevisionFile'])
+    ->name('submissions.revision-file.download');
 });
 Route::middleware('role:managing-editor')->group(function (): void {
     Route::get('/managing-editor/dashboard', [ManagingEditorController::class, 'dashboard'])

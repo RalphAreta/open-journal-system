@@ -18,6 +18,10 @@ class RevisionRequest extends Model
         'revised_at',
         'revision_notes',
         'editor_decision_draft',
+        'revised_file_path',   // ← DAGDAG
+        'revised_file_name',   // ← DAGDAG
+        'revision_stage',
+        'current_stage_assignee_id',
     ];
 
     protected function casts(): array

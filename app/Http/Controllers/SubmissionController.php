@@ -38,36 +38,36 @@ class SubmissionController extends Controller
         'then','when','study','analysis','research','paper','review','based',
     ];
 
-   public function index(Request $request): View
-{
-    /** @var User $user */
-    $user = $request->user();
+    public function index(Request $request): View
+    {
+        /** @var User $user */
+        $user = $request->user();
 
-    $search = trim($request->get('search', ''));
+        $search = trim($request->get('search', ''));
 
-    $submissions = $user->submissionsAsAuthor()
-        ->when($search, function ($q) use ($search) {
-            $q->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhereRaw("LPAD(CAST(id AS CHAR), 5, '0') LIKE ?", ["%{$search}%"]);
-            });
-        })
-        ->latest()
-        ->paginate(15)
-        ->withQueryString();
+        $submissions = $user->submissionsAsAuthor()
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                      ->orWhereRaw("LPAD(CAST(id AS CHAR), 5, '0') LIKE ?", ["%{$search}%"]);
+                });
+            })
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
 
-    $stats = [
-        'submitted'             => $user->submissionsAsAuthor()->where('status', Submission::STATUS_SUBMITTED)->count(),
-        'under_review'          => $user->submissionsAsAuthor()->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
-        'revisions_requested'   => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REVISIONS_REQUESTED)->count(),
-        'revision_under_review' => $user->submissionsAsAuthor()->where('status', 'revision_under_review')->count(),
-        'accepted'              => $user->submissionsAsAuthor()->where('status', Submission::STATUS_ACCEPTED)->count(),
-        'rejected'              => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REJECTED)->count(),
-        'published'             => $user->submissionsAsAuthor()->where('status', Submission::STATUS_PUBLISHED)->count(),
-    ];
+        $stats = [
+            'submitted'              => $user->submissionsAsAuthor()->where('status', Submission::STATUS_SUBMITTED)->count(),
+            'under_review'           => $user->submissionsAsAuthor()->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
+            'revisions_requested'    => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REVISIONS_REQUESTED)->count(),
+            'revision_under_review'  => $user->submissionsAsAuthor()->where('status', 'revision_under_review')->count(),
+            'accepted'               => $user->submissionsAsAuthor()->where('status', Submission::STATUS_ACCEPTED)->count(),
+            'rejected'               => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REJECTED)->count(),
+            'published'              => $user->submissionsAsAuthor()->where('status', Submission::STATUS_PUBLISHED)->count(),
+        ];
 
-    return view('submissions.index', compact('submissions', 'stats', 'search'));
-}
+        return view('submissions.index', compact('submissions', 'stats', 'search'));
+    }
 
     // ───────────────────────────────────────────────────────────────────────
     //  CREATE
@@ -248,7 +248,7 @@ class SubmissionController extends Controller
             if ($submission->file_path) {
                 Storage::disk('local')->delete($submission->file_path);
             }
-            $file            = $request->file('file');
+            $file              = $request->file('file');
             $data['file_path'] = $file->store('submissions/' . Auth::id(), 'local');
             $data['file_name'] = $file->getClientOriginalName();
         }
@@ -300,7 +300,8 @@ class SubmissionController extends Controller
         RevisionService::processRevisionSubmission(
             $revisionRequest,
             $path,
-            $validated['revision_notes']
+            $validated['revision_notes'],
+             $file->getClientOriginalName()  
         );
 
         return redirect()->route('submissions.show', $submission)
@@ -328,6 +329,24 @@ class SubmissionController extends Controller
         return response()->download(
             Storage::disk('local')->path($layoutAssignment->layout_file_path),
             $layoutAssignment->layout_file_name ?? 'layout.pdf'
+        );
+    }
+
+    public function downloadRevisionFile(Submission $submission, RevisionRequest $revisionRequest)
+    {
+        $this->authorizeView($submission);
+
+        if ($revisionRequest->submission_id !== $submission->id) {
+            abort(404);
+        }
+
+        if (! $revisionRequest->revised_file_path || ! Storage::disk('local')->exists($revisionRequest->revised_file_path)) {
+            abort(404, 'Revision file not found.');
+        }
+
+        return response()->download(
+            Storage::disk('local')->path($revisionRequest->revised_file_path),
+            $revisionRequest->revised_file_name ?? 'revision.pdf'
         );
     }
 
@@ -380,13 +399,6 @@ class SubmissionController extends Controller
     /**
      * Find existing submissions whose title/abstract share significant
      * keywords with the given text.
-     *
-     * Scoring:
-     *   - Title match  → +2 pts per shared word
-     *   - Abstract match → +1 pt per shared word
-     *   - Threshold: SIMILARITY_THRESHOLD points to be included
-     *
-     * Excludes the current author's own submissions and already-rejected ones.
      */
     private function findSimilarSubmissions(string $title, string $abstract = ''): \Illuminate\Support\Collection
     {
@@ -394,7 +406,6 @@ class SubmissionController extends Controller
             return collect();
         }
 
-        // Extract meaningful words (≥5 chars, not in stop list)
         $words = collect(preg_split('/\W+/', strtolower($title . ' ' . $abstract)))
             ->filter(fn ($w) => strlen($w) >= 5 && ! in_array($w, self::SIMILARITY_STOP_WORDS))
             ->unique()
@@ -404,7 +415,6 @@ class SubmissionController extends Controller
             return collect();
         }
 
-        // Fetch candidates — exclude current author's own and rejected submissions
         $candidates = Submission::where('author_id', '!=', Auth::id())
             ->where('status', '!=', 'rejected')
             ->where(function ($q) use ($words) {
@@ -414,7 +424,6 @@ class SubmissionController extends Controller
             })
             ->get();
 
-        // Score and filter
         return $candidates->map(function ($sub) use ($words) {
             $titleHaystack    = strtolower($sub->title);
             $abstractHaystack = strtolower($sub->abstract ?? '');
@@ -438,120 +447,119 @@ class SubmissionController extends Controller
     }
 
     public function uploadSignedCtf(Request $request, Submission $submission): RedirectResponse
-{
-    if ($submission->author_id !== Auth::id()) {
-        abort(403);
-    }
+    {
+        if ($submission->author_id !== Auth::id()) {
+            abort(403);
+        }
 
-    if ($submission->managing_editor_status !== 'ctf_sent') {
-        return back()->with('error', 'No CTF is awaiting your signature.');
-    }
+        if ($submission->managing_editor_status !== 'ctf_sent') {
+            return back()->with('error', 'No CTF is awaiting your signature.');
+        }
 
-    $request->validate([
-        'signed_ctf_file' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
-    ]);
-
-    $file = $request->file('signed_ctf_file');
-    $path = $file->storeAs(
-        'ctf-signed',
-        'signed-ctf-' . $submission->id . '-' . time() . '.' . $file->getClientOriginalExtension(),
-        'local'
-    );
-
-    $submission->update([
-        'managing_editor_status' => 'ctf_returned',
-        'ctf_signed_file_path'   => $path,
-        'ctf_signed_file_name'   => $file->getClientOriginalName(),
-        'ctf_returned_at'        => now(),
-    ]);
-
-    $managingEditor = $submission->managingEditor;
-    if ($managingEditor) {
-        \App\Models\Notification::create([
-            'user_id'         => $managingEditor->id,
-            'role'            => 'managing-editor',
-            'title'           => '✅ Signed CTF Returned by Author',
-            'message'         => "The author has uploaded the signed Copyright Transfer Form for \"{$submission->title}\". You may now assign a layout editor.",
-            'type'            => 'success',
-            'notifiable_id'   => $submission->id,
-            'notifiable_type' => Submission::class,
-        ]);
-    }
-
-    return redirect()->route('submissions.index')
-        ->with('success', 'Signed CTF uploaded. The managing editor has been notified.');
-}
-public function authorConfirm(Request $request, Submission $submission)
-{
-    if ($submission->author_id !== Auth::id()) {
-        abort(403);
-    }
-
-    $assignment = LayoutEditorAssignment::findOrFail($request->assignment_id);
-
-  \Illuminate\Support\Facades\DB::table('layout_editor_assignments')
-    ->where('id', $assignment->id)
-    ->update([
-        'author_status'      => 'confirmed',
-        'author_feedback_at' => now(),
-    ]);
-
-    // Update submission status para hindi mag-conflict sa confirmLayout
-    $submission->update([
-        'status'                 => Submission::STATUS_WITH_MANAGING_EDITOR,
-        'managing_editor_status' => 'ready_to_publish',
-    ]);
-
-    // Notify ME
-    $managingEditor = $submission->managingEditor;
-    if ($managingEditor) {
-        \App\Models\Notification::create([
-            'user_id'         => $managingEditor->id,
-            'role'            => 'managing-editor',
-            'title'           => '✅ Author Confirmed Layout — Ready to Publish',
-            'message'         => "Author has confirmed the layout for \"{$submission->title}\". The manuscript is now ready for final publishing.",
-            'type'            => 'success',
-            'notifiable_id'   => $submission->id,
-            'notifiable_type' => Submission::class,
-        ]);
-    }
-
-    return back()->with('success', 'Layout confirmed. The Managing Editor will proceed with publication.');
-}
-public function authorRequestRevision(Request $request, Submission $submission)
-{
-    if ($submission->author_id !== Auth::id()) {
-        abort(403);
-    }
-
-    $request->validate([
-        'author_feedback' => 'required|string|max:2000',
-    ]);
-
-    $assignment = LayoutEditorAssignment::findOrFail($request->assignment_id);
-
-    \Illuminate\Support\Facades\DB::table('layout_editor_assignments')
-        ->where('id', $assignment->id)
-        ->update([
-            'author_status'      => 'revision_requested',
-            'author_feedback'    => $request->author_feedback,
-            'author_feedback_at' => now(),
+        $request->validate([
+            'signed_ctf_file' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
         ]);
 
-    // Notify ME
-    $managingEditor = $submission->managingEditor;
-    if ($managingEditor) {
-        \App\Models\Notification::create([
-            'user_id'         => $managingEditor->id,
-            'role'            => 'managing-editor',
-            'title'           => '⚠ Author Requested Layout Revision',
-            'message'         => "The author has requested revisions for \"{$submission->title}\".",
-            'type'            => 'warning',
-            'notifiable_id'   => $submission->id,
-            'notifiable_type' => Submission::class,
+        $file = $request->file('signed_ctf_file');
+        $path = $file->storeAs(
+            'ctf-signed',
+            'signed-ctf-' . $submission->id . '-' . time() . '.' . $file->getClientOriginalExtension(),
+            'local'
+        );
+
+        $submission->update([
+            'managing_editor_status' => 'ctf_returned',
+            'ctf_signed_file_path'   => $path,
+            'ctf_signed_file_name'   => $file->getClientOriginalName(),
+            'ctf_returned_at'        => now(),
         ]);
+
+        $managingEditor = $submission->managingEditor;
+        if ($managingEditor) {
+            \App\Models\Notification::create([
+                'user_id'         => $managingEditor->id,
+                'role'            => 'managing-editor',
+                'title'           => '✅ Signed CTF Returned by Author',
+                'message'         => "The author has uploaded the signed Copyright Transfer Form for \"{$submission->title}\". You may now assign a layout editor.",
+                'type'            => 'success',
+                'notifiable_id'   => $submission->id,
+                'notifiable_type' => Submission::class,
+            ]);
+        }
+
+        return redirect()->route('submissions.index')
+            ->with('success', 'Signed CTF uploaded. The managing editor has been notified.');
     }
 
-    return back()->with('success', 'Revision request sent to the Managing Editor.');
-}
+    public function authorConfirm(Request $request, Submission $submission)
+    {
+        if ($submission->author_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $assignment = LayoutEditorAssignment::findOrFail($request->assignment_id);
+
+        \Illuminate\Support\Facades\DB::table('layout_editor_assignments')
+            ->where('id', $assignment->id)
+            ->update([
+                'author_status'      => 'confirmed',
+                'author_feedback_at' => now(),
+            ]);
+
+        $submission->update([
+            'status'                 => Submission::STATUS_WITH_MANAGING_EDITOR,
+            'managing_editor_status' => 'ready_to_publish',
+        ]);
+
+        $managingEditor = $submission->managingEditor;
+        if ($managingEditor) {
+            \App\Models\Notification::create([
+                'user_id'         => $managingEditor->id,
+                'role'            => 'managing-editor',
+                'title'           => '✅ Author Confirmed Layout — Ready to Publish',
+                'message'         => "Author has confirmed the layout for \"{$submission->title}\". The manuscript is now ready for final publishing.",
+                'type'            => 'success',
+                'notifiable_id'   => $submission->id,
+                'notifiable_type' => Submission::class,
+            ]);
+        }
+
+        return back()->with('success', 'Layout confirmed. The Managing Editor will proceed with publication.');
+    }
+
+    public function authorRequestRevision(Request $request, Submission $submission)
+    {
+        if ($submission->author_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'author_feedback' => 'required|string|max:2000',
+        ]);
+
+        $assignment = LayoutEditorAssignment::findOrFail($request->assignment_id);
+
+        \Illuminate\Support\Facades\DB::table('layout_editor_assignments')
+            ->where('id', $assignment->id)
+            ->update([
+                'author_status'      => 'revision_requested',
+                'author_feedback'    => $request->author_feedback,
+                'author_feedback_at' => now(),
+            ]);
+
+        $managingEditor = $submission->managingEditor;
+        if ($managingEditor) {
+            \App\Models\Notification::create([
+                'user_id'         => $managingEditor->id,
+                'role'            => 'managing-editor',
+                'title'           => '⚠ Author Requested Layout Revision',
+                'message'         => "The author has requested revisions for \"{$submission->title}\".",
+                'type'            => 'warning',
+                'notifiable_id'   => $submission->id,
+                'notifiable_type' => Submission::class,
+            ]);
+        }
+
+        return back()->with('success', 'Revision request sent to the Managing Editor.');
+    }
 }
