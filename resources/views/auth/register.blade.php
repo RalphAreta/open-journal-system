@@ -75,13 +75,6 @@
             display: block !important;
             animation: lpUp 0.3s ease forwards;
         }
-        .scroll-thin::-webkit-scrollbar {
-            width: 4px;
-        }
-        .scroll-thin::-webkit-scrollbar-thumb {
-            background: #c9a84c;
-            border-radius: 4px;
-        }
     </style>
 @endpush
 
@@ -172,7 +165,7 @@
 
         {{-- RIGHT SIDE: REGISTRATION FORM (Matched to Login Right Side) --}}
         <div
-            class="flex-1 flex items-center justify-center p-6 md:p-10 relative overflow-y-auto bg-linear-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0] z-0"
+            class="flex-1 flex items-center justify-center p-6 md:p-10 relative bg-linear-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0] z-0"
         >
             <div
                 class="absolute rounded-full w-125 h-125 -top-40 -right-28 border border-[#a07830]/10"
@@ -294,7 +287,7 @@
                                 Fields of Expertise
                             </label>
                             <div
-                                class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-40 overflow-y-auto pr-2 scroll-thin"
+                                class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"
                             >
                                 @foreach ($categories as $category)
                                     <label
@@ -343,7 +336,7 @@
                 onclick="togglePassword('password', this)"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors"
             >
-                👁
+                😺
             </button>
         </div>
     </div>
@@ -362,16 +355,7 @@
                 type="password"
                 name="password_confirmation"
                 required
-                class="w-full px-4 pr-12 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] transition-all"
-            />
-
-            <button
-                type="button"
-                onclick="togglePassword('password_confirmation', this)"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors"
-            >
-                👁
-            </button>
+                class="w-full px-4 pr-12 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] transition-all" />
         </div>
     </div>
 
@@ -433,10 +417,10 @@
 
         if (input.type === 'password') {
             input.type = 'text';
-            button.innerText = '🙈';
+            button.innerText = '�';
         } else {
             input.type = 'password';
-            button.innerText = '👁';
+            button.innerText = '😺';
         }
     }
     </script>

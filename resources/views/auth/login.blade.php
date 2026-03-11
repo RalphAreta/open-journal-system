@@ -361,27 +361,13 @@
                                 required
                             />
 
-                            <!-- Toggle Button -->
                             <button
+                                id="catEmoji"
                                 type="button"
                                 onclick="togglePassword()"
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-[#c8b888] hover:text-[#a07830] transition-colors"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors"
                             >
-                                <!-- Eye Icon -->
-                                <svg
-                                    id="eyeIcon"
-                                    width="18"
-                                    height="18"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="1.8"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"
-                                    />
-                                    <circle cx="12" cy="12" r="3" />
-                                </svg>
+                                😺
                             </button>
                         </div>
                     </div>
@@ -433,12 +419,14 @@
     <script>
         function togglePassword() {
             const passwordInput = document.getElementById('password');
-            const eyeIcon = document.getElementById('eyeIcon');
+            const catEmoji = document.getElementById('catEmoji');
 
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
+                catEmoji.textContent = '🙀';
             } else {
                 passwordInput.type = 'password';
+                catEmoji.textContent = '😺';
             }
         }
     </script>
