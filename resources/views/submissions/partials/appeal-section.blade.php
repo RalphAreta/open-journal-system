@@ -1,5 +1,5 @@
 {{-- Appeal Section for Rejected Manuscripts --}}
-@if($submission->initial_screening_status === 'failed' && auth()->user()->id === $submission->author_id)
+@if($submission->initial_screening_status === 'failed' && $submission->status !== 'rejected' && auth()->user()->id === $submission->author_id)
     @php
         $allAppeals = $submission->appeals()->get();
         $pendingAppeal = $submission->appeals()->where('status', 'pending')->first();
@@ -64,9 +64,9 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black text-yellow-900 tracking-tight">Appeal Rejected</h3>
+                        <h3 class="text-lg font-black text-yellow-900 tracking-tight">Failed at Initial Screening - Appeal Rejected</h3>
                         <p class="text-sm text-yellow-800 font-medium mt-1">
-                            Your appeal submitted on {{ $rejectedAppeal->created_at->format('M d, Y') }} was rejected.
+                            Your appeal submitted on {{ $rejectedAppeal->created_at->format('M d, Y') }} was rejected. This appeal cannot be edited.
                         </p>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                 @endif
                 
                 <p class="text-sm text-yellow-900 font-medium mt-4 p-3 bg-yellow-100 rounded-xl">
-                    You have one final appeal remaining. Please review the editor's feedback carefully before submitting.
+                    ⓘ You have one final appeal remaining. Review the editor's feedback above carefully, as this is your last opportunity to appeal the initial screening decision.
                 </p>
             </div>
 

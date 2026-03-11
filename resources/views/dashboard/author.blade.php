@@ -1277,9 +1277,11 @@
                                                     ->appeals()
                                                     ->latest()
                                                     ->first();
+                                                $submissionIsRejected = $s->status === 'rejected';
+                                                $allAppealsExhausted = $s->appeals()->count() >= 2 && $s->appeals()->where('status', 'rejected')->count() >= 2;
                                             @endphp
 
-                                            @if ($appeal)
+                                            @if ($appeal && !$submissionIsRejected && !$allAppealsExhausted)
                                                 <div
                                                     class="note-chip {{ $appeal->status === 'approved' ? 'emerald' : 'red' }}"
                                                 >
