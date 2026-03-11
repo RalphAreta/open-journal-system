@@ -60,7 +60,7 @@ A comprehensive **Laravel-based Open Journal System** with advanced submission m
 ### **Step 1: Clone the Repository**
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/RalphAreta/open-journal-system
 cd open-journal-system
 ```
 
@@ -142,6 +142,13 @@ This populates initial data (roles, admin user, system settings):
 ```bash
 php artisan db:seed
 ```
+
+
+**Artisan Command to Clean Database:**
+```bash
+php artisan app:clean-database
+```
+The custom artisan command app:clean-database has been created and can be run again anytime with:
 
 **Default Admin Credentials:**
 - Email: `admin@irjiest.local`
