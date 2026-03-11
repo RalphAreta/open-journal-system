@@ -130,7 +130,7 @@
             RESTRICTION 1: Active submission block
             ══════════════════════════════════════════════════════════
         --}}
-        @if (isset($activeSubmission) && $activeSubmission)
+        @if (isset($activeSubmission) && $activeSubmission && $activeSubmission->status !== 'rejected')
             <div class="mb-8 fu">
                 <div
                     class="bg-white border-2 border-amber-300 rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(217,119,6,.12)]"

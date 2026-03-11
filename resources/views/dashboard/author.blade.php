@@ -793,7 +793,7 @@
             autocomplete="off"
         />
         @if (!empty($search))
-            
+
                 href="{{ route('submissions.index') }}"
                 style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#b5a595;text-decoration:none;font-size:1.1rem;line-height:1;"
                 title="Clear search"
@@ -1077,93 +1077,6 @@
             </div>
         @endif
 
-        {{-- ── Final Decision Alert ── --}}
-        @php
-            $revisionDecisions = auth()
-                ->user()
-                ->submissionsAsAuthor()
-                ->whereIn('status', ['accepted', 'rejected'])
-                ->where(fn ($q) => $q->whereNotNull('editor_notes')->orWhereNotNull('editor_decision_at'))
-                ->orderBy('updated_at', 'desc')
-                ->get();
-        @endphp
-
-        @if ($revisionDecisions->count() > 0)
-            @php
-                $ld = $revisionDecisions->first();
-                $isAcc = $ld->status === 'accepted';
-            @endphp
-
-            <div class="fu2 mb-4">
-                <div
-                    class="alert-strip"
-                    style="
-                        border-color: {{ $isAcc ? 'rgba(45,129,118,.35)' : '#fecaca' }};
-                        background: {{ $isAcc ? '#f5fdfb' : '#fffafa' }};
-                    "
-                >
-                    <div
-                        class="alert-strip-accent"
-                        style="
-                            background: {{ $isAcc ? 'var(--teal)' : '#dc2626' }};
-                        "
-                    ></div>
-                    <div class="alert-strip-body">
-                        <div class="flex items-center gap-3">
-                            <div
-                                style="
-                                    width: 38px;
-                                    height: 38px;
-                                    border-radius: 8px;
-                                    background: {{ $isAcc ? 'var(--teal-lt)' : '#fef2f2' }};
-                                    color: {{ $isAcc ? 'var(--teal)' : '#dc2626' }};
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    font-size: 1.1rem;
-                                    flex-shrink: 0;
-                                    font-family: 'Libre Baskerville', serif;
-                                    font-weight: 700;
-                                "
-                            >
-                                {{ $isAcc ? '✓' : '✕' }}
-                            </div>
-                            <div>
-                                <p
-                                    class="alert-tag"
-                                    style="
-                                        color: {{ $isAcc ? 'var(--teal-dk)' : '#991b1b' }};
-                                    "
-                                >
-                                    Final Decision:
-                                    {{ $isAcc ? 'Accepted' : 'Rejected' }}
-                                </p>
-                                <p
-                                    class="alert-desc"
-                                    style="
-                                        color: {{ $isAcc ? 'var(--teal-dk)' : '#7f1d1d' }};
-                                    "
-                                >
-                                    The editor has issued a final decision on
-                                    your revised manuscript
-                                </p>
-                            </div>
-                        </div>
-                        <a
-                            href="{{ route('submissions.show', $ld) }}"
-                            class="btn-alert-action"
-                            style="
-                                color: {{ $isAcc ? 'var(--teal-dk)' : '#991b1b' }};
-                                border-color: {{ $isAcc ? 'rgba(45,129,118,.35)' : '#fecaca' }};
-                            "
-                        >
-                            View Details →
-                        </a>
-                    </div>
-                </div>
-            </div>
-        @endif
-
         {{-- ── Table ── --}}
         <div class="ms-table-wrap fu3">
             <div class="ms-table-head">
@@ -1277,9 +1190,11 @@
                                                     ->appeals()
                                                     ->latest()
                                                     ->first();
+                                                $submissionIsRejected = $s->status === 'rejected';
+                                                $allAppealsExhausted = $s->appeals()->count() >= 2 && $s->appeals()->where('status', 'rejected')->count() >= 2;
                                             @endphp
 
-                                            @if ($appeal)
+                                            @if ($appeal && !$submissionIsRejected && !$allAppealsExhausted)
                                                 <div
                                                     class="note-chip {{ $appeal->status === 'approved' ? 'emerald' : 'red' }}"
                                                 >

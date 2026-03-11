@@ -90,6 +90,11 @@ class AppealController extends Controller
             'editor_response.min' => 'Your response must be at least 10 characters.',
         ]);
 
+        // Check rejection count BEFORE updating (this counts existing rejected appeals)
+        $rejectedCountBeforeUpdate = Appeal::where('submission_id', $appeal->submission_id)
+            ->where('status', Appeal::STATUS_REJECTED)
+            ->count();
+
         // Update the appeal
         $appeal->update([
             'status' => $validated['status'],
@@ -103,21 +108,21 @@ class AppealController extends Controller
             $appeal->submission->update([
                 'initial_screening_status' => Submission::SCREENING_STATUS_PASSED,
             ]);
-            
+
             $message = 'Appeal approved. The submission will now proceed to the review stage.';
-        } else {
-            // Check if this is the second rejection
-            $rejectedCount = Appeal::where('submission_id', $appeal->submission_id)
-                ->where('status', Appeal::STATUS_REJECTED)
-                ->count();
-            
-            // If this is the second rejection, set status to failed to prevent further appeals
-            if ($rejectedCount + 1 >= Appeal::MAX_APPEALS) {
+        } else if ($validated['status'] === Appeal::STATUS_REJECTED) {
+            // If this is a rejection, check if we've reached max rejections
+            // rejectedCountBeforeUpdate = count of already rejected appeals
+            // If this count is already >= MAX_APPEALS - 1, then after this rejection we'll be AT or OVER MAX
+            if ($rejectedCountBeforeUpdate >= Appeal::MAX_APPEALS - 1) {
+                // This is the final rejection - mark submission as REJECTED
                 $appeal->submission->update([
+                    'status' => Submission::STATUS_REJECTED,
                     'initial_screening_status' => Submission::SCREENING_STATUS_FAILED,
                 ]);
                 $message = 'Appeal rejected. The submission has completed the appeal process and cannot be appealed further.';
             } else {
+                // Author still has appeals remaining
                 $message = 'Appeal rejected. The author may submit one additional appeal.';
             }
         }

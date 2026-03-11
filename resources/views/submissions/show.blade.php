@@ -1572,7 +1572,7 @@
                                         <span
                                             class="w-[5px] h-[5px] rounded-full bg-[#c0392b]"
                                         ></span>
-                                        Rejected
+                                        Failed at Initial Screening
                                     </span>
                                 @else
                                     <span
