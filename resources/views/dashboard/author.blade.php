@@ -774,24 +774,35 @@
             @endforeach
         </div>
 
-        {{-- Search --}}
-        <div class="fu2 mb-6">
-            <div class="search-wrap">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                        stroke-width="2.5"
-                    />
-                </svg>
-                <input
-                    type="text"
-                    id="dashboardSearch"
-                    class="search-inp"
-                    placeholder="Filter by title, reference number, or status…"
-                    onkeyup="filterTable()"
-                />
-            </div>
-        </div>
+       {{-- Search --}}
+<div class="fu2 mb-6">
+    <form method="GET" action="{{ route('submissions.index') }}" class="search-wrap" id="searchForm">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                stroke-width="2.5"
+            />
+        </svg>
+        <input
+            type="text"
+            name="search"
+            id="dashboardSearch"
+            class="search-inp"
+            placeholder="Search by title or reference number…"
+            value="{{ $search ?? '' }}"
+            autocomplete="off"
+        />
+        @if (!empty($search))
+            
+                href="{{ route('submissions.index') }}"
+                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#b5a595;text-decoration:none;font-size:1.1rem;line-height:1;"
+                title="Clear search"
+            >
+                &times;
+            </a>
+        @endif
+    </form>
+</div>
 
         {{-- ── CTF Alert ── --}}
         @php
@@ -1391,15 +1402,40 @@
 
 @push('scripts')
     <script>
-        function filterTable() {
-            const f = document.getElementById('dashboardSearch').value.toUpperCase();
-            document.querySelectorAll('.submission-row').forEach(row => {
-                const title  = row.querySelector('.title-cell')?.innerText.toUpperCase() ?? '';
-                const ref    = row.cells[0]?.innerText.toUpperCase() ?? '';
-                const status = row.querySelector('.status-cell')?.innerText.toUpperCase() ?? '';
-                row.style.display = (title.includes(f)||ref.includes(f)||status.includes(f)) ? '' : 'none';
-            });
+      // Submit form after user stops typing (400ms debounce)
+let searchTimer;
+document.getElementById('dashboardSearch')?.addEventListener('input', function () {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+        const form = document.getElementById('searchForm');
+
+        // Preserve current page
+        const existing = form.querySelector('input[name="page"]');
+        if (existing) existing.remove();
+        const currentPage = new URLSearchParams(window.location.search).get('page');
+        if (currentPage) {
+            const pageInput = document.createElement('input');
+            pageInput.type  = 'hidden';
+            pageInput.name  = 'page';
+            pageInput.value = currentPage;
+            form.appendChild(pageInput);
         }
+
+        form.submit();
+    }, 400);
+});
+
+// After load, if there's an active search just focus back on the search input — no scrolling
+window.addEventListener('load', function () {
+    const search = document.getElementById('dashboardSearch');
+    if (search && search.value.trim() !== '') {
+        search.focus();
+        // Move cursor to end
+        const val = search.value;
+        search.value = '';
+        search.value = val;
+    }
+});
 
         @if(session('success'))
         Swal.fire({

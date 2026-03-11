@@ -38,17 +38,36 @@ class SubmissionController extends Controller
         'then','when','study','analysis','research','paper','review','based',
     ];
 
-    public function index(Request $request): View
-    {
-        /** @var User $user */
-        $user = $request->user();
+   public function index(Request $request): View
+{
+    /** @var User $user */
+    $user = $request->user();
 
-        $submissions = $user->submissionsAsAuthor()
-            ->latest()
-            ->paginate(15);
+    $search = trim($request->get('search', ''));
 
-        return view('submissions.index', compact('submissions'));
-    }
+    $submissions = $user->submissionsAsAuthor()
+        ->when($search, function ($q) use ($search) {
+            $q->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhereRaw("LPAD(CAST(id AS CHAR), 5, '0') LIKE ?", ["%{$search}%"]);
+            });
+        })
+        ->latest()
+        ->paginate(15)
+        ->withQueryString();
+
+    $stats = [
+        'submitted'             => $user->submissionsAsAuthor()->where('status', Submission::STATUS_SUBMITTED)->count(),
+        'under_review'          => $user->submissionsAsAuthor()->where('status', Submission::STATUS_UNDER_REVIEW)->count(),
+        'revisions_requested'   => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REVISIONS_REQUESTED)->count(),
+        'revision_under_review' => $user->submissionsAsAuthor()->where('status', 'revision_under_review')->count(),
+        'accepted'              => $user->submissionsAsAuthor()->where('status', Submission::STATUS_ACCEPTED)->count(),
+        'rejected'              => $user->submissionsAsAuthor()->where('status', Submission::STATUS_REJECTED)->count(),
+        'published'             => $user->submissionsAsAuthor()->where('status', Submission::STATUS_PUBLISHED)->count(),
+    ];
+
+    return view('submissions.index', compact('submissions', 'stats', 'search'));
+}
 
     // ───────────────────────────────────────────────────────────────────────
     //  CREATE
