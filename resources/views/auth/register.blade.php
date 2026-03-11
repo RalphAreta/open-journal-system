@@ -67,7 +67,6 @@
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        /* Expertise container transition */
         #expertise-container {
             display: none;
         }
@@ -86,12 +85,13 @@
 @endpush
 
 @section('content')
+    {{-- Outer wrapper: prevent any horizontal overflow --}}
     <div
-        class="flex flex-col md:flex-row min-h-[calc(100vh-64px)] overflow-hidden font-['Source_Sans_3']"
+        class="flex flex-col md:flex-row min-h-[calc(100vh-64px)] overflow-x-hidden font-['Source_Sans_3']"
     >
-        {{-- LEFT SIDE: THE TEAL SIDE (Matched to Login) --}}
+        {{-- LEFT SIDE --}}
         <div
-            class="relative flex-none md:w-2/5 flex flex-col justify-center px-8 py-12 md:p-16 overflow-hidden bg-[#2D8176] z-10"
+            class="relative flex-none w-full md:w-2/5 flex flex-col justify-center px-8 py-12 md:p-16 overflow-hidden bg-[#2D8176] z-10"
         >
             <div class="absolute inset-0 z-0 bg-black/15"></div>
             <div
@@ -141,7 +141,7 @@
                     Start your
                     <br />
                     <em
-                        class="not-italic font-normal block bg-linear-to-r from-[#c9a84c] via-[#f0d678] to-[#c9a84c] bg-clip-text text-transparent drop-shadow-sm"
+                        class="not-italic font-normal block bg-gradient-to-r from-[#c9a84c] via-[#f0d678] to-[#c9a84c] bg-clip-text text-transparent drop-shadow-sm"
                     >
                         Contribution
                     </em>
@@ -159,7 +159,7 @@
                 class="absolute -bottom-20 -left-20 opacity-10 pointer-events-none"
             >
                 <svg
-                    class="w-75 h-75"
+                    class="w-72 h-72"
                     viewBox="0 0 400 400"
                     fill="none"
                     stroke="#ffffff"
@@ -170,15 +170,16 @@
             </div>
         </div>
 
-        {{-- RIGHT SIDE: REGISTRATION FORM (Matched to Login Right Side) --}}
+        {{-- RIGHT SIDE --}}
         <div
-            class="flex-1 flex items-center justify-center p-6 md:p-10 relative overflow-y-auto bg-linear-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0] z-0"
+            class="flex-1 flex items-start md:items-center justify-center p-6 md:p-10 relative overflow-x-hidden overflow-y-auto bg-gradient-to-br from-[#f5f0e8] via-[#ede5d5] to-[#e4daf0] z-0"
         >
+            {{-- Decorative elements — clipped so they don't cause overflow --}}
             <div
-                class="absolute rounded-full w-125 h-125 -top-40 -right-28 border border-[#a07830]/10"
+                class="absolute rounded-full w-96 h-96 -top-40 -right-28 border border-[#a07830]/10 pointer-events-none overflow-hidden"
             ></div>
             <div
-                class="absolute inset-0 opacity-[0.035]"
+                class="absolute inset-0 opacity-[0.035] pointer-events-none"
                 style="
                     background-image: repeating-linear-gradient(
                         -50deg,
@@ -191,13 +192,13 @@
             ></div>
 
             <div
-                class="relative z-10 w-full max-w-137.5 bg-white/90 border border-[#c9a84c]/20 rounded-[20px] p-8 md:p-10 backdrop-blur-xl shadow-2xl animate-lp-up"
+                class="relative z-10 w-full max-w-2xl bg-white/90 border border-[#c9a84c]/20 rounded-[20px] p-8 md:p-10 backdrop-blur-xl shadow-2xl animate-lp-up my-6"
             >
                 <div class="mb-6">
                     <p
                         class="text-[10px] tracking-widest uppercase text-[#a07830] font-medium mb-1 flex items-center gap-2"
                     >
-                        <span class="w-4.5 h-px bg-[#c9a84c]/60"></span>
+                        <span class="w-4 h-px bg-[#c9a84c]/60"></span>
                         JOURNAL SYSTEM
                     </p>
                     <h1
@@ -217,7 +218,7 @@
                 >
                     @csrf
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {{-- Full Name --}}
                         <div>
                             <label
@@ -304,7 +305,7 @@
                                             type="checkbox"
                                             name="expertise[]"
                                             value="{{ $category }}"
-                                            class="w-4 h-4 rounded border-[#dde4ee] text-[#a07830] focus:ring-[#c9a84c]"
+                                            class="w-4 h-4 rounded border-[#dde4ee] text-[#a07830] focus:ring-[#c9a84c] shrink-0"
                                         />
                                         <span
                                             class="text-xs text-slate-600 group-hover:text-[#a07830] transition-colors leading-tight"
@@ -318,69 +319,67 @@
                     </div>
 
                     {{-- Password Section --}}
-                    {{-- Password Section --}}
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {{-- Password --}}
+                        <div>
+                            <label
+                                class="block text-[10px] font-semibold tracking-wider uppercase text-[#6a7890] mb-1.5"
+                            >
+                                Password
+                            </label>
+                            <div class="relative">
+                                <input
+                                    id="password"
+                                    type="password"
+                                    name="password"
+                                    required
+                                    class="w-full px-4 pr-12 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] transition-all"
+                                />
+                                <button
+                                    type="button"
+                                    onclick="togglePassword('password', this)"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors"
+                                >
+                                    👁
+                                </button>
+                            </div>
+                        </div>
 
-    {{-- Password --}}
-    <div>
-        <label
-            class="block text-[10px] font-semibold tracking-wider uppercase text-[#6a7890] mb-1.5"
-        >
-            Password
-        </label>
-
-        <div class="relative">
-            <input
-                id="password"
-                type="password"
-                name="password"
-                required
-                class="w-full px-4 pr-12 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] transition-all"
-            />
-
-            <button
-                type="button"
-                onclick="togglePassword('password', this)"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors"
-            >
-                👁
-            </button>
-        </div>
-    </div>
-
-    {{-- Confirm Password --}}
-    <div>
-        <label
-            class="block text-[10px] font-semibold tracking-wider uppercase text-[#6a7890] mb-1.5"
-        >
-            Confirm Password
-        </label>
-
-        <div class="relative">
-            <input
-                id="password_confirmation"
-                type="password"
-                name="password_confirmation"
-                required
-                class="w-full px-4 pr-12 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] transition-all"
-            />
-
-            <button
-                type="button"
-                onclick="togglePassword('password_confirmation', this)"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors"
-            >
-                👁
-            </button>
-        </div>
-    </div>
-
-</div>
+                        {{-- Confirm Password --}}
+                        <div>
+                            <label
+                                class="block text-[10px] font-semibold tracking-wider uppercase text-[#6a7890] mb-1.5"
+                            >
+                                Confirm Password
+                            </label>
+                            <div class="relative">
+                                <input
+                                    id="password_confirmation"
+                                    type="password"
+                                    name="password_confirmation"
+                                    required
+                                    class="w-full px-4 pr-12 py-2.5 bg-[#fafbfd] border-[1.5px] border-[#dde4ee] rounded-xl text-sm outline-none focus:border-[#c9a84c] transition-all"
+                                />
+                                <button
+                                    type="button"
+                                    onclick="
+                                        togglePassword(
+                                            'password_confirmation',
+                                            this,
+                                        )
+                                    "
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors"
+                                >
+                                    👁
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                     {{-- Submit --}}
                     <button
                         type="submit"
-                        class="w-full py-3 mt-2 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-[#a07830]/20 hover:-translate-y-0.5 transition-all"
+                        class="w-full py-3 mt-2 bg-gradient-to-br from-[#c9a84c] to-[#a07830] text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-[#a07830]/20 hover:-translate-y-0.5 transition-all"
                     >
                         Complete Registration
                     </button>
@@ -428,16 +427,15 @@
         });
     </script>
     <script>
-    function togglePassword(fieldId, button) {
-        const input = document.getElementById(fieldId);
-
-        if (input.type === 'password') {
-            input.type = 'text';
-            button.innerText = '🙈';
-        } else {
-            input.type = 'password';
-            button.innerText = '👁';
+        function togglePassword(fieldId, button) {
+            const input = document.getElementById(fieldId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.innerText = '🙈';
+            } else {
+                input.type = 'password';
+                button.innerText = '👁';
+            }
         }
-    }
     </script>
 @endsection
