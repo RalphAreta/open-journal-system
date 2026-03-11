@@ -17,6 +17,7 @@ class ManagingEditorController extends Controller
     $submissions = Submission::with('author')
         ->where('managing_editor_id', Auth::id())
         ->orderBy('updated_at', 'desc')
+        ->limit(1)
         ->get();
 
     $stats = [

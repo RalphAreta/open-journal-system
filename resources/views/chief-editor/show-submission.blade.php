@@ -487,7 +487,7 @@
                             >
                                 Submission Details
                             </h2>
-                            @if ($submission->file_name)
+                            @if ($originalFileExists)
                                 <a
                                     href="{{ route('submissions.download-original', $submission) }}"
                                     class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-(--teal) hover:text-(--teal-d) transition-colors"
@@ -809,6 +809,134 @@
                                         </div>
                                     </div>
                                 @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Appeal Decision --}}
+                    @if ($latestAppeal)
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)">
+                                    Appeal Decision
+                                </h2>
+                                <span class="text-[9px] font-black uppercase tracking-widest text-[#b0aaa0]">
+                                    {{ ucfirst($latestAppeal->status) }}
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                {{-- Appeal Reason --}}
+                                <div class="mb-4">
+                                    <p class="field-label mb-2">Appeal Reason</p>
+                                    <div class="bg-[#faf8f5] rounded-lg p-3">
+                                        <p class="text-sm text-[#4a5568]">
+                                            {{ $latestAppeal->reason }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {{-- Decision Status --}}
+                                @if (!$latestAppeal->isPending())
+                                    <div class="border-t border-[#e8dfd0] pt-4">
+                                        <div
+                                            class="result-block {{ $latestAppeal->isApproved() ? 'result-approved' : 'result-rejected' }}"
+                                            style="
+                                                border-radius: 12px;
+                                                padding: 20px;
+                                                background: {{ $latestAppeal->isApproved() ? '#f0fdf4' : '#fef2f2' }};
+                                                border: 1.5px solid {{ $latestAppeal->isApproved() ? '#a7f3d0' : '#fecaca' }};
+                                                margin-bottom: 16px;
+                                            "
+                                        >
+                                            <div style="display: flex; align-items: flex-start; gap: 14px;">
+                                                <div
+                                                    style="
+                                                        width: 44px;
+                                                        height: 44px;
+                                                        border-radius: 10px;
+                                                        background: {{ $latestAppeal->isApproved() ? 'rgba(5,150,105,.15)' : 'rgba(220,38,38,.15)' }};
+                                                        display: flex;
+                                                        align-items: center;
+                                                        justify-content: center;
+                                                        flex-shrink: 0;
+                                                    "
+                                                >
+                                                    @if ($latestAppeal->isApproved())
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5">
+                                                            <path d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    @else
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5">
+                                                            <path d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    @endif
+                                                </div>
+                                                <div>
+                                                    <h4 style="
+                                                        font-family: 'Libre Baskerville', serif;
+                                                        font-size: 1.1rem;
+                                                        font-weight: 700;
+                                                        color: {{ $latestAppeal->isApproved() ? '#065f46' : '#991b1b' }};
+                                                    ">
+                                                        Appeal {{ $latestAppeal->isApproved() ? 'Approved' : 'Rejected' }}
+                                                    </h4>
+                                                    <p style="
+                                                        font-size: 12px;
+                                                        color: {{ $latestAppeal->isApproved() ? '#059669' : '#dc2626' }};
+                                                        margin-top: 4px;
+                                                        font-family: 'Courier New', monospace;
+                                                    ">
+                                                        Reviewed on {{ $latestAppeal->reviewed_at->format('M d, Y \a\t g:i A') }}
+                                                        @if ($latestAppeal->reviewedBy)
+                                                            · by <strong>{{ $latestAppeal->reviewedBy->name }}</strong>
+                                                        @endif
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            @if ($latestAppeal->editor_response)
+                                                <div style="
+                                                    padding-top: 16px;
+                                                    border-top: 1px solid {{ $latestAppeal->isApproved() ? '#a7f3d0' : '#fecaca' }};
+                                                ">
+                                                    <p class="field-label" style="
+                                                        color: {{ $latestAppeal->isApproved() ? '#059669' : '#dc2626' }};
+                                                        margin-bottom: 8px;
+                                                    ">
+                                                        Editor's Response
+                                                    </p>
+                                                    <p style="
+                                                        font-size: 13px;
+                                                        color: {{ $latestAppeal->isApproved() ? '#065f46' : '#7f1d1d' }};
+                                                        line-height: 1.75;
+                                                        word-break: break-word;
+                                                        overflow-wrap: break-word;
+                                                    ">
+                                                        {{ $latestAppeal->editor_response }}
+                                                    </p>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @else
+                                    <div style="
+                                        padding: 12px;
+                                        background: #fef3c7;
+                                        border: 1px solid #fbbf24;
+                                        border-radius: 8px;
+                                        display: flex;
+                                        gap: 10px;
+                                        align-items: center;
+                                        margin-top: 16px;
+                                    ">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                        </svg>
+                                        <p style="font-size: 13px; color: #b45309;">This appeal is still pending review.</p>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     @endif

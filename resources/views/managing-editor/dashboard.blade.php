@@ -357,6 +357,14 @@
         .sbadge.forwarded .dot {
             background: var(--teal-dk);
         }
+        .sbadge.published {
+            background: #f0fdf4;
+            border-color: #22c55e;
+            color: #16a34a;
+        }
+        .sbadge.published .dot {
+            background: #22c55e;
+        }
 
         .btn-action {
             display: inline-flex;
@@ -929,9 +937,9 @@
         {{-- Table --}}
         <div class="ms-table-wrap fu3">
             <div class="ms-table-head">
-                <span class="ms-table-head-title">Assigned Manuscripts</span>
+                <span class="ms-table-head-title">Current Assignment</span>
                 <span class="ms-table-head-count">
-                    {{ $submissions->count() }} records
+                    {{ $submissions->count() }} record{{ $submissions->count() !== 1 ? 's' : '' }}
                 </span>
             </div>
             <div class="overflow-x-auto">
@@ -956,6 +964,7 @@
                                     'ctf_sent' => ['ctf-sent', 'Awaiting Signed CTF'],
                                     'ctf_returned' => ['forwarded', 'Signed CTF Received'],
                                     'forwarded' => ['forwarded', 'Sent to Layout'],
+                                    'published' => ['published', 'Published'],
                                     default => ['pending-me', 'Awaiting CTF'],
                                 };
                             @endphp

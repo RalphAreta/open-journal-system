@@ -203,6 +203,10 @@ class ReviewController extends Controller
 
         $researchField = $submission->research_field;
 
+        // Check if original file exists
+        $originalFileExists = $submission->original_file_path &&
+                             \Illuminate\Support\Facades\Storage::disk('local')->exists($submission->original_file_path);
+
         $matchedReviewers = \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'reviewer'))
             ->whereHas('editorExpertise', fn($q) => $q->where('field_name', $researchField))
             ->withCount(['reviewAssignments as active_reviews_count' => fn($q) =>
@@ -237,7 +241,7 @@ class ReviewController extends Controller
         // Get all layout editors for selection
        $managingEditors = User::whereHas('roles', fn($q) => $q->where('name', 'managing-editor'))->get();
 
-return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers', 'managingEditors', 'assignedReviewerIds', 'declinedReviewerIds', 'declineReasons'));
+return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'otherReviewers', 'managingEditors', 'assignedReviewerIds', 'declinedReviewerIds', 'declineReasons', 'originalFileExists'));
     }
 
     /**
@@ -599,7 +603,7 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
     {
         $user = request()->user();
 
-        if ($user->isEditor() || $user->isEditorInChief()) {
+        if ($user->isEditor() || $user->isEditorInChief() || $user->hasRole('managing-editor')) {
             return $this->serializeFile($submission->file_path, $submission->file_name);
         }
 
