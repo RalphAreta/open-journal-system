@@ -338,9 +338,36 @@
                                 <button
                                     type="button"
                                     onclick="togglePassword('password', this)"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors focus:outline-none"
+                                    aria-label="Toggle password visibility"
                                 >
-                                    👁
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="w-4 h-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path
+                                            class="eye-open"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                        />
+                                        <path
+                                            class="eye-open"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                        />
+                                        <path
+                                            class="eye-closed hidden"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M3 3l18 18M10.477 10.477A3 3 0 0013.5 13.5M7.05 7.05A7.965 7.965 0 002.458 12c1.274 4.057 5.065 7 9.542 7a7.963 7.963 0 004.95-1.707M9.9 4.24A8.12 8.12 0 0112 4c4.478 0 8.268 2.943 9.542 7a8.048 8.048 0 01-2.286 3.565"
+                                        />
+                                    </svg>
                                 </button>
                             </div>
                         </div>
@@ -368,9 +395,36 @@
                                             this,
                                         )
                                     "
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-[#b8aa88] hover:text-[#a07830] transition-colors focus:outline-none"
+                                    aria-label="Toggle password visibility"
                                 >
-                                    👁
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="w-4 h-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path
+                                            class="eye-open"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                        />
+                                        <path
+                                            class="eye-open"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                        />
+                                        <path
+                                            class="eye-closed hidden"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M3 3l18 18M10.477 10.477A3 3 0 0013.5 13.5M7.05 7.05A7.965 7.965 0 002.458 12c1.274 4.057 5.065 7 9.542 7a7.963 7.963 0 004.95-1.707M9.9 4.24A8.12 8.12 0 0112 4c4.478 0 8.268 2.943 9.542 7a8.048 8.048 0 01-2.286 3.565"
+                                        />
+                                    </svg>
                                 </button>
                             </div>
                         </div>
@@ -429,13 +483,14 @@
     <script>
         function togglePassword(fieldId, button) {
             const input = document.getElementById(fieldId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                button.innerText = '🙈';
-            } else {
-                input.type = 'password';
-                button.innerText = '👁';
-            }
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            button
+                .querySelectorAll('.eye-open')
+                .forEach((el) => el.classList.toggle('hidden', isHidden));
+            button
+                .querySelectorAll('.eye-closed')
+                .forEach((el) => el.classList.toggle('hidden', !isHidden));
         }
     </script>
 @endsection
