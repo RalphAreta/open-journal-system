@@ -736,15 +736,50 @@
 @push('scripts')
     <script>
         @if(session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
-                html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
-                confirmButtonText: 'Close',
-                confirmButtonColor: '#2d8176',
-                customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
-                buttonsStyling: false,
-            });
+                    Swal.fire({
+                        icon: 'success',
+                        title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
+                        html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+                        confirmButtonText: 'Close',
+                        confirmButtonColor: '#2d8176',
+                        customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
+                        buttonsStyling: false,
+                    });
+                @endif
+                @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Oops!</span>',
+            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('error') }}</p>',
+            confirmButtonText: 'Close',
+            confirmButtonColor: '#c9a84c',
+            customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
+            buttonsStyling: false,
+        });
+        @endif
+
+        @if(session('info'))
+        Swal.fire({
+            icon: 'info',
+            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Note</span>',
+            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('info') }}</p>',
+            confirmButtonText: 'Got it',
+            confirmButtonColor: '#2d8176',
+            customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
+            buttonsStyling: false,
+        });
+        @endif
+
+        @if(session('warning'))
+        Swal.fire({
+            icon: 'warning',
+            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Warning</span>',
+            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('warning') }}</p>',
+            confirmButtonText: 'Understood',
+            confirmButtonColor: '#c9a84c',
+            customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
+            buttonsStyling: false,
+        });
         @endif
     </script>
 @endpush

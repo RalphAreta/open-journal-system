@@ -846,8 +846,9 @@
             $authorFeedbacks = \App\Models\LayoutEditorAssignment::with('submission')
                 ->whereNotNull('author_status')
                 ->whereIn('author_status', ['confirmed', 'revision_requested'])
-                ->whereHas('submission', function($query) {
-                    $query->where('managing_editor_id', auth()->id())
+                ->whereHas('submission', function ($query) {
+                    $query
+                        ->where('managing_editor_id', auth()->id())
                         ->where('status', '!=', \App\Models\Submission::STATUS_PUBLISHED);
                 })
                 ->latest('author_feedback_at')
@@ -939,7 +940,8 @@
             <div class="ms-table-head">
                 <span class="ms-table-head-title">Current Assignment</span>
                 <span class="ms-table-head-count">
-                    {{ $submissions->count() }} record{{ $submissions->count() !== 1 ? 's' : '' }}
+                    {{ $submissions->count() }}
+                    record{{ $submissions->count() !== 1 ? 's' : '' }}
                 </span>
             </div>
             <div class="overflow-x-auto">
@@ -1528,110 +1530,145 @@
 @push('scripts')
     <script>
         // ── Filter ──
-                                        function filterTable() {
-                                            const f = document.getElementById('dashboardSearch').value.toUpperCase();
-                                            document.querySelectorAll('.submission-row').forEach(row => {
-                                                const title  = row.querySelector('.title-cell')?.innerText.toUpperCase() ?? '';
-                                                const ref    = row.cells[0]?.innerText.toUpperCase() ?? '';
-                                                const status = row.querySelector('.status-cell')?.innerText.toUpperCase() ?? '';
-                                                row.style.display = (title.includes(f)||ref.includes(f)||status.includes(f)) ? '' : 'none';
-                                            });
-                                        }
+                                                function filterTable() {
+                                                    const f = document.getElementById('dashboardSearch').value.toUpperCase();
+                                                    document.querySelectorAll('.submission-row').forEach(row => {
+                                                        const title  = row.querySelector('.title-cell')?.innerText.toUpperCase() ?? '';
+                                                        const ref    = row.cells[0]?.innerText.toUpperCase() ?? '';
+                                                        const status = row.querySelector('.status-cell')?.innerText.toUpperCase() ?? '';
+                                                        row.style.display = (title.includes(f)||ref.includes(f)||status.includes(f)) ? '' : 'none';
+                                                    });
+                                                }
 
-                                        // ── CTF routes ──
-                                        const ctfRoutes = @json(
-                                            $submissions->filter(fn($s) => is_null($s->managing_editor_status) || $s->managing_editor_status === 'pending')
-                                                ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.ctf.generate', $s)])
+                                                // ── CTF routes ──
+                                                const ctfRoutes = @json(
+                                                    $submissions->filter(fn($s) => is_null($s->managing_editor_status) || $s->managing_editor_status === 'pending')
+                                                        ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.ctf.generate', $s)])
+                                                );
+
+                                                function openCtfModal(id, title) {
+                                                    document.getElementById('ctfManuscriptTitle').textContent = title;
+                                                    document.getElementById('ctfModalForm').action = ctfRoutes[id] ?? '#';
+                                                    document.getElementById('ctfFileInput').value = '';
+                                                    document.getElementById('ctfFileSelected').classList.remove('show');
+                                                    document.getElementById('ctfModal').classList.add('open');
+                                                }
+                                                function closeCtfModal() { document.getElementById('ctfModal').classList.remove('open'); }
+
+                                                function onCtfFileSelected(input) {
+                                                    const file = input.files[0];
+                                                    if (!file) return;
+                                                    const sel = document.getElementById('ctfFileSelected');
+                                                    document.getElementById('ctfFileName').textContent = file.name;
+                                                    document.getElementById('ctfFileSize').textContent = (file.size/1024/1024).toFixed(2)+' MB';
+                                                    sel.classList.add('show');
+                                                }
+
+                                                // Drag & drop
+                                                const dropZone = document.getElementById('ctfDropZone');
+                                                if (dropZone) {
+                                                    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+                                                    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+                                                    dropZone.addEventListener('drop', e => {
+                                                        e.preventDefault(); dropZone.classList.remove('dragover');
+                                                        const file = e.dataTransfer.files[0];
+                                                        if (file) {
+                                                            const input = document.getElementById('ctfFileInput');
+                                                            const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files;
+                                                            onCtfFileSelected(input);
+                                                        }
+                                                    });
+                                                }
+
+                                                // ── Layout routes ──
+                                              const layoutRoutes = @json(
+                                            $submissions->filter(fn($s) => $s->managing_editor_status === 'ctf_returned')
+                                                ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.forward', $s)])
                                         );
 
-                                        function openCtfModal(id, title) {
-                                            document.getElementById('ctfManuscriptTitle').textContent = title;
-                                            document.getElementById('ctfModalForm').action = ctfRoutes[id] ?? '#';
-                                            document.getElementById('ctfFileInput').value = '';
-                                            document.getElementById('ctfFileSelected').classList.remove('show');
-                                            document.getElementById('ctfModal').classList.add('open');
-                                        }
-                                        function closeCtfModal() { document.getElementById('ctfModal').classList.remove('open'); }
+                                             function openLayoutModal(id, title) {
+                                    const route = layoutRoutes[id];
+                                    if (!route) {
+                                        alert('Route not found for id: ' + id + '\nAvailable: ' + JSON.stringify(layoutRoutes));
+                                        return;
+                                    }
+                                    document.getElementById('modalManuscriptTitle').textContent = title;
+                                    document.getElementById('layoutModalForm').action = route;
+                                    document.getElementById('layout_editor_id').value = '';
+                                    document.getElementById('layoutModal').classList.add('open');
+                                }
+                                                function closeLayoutModal() { document.getElementById('layoutModal').classList.remove('open'); }
 
-                                        function onCtfFileSelected(input) {
-                                            const file = input.files[0];
-                                            if (!file) return;
-                                            const sel = document.getElementById('ctfFileSelected');
-                                            document.getElementById('ctfFileName').textContent = file.name;
-                                            document.getElementById('ctfFileSize').textContent = (file.size/1024/1024).toFixed(2)+' MB';
-                                            sel.classList.add('show');
-                                        }
+                                              function closeOnBackdrop(e, id) {
+                    if (e.target === document.getElementById(id)) {
+                        if (id === 'ctfModal') closeCtfModal();
+                        else if (id === 'reassignModal') closeReassignModal();
+                        else closeLayoutModal();
+                    }
+                }
+                                                document.addEventListener('keydown', e => {
+                                                    if (e.key === 'Escape') { closeCtfModal(); closeLayoutModal(); }
+                                                });
 
-                                        // Drag & drop
-                                        const dropZone = document.getElementById('ctfDropZone');
-                                        if (dropZone) {
-                                            dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-                                            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-                                            dropZone.addEventListener('drop', e => {
-                                                e.preventDefault(); dropZone.classList.remove('dragover');
-                                                const file = e.dataTransfer.files[0];
-                                                if (file) {
-                                                    const input = document.getElementById('ctfFileInput');
-                                                    const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files;
-                                                    onCtfFileSelected(input);
-                                                }
-                                            });
-                                        }
-
-                                        // ── Layout routes ──
-                                      const layoutRoutes = @json(
-                                    $submissions->filter(fn($s) => $s->managing_editor_status === 'ctf_returned')
-                                        ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.forward', $s)])
-                                );
-
-                                     function openLayoutModal(id, title) {
-                            const route = layoutRoutes[id];
-                            if (!route) {
-                                alert('Route not found for id: ' + id + '\nAvailable: ' + JSON.stringify(layoutRoutes));
-                                return;
-                            }
-                            document.getElementById('modalManuscriptTitle').textContent = title;
-                            document.getElementById('layoutModalForm').action = route;
-                            document.getElementById('layout_editor_id').value = '';
-                            document.getElementById('layoutModal').classList.add('open');
+                                                // ── Reassign Layout Modal ──
+                        function openReassignModal(submissionId, title, assignmentId, authorFeedback) {
+                            document.getElementById('reassignManuscriptTitle').textContent = title;
+                            document.getElementById('reassignAssignmentId').value = assignmentId;
+                            document.getElementById('reassignAuthorFeedback').textContent = authorFeedback || '—';
+                            document.getElementById('reassignModalForm').action = `/managing-editor/submissions/${submissionId}/reassign-layout`;
+                            document.getElementById('reassign_layout_editor_id').value = '';
+                            document.getElementById('reassignModal').classList.add('open');
                         }
-                                        function closeLayoutModal() { document.getElementById('layoutModal').classList.remove('open'); }
+                        function closeReassignModal() {
+                            document.getElementById('reassignModal').classList.remove('open');
+                        }
 
-                                      function closeOnBackdrop(e, id) {
-            if (e.target === document.getElementById(id)) {
-                if (id === 'ctfModal') closeCtfModal();
-                else if (id === 'reassignModal') closeReassignModal();
-                else closeLayoutModal();
-            }
-        }
-                                        document.addEventListener('keydown', e => {
-                                            if (e.key === 'Escape') { closeCtfModal(); closeLayoutModal(); }
-                                        });
+                                                // ── Toast ──
+                                                @if(session('success'))
+                                                Swal.fire({
+                                                    icon:'success',
+                                                    title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
+                                                    html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+                                                    confirmButtonText:'Close',
+                                                    confirmButtonColor:'#2d8176',
+                                                    customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+                                                    buttonsStyling:false,
+                                                });
+                                                @endif
+                                                @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Oops!</span>',
+            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('error') }}</p>',
+            confirmButtonText: 'Close',
+            confirmButtonColor: '#c9a84c',
+            customClass:{popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+            buttonsStyling: false,
+        });
+        @endif
 
-                                        // ── Reassign Layout Modal ──
-                function openReassignModal(submissionId, title, assignmentId, authorFeedback) {
-                    document.getElementById('reassignManuscriptTitle').textContent = title;
-                    document.getElementById('reassignAssignmentId').value = assignmentId;
-                    document.getElementById('reassignAuthorFeedback').textContent = authorFeedback || '—';
-                    document.getElementById('reassignModalForm').action = `/managing-editor/submissions/${submissionId}/reassign-layout`;
-                    document.getElementById('reassign_layout_editor_id').value = '';
-                    document.getElementById('reassignModal').classList.add('open');
-                }
-                function closeReassignModal() {
-                    document.getElementById('reassignModal').classList.remove('open');
-                }
+        @if(session('info'))
+        Swal.fire({
+            icon: 'info',
+            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Note</span>',
+            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('info') }}</p>',
+            confirmButtonText: 'Got it',
+            confirmButtonColor: '#2d8176',
+            customClass:{popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+            buttonsStyling: false,
+        });
+        @endif
 
-                                        // ── Toast ──
-                                        @if(session('success'))
-                                        Swal.fire({
-                                            icon:'success',
-                                            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
-                                            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
-                                            confirmButtonText:'Close',
-                                            confirmButtonColor:'#2d8176',
-                                            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
-                                            buttonsStyling:false,
-                                        });
-                                        @endif
+        @if(session('warning'))
+        Swal.fire({
+            icon: 'warning',
+            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Warning</span>',
+            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('warning') }}</p>',
+            confirmButtonText: 'Understood',
+            confirmButtonColor: '#c9a84c',
+            customClass:{popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+            buttonsStyling: false,
+        });
+        @endif
     </script>
 @endpush
