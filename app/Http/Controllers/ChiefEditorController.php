@@ -81,6 +81,9 @@ class ChiefEditorController extends Controller
         $originalFileExists = $submission->original_file_path &&
                              \Illuminate\Support\Facades\Storage::disk('local')->exists($submission->original_file_path);
 
+        // Fetch the latest appeal (if any)
+        $latestAppeal = $submission->appeals()->latest('created_at')->first();
+
         // 1. MATCHING editors
         $matchingEditors = User::whereHas('roles', fn($q) => $q->where('name', 'editor'))
             ->whereHas('editorExpertise', fn($q) => $q->where('field_name', $researchField))
@@ -122,6 +125,7 @@ class ChiefEditorController extends Controller
             'allEditorsByField',
             'researchField',
             'originalFileExists',
+            'latestAppeal',
         ));
     }
 

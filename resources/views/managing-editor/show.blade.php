@@ -340,6 +340,14 @@
         .sbadge.forwarded .dot {
             background: var(--teal-dk);
         }
+        .sbadge.published {
+            background: #f0fdf4;
+            border-color: #22c55e;
+            color: #16a34a;
+        }
+        .sbadge.published .dot {
+            background: #22c55e;
+        }
 
         /* Animations */
         .fu {
@@ -426,6 +434,7 @@
                     [$cls, $label] = match ($meStatus) {
                         'ctf_sent' => ['ctf-sent', 'CTF Sent'],
                         'forwarded' => ['forwarded', 'Sent to Layout'],
+                        'published' => ['published', 'Published'],
                         default => ['pending-me', 'Awaiting CTF'],
                     };
                 @endphp
@@ -777,7 +786,7 @@
                 @endif
 
                 {{-- Upload Form --}}
-                @if ($submission->managing_editor_status !== 'forwarded')
+                @if ($submission->managing_editor_status !== 'forwarded' && $submission->managing_editor_status !== 'published')
                     <form
                         method="POST"
                         action="{{ route('managing-editor.ctf.generate', $submission) }}"

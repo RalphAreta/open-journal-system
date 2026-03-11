@@ -357,6 +357,14 @@
         .sbadge.forwarded .dot {
             background: var(--teal-dk);
         }
+        .sbadge.published {
+            background: #f0fdf4;
+            border-color: #22c55e;
+            color: #16a34a;
+        }
+        .sbadge.published .dot {
+            background: #22c55e;
+        }
 
         .btn-action {
             display: inline-flex;
@@ -956,6 +964,7 @@
                                     'ctf_sent' => ['ctf-sent', 'Awaiting Signed CTF'],
                                     'ctf_returned' => ['forwarded', 'Signed CTF Received'],
                                     'forwarded' => ['forwarded', 'Sent to Layout'],
+                                    'published' => ['published', 'Published'],
                                     default => ['pending-me', 'Awaiting CTF'],
                                 };
                             @endphp
