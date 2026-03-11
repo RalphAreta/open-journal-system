@@ -798,7 +798,7 @@
 @endpush
 
 @section('content')
-   <div class="aw aw-bg max-w-7xl mx-auto px-4">
+    <div class="aw aw-bg max-w-7xl mx-auto px-4">
         {{-- ── Hero ── --}}
         <div class="hero-header fu">
             <div
@@ -1043,120 +1043,6 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
-        @endif
-
-        {{-- ── Notifications ── --}}
-        @if ($notifications->count() > 0)
-            <div class="fu2 notif-card mb-8">
-                <div class="notif-head">
-                    <div>
-                        <p class="ms-table-head-eyebrow">Notifications</p>
-                        <span
-                            class="ms-table-head-title"
-                            style="
-                                font-family: 'Libre Baskerville', serif;
-                                font-size: 1.1rem;
-                                font-weight: 700;
-                            "
-                        >
-                            Recent Updates
-                        </span>
-                    </div>
-                    @if ($notifications->count() > 3)
-                        <span
-                            style="
-                                font-size: 0.72rem;
-                                font-weight: 700;
-                                color: var(--ink-soft);
-                            "
-                        >
-                            {{ $notifications->count() }} total
-                        </span>
-                    @endif
-                </div>
-
-                @foreach ($notifications->take(3) as $notif)
-                    <div
-                        class="notif-item {{ $notif->isUnread() ? 'unread' : '' }}"
-                    >
-                        @if ($notif->isUnread())
-                            <span class="notif-unread-dot"></span>
-                        @endif
-
-                        <div class="flex-1 min-w-0">
-                            <div
-                                class="flex items-baseline justify-between gap-2"
-                            >
-                                <p class="notif-title truncate">
-                                    {{ $notif->title }}
-                                </p>
-                                <span class="notif-time">
-                                    {{ $notif->created_at->diffForHumans() }}
-                                </span>
-                            </div>
-                            <p class="notif-msg">{{ $notif->message }}</p>
-                            @if ($notif->notifiable_type === \App\Models\Submission::class)
-                                <a
-                                    href="{{ route('reviewer.pending-assignments') }}"
-                                    onclick="markRead({{ $notif->id }})"
-                                    class="notif-link"
-                                >
-                                    View Assignments →
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
-
-                @if ($notifications->count() > 3)
-                    <div id="moreNotifications" class="hidden">
-                        @foreach ($notifications->slice(3) as $notif)
-                            <div
-                                class="notif-item {{ $notif->isUnread() ? 'unread' : '' }}"
-                            >
-                                @if ($notif->isUnread())
-                                    <span class="notif-unread-dot"></span>
-                                @endif
-
-                                <div class="flex-1 min-w-0">
-                                    <div
-                                        class="flex items-baseline justify-between gap-2"
-                                    >
-                                        <p class="notif-title truncate">
-                                            {{ $notif->title }}
-                                        </p>
-                                        <span class="notif-time">
-                                            {{ $notif->created_at->diffForHumans() }}
-                                        </span>
-                                    </div>
-                                    <p class="notif-msg">
-                                        {{ $notif->message }}
-                                    </p>
-                                    @if ($notif->notifiable_type === \App\Models\Submission::class)
-                                        <a
-                                            href="{{ route('reviewer.pending-assignments') }}"
-                                            onclick="
-                                                markRead({{ $notif->id }})
-                                            "
-                                            class="notif-link"
-                                        >
-                                            View Assignments →
-                                        </a>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                    <button
-                        type="button"
-                        class="btn-toggle-notif"
-                        onclick="toggleMoreNotifications()"
-                    >
-                        <span id="seeMoreText">See More ↓</span>
-                        <span id="seeLessText" class="hidden">See Less ↑</span>
-                    </button>
-                @endif
             </div>
         @endif
 
@@ -1563,17 +1449,21 @@
                     'Conflict of interest',
                     'On leave / unavailable',
                     'Already reviewing many manuscripts',
-                    'Other (please specify)'
+                    'Other (please specify)',
                 ];
 
                 const reasonsHtml = `
                     <div style="text-align: left; margin: 15px 0;">
-                        ${reasons.map((reason, index) => `
+                        ${reasons
+                            .map(
+                                (reason, index) => `
                             <div style="margin: 10px 0;">
                                 <input type="radio" id="reason-${index}" name="decline-reason" value="${reason}" style="margin-right: 8px;">
                                 <label for="reason-${index}" style="cursor: pointer; color: #3d2f1a;">${reason}</label>
                             </div>
-                        `).join('')}
+                        `,
+                            )
+                            .join('')}
                     </div>
                     <div id="other-reason-input-container" style="display: none; margin-top: 10px;">
                         <textarea id="other-reason-input" placeholder="Please specify your reason..." style="width:100%;height:60px;padding:8px;border:1px solid #e8dfd0;border-radius:6px;font-family:inherit;font-size:14px;color:#3d2f1a;"></textarea>
@@ -1599,27 +1489,42 @@
                     },
                     didOpen: () => {
                         // Show/hide other reason textarea
-                        const reasonInputs = Swal.getHtmlContainer().querySelectorAll('input[name="decline-reason"]');
-                        const otherReasonContainer = Swal.getHtmlContainer().querySelector('#other-reason-input-container');
+                        const reasonInputs =
+                            Swal.getHtmlContainer().querySelectorAll(
+                                'input[name="decline-reason"]',
+                            );
+                        const otherReasonContainer =
+                            Swal.getHtmlContainer().querySelector(
+                                '#other-reason-input-container',
+                            );
 
-                        reasonInputs.forEach(input => {
+                        reasonInputs.forEach((input) => {
                             input.addEventListener('change', () => {
                                 if (input.value === 'Other (please specify)') {
-                                    otherReasonContainer.style.display = 'block';
+                                    otherReasonContainer.style.display =
+                                        'block';
                                 } else {
                                     otherReasonContainer.style.display = 'none';
                                 }
                             });
                         });
-                    }
+                    },
                 }).then((r) => {
                     if (r.isConfirmed) {
-                        const selectedReason = Swal.getHtmlContainer().querySelector('input[name="decline-reason"]:checked')?.value || '';
+                        const selectedReason =
+                            Swal.getHtmlContainer().querySelector(
+                                'input[name="decline-reason"]:checked',
+                            )?.value || '';
                         let finalReason = selectedReason;
 
                         if (selectedReason === 'Other (please specify)') {
-                            const otherText = Swal.getHtmlContainer().querySelector('#other-reason-input')?.value || '';
-                            finalReason = otherText ? 'Other: ' + otherText : selectedReason;
+                            const otherText =
+                                Swal.getHtmlContainer().querySelector(
+                                    '#other-reason-input',
+                                )?.value || '';
+                            finalReason = otherText
+                                ? 'Other: ' + otherText
+                                : selectedReason;
                         }
 
                         document.getElementById(
