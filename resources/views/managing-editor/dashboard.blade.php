@@ -929,9 +929,9 @@
         {{-- Table --}}
         <div class="ms-table-wrap fu3">
             <div class="ms-table-head">
-                <span class="ms-table-head-title">Assigned Manuscripts</span>
+                <span class="ms-table-head-title">Current Assignment</span>
                 <span class="ms-table-head-count">
-                    {{ $submissions->count() }} records
+                    {{ $submissions->count() }} record{{ $submissions->count() !== 1 ? 's' : '' }}
                 </span>
             </div>
             <div class="overflow-x-auto">

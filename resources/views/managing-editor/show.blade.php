@@ -677,61 +677,6 @@
                     </div>
                 @endif
 
-                {{-- Original Copy --}}
-                @if ($submission->original_file_path && $submission->original_file_path !== $submission->file_path)
-                    <div class="file-card">
-                        <div class="file-icon">
-                            <svg
-                                width="20"
-                                height="20"
-                                fill="none"
-                                stroke="var(--gold-dk)"
-                                stroke-width="1.8"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                />
-                            </svg>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="file-name">
-                                {{ $submission->original_file_name ?? basename($submission->original_file_path) }}
-                            </p>
-                            <p class="file-tag" style="color: var(--gold-dk)">
-                                Original Submission
-                            </p>
-                        </div>
-                        <a
-                            href="{{ asset('storage/' . $submission->original_file_path) }}"
-                            target="_blank"
-                            class="btn-download"
-                            style="
-                                border-color: rgba(201, 168, 76, 0.4);
-                                color: var(--gold-dk);
-                            "
-                        >
-                            <svg
-                                width="13"
-                                height="13"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                                />
-                            </svg>
-                            Download
-                        </a>
-                    </div>
-                @endif
-
                 @if (! $submission->file_path && ! $submission->original_file_path)
                     <p
                         style="
