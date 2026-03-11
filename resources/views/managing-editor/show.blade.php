@@ -654,8 +654,7 @@
                             </p>
                         </div>
                         <a
-                            href="{{ asset('storage/' . $submission->file_path) }}"
-                            target="_blank"
+                            href="{{ route('submissions.download', $submission) }}"
                             class="btn-download"
                         >
                             <svg

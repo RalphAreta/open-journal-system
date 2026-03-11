@@ -603,7 +603,7 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
     {
         $user = request()->user();
 
-        if ($user->isEditor() || $user->isEditorInChief()) {
+        if ($user->isEditor() || $user->isEditorInChief() || $user->hasRole('managing-editor')) {
             return $this->serializeFile($submission->file_path, $submission->file_name);
         }
 
