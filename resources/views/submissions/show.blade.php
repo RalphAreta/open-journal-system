@@ -608,23 +608,31 @@
                                 Current Status
                             </p>
                             @php
-                                $sCls = match ($submission->status) {
-                                    'accepted' => 'bg-[#f0fdf4] border-[#86efac] text-[#1a4d46]',
-                                    'under_review', 'revision_under_review' => 'bg-[#fdf8ec] border-[rgba(201,168,76,.4)] text-[#8a6e28]',
-                                    'revisions_requested' => 'bg-[#fff7ed] border-[#fed7aa] text-[#9a3412]',
-                                    'rejected' => 'bg-[#fef2f2] border-[#fecaca] text-[#991b1b]',
-                                    default => 'bg-[#e8f4f2] border-[rgba(45,129,118,.3)] text-[#1a4d46]',
-                                };
-                                $sDot = match ($submission->status) {
-                                    'accepted', 'under_review', 'revision_under_review' => 'bg-[#2d8176]',
-                                    'revisions_requested' => 'bg-[#f97316]',
-                                    'rejected' => 'bg-[#c0392b]',
-                                    default => 'bg-[#2d8176]',
-                                };
-                                $sLabel = match ($submission->status) {
-                                    'revision_under_review' => 'Revision Review',
-                                    default => ucfirst(str_replace('_', ' ', $submission->status)),
-                                };
+                                $screeningFailed = $submission->initial_screening_status === 'failed';
+
+                                $sCls = $screeningFailed
+                                    ? 'bg-[#fef2f2] border-[#fecaca] text-[#991b1b]'
+                                    : match ($submission->status) {
+                                        'accepted' => 'bg-[#f0fdf4] border-[#86efac] text-[#1a4d46]',
+                                        'under_review', 'revision_under_review' => 'bg-[#fdf8ec] border-[rgba(201,168,76,.4)] text-[#8a6e28]',
+                                        'revisions_requested' => 'bg-[#fff7ed] border-[#fed7aa] text-[#9a3412]',
+                                        'rejected' => 'bg-[#fef2f2] border-[#fecaca] text-[#991b1b]',
+                                        default => 'bg-[#e8f4f2] border-[rgba(45,129,118,.3)] text-[#1a4d46]',
+                                    };
+                                $sDot = $screeningFailed
+                                    ? 'bg-[#c0392b]'
+                                    : match ($submission->status) {
+                                        'accepted', 'under_review', 'revision_under_review' => 'bg-[#2d8176]',
+                                        'revisions_requested' => 'bg-[#f97316]',
+                                        'rejected' => 'bg-[#c0392b]',
+                                        default => 'bg-[#2d8176]',
+                                    };
+                                $sLabel = $screeningFailed
+                                    ? 'Failed Initial Screening'
+                                    : match ($submission->status) {
+                                        'revision_under_review' => 'Revision Review',
+                                        default => ucfirst(str_replace('_', ' ', $submission->status)),
+                                    };
                             @endphp
 
                             <span

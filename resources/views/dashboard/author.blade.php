@@ -16,7 +16,7 @@
             --ink-soft: #6b5740;
             --cream: #faf6ef;
             --parchment: #f3ece0;
-            --border: #e8dfd0;     
+            --border: #e8dfd0;
             --border-dk: #c9b99a;
         }
         * {
@@ -1294,18 +1294,24 @@
                                 </td>
                                 <td>
                                     @php
-                                        $cls = match ($s->status) {
-                                            'accepted' => 'accepted',
-                                            'under_review' => 'under_review',
-                                            'revision_under_review' => 'revision_review',
-                                            'revisions_requested' => 'revisions_requested',
-                                            'rejected' => 'rejected',
-                                            default => 'submitted',
-                                        };
-                                        $lbl = match ($s->status) {
-                                            'revision_under_review' => 'Revision Review',
-                                            default => ucfirst(str_replace('_', ' ', $s->status)),
-                                        };
+                                        $screeningFailed = $s->initial_screening_status === 'failed';
+
+                                        $cls = $screeningFailed
+                                            ? 'rejected'
+                                            : match ($s->status) {
+                                                'accepted' => 'accepted',
+                                                'under_review' => 'under_review',
+                                                'revision_under_review' => 'revision_review',
+                                                'revisions_requested' => 'revisions_requested',
+                                                'rejected' => 'rejected',
+                                                default => 'submitted',
+                                            };
+                                        $lbl = $screeningFailed
+                                            ? 'Failed Initial Screening'
+                                            : match ($s->status) {
+                                                'revision_under_review' => 'Revision Review',
+                                                default => ucfirst(str_replace('_', ' ', $s->status)),
+                                            };
                                     @endphp
 
                                     <span
