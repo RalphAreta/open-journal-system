@@ -795,14 +795,14 @@
                             ->whereNotNull('revised_file_path')
                             ->orderBy('created_at')
                             ->get();
-                        
+
                         $latestRevision = $allRevisions->last();
                         $previousRevision = null;
-                        
+
                         if ($allRevisions->count() > 1) {
                             $previousRevision = $allRevisions->slice(-2, 1)->first();
                         }
-                        
+
                         $hasMultipleRevisions = $allRevisions->count() > 1;
                     @endphp
 

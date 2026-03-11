@@ -63,10 +63,10 @@
             ->whereNotNull('revised_file_path')
             ->orderBy('created_at')
             ->get();
-        
+
         // Current/Latest revision is the one being reviewed
         $currentRevision = $revisionReview->revisionRequest;
-        
+
         // Previous revision is the one before the current one
         $previousRevision = null;
         if ($revisions->count() > 1) {
@@ -74,16 +74,16 @@
             $currentIndex = $revisions->search(function ($rev) use ($currentRevision) {
                 return $rev->id === $currentRevision->id;
             });
-            
+
             if ($currentIndex > 0) {
                 $previousRevision = $revisions[$currentIndex - 1];
             }
         }
-        
+
         // Determine what to show
         $hasMultipleRevisions = $revisions->count() > 1;
     @endphp
-    
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {{-- Latest/Current Manuscript (Always show) --}}
         <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
