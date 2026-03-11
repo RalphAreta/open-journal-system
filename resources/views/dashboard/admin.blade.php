@@ -629,37 +629,7 @@
                     </div>
 
                     {{-- Placeholder --}}
-                    <div class="feature-card feature-card-dashed">
-                        <div class="flex items-start gap-4">
-                            <div
-                                class="feature-icon"
-                                style="background: var(--border)"
-                            >
-                                <svg
-                                    width="18"
-                                    height="18"
-                                    fill="none"
-                                    stroke="#c9b99a"
-                                    stroke-width="1.7"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M12 4v16m8-8H4" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p
-                                    class="feature-title"
-                                    style="color: var(--ink-soft)"
-                                >
-                                    More Tools
-                                </p>
-                                <p class="feature-desc" style="color: #c9b99a">
-                                    Additional admin features can be added here
-                                    as the system grows.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
 
