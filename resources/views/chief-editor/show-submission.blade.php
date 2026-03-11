@@ -476,9 +476,9 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div class="@if ($submission->hasPassedInitialScreening()) grid grid-cols-1 lg:grid-cols-3 gap-5 @else space-y-4 @endif">
                 {{-- ── LEFT: Main Details ── --}}
-                <div class="lg:col-span-2 space-y-4 fade-up-1">
+                <div class="@if ($submission->hasPassedInitialScreening()) lg:col-span-2 @endif space-y-4 fade-up-1">
                     {{-- Submission Details --}}
                     <div class="card">
                         <div class="card-header">
@@ -815,6 +815,7 @@
                 </div>
 
                 {{-- ── RIGHT: Assignment Panel ── --}}
+                @if ($submission->hasPassedInitialScreening())
                 <div class="lg:col-span-1 space-y-4 fade-up-2">
                     {{-- Currently Assigned --}}
                     @php
@@ -1200,6 +1201,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </div>
