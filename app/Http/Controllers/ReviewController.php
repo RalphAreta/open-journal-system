@@ -1182,20 +1182,20 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
             ->whereNotNull('revised_file_path')
             ->orderBy('created_at', 'desc')
             ->first();
-        
+
         $updateData = [
             'managing_editor_id'         => $request->input('managing_editor_id'),
             'managing_editor_assigned_at' => now(),
             'managing_editor_status'      => 'pending',
             'status'                      => Submission::STATUS_WITH_MANAGING_EDITOR,
         ];
-        
+
         // If there's a latest revision, use its file instead of original
         if ($latestRevision && $latestRevision->revised_file_path) {
             $updateData['file_path'] = $latestRevision->revised_file_path;
             $updateData['file_name'] = $latestRevision->revised_file_name;
         }
-        
+
         $submission->update($updateData);
 
         \App\Models\Notification::create([
