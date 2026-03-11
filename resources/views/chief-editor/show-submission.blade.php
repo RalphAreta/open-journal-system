@@ -487,7 +487,7 @@
                             >
                                 Submission Details
                             </h2>
-                            @if ($submission->file_name)
+                            @if ($originalFileExists)
                                 <a
                                     href="{{ route('submissions.download-original', $submission) }}"
                                     class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-(--teal) hover:text-(--teal-d) transition-colors"

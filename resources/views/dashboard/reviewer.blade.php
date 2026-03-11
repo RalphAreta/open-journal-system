@@ -1202,7 +1202,7 @@
                         <tbody>
                             @foreach ($revisionReviews as $rr)
                                 @php
-                                    $daysLeft = $rr->due_at ? now()->diffInDays($rr->due_at, false) : null;
+                                    $daysLeft = $rr->due_at ? (int) now()->diffInDays($rr->due_at, false) : null;
                                 @endphp
 
                                 <tr>

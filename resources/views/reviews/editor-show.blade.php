@@ -818,7 +818,7 @@
                                     Original Manuscript
                                 </div>
 
-                                @if ($submission->original_file_path)
+                                @if ($originalFileExists)
                                     <p
                                         style="
                                             font-size: 12px;
@@ -855,7 +855,7 @@
                                             font-style: italic;
                                         "
                                     >
-                                        No original file
+                                        No original file available
                                     </p>
                                 @endif
                             </div>
