@@ -138,6 +138,35 @@
             </div>
         </div>
 
+        <!-- Author's Revision Notes Section -->
+        @php
+            $latestRevision = $submission->revisionRequests()
+                ->whereNotNull('revision_notes')
+                ->orderBy('created_at', 'desc')
+                ->first();
+        @endphp
+        @if ($latestRevision && $latestRevision->revision_notes)
+        <div class="bg-blue-50 rounded-xl p-6 border border-blue-200 mb-8">
+            <div class="flex items-start gap-3">
+                <span class="text-2xl">💬</span>
+                <div class="flex-1">
+                    <h2 class="font-bold text-lg text-blue-900 mb-2">Author's Revision Notes</h2>
+                    <p class="text-sm text-blue-700 mb-4">
+                        The author submitted the following notes when revising their manuscript:
+                    </p>
+                    <div class="bg-white rounded-lg p-4 border-l-4 border-blue-400">
+                        <p class="text-sm text-[#4a5568] whitespace-pre-wrap">{{ $latestRevision->revision_notes }}</p>
+                    </div>
+                    @if ($latestRevision->revised_at)
+                    <p class="text-xs text-blue-600 mt-3">
+                        📅 Submitted: {{ $latestRevision->revised_at->format('M d, Y \a\t g:i A') }}
+                    </p>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Workflow Info -->
         <div class="bg-[#2D8176]/5 rounded-xl p-6 border border-[#2D8176]/20">
             <h3 class="font-bold text-[#2D8176] mb-3">📋 Layout Editing Workflow</h3>
