@@ -793,7 +793,7 @@
             autocomplete="off"
         />
         @if (!empty($search))
-            
+
                 href="{{ route('submissions.index') }}"
                 style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#b5a595;text-decoration:none;font-size:1.1rem;line-height:1;"
                 title="Clear search"

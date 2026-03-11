@@ -7,7 +7,7 @@
         $totalAppeals = $allAppeals->count();
         $canStillAppeal = $totalAppeals < 2;
     @endphp
-    
+
     <section class="space-y-6">
         <div class="flex items-center gap-4">
             <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Request Appeal</h2>
@@ -26,7 +26,7 @@
                     <div>
                         <h3 class="text-lg font-black text-blue-900 tracking-tight">Appeal Under Review</h3>
                         <p class="text-sm text-blue-800 font-medium mt-1">
-                            You've submitted an appeal on {{ $pendingAppeal->created_at->format('M d, Y') }}. 
+                            You've submitted an appeal on {{ $pendingAppeal->created_at->format('M d, Y') }}.
                             Status: <strong>Pending Review</strong>
                         </p>
                     </div>
@@ -44,7 +44,7 @@
                     <div>
                         <h3 class="text-lg font-black text-red-900 tracking-tight">Appeal Process Completed</h3>
                         <p class="text-sm text-red-800 font-medium mt-1">
-                            You have used the maximum number of appeals (2) and unfortunately both were rejected. 
+                            You have used the maximum number of appeals (2) and unfortunately both were rejected.
                             The initial screening decision is final and cannot be appealed further.
                         </p>
                     </div>
@@ -55,7 +55,7 @@
             @php
                 $rejectedAppeal = $submission->appeals()->where('status', 'rejected')->first();
             @endphp
-            
+
             <div class="bg-yellow-50 border-2 border-yellow-200 rounded-3xl p-8 mb-6">
                 <div class="flex items-start gap-4 mb-4">
                     <div class="w-12 h-12 bg-yellow-100 rounded-2xl flex items-center justify-center text-yellow-600 shrink-0">
@@ -77,7 +77,7 @@
                         <p class="text-sm text-slate-700">{{ $rejectedAppeal->editor_response }}</p>
                     </div>
                 @endif
-                
+
                 <p class="text-sm text-yellow-900 font-medium mt-4 p-3 bg-yellow-100 rounded-xl">
                     ⓘ You have one final appeal remaining. Review the editor's feedback above carefully, as this is your last opportunity to appeal the initial screening decision.
                 </p>
@@ -92,8 +92,8 @@
                         <label for="appeal_reason" class="block text-sm font-bold text-slate-900 mb-3">
                             Reason for Final Appeal
                         </label>
-                        <textarea 
-                            name="reason" 
+                        <textarea
+                            name="reason"
                             id="appeal_reason"
                             rows="7"
                             placeholder="Please explain why you believe your manuscript should be reconsidered. Provide details about the research quality, methodology, or any concerns about the previous feedback. This is your final opportunity to appeal..."
@@ -123,8 +123,8 @@
                         <label for="appeal_reason" class="block text-sm font-bold text-slate-900 mb-3">
                             Reason for Appeal
                         </label>
-                        <textarea 
-                            name="reason" 
+                        <textarea
+                            name="reason"
                             id="appeal_reason"
                             rows="7"
                             placeholder="Please explain why you believe your manuscript should be reconsidered. Provide details about the research quality, methodology, or any concerns about the initial screening decision..."

@@ -108,7 +108,7 @@ class AppealController extends Controller
             $appeal->submission->update([
                 'initial_screening_status' => Submission::SCREENING_STATUS_PASSED,
             ]);
-            
+
             $message = 'Appeal approved. The submission will now proceed to the review stage.';
         } else if ($validated['status'] === Appeal::STATUS_REJECTED) {
             // If this is a rejection, check if we've reached max rejections
