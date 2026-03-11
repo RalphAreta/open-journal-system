@@ -1283,18 +1283,6 @@
                                     >
                                         {{ $rr->comments_for_author }}
                                     </p>
-                                    @if ($rr->rating)
-                                        <div
-                                            class="mt-4 pt-4 border-t border-[#f5f0e8] text-[.72rem] font-semibold text-[#6b5740]"
-                                        >
-                                            Rating:
-                                            <span
-                                                class="text-[#2d8176] font-bold ml-1"
-                                            >
-                                                {{ $rr->rating }}/100
-                                            </span>
-                                        </div>
-                                    @endif
                                 </div>
                             @endif
                         </div>
