@@ -61,7 +61,7 @@ A comprehensive **Laravel-based Open Journal System** with advanced submission m
 
 ```bash
 git clone <repository-url>
-cd ojt-project
+cd open-journal-system
 ```
 
 ### **Step 2: Install PHP Dependencies**
@@ -74,6 +74,8 @@ composer install
 
 ```bash
 npm install
+npm audit
+npm audit fix
 ```
 
 ### **Step 4: Configure Environment**
