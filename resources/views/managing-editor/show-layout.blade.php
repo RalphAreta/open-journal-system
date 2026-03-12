@@ -635,6 +635,15 @@
                             </p>
                         </div>
                     @endif
+
+                    {{-- Author feedback/revision notes --}}
+                    @if ($layoutAssignment->author_feedback)
+                        <div style="background: #fffbf0; border: 1px solid rgba(217, 119, 6, 0.35); border-left: 4px solid #d97706; border-radius: 8px; padding: 16px 20px; margin-top: 12px;">
+                            <p style="font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #92400e; margin-bottom: 8px;">💬 Author's Revision Feedback</p>
+                            <p style="font-family: 'Libre Baskerville', serif; font-size: 0.92rem; color: #78350f; line-height: 1.7; white-space: pre-wrap;">{{ $layoutAssignment->author_feedback }}</p>
+                            <p style="font-size: 0.75rem; color: #b45309; margin-top: 8px;">📅 Submitted: {{ $layoutAssignment->author_feedback_at?->format('M d, Y \a\t g:i A') ?? 'N/A' }}</p>
+                        </div>
+                    @endif
                 @else
                     <div class="no-file">
                         <svg

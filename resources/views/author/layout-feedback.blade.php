@@ -109,6 +109,19 @@
                     </div>
                 @endif
 
+                <!-- Author Feedback/Revision Notes Section -->
+                @if ($assignment->author_feedback)
+                    <div class="border-t border-[#e0d8cc] pt-6 mb-6">
+                        <p class="text-xs text-[#6a7890] uppercase tracking-wider font-bold mb-4">💬 Your Revision Notes</p>
+                        <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                            <p class="text-sm text-amber-900 leading-relaxed whitespace-pre-line">{{ $assignment->author_feedback }}</p>
+                        </div>
+                        <p class="text-xs text-[#6a7890] mt-2">
+                            Submitted: {{ $assignment->author_feedback_at?->format('M d, Y \a\t g:i A') ?? 'N/A' }}
+                        </p>
+                    </div>
+                @endif
+
                 <!-- Download Layout File -->
                 <div class="border-t border-[#e0d8cc] pt-6">
                     <p class="text-xs text-[#6a7890] uppercase tracking-wider font-bold mb-4">📥 Layout File</p>

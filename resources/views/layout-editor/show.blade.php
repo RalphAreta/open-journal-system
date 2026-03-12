@@ -134,6 +134,15 @@
                         <p class="text-sm text-[#4a5568]">{{ $assignment->notes }}</p>
                     </div>
                     @endif
+
+                    <!-- Author Feedback Section -->
+                    @if ($assignment->author_feedback)
+                        <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                            <p class="text-xs text-amber-900 uppercase tracking-wider font-bold mb-2">📋 Author's Revision Feedback</p>
+                            <p class="text-sm text-amber-900 whitespace-pre-line">{{ $assignment->author_feedback }}</p>
+                            <p class="text-xs text-amber-700 mt-2">Submitted: {{ $assignment->author_feedback_at?->format('M d, Y \a\t g:i A') ?? 'N/A' }}</p>
+                        </div>
+                    @endif
                 @endif
             </div>
         </div>
