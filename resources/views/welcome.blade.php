@@ -1159,7 +1159,6 @@
                 </a>
                 <div class="nav-links hidden md:flex">
                     <a href="/published-papers" class="nav-link">Published Papers</a>
-                    <a href="#process"           class="nav-link">Review Process</a>
                     <a href="#fields"            class="nav-link">Research Fields</a>
                     <a href="/login"             class="nav-link">Sign In</a>
                     <a href="/register"          class="btn-nav-register">Register</a>
