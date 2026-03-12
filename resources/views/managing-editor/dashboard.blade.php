@@ -1420,7 +1420,7 @@
             </form>
         </div>
     </div>
-    \
+
     {{-- ── Reassign Layout Modal ── --}}
     <div
         class="modal-backdrop"
