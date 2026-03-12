@@ -61,5 +61,5 @@ public const AUTHOR_STATUS_REVISION = 'revision_requested';
         return $this->belongsTo(User::class, 'layout_editor_id');
     }
 
-    
+
 }
