@@ -219,8 +219,6 @@
                             <div class="relative h-40 bg-gradient-to-br from-[#2D8176]/15 via-[#2D8176]/8 to-[#c9a84c]/10 overflow-hidden flex items-center justify-center border-b border-[#e0d8cc]">
                                 <div class="text-6xl opacity-60 group-hover:scale-110 group-hover:opacity-80 transition-transform duration-300">📄</div>
                                 <div class="absolute top-4 right-4">
-                                    <span class="px-3 py-1.5 bg-[#2D8176] text-white text-[8px] font-black uppercase rounded-full shadow-md">
-                                        Published
                                     </span>
                                 </div>
                             </div>
