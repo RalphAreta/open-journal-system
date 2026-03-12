@@ -216,12 +216,26 @@
                             data-paper-category="{{ $paper['category'] }}"
                         >
                             <!-- Header with gradient background -->
-                            <div class="relative h-40 bg-gradient-to-br from-[#2D8176]/15 via-[#2D8176]/8 to-[#c9a84c]/10 overflow-hidden flex items-center justify-center border-b border-[#e0d8cc]">
-                                <div class="text-6xl opacity-60 group-hover:scale-110 group-hover:opacity-80 transition-transform duration-300">📄</div>
-                                <div class="absolute top-4 right-4">
-                                    <span class="px-3 py-1.5 bg-[#2D8176] text-white text-[8px] font-black uppercase rounded-full shadow-md">
-                                        Published
-                                    </span>
+                            <div class="relative h-30 bg-gradient-to-br from-[#2D8176] via-[#2a8675] to-[#c9a84c] overflow-hidden flex items-center justify-center border-b border-[#e0d8cc] group-hover:shadow-inner transition-all">
+                                <div class="absolute inset-0 opacity-20">
+                                    <svg class="w-full h-full" viewBox="0 0 200 160" preserveAspectRatio="xMidYMid slice">
+                                        <defs>
+                                            <linearGradient id="linePattern{{ $paper['id'] }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" style="stop-color:white;stop-opacity:0.1" />
+                                                <stop offset="100%" style="stop-color:white;stop-opacity:0" />
+                                            </linearGradient>
+                                        </defs>
+                                        <circle cx="180" cy="-20" r="80" fill="url(#linePattern{{ $paper['id'] }})" />
+                                        <circle cx="20" cy="180" r="60" fill="url(#linePattern{{ $paper['id'] }})" />
+                                    </svg>
+                                </div>
+                                <div class="relative z-10 text-center">
+                                    <div class="text-5xl mb-2 group-hover:scale-110 transition-transform duration-300">
+                                        <svg class="w-16 h-16 text-white mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-white/90 text-xs font-semibold tracking-wider">RESEARCH PAPER</p>
                                 </div>
                             </div>
 
