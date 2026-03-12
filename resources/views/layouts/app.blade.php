@@ -24,6 +24,10 @@
                     background-position: 100% 0;
                 }
             }
+            @keyframes pulse-subtle {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.85; }
+            }
             .nav-shimmer {
                 background: linear-gradient(
                     90deg,
@@ -45,6 +49,153 @@
             .nav-link-active {
                 background: rgba(255, 255, 255, 0.15);
                 border-bottom: 2px solid #f0d678;
+            }
+            
+            /* Enhanced Form Elements */
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="number"],
+            input[type="date"],
+            input[type="time"],
+            textarea,
+            select {
+                transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+                border-color: #d1cfc8 !important;
+            }
+            
+            input:focus,
+            textarea:focus,
+            select:focus {
+                border-color: #2d8176 !important;
+                box-shadow: 0 0 0 3px rgba(45, 129, 118, 0.1), 0 4px 12px rgba(45, 129, 118, 0.15) !important;
+                outline: none !important;
+            }
+            
+            /* Enhanced Buttons */
+            .btn-primary {
+                transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+                box-shadow: 0 4px 14px rgba(45, 129, 118, 0.25);
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .btn-primary::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                transform: translate(-50%, -50%);
+                transition: all 0.5s ease;
+            }
+            
+            .btn-primary:hover::before {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .btn-primary:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 28px rgba(45, 129, 118, 0.35);
+            }
+            
+            /* Enhanced Status Badges */
+            .badge {
+                transition: all 0.25s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .badge-success {
+                background: linear-gradient(135deg, #f0fdf4, #ecfdf5) !important;
+                border: 1.5px solid #86efac !important;
+                color: #166534 !important;
+                box-shadow: 0 2px 8px rgba(34, 197, 94, 0.12);
+            }
+            
+            .badge-danger {
+                background: linear-gradient(135deg, #fef2f2, #fef1f1) !important;
+                border: 1.5px solid #fca5a5 !important;
+                color: #991b1b !important;
+                box-shadow: 0 2px 8px rgba(239, 68, 68, 0.12);
+            }
+            
+            .badge-warning {
+                background: linear-gradient(135deg, #fffbeb, #fef3c7) !important;
+                border: 1.5px solid #fce181 !important;
+                color: #b45309 !important;
+                box-shadow: 0 2px 8px rgba(217, 119, 6, 0.12);
+            }
+            
+            .badge-info {
+                background: linear-gradient(135deg, #f0f9ff, #e0f2fe) !important;
+                border: 1.5px solid #7dd3fc !important;
+                color: #0e7490 !important;
+                box-shadow: 0 2px 8px rgba(6, 182, 212, 0.12);
+            }
+            
+            .badge:hover {
+                transform: translateY(-2px);
+            }
+            
+            /* Enhanced Cards */
+            .card {
+                transition: all 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+                border-color: #e8dfd0 !important;
+                border-width: 1.5px;
+            }
+            
+            .card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 20px 48px rgba(45, 129, 118, 0.12) !important;
+                border-color: rgba(45, 129, 118, 0.3) !important;
+            }
+            
+            /* Enhanced Alerts */
+            .alert {
+                border-radius: 12px;
+                border-width: 1.5px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                transition: all 0.25s ease;
+            }
+            
+            .alert-success {
+                background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+                border-color: #86efac;
+                color: #166534;
+            }
+            
+            .alert-danger {
+                background: linear-gradient(135deg, #fef2f2, #fef1f1);
+                border-color: #fca5a5;
+                color: #991b1b;
+            }
+            
+            .alert-warning {
+                background: linear-gradient(135deg, #fffbeb, #fef3c7);
+                border-color: #fce181;
+                color: #b45309;
+            }
+            
+            /* Loading Spinner */
+            .spinner-pulse {
+                animation: pulse-subtle 2s ease-in-out infinite;
+            }
+            
+            /* Enhanced Table Rows */
+            .table tbody tr {
+                transition: all 0.2s ease;
+                border-bottom-color: #e8dfd0 !important;
+            }
+            
+            .table tbody tr:hover {
+                background-color: #f9f6f0 !important;
+                box-shadow: inset 4px 0 0 0 #2d8176;
             }
         </style>
         @stack('styles')
@@ -485,18 +636,22 @@
                             >
                                 Home
                             </a>
-                            <a
-                                href="{{ route('login') }}"
-                                class="text-sm font-bold text-white/90 hover:text-[#f0d678] transition-colors uppercase tracking-wider mr-4"
-                            >
-                                Login
-                            </a>
-                            <a
-                                href="{{ route('register') }}"
-                                class="px-6 py-2.5 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white text-sm font-bold tracking-wide rounded-xl shadow-lg hover:-translate-y-0.5 transition-all active:translate-y-0 border border-white/10"
-                            >
-                                REGISTER →
-                            </a>
+                            @if (!Route::is('login'))
+                                <a
+                                    href="{{ route('login') }}"
+                                    class="px-6 py-2.5 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white text-sm font-bold tracking-wide rounded-xl shadow-lg hover:-translate-y-0.5 transition-all active:translate-y-0 border border-white/10"
+                                >
+                                    LOGIN →
+                                </a>
+                            @endif
+                            @if (!Route::is('register'))
+                                <a
+                                    href="{{ route('register') }}"
+                                    class="px-6 py-2.5 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white text-sm font-bold tracking-wide rounded-xl shadow-lg hover:-translate-y-0.5 transition-all active:translate-y-0 border border-white/10"
+                                >
+                                    REGISTER →
+                                </a>
+                            @endif
                         @endauth
                     </div>
                 </div>
