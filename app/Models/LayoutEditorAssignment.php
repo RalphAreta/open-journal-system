@@ -17,6 +17,9 @@ class LayoutEditorAssignment extends Model
         'layout_file_name',
         'notes',
         'status',
+        'author_feedback',
+        'author_feedback_at',
+        'author_status',
     ];
 
     protected function casts(): array
@@ -25,6 +28,7 @@ class LayoutEditorAssignment extends Model
             'assigned_at' => 'datetime',
             'started_at' => 'datetime',
             'completed_at' => 'datetime',
+            'author_feedback_at' => 'datetime',
         ];
     }
 
