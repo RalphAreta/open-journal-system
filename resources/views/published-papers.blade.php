@@ -144,7 +144,8 @@
                     Peer-Reviewed Research from Our Journal
                 </p>
                 <p class="text-white/85 text-lg max-w-2xl mx-auto">
-                    Explore cutting-edge research published in our journal. All papers have been rigorously reviewed and peer-validated.
+                    Explore cutting-edge research published in our journal. All
+                    papers have been rigorously reviewed and peer-validated.
                 </p>
             </div>
         </section>
@@ -152,7 +153,9 @@
         <!-- PAPERS LISTING SECTION -->
         <section class="py-20 max-w-7xl mx-auto px-6">
             <div class="mb-12">
-                <h2 class="font-libre text-3xl md:text-4xl font-bold text-[#2D8176] mb-2">
+                <h2
+                    class="font-libre text-3xl md:text-4xl font-bold text-[#2D8176] mb-2"
+                >
                     All Published Research
                 </h2>
                 <p class="text-sm text-[#6a7890] font-medium">
@@ -161,7 +164,9 @@
             </div>
 
             @if ($papers->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
                     @foreach ($papers as $paper)
                         <!-- Paper Card -->
                         <div
@@ -195,12 +200,16 @@
                                 </h3>
 
                                 <!-- Author -->
-                                <p class="text-xs text-[#c9a84c] font-bold mb-3">
+                                <p
+                                    class="text-xs text-[#c9a84c] font-bold mb-3"
+                                >
                                     {{ $paper['author'] }}
                                 </p>
 
                                 <!-- Abstract -->
-                                <p class="text-[#6a7890] text-sm mb-4 leading-relaxed line-clamp-3">
+                                <p
+                                    class="text-[#6a7890] text-sm mb-4 leading-relaxed line-clamp-3"
+                                >
                                     {{ $paper['abstract'] }}
                                 </p>
 
@@ -210,20 +219,36 @@
                                 >
                                     <div class="flex items-center gap-1">
                                         <span class="text-[#c9a84c]">✓</span>
-                                        <span>{{ number_format($paper['downloads']) }} Downloads</span>
+                                        <span>
+                                            {{ number_format($paper['downloads']) }}
+                                            Downloads
+                                        </span>
                                     </div>
                                 </div>
 
                                 <!-- Published Date -->
-                                <div class="text-[10px] text-[#a7b1c7] mb-4 font-medium">
-                                    Published: {{ $paper['publishedAt']?->format('M d, Y') ?? 'N/A' }}
+                                <div
+                                    class="text-[10px] text-[#a7b1c7] mb-4 font-medium"
+                                >
+                                    Published:
+                                    {{ $paper['publishedAt']?->format('M d, Y') ?? 'N/A' }}
                                 </div>
 
                                 <!-- Citation -->
-                                <div class="bg-[#f9f7f2] p-3 rounded-lg mb-4 border-l-4 border-[#c9a84c]">
-                                    <p class="text-[10px] font-bold text-[#2D8176] uppercase mb-2">Citation</p>
-                                    <p class="text-[11px] text-[#6a7890] italic font-medium">
-                                        {{ $paper['author'] }} ({{ $paper['publishedAt']?->format('Y') ?? 'N/A' }}). {{ $paper['title'] }}. Journal System.
+                                <div
+                                    class="bg-[#f9f7f2] p-3 rounded-lg mb-4 border-l-4 border-[#c9a84c]"
+                                >
+                                    <p
+                                        class="text-[10px] font-bold text-[#2D8176] uppercase mb-2"
+                                    >
+                                        Citation
+                                    </p>
+                                    <p
+                                        class="text-[11px] text-[#6a7890] italic font-medium"
+                                    >
+                                        {{ $paper['author'] }}
+                                        ({{ $paper['publishedAt']?->format('Y') ?? 'N/A' }}).
+                                        {{ $paper['title'] }}. Journal System.
                                     </p>
                                 </div>
 
@@ -246,7 +271,9 @@
             @else
                 <div class="text-center py-20">
                     <div class="text-6xl mb-4">📚</div>
-                    <h3 class="font-libre text-2xl font-bold text-[#2D8176] mb-2">
+                    <h3
+                        class="font-libre text-2xl font-bold text-[#2D8176] mb-2"
+                    >
                         No Published Papers Yet
                     </h3>
                     <p class="text-[#6a7890] mb-8">
@@ -265,11 +292,14 @@
         <!-- CALL TO ACTION SECTION -->
         <section class="py-20 bg-[#f9f7f2] border-y border-[#ede5d5] px-6">
             <div class="max-w-4xl mx-auto text-center">
-                <h2 class="font-libre text-3xl md:text-4xl font-bold text-[#2D8176] mb-4">
+                <h2
+                    class="font-libre text-3xl md:text-4xl font-bold text-[#2D8176] mb-4"
+                >
                     Ready to Publish Your Research?
                 </h2>
                 <p class="text-[#6a7890] text-lg mb-8 leading-relaxed">
-                    Join our community of researchers and get your work published in a peer-reviewed journal today.
+                    Join our community of researchers and get your work
+                    published in a peer-reviewed journal today.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <a
@@ -353,7 +383,8 @@
 
             window.onscroll = function () {
                 const scrollTop = window.scrollY;
-                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const docHeight =
+                    document.documentElement.scrollHeight - window.innerHeight;
                 const scrolled = scrollTop / docHeight;
 
                 btn.classList.toggle('visible', scrolled > 0.2);
