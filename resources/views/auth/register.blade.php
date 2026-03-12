@@ -382,14 +382,6 @@
                 p-6 md:p-10 lg:p-14 relative overflow-x-hidden overflow-y-auto"
          style="background:linear-gradient(145deg,#f7f3ec 0%,#ede8df 50%,#e8e2f5 100%)">
 
-        {{-- Decorative rings --}}
-        <div class="absolute -top-36 -right-24 w-[30rem] h-[30rem] rounded-full
-                    border border-[#a07830]/10 pointer-events-none"></div>
-        <div class="absolute -top-10 -right-5 w-[18rem] h-[18rem] rounded-full
-                    border border-[#a07830]/07 pointer-events-none"></div>
-        <div class="absolute -bottom-24 -left-16 w-60 h-60 rounded-full
-                    border border-[#c9a84c]/10 pointer-events-none"></div>
-
         {{-- Diagonal stripe --}}
         <div class="absolute inset-0 opacity-[.03] pointer-events-none"
              style="background-image:repeating-linear-gradient(-50deg,
