@@ -259,12 +259,28 @@ public function publishPaper(Submission $submission): RedirectResponse
         return back()->with('error', 'This submission is not ready for publishing.');
     }
 
-    // Publish the paper
-    $submission->update([
+    // Get the latest completed layout assignment
+    $layoutAssignment = $submission->layoutEditorAssignments()
+        ->where('status', LayoutEditorAssignment::STATUS_COMPLETED)
+        ->latest('completed_at')
+        ->first();
+
+    // Update submission to use layout editor's formatted file
+    $updateData = [
         'status' => Submission::STATUS_PUBLISHED,
         'published_at' => now(),
         'managing_editor_status' => 'published',
-    ]);
+    ];
+
+    if ($layoutAssignment && $layoutAssignment->layout_file_path) {
+        // Copy layout file details to submission for public download
+        $updateData['file_path'] = $layoutAssignment->layout_file_path;
+        $updateData['file_name'] = $layoutAssignment->layout_file_name;
+        $updateData['layout_editor_assignment_id'] = $layoutAssignment->id;
+    }
+
+    // Publish the paper
+    $submission->update($updateData);
 
     // Notify author of publication
     $author = $submission->author;

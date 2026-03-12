@@ -40,8 +40,9 @@ class Submission extends Model
 'ctf_file_name',
 'ctf_signed_file_path',   // ← dagdag
 'ctf_signed_file_name',   // ← dagdag
-'ctf_returned_at',   
+'ctf_returned_at',
 'published_at',
+'layout_editor_assignment_id',
   'author_feedback',
     'author_feedback_at',
     'author_status',
@@ -56,7 +57,7 @@ class Submission extends Model
             'initial_screening_at' => 'datetime',
             'managing_editor_assigned_at' => 'datetime',
             'ctf_sent_at' => 'datetime',
-            'ctf_returned_at' => 'datetime', 
+            'ctf_returned_at' => 'datetime',
             'forwarded_to_layout_at' => 'datetime',
             'published_at' => 'datetime',
             'editor_decision_draft' => 'json',
@@ -162,6 +163,11 @@ public const AUTHOR_STATUS_REVISION = 'revision_requested';
     public function layoutEditorAssignments(): HasMany
     {
         return $this->hasMany(LayoutEditorAssignment::class);
+    }
+
+    public function publishedLayoutAssignment(): BelongsTo
+    {
+        return $this->belongsTo(LayoutEditorAssignment::class, 'layout_editor_assignment_id');
     }
 
     public function isEditableByAuthor(): bool
