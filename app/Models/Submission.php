@@ -42,6 +42,7 @@ class Submission extends Model
 'ctf_signed_file_name',   // ← dagdag
 'ctf_returned_at',   
 'published_at',
+'layout_editor_assignment_id',
   'author_feedback',
     'author_feedback_at',
     'author_status',
@@ -162,6 +163,11 @@ public const AUTHOR_STATUS_REVISION = 'revision_requested';
     public function layoutEditorAssignments(): HasMany
     {
         return $this->hasMany(LayoutEditorAssignment::class);
+    }
+
+    public function publishedLayoutAssignment(): BelongsTo
+    {
+        return $this->belongsTo(LayoutEditorAssignment::class, 'layout_editor_assignment_id');
     }
 
     public function isEditableByAuthor(): bool
