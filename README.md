@@ -143,13 +143,6 @@ This populates initial data (roles, admin user, system settings):
 php artisan db:seed
 ```
 
-
-**Artisan Command to Clean Database:**
-```bash
-php artisan app:clean-database
-```
-The custom artisan command app:clean-database has been created and can be run again anytime with:
-
 **Default Admin Credentials:**
 - Email: `admin@irjiest.local`
 - Password: `password`
@@ -338,8 +331,10 @@ php artisan test
 
 # Compile assets for production
 npm run build
-```
 
+#Artisan Command to Clean Database
+php artisan app:clean-database
+#The custom artisan command app:clean-database has been created and can be run again anytime with:
 ---
 
 ## 📂 Project Structure
