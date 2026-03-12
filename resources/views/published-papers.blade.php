@@ -184,9 +184,9 @@
 
                 <!-- Search & Filter (Optional) -->
                 <div class="flex flex-col sm:flex-row gap-3 mb-8">
-                    <input 
-                        type="text" 
-                        placeholder="Search papers by title or author..." 
+                    <input
+                        type="text"
+                        placeholder="Search papers by title or author..."
                         id="paperSearch"
                         class="flex-1 px-4 py-3 border border-[#e0d8cc] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2D8176]/30 focus:border-[#2D8176]"
                     />
@@ -330,7 +330,7 @@
         <section class="py-24 bg-gradient-to-br from-[#f9f7f2] via-[#faf8f4] to-[#f5f0e8] border-y border-[#ede5d5] px-6 relative overflow-hidden">
             <div class="absolute top-0 right-0 w-96 h-96 bg-[#2D8176]/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
             <div class="absolute bottom-0 left-0 w-72 h-72 bg-[#c9a84c]/5 rounded-full -ml-32 -mb-32 blur-3xl"></div>
-            
+
             <div class="max-w-4xl mx-auto text-center relative z-10">
                 <h2
                     class="font-libre text-4xl md:text-5xl font-bold text-[#2D8176] mb-6"
@@ -454,11 +454,11 @@
                     const abstract = card.getAttribute('data-paper-abstract').toLowerCase();
                     const category = card.getAttribute('data-paper-category');
 
-                    const matchesSearch = 
-                        title.includes(searchQuery) || 
-                        author.includes(searchQuery) || 
+                    const matchesSearch =
+                        title.includes(searchQuery) ||
+                        author.includes(searchQuery) ||
                         abstract.includes(searchQuery);
-                    
+
                     const matchesCategory = !selectedCategory || category === selectedCategory;
 
                     if (matchesSearch && matchesCategory) {
@@ -473,7 +473,7 @@
                 // Show/hide no results message
                 const gridContainer = document.querySelector('.grid');
                 let noResultsMsg = document.getElementById('noResultsMsg');
-                
+
                 if (visibleCount === 0) {
                     if (!noResultsMsg) {
                         noResultsMsg = document.createElement('div');
