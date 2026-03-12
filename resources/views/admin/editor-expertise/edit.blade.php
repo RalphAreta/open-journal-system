@@ -303,7 +303,7 @@
 @endpush
 
 @section('content')
-    <div class="aw aw-bg max-w-4xl mx-auto px-6 pb-16">
+   <div class="aw aw-bg max-w-screen-xl mx-auto px-6 pb-16">
         {{-- ── Hero Header ── --}}
         <div class="hero-header fu">
             <a
