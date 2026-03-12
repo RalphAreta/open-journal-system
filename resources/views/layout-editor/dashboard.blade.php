@@ -433,7 +433,7 @@
             {{-- Footer note --}}
             <div class="fu4 text-center pb-4" style="animation-delay: 600ms">
                 <p class="text-[11px] text-[#b8aa90] uppercase tracking-widest">
-                    BatStateU · BIRJISE Journal System · Layout Editor Portal
+                  
                 </p>
             </div>
         </div>
