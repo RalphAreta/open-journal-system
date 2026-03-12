@@ -25,8 +25,13 @@
                 }
             }
             @keyframes pulse-subtle {
-                0%, 100% { opacity: 1; }
-                50% { opacity: 0.85; }
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.85;
+                }
             }
             .nav-shimmer {
                 background: linear-gradient(
@@ -50,28 +55,30 @@
                 background: rgba(255, 255, 255, 0.15);
                 border-bottom: 2px solid #f0d678;
             }
-            
+
             /* Enhanced Form Elements */
-            input[type="text"],
-            input[type="email"],
-            input[type="password"],
-            input[type="number"],
-            input[type="date"],
-            input[type="time"],
+            input[type='text'],
+            input[type='email'],
+            input[type='password'],
+            input[type='number'],
+            input[type='date'],
+            input[type='time'],
             textarea,
             select {
                 transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
                 border-color: #d1cfc8 !important;
             }
-            
+
             input:focus,
             textarea:focus,
             select:focus {
                 border-color: #2d8176 !important;
-                box-shadow: 0 0 0 3px rgba(45, 129, 118, 0.1), 0 4px 12px rgba(45, 129, 118, 0.15) !important;
+                box-shadow:
+                    0 0 0 3px rgba(45, 129, 118, 0.1),
+                    0 4px 12px rgba(45, 129, 118, 0.15) !important;
                 outline: none !important;
             }
-            
+
             /* Enhanced Buttons */
             .btn-primary {
                 transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -79,7 +86,7 @@
                 position: relative;
                 overflow: hidden;
             }
-            
+
             .btn-primary::before {
                 content: '';
                 position: absolute;
@@ -92,17 +99,17 @@
                 transform: translate(-50%, -50%);
                 transition: all 0.5s ease;
             }
-            
+
             .btn-primary:hover::before {
                 width: 300px;
                 height: 300px;
             }
-            
+
             .btn-primary:hover {
                 transform: translateY(-3px);
                 box-shadow: 0 12px 28px rgba(45, 129, 118, 0.35);
             }
-            
+
             /* Enhanced Status Badges */
             .badge {
                 transition: all 0.25s ease;
@@ -110,52 +117,68 @@
                 align-items: center;
                 gap: 0.5rem;
             }
-            
+
             .badge-success {
-                background: linear-gradient(135deg, #f0fdf4, #ecfdf5) !important;
+                background: linear-gradient(
+                    135deg,
+                    #f0fdf4,
+                    #ecfdf5
+                ) !important;
                 border: 1.5px solid #86efac !important;
                 color: #166534 !important;
                 box-shadow: 0 2px 8px rgba(34, 197, 94, 0.12);
             }
-            
+
             .badge-danger {
-                background: linear-gradient(135deg, #fef2f2, #fef1f1) !important;
+                background: linear-gradient(
+                    135deg,
+                    #fef2f2,
+                    #fef1f1
+                ) !important;
                 border: 1.5px solid #fca5a5 !important;
                 color: #991b1b !important;
                 box-shadow: 0 2px 8px rgba(239, 68, 68, 0.12);
             }
-            
+
             .badge-warning {
-                background: linear-gradient(135deg, #fffbeb, #fef3c7) !important;
+                background: linear-gradient(
+                    135deg,
+                    #fffbeb,
+                    #fef3c7
+                ) !important;
                 border: 1.5px solid #fce181 !important;
                 color: #b45309 !important;
                 box-shadow: 0 2px 8px rgba(217, 119, 6, 0.12);
             }
-            
+
             .badge-info {
-                background: linear-gradient(135deg, #f0f9ff, #e0f2fe) !important;
+                background: linear-gradient(
+                    135deg,
+                    #f0f9ff,
+                    #e0f2fe
+                ) !important;
                 border: 1.5px solid #7dd3fc !important;
                 color: #0e7490 !important;
                 box-shadow: 0 2px 8px rgba(6, 182, 212, 0.12);
             }
-            
+
             .badge:hover {
                 transform: translateY(-2px);
             }
-            
+
             /* Enhanced Cards */
             .card {
                 transition: all 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
                 border-color: #e8dfd0 !important;
                 border-width: 1.5px;
             }
-            
+
             .card:hover {
                 transform: translateY(-6px);
                 box-shadow: 0 20px 48px rgba(45, 129, 118, 0.12) !important;
                 border-color: rgba(45, 129, 118, 0.3) !important;
             }
-            
+
             /* Enhanced Alerts */
             .alert {
                 border-radius: 12px;
@@ -163,36 +186,36 @@
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
                 transition: all 0.25s ease;
             }
-            
+
             .alert-success {
                 background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
                 border-color: #86efac;
                 color: #166534;
             }
-            
+
             .alert-danger {
                 background: linear-gradient(135deg, #fef2f2, #fef1f1);
                 border-color: #fca5a5;
                 color: #991b1b;
             }
-            
+
             .alert-warning {
                 background: linear-gradient(135deg, #fffbeb, #fef3c7);
                 border-color: #fce181;
                 color: #b45309;
             }
-            
+
             /* Loading Spinner */
             .spinner-pulse {
                 animation: pulse-subtle 2s ease-in-out infinite;
             }
-            
+
             /* Enhanced Table Rows */
             .table tbody tr {
                 transition: all 0.2s ease;
                 border-bottom-color: #e8dfd0 !important;
             }
-            
+
             .table tbody tr:hover {
                 background-color: #f9f6f0 !important;
                 box-shadow: inset 4px 0 0 0 #2d8176;
@@ -458,21 +481,46 @@
                                             <div
                                                 class="px-4 py-3 border-b border-[#f0ece6] hover:bg-[#faf8f5] transition-colors bg-blue-50/50 notification-item"
                                             >
-                                                <p
-                                                    class="text-[12px] font-bold text-[#0d1628]"
+                                                <div
+                                                    class="flex items-start gap-3"
                                                 >
-                                                    {{ $notif->title }}
-                                                </p>
-                                                <p
-                                                    class="text-[11px] text-[#6a7890] mt-0.5 leading-relaxed"
-                                                >
-                                                    {{ Str::limit($notif->message, 80) }}
-                                                </p>
-                                                <p
-                                                    class="text-[9px] text-[#b0aaa0] mt-1"
-                                                >
-                                                    {{ $notif->created_at->diffForHumans() }}
-                                                </p>
+                                                    <div class="shrink-0 mt-1">
+                                                        @if ($notif->type === 'success')
+                                                            <span
+                                                                class="w-2 h-2 rounded-full bg-emerald-500 block"
+                                                            ></span>
+                                                        @elseif ($notif->type === 'danger' || $notif->type === 'error')
+                                                            <span
+                                                                class="w-2 h-2 rounded-full bg-red-500 block"
+                                                            ></span>
+                                                        @elseif ($notif->type === 'warning')
+                                                            <span
+                                                                class="w-2 h-2 rounded-full bg-amber-500 block"
+                                                            ></span>
+                                                        @else
+                                                            <span
+                                                                class="w-2 h-2 rounded-full bg-blue-500 block"
+                                                            ></span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <p
+                                                            class="text-[12px] font-bold text-[#0d1628] leading-snug"
+                                                        >
+                                                            {{ $notif->title }}
+                                                        </p>
+                                                        <p
+                                                            class="text-[11px] text-[#6a7890] mt-0.5 leading-relaxed"
+                                                        >
+                                                            {{ Str::limit($notif->message, 80) }}
+                                                        </p>
+                                                        <p
+                                                            class="text-[9px] text-[#b0aaa0] mt-1"
+                                                        >
+                                                            {{ $notif->created_at->diffForHumans() }}
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         @empty
                                             <div class="px-4 py-8 text-center">
@@ -636,7 +684,7 @@
                             >
                                 Home
                             </a>
-                            @if (!Route::is('login'))
+                            @if (! Route::is('login'))
                                 <a
                                     href="{{ route('login') }}"
                                     class="px-6 py-2.5 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white text-sm font-bold tracking-wide rounded-xl shadow-lg hover:-translate-y-0.5 transition-all active:translate-y-0 border border-white/10"
@@ -644,7 +692,8 @@
                                     LOGIN →
                                 </a>
                             @endif
-                            @if (!Route::is('register'))
+
+                            @if (! Route::is('register'))
                                 <a
                                     href="{{ route('register') }}"
                                     class="px-6 py-2.5 bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white text-sm font-bold tracking-wide rounded-xl shadow-lg hover:-translate-y-0.5 transition-all active:translate-y-0 border border-white/10"
