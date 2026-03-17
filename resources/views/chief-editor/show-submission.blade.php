@@ -476,9 +476,13 @@
                 </div>
             </div>
 
-            <div class="@if ($submission->hasPassedInitialScreening()) grid grid-cols-1 lg:grid-cols-3 gap-5 @else space-y-4 @endif">
+            <div
+                class="@if ($submission->hasPassedInitialScreening()) grid grid-cols-1 lg:grid-cols-3 gap-5 @else space-y-4 @endif"
+            >
                 {{-- ── LEFT: Main Details ── --}}
-                <div class="@if ($submission->hasPassedInitialScreening()) lg:col-span-2 @endif space-y-4 fade-up-1">
+                <div
+                    class="@if ($submission->hasPassedInitialScreening()) lg:col-span-2 @endif space-y-4 fade-up-1"
+                >
                     {{-- Submission Details --}}
                     <div class="card">
                         <div class="card-header">
@@ -544,7 +548,7 @@
                             <div>
                                 <p class="field-label mb-1">Abstract</p>
                                 <p
-                                    class="text-sm text-[#4a5568] leading-relaxed"
+                                    class="text-sm text-[#4a5568] leading-relaxed text-justify"
                                 >
                                     {{ $submission->abstract }}
                                 </p>
@@ -817,17 +821,23 @@
                     @if ($latestAppeal)
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)">
+                                <h2
+                                    class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
+                                >
                                     Appeal Decision
                                 </h2>
-                                <span class="text-[9px] font-black uppercase tracking-widest text-[#b0aaa0]">
+                                <span
+                                    class="text-[9px] font-black uppercase tracking-widest text-[#b0aaa0]"
+                                >
                                     {{ ucfirst($latestAppeal->status) }}
                                 </span>
                             </div>
                             <div class="card-body">
                                 {{-- Appeal Reason --}}
                                 <div class="mb-4">
-                                    <p class="field-label mb-2">Appeal Reason</p>
+                                    <p class="field-label mb-2">
+                                        Appeal Reason
+                                    </p>
                                     <div class="bg-[#faf8f5] rounded-lg p-3">
                                         <p class="text-sm text-[#4a5568]">
                                             {{ $latestAppeal->reason }}
@@ -836,7 +846,7 @@
                                 </div>
 
                                 {{-- Decision Status --}}
-                                @if (!$latestAppeal->isPending())
+                                @if (! $latestAppeal->isPending())
                                     <div class="border-t border-[#e8dfd0] pt-4">
                                         <div
                                             class="result-block {{ $latestAppeal->isApproved() ? 'result-approved' : 'result-rejected' }}"
@@ -844,11 +854,18 @@
                                                 border-radius: 12px;
                                                 padding: 20px;
                                                 background: {{ $latestAppeal->isApproved() ? '#f0fdf4' : '#fef2f2' }};
-                                                border: 1.5px solid {{ $latestAppeal->isApproved() ? '#a7f3d0' : '#fecaca' }};
+                                                border: 1.5px solid
+                                                    {{ $latestAppeal->isApproved() ? '#a7f3d0' : '#fecaca' }};
                                                 margin-bottom: 16px;
                                             "
                                         >
-                                            <div style="display: flex; align-items: flex-start; gap: 14px;">
+                                            <div
+                                                style="
+                                                    display: flex;
+                                                    align-items: flex-start;
+                                                    gap: 14px;
+                                                "
+                                            >
                                                 <div
                                                     style="
                                                         width: 44px;
@@ -862,56 +879,95 @@
                                                     "
                                                 >
                                                     @if ($latestAppeal->isApproved())
-                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5">
-                                                            <path d="M5 13l4 4L19 7" />
+                                                        <svg
+                                                            width="20"
+                                                            height="20"
+                                                            viewBox="0 0 24 24"
+                                                            fill="none"
+                                                            stroke="#059669"
+                                                            stroke-width="2.5"
+                                                        >
+                                                            <path
+                                                                d="M5 13l4 4L19 7"
+                                                            />
                                                         </svg>
                                                     @else
-                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5">
-                                                            <path d="M6 18L18 6M6 6l12 12" />
+                                                        <svg
+                                                            width="20"
+                                                            height="20"
+                                                            viewBox="0 0 24 24"
+                                                            fill="none"
+                                                            stroke="#dc2626"
+                                                            stroke-width="2.5"
+                                                        >
+                                                            <path
+                                                                d="M6 18L18 6M6 6l12 12"
+                                                            />
                                                         </svg>
                                                     @endif
                                                 </div>
                                                 <div>
-                                                    <h4 style="
-                                                        font-family: 'Libre Baskerville', serif;
-                                                        font-size: 1.1rem;
-                                                        font-weight: 700;
-                                                        color: {{ $latestAppeal->isApproved() ? '#065f46' : '#991b1b' }};
-                                                    ">
-                                                        Appeal {{ $latestAppeal->isApproved() ? 'Approved' : 'Rejected' }}
+                                                    <h4
+                                                        style="
+                                                            font-family:
+                                                                'Libre Baskerville',
+                                                                serif;
+                                                            font-size: 1.1rem;
+                                                            font-weight: 700;
+                                                            color: {{ $latestAppeal->isApproved() ? '#065f46' : '#991b1b' }};
+                                                        "
+                                                    >
+                                                        Appeal
+                                                        {{ $latestAppeal->isApproved() ? 'Approved' : 'Rejected' }}
                                                     </h4>
-                                                    <p style="
-                                                        font-size: 12px;
-                                                        color: {{ $latestAppeal->isApproved() ? '#059669' : '#dc2626' }};
-                                                        margin-top: 4px;
-                                                        font-family: 'Courier New', monospace;
-                                                    ">
-                                                        Reviewed on {{ $latestAppeal->reviewed_at->format('M d, Y \a\t g:i A') }}
+                                                    <p
+                                                        style="
+                                                            font-size: 12px;
+                                                            color: {{ $latestAppeal->isApproved() ? '#059669' : '#dc2626' }};
+                                                            margin-top: 4px;
+                                                            font-family:
+                                                                'Courier New',
+                                                                monospace;
+                                                        "
+                                                    >
+                                                        Reviewed on
+                                                        {{ $latestAppeal->reviewed_at->format('M d, Y \a\t g:i A') }}
                                                         @if ($latestAppeal->reviewedBy)
-                                                            · by <strong>{{ $latestAppeal->reviewedBy->name }}</strong>
+                                                            · by
+                                                            <strong>
+                                                                {{ $latestAppeal->reviewedBy->name }}
+                                                            </strong>
                                                         @endif
                                                     </p>
                                                 </div>
                                             </div>
 
                                             @if ($latestAppeal->editor_response)
-                                                <div style="
-                                                    padding-top: 16px;
-                                                    border-top: 1px solid {{ $latestAppeal->isApproved() ? '#a7f3d0' : '#fecaca' }};
-                                                ">
-                                                    <p class="field-label" style="
-                                                        color: {{ $latestAppeal->isApproved() ? '#059669' : '#dc2626' }};
-                                                        margin-bottom: 8px;
-                                                    ">
+                                                <div
+                                                    style="
+                                                        padding-top: 16px;
+                                                        border-top: 1px solid
+                                                            {{ $latestAppeal->isApproved() ? '#a7f3d0' : '#fecaca' }};
+                                                    "
+                                                >
+                                                    <p
+                                                        class="field-label"
+                                                        style="
+                                                            color: {{ $latestAppeal->isApproved() ? '#059669' : '#dc2626' }};
+                                                            margin-bottom: 8px;
+                                                        "
+                                                    >
                                                         Editor's Response
                                                     </p>
-                                                    <p style="
-                                                        font-size: 13px;
-                                                        color: {{ $latestAppeal->isApproved() ? '#065f46' : '#7f1d1d' }};
-                                                        line-height: 1.75;
-                                                        word-break: break-word;
-                                                        overflow-wrap: break-word;
-                                                    ">
+                                                    <p
+                                                        style="
+                                                            font-size: 13px;
+                                                            color: {{ $latestAppeal->isApproved() ? '#065f46' : '#7f1d1d' }};
+                                                            line-height: 1.75;
+                                                            word-break: break-word;
+                                                            overflow-wrap: break-word;
+                                                        "
+                                                    >
                                                         {{ $latestAppeal->editor_response }}
                                                     </p>
                                                 </div>
@@ -919,22 +975,52 @@
                                         </div>
                                     </div>
                                 @else
-                                    <div style="
-                                        padding: 12px;
-                                        background: #fef3c7;
-                                        border: 1px solid #fbbf24;
-                                        border-radius: 8px;
-                                        display: flex;
-                                        gap: 10px;
-                                        align-items: center;
-                                        margin-top: 16px;
-                                    ">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                    <div
+                                        style="
+                                            padding: 12px;
+                                            background: #fef3c7;
+                                            border: 1px solid #fbbf24;
+                                            border-radius: 8px;
+                                            display: flex;
+                                            gap: 10px;
+                                            align-items: center;
+                                            margin-top: 16px;
+                                        "
+                                    >
+                                        <svg
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="#d97706"
+                                            stroke-width="2"
+                                        >
+                                            <circle
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                            ></circle>
+                                            <line
+                                                x1="12"
+                                                y1="8"
+                                                x2="12"
+                                                y2="12"
+                                            ></line>
+                                            <line
+                                                x1="12"
+                                                y1="16"
+                                                x2="12.01"
+                                                y2="16"
+                                            ></line>
                                         </svg>
-                                        <p style="font-size: 13px; color: #b45309;">This appeal is still pending review.</p>
+                                        <p
+                                            style="
+                                                font-size: 13px;
+                                                color: #b45309;
+                                            "
+                                        >
+                                            This appeal is still pending review.
+                                        </p>
                                     </div>
                                 @endif
                             </div>
@@ -944,391 +1030,398 @@
 
                 {{-- ── RIGHT: Assignment Panel ── --}}
                 @if ($submission->hasPassedInitialScreening())
-                <div class="lg:col-span-1 space-y-4 fade-up-2">
-                    {{-- Currently Assigned --}}
-                    @php
-                        $currentAssignments = $submission
-                            ->assignments()
-                            ->whereNull('rejected_at')
-                            ->latest('assigned_at')
-                            ->get();
-                    @endphp
+                    <div class="lg:col-span-1 space-y-4 fade-up-2">
+                        {{-- Currently Assigned --}}
+                        @php
+                            $currentAssignments = $submission
+                                ->assignments()
+                                ->whereNull('rejected_at')
+                                ->latest('assigned_at')
+                                ->get();
+                        @endphp
 
-                    @if ($currentAssignments->count() > 0)
-                        <div class="card" id="assignments-card">
-                            <div class="card-header">
-                                <h3
-                                    class="font-['Libre_Baskerville'] text-sm font-bold text-emerald-700"
-                                >
-                                    ✓ Currently Assigned
-                                </h3>
-                            </div>
-                            <div class="card-body space-y-2">
-                                @foreach ($currentAssignments as $ca)
-                                    <div class="assigned-editor-card">
-                                        <p
-                                            class="text-sm font-bold text-(--ink)"
-                                        >
-                                            {{ $ca->assignedTo->name }}
-                                        </p>
-                                        <p class="text-[10px] text-[#b0aaa0]">
-                                            {{ $ca->expertise_field }}
-                                        </p>
-                                        @if ($ca->isAccepted())
-                                            <span
-                                                class="text-[10px] font-black text-emerald-600 uppercase tracking-wider"
-                                            >
-                                                ✓ Accepted
-                                            </span>
-                                        @elseif ($ca->isPending())
-                                            <span
-                                                class="text-[10px] font-black text-amber-600 uppercase tracking-wider"
-                                            >
-                                                ⏳ Pending
-                                            </span>
-                                        @endif
-                                    </div>
-                                @endforeach
-
-                                <button
-                                    type="button"
-                                    onclick="
-                                        document.getElementById(
-                                            'reassign-form',
-                                        ).style.display = 'block';
-                                        document.getElementById(
-                                            'assignments-card',
-                                        ).style.display = 'none';
-                                    "
-                                    class="w-full text-[10px] font-black uppercase tracking-widest text-(--teal) hover:text-(--teal-d) transition-colors pt-1"
-                                >
-                                    Change Assignments →
-                                </button>
-                            </div>
-                        </div>
-                    @endif
-
-                    {{-- Assign / Reassign Form --}}
-                    <div
-                        class="card"
-                        id="reassign-form"
-                        {{ $submission->assignedEditor ? 'style=display:none' : '' }}
-                    >
-                        <div class="card-header">
-                            <h3
-                                class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
-                            >
-                                {{ $submission->assignedEditor ? 'Reassign Editors' : 'Assign Editors' }}
-                            </h3>
-                        </div>
-                        <div class="card-body">
-                            <p class="text-[11px] text-[#8a96a8] mb-3">
-                                Matched to
-                                <span class="font-black text-(--red)">
-                                    {{ $researchField }}
-                                </span>
-                            </p>
-
-                            <form
-                                method="POST"
-                                action="{{ ! $submission->assignedEditor ? route('chief-editor.assign', $submission) : route('chief-editor.reassign', $submission) }}"
-                            >
-                                @csrf
-
-                                <div
-                                    class="space-y-2 mb-4 max-h-64 overflow-y-auto pr-1"
-                                >
-                                    {{-- Matched editors --}}
-                                    @if (! empty($editorsByField))
-                                        @foreach ($editorsByField as $field => $editors)
-                                            <div class="mb-2">
-                                                <p
-                                                    class="text-[9px] font-black uppercase tracking-[.15em] text-(--teal) mb-1.5 flex items-center gap-1"
-                                                >
-                                                    <span
-                                                        class="w-1.5 h-1.5 rounded-full bg-(--teal)"
-                                                    ></span>
-                                                    {{ $field }} · Matched
-                                                </p>
-                                                <div class="space-y-1.5">
-                                                    @foreach ($editors as $editor)
-                                                        @php
-                                                            $activeCount = $editor->active_assignments_count ?? 0;
-                                                            $isAssignedHere = $submission
-                                                                ->assignments()
-                                                                ->whereNull('rejected_at')
-                                                                ->where('assigned_to_user_id', $editor->id)
-                                                                ->exists();
-                                                        @endphp
-
-                                                        <label
-                                                            class="editor-option"
-                                                        >
-                                                            <input
-                                                                type="radio"
-                                                                name="editor_id"
-                                                                value="{{ $editor->id }}"
-                                                                class="editor-cb"
-                                                                {{ $isAssignedHere ? 'checked' : '' }}
-                                                            />
-                                                            <div
-                                                                class="min-w-0 flex-1"
-                                                            >
-                                                                <p
-                                                                    class="text-sm font-bold text-(--ink) truncate"
-                                                                >
-                                                                    {{ $editor->name }}
-                                                                    @if ($isAssignedHere)
-                                                                        <span
-                                                                            class="text-[9px] font-black text-emerald-600 ml-1"
-                                                                        >
-                                                                            ✓
-                                                                        </span>
-                                                                    @endif
-                                                                </p>
-                                                                <p
-                                                                    class="text-[10px] text-[#b0aaa0] truncate"
-                                                                >
-                                                                    {{ $editor->email }}
-                                                                </p>
-                                                                <p
-                                                                    class="text-[10px] font-bold mt-0.5 {{ $activeCount === 0 ? 'text-emerald-600' : ($activeCount <= 3 ? 'text-amber-600' : 'text-red-500') }}"
-                                                                >
-                                                                    {{ $activeCount === 0 ? '✓ Available' : $activeCount . ' active' }}
-                                                                </p>
-                                                            </div>
-                                                        </label>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    @else
-                                        <div
-                                            class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-700 font-medium"
-                                        >
-                                            ⚠️ No editors matched for
-                                            <strong>
-                                                {{ $researchField }}
-                                            </strong>
-                                        </div>
-                                    @endif
-
-                                    {{-- Other editors --}}
-                                    @php
-                                        $otherFields = array_diff_key($allEditorsByField, $editorsByField);
-                                    @endphp
-
-                                    @if (! empty($otherFields))
-                                        <div>
-                                            <button
-                                                type="button"
-                                                onclick="toggleOthers()"
-                                                id="toggle-others-btn"
-                                                class="text-[10px] font-black uppercase tracking-wider text-[#b0aaa0] hover:text-(--teal) transition-colors mt-1"
-                                            >
-                                                + Show other editors
-                                            </button>
-                                            <div
-                                                id="other-editors"
-                                                class="hidden mt-2 space-y-1.5"
-                                            >
-                                                <p
-                                                    class="text-[9px] text-[#c0b8b0] italic mb-1"
-                                                >
-                                                    Different expertise fields
-                                                </p>
-                                                @foreach ($otherFields as $field => $editors)
-                                                    <div class="mb-2">
-                                                        <p
-                                                            class="text-[9px] font-black uppercase tracking-[.15em] text-[#b0aaa0] mb-1.5"
-                                                        >
-                                                            {{ $field }}
-                                                        </p>
-                                                        <div
-                                                            class="space-y-1.5"
-                                                        >
-                                                            @foreach ($editors as $editor)
-                                                                @php
-                                                                    $activeCount = $editor->active_assignments_count ?? 0;
-                                                                    $isAssignedHere = $submission
-                                                                        ->assignments()
-                                                                        ->whereNull('rejected_at')
-                                                                        ->where('assigned_to_user_id', $editor->id)
-                                                                        ->exists();
-                                                                @endphp
-
-                                                                <label
-                                                                    class="editor-option"
-                                                                >
-                                                                    <input
-                                                                        type="radio"
-                                                                        name="editor_id"
-                                                                        value="{{ $editor->id }}"
-                                                                        class="editor-cb"
-                                                                        {{ $isAssignedHere ? 'checked' : '' }}
-                                                                    />
-                                                                    <div
-                                                                        class="min-w-0 flex-1"
-                                                                    >
-                                                                        <p
-                                                                            class="text-sm font-bold text-(--ink) truncate"
-                                                                        >
-                                                                            {{ $editor->name }}
-                                                                        </p>
-                                                                        <p
-                                                                            class="text-[10px] text-[#b0aaa0] truncate"
-                                                                        >
-                                                                            {{ $editor->email }}
-                                                                        </p>
-                                                                        <p
-                                                                            class="text-[10px] font-bold mt-0.5 {{ $activeCount === 0 ? 'text-emerald-600' : ($activeCount <= 3 ? 'text-amber-600' : 'text-red-500') }}"
-                                                                        >
-                                                                            {{ $activeCount === 0 ? '✓ Available' : $activeCount . ' active' }}
-                                                                        </p>
-                                                                    </div>
-                                                                </label>
-                                                            @endforeach
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <div class="mb-4">
-                                    <p class="field-label mb-1.5">
-                                        Notes (Optional)
-                                    </p>
-                                    <textarea
-                                        name="notes"
-                                        rows="3"
-                                        placeholder="Add assignment notes..."
-                                        class="w-full px-3 py-2.5 text-sm border border-[#e2ddd4] rounded-xl focus:border-(--teal) focus:ring-2 focus:ring-[rgba(45,129,118,.1)] outline-none font-['Source_Sans_3'] resize-none transition-all"
-                                    ></textarea>
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    id="assign-btn"
-                                    disabled
-                                    class="btn-primary"
-                                >
-                                    {{ $submission->assignedEditor ? '✓ Reassign' : '✓ Assign Editors' }}
-                                </button>
-
-                                @if ($submission->assignedEditor)
-                                    <button
-                                        type="button"
-                                        onclick="
-                                            document.getElementById(
-                                                'reassign-form',
-                                            ).style.display = 'none';
-                                            document.getElementById(
-                                                'assignments-card',
-                                            ).style.display = 'block';
-                                        "
-                                        class="btn-secondary"
+                        @if ($currentAssignments->count() > 0)
+                            <div class="card" id="assignments-card">
+                                <div class="card-header">
+                                    <h3
+                                        class="font-['Libre_Baskerville'] text-sm font-bold text-emerald-700"
                                     >
-                                        Cancel
-                                    </button>
-                                @endif
-                            </form>
-                        </div>
-                    </div>
-
-                    {{-- Assignment History --}}
-                    @if ($submission->assignments()->count() > 0)
-                        <div class="card">
-                            <div class="card-header">
-                                <h3
-                                    class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
-                                >
-                                    Assignment History
-                                </h3>
-                                <span
-                                    class="text-[9px] font-black uppercase tracking-widest text-[#b0aaa0]"
-                                >
-                                    {{ $submission->assignments()->count() }}
-                                </span>
-                            </div>
-                            <div class="card-body space-y-2">
-                                @foreach ($submission->assignments()->latest()->get() as $ha)
-                                    <div
-                                        class="hist-item {{ $ha->isAccepted() ? 'accepted' : ($ha->isRejected() ? 'rejected' : 'pending') }}"
-                                    >
-                                        <p
-                                            class="text-sm font-bold text-(--ink)"
-                                        >
-                                            {{ $ha->assignedTo->name }}
-                                        </p>
-                                        <p class="text-[10px] text-[#b0aaa0]">
-                                            {{ $ha->expertise_field }}
-                                        </p>
-                                        <div
-                                            class="flex items-center justify-between mt-1"
-                                        >
-                                            <span
-                                                class="text-[10px] text-[#c0b8b0] font-mono"
+                                        ✓ Currently Assigned
+                                    </h3>
+                                </div>
+                                <div class="card-body space-y-2">
+                                    @foreach ($currentAssignments as $ca)
+                                        <div class="assigned-editor-card">
+                                            <p
+                                                class="text-sm font-bold text-(--ink)"
                                             >
-                                                {{ $ha->assigned_at->format('M d, Y') }}
-                                            </span>
-                                            @if ($ha->isAccepted())
+                                                {{ $ca->assignedTo->name }}
+                                            </p>
+                                            <p
+                                                class="text-[10px] text-[#b0aaa0]"
+                                            >
+                                                {{ $ca->expertise_field }}
+                                            </p>
+                                            @if ($ca->isAccepted())
                                                 <span
-                                                    class="text-[9px] font-black uppercase tracking-wider text-emerald-600"
+                                                    class="text-[10px] font-black text-emerald-600 uppercase tracking-wider"
                                                 >
                                                     ✓ Accepted
                                                 </span>
-                                            @elseif ($ha->isRejected())
+                                            @elseif ($ca->isPending())
                                                 <span
-                                                    class="text-[9px] font-black uppercase tracking-wider text-red-600"
-                                                >
-                                                    ✗ Rejected
-                                                </span>
-                                            @else
-                                                <span
-                                                    class="text-[9px] font-black uppercase tracking-wider text-amber-600"
+                                                    class="text-[10px] font-black text-amber-600 uppercase tracking-wider"
                                                 >
                                                     ⏳ Pending
                                                 </span>
                                             @endif
                                         </div>
+                                    @endforeach
+
+                                    <button
+                                        type="button"
+                                        onclick="
+                                            document.getElementById(
+                                                'reassign-form',
+                                            ).style.display = 'block';
+                                            document.getElementById(
+                                                'assignments-card',
+                                            ).style.display = 'none';
+                                        "
+                                        class="w-full text-[10px] font-black uppercase tracking-widest text-(--teal) hover:text-(--teal-d) transition-colors pt-1"
+                                    >
+                                        Change Assignments →
+                                    </button>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Assign / Reassign Form --}}
+                        <div
+                            class="card"
+                            id="reassign-form"
+                            {{ $submission->assignedEditor ? 'style=display:none' : '' }}
+                        >
+                            <div class="card-header">
+                                <h3
+                                    class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
+                                >
+                                    {{ $submission->assignedEditor ? 'Reassign Editors' : 'Assign Editors' }}
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-[11px] text-[#8a96a8] mb-3">
+                                    Matched to
+                                    <span class="font-black text-(--red)">
+                                        {{ $researchField }}
+                                    </span>
+                                </p>
+
+                                <form
+                                    method="POST"
+                                    action="{{ ! $submission->assignedEditor ? route('chief-editor.assign', $submission) : route('chief-editor.reassign', $submission) }}"
+                                >
+                                    @csrf
+
+                                    <div
+                                        class="space-y-2 mb-4 max-h-64 overflow-y-auto pr-1"
+                                    >
+                                        {{-- Matched editors --}}
+                                        @if (! empty($editorsByField))
+                                            @foreach ($editorsByField as $field => $editors)
+                                                <div class="mb-2">
+                                                    <p
+                                                        class="text-[9px] font-black uppercase tracking-[.15em] text-(--teal) mb-1.5 flex items-center gap-1"
+                                                    >
+                                                        <span
+                                                            class="w-1.5 h-1.5 rounded-full bg-(--teal)"
+                                                        ></span>
+                                                        {{ $field }} · Matched
+                                                    </p>
+                                                    <div class="space-y-1.5">
+                                                        @foreach ($editors as $editor)
+                                                            @php
+                                                                $activeCount = $editor->active_assignments_count ?? 0;
+                                                                $isAssignedHere = $submission
+                                                                    ->assignments()
+                                                                    ->whereNull('rejected_at')
+                                                                    ->where('assigned_to_user_id', $editor->id)
+                                                                    ->exists();
+                                                            @endphp
+
+                                                            <label
+                                                                class="editor-option"
+                                                            >
+                                                                <input
+                                                                    type="radio"
+                                                                    name="editor_id"
+                                                                    value="{{ $editor->id }}"
+                                                                    class="editor-cb"
+                                                                    {{ $isAssignedHere ? 'checked' : '' }}
+                                                                />
+                                                                <div
+                                                                    class="min-w-0 flex-1"
+                                                                >
+                                                                    <p
+                                                                        class="text-sm font-bold text-(--ink) truncate"
+                                                                    >
+                                                                        {{ $editor->name }}
+                                                                        @if ($isAssignedHere)
+                                                                            <span
+                                                                                class="text-[9px] font-black text-emerald-600 ml-1"
+                                                                            >
+                                                                                ✓
+                                                                            </span>
+                                                                        @endif
+                                                                    </p>
+                                                                    <p
+                                                                        class="text-[10px] text-[#b0aaa0] truncate"
+                                                                    >
+                                                                        {{ $editor->email }}
+                                                                    </p>
+                                                                    <p
+                                                                        class="text-[10px] font-bold mt-0.5 {{ $activeCount === 0 ? 'text-emerald-600' : ($activeCount <= 3 ? 'text-amber-600' : 'text-red-500') }}"
+                                                                    >
+                                                                        {{ $activeCount === 0 ? '✓ Available' : $activeCount . ' active' }}
+                                                                    </p>
+                                                                </div>
+                                                            </label>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <div
+                                                class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-700 font-medium"
+                                            >
+                                                ⚠️ No editors matched for
+                                                <strong>
+                                                    {{ $researchField }}
+                                                </strong>
+                                            </div>
+                                        @endif
+
+                                        {{-- Other editors --}}
+                                        @php
+                                            $otherFields = array_diff_key($allEditorsByField, $editorsByField);
+                                        @endphp
+
+                                        @if (! empty($otherFields))
+                                            <div>
+                                                <button
+                                                    type="button"
+                                                    onclick="toggleOthers()"
+                                                    id="toggle-others-btn"
+                                                    class="text-[10px] font-black uppercase tracking-wider text-[#b0aaa0] hover:text-(--teal) transition-colors mt-1"
+                                                >
+                                                    + Show other editors
+                                                </button>
+                                                <div
+                                                    id="other-editors"
+                                                    class="hidden mt-2 space-y-1.5"
+                                                >
+                                                    <p
+                                                        class="text-[9px] text-[#c0b8b0] italic mb-1"
+                                                    >
+                                                        Different expertise
+                                                        fields
+                                                    </p>
+                                                    @foreach ($otherFields as $field => $editors)
+                                                        <div class="mb-2">
+                                                            <p
+                                                                class="text-[9px] font-black uppercase tracking-[.15em] text-[#b0aaa0] mb-1.5"
+                                                            >
+                                                                {{ $field }}
+                                                            </p>
+                                                            <div
+                                                                class="space-y-1.5"
+                                                            >
+                                                                @foreach ($editors as $editor)
+                                                                    @php
+                                                                        $activeCount = $editor->active_assignments_count ?? 0;
+                                                                        $isAssignedHere = $submission
+                                                                            ->assignments()
+                                                                            ->whereNull('rejected_at')
+                                                                            ->where('assigned_to_user_id', $editor->id)
+                                                                            ->exists();
+                                                                    @endphp
+
+                                                                    <label
+                                                                        class="editor-option"
+                                                                    >
+                                                                        <input
+                                                                            type="radio"
+                                                                            name="editor_id"
+                                                                            value="{{ $editor->id }}"
+                                                                            class="editor-cb"
+                                                                            {{ $isAssignedHere ? 'checked' : '' }}
+                                                                        />
+                                                                        <div
+                                                                            class="min-w-0 flex-1"
+                                                                        >
+                                                                            <p
+                                                                                class="text-sm font-bold text-(--ink) truncate"
+                                                                            >
+                                                                                {{ $editor->name }}
+                                                                            </p>
+                                                                            <p
+                                                                                class="text-[10px] text-[#b0aaa0] truncate"
+                                                                            >
+                                                                                {{ $editor->email }}
+                                                                            </p>
+                                                                            <p
+                                                                                class="text-[10px] font-bold mt-0.5 {{ $activeCount === 0 ? 'text-emerald-600' : ($activeCount <= 3 ? 'text-amber-600' : 'text-red-500') }}"
+                                                                            >
+                                                                                {{ $activeCount === 0 ? '✓ Available' : $activeCount . ' active' }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </label>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <p class="field-label mb-1.5">
+                                            Notes (Optional)
+                                        </p>
+                                        <textarea
+                                            name="notes"
+                                            rows="3"
+                                            placeholder="Add assignment notes..."
+                                            class="w-full px-3 py-2.5 text-sm border border-[#e2ddd4] rounded-xl focus:border-(--teal) focus:ring-2 focus:ring-[rgba(45,129,118,.1)] outline-none font-['Source_Sans_3'] resize-none transition-all"
+                                        ></textarea>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        id="assign-btn"
+                                        disabled
+                                        class="btn-primary"
+                                    >
+                                        {{ $submission->assignedEditor ? '✓ Reassign' : '✓ Assign Editors' }}
+                                    </button>
+
+                                    @if ($submission->assignedEditor)
+                                        <button
+                                            type="button"
+                                            onclick="
+                                                document.getElementById(
+                                                    'reassign-form',
+                                                ).style.display = 'none';
+                                                document.getElementById(
+                                                    'assignments-card',
+                                                ).style.display = 'block';
+                                            "
+                                            class="btn-secondary"
+                                        >
+                                            Cancel
+                                        </button>
+                                    @endif
+                                </form>
+                            </div>
+                        </div>
+
+                        {{-- Assignment History --}}
+                        @if ($submission->assignments()->count() > 0)
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3
+                                        class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
+                                    >
+                                        Assignment History
+                                    </h3>
+                                    <span
+                                        class="text-[9px] font-black uppercase tracking-widest text-[#b0aaa0]"
+                                    >
+                                        {{ $submission->assignments()->count() }}
+                                    </span>
+                                </div>
+                                <div class="card-body space-y-2">
+                                    @foreach ($submission->assignments()->latest()->get() as $ha)
+                                        <div
+                                            class="hist-item {{ $ha->isAccepted() ? 'accepted' : ($ha->isRejected() ? 'rejected' : 'pending') }}"
+                                        >
+                                            <p
+                                                class="text-sm font-bold text-(--ink)"
+                                            >
+                                                {{ $ha->assignedTo->name }}
+                                            </p>
+                                            <p
+                                                class="text-[10px] text-[#b0aaa0]"
+                                            >
+                                                {{ $ha->expertise_field }}
+                                            </p>
+                                            <div
+                                                class="flex items-center justify-between mt-1"
+                                            >
+                                                <span
+                                                    class="text-[10px] text-[#c0b8b0] font-mono"
+                                                >
+                                                    {{ $ha->assigned_at->format('M d, Y') }}
+                                                </span>
+                                                @if ($ha->isAccepted())
+                                                    <span
+                                                        class="text-[9px] font-black uppercase tracking-wider text-emerald-600"
+                                                    >
+                                                        ✓ Accepted
+                                                    </span>
+                                                @elseif ($ha->isRejected())
+                                                    <span
+                                                        class="text-[9px] font-black uppercase tracking-wider text-red-600"
+                                                    >
+                                                        ✗ Rejected
+                                                    </span>
+                                                @else
+                                                    <span
+                                                        class="text-[9px] font-black uppercase tracking-wider text-amber-600"
+                                                    >
+                                                        ⏳ Pending
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Workflow Info --}}
+                        <div class="card">
+                            <div class="card-header">
+                                <h3
+                                    class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
+                                >
+                                    📋 Workflow
+                                </h3>
+                            </div>
+                            <div class="card-body space-y-1">
+                                @foreach ([
+                                        'Screen the manuscript for eligibility',
+                                        'Assign to a matched editor',
+                                        'Editor distributes to reviewers',
+                                        'Reviews collected & decision made',
+                                        'Author notified of outcome'
+                                    ]
+                                    as $i => $step)
+                                    <div class="workflow-step">
+                                        <div class="step-num">
+                                            {{ $i + 1 }}
+                                        </div>
+                                        <p
+                                            class="text-xs text-[#6a7890] leading-relaxed pt-0.5"
+                                        >
+                                            {{ $step }}
+                                        </p>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
-                    @endif
-
-                    {{-- Workflow Info --}}
-                    <div class="card">
-                        <div class="card-header">
-                            <h3
-                                class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
-                            >
-                                📋 Workflow
-                            </h3>
-                        </div>
-                        <div class="card-body space-y-1">
-                            @foreach ([
-                                    'Screen the manuscript for eligibility',
-                                    'Assign to a matched editor',
-                                    'Editor distributes to reviewers',
-                                    'Reviews collected & decision made',
-                                    'Author notified of outcome'
-                                ]
-                                as $i => $step)
-                                <div class="workflow-step">
-                                    <div class="step-num">{{ $i + 1 }}</div>
-                                    <p
-                                        class="text-xs text-[#6a7890] leading-relaxed pt-0.5"
-                                    >
-                                        {{ $step }}
-                                    </p>
-                                </div>
-                            @endforeach
-                        </div>
                     </div>
-                </div>
                 @endif
             </div>
         </div>

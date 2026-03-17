@@ -366,7 +366,7 @@
                         class="abstract-block relative bg-white border border-[#c9b99a] rounded-[14px] px-9 pt-8 pb-7 shadow-[0_2px_12px_rgba(26,18,9,.06)]"
                     >
                         <p
-                            class="font-['Libre_Baskerville',serif] text-[1.08rem] font-normal italic text-[#3d2f1a] leading-[1.8] relative z-10 pt-3"
+                            class="font-['Libre_Baskerville',serif] text-[1.08rem] font-normal text-[#3d2f1a] leading-[1.8] relative z-10 pt-3 text-justify"
                         >
                             {{ $submission->abstract }}
                         </p>
