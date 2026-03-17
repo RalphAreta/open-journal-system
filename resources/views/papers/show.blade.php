@@ -551,19 +551,37 @@
             <div class="card">
                 <div class="card-body">
                     <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1.25rem">
-                        Choose your preferred citation style and copy the formatted reference.
+                        Choose your preferred citation style or export to reference management software.
                     </p>
-                    <button class="cite-btn" onclick="openCitationModal()"
-                        data-paper-title="{{ $paper['title'] }}"
-                        data-paper-author="{{ $paper['author'] }}"
-                        data-publication-year="{{ $paper['publishedAt']->format('Y') }}"
-                        data-category="{{ $paper['category'] }}">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                        </svg>
-                        Cite This Paper
-                    </button>
+                    <div style="display: flex; gap: 0.75rem; flex-direction: column">
+                        <!-- Cite Modal Button -->
+                        <button class="cite-btn" onclick="openCitationModal()"
+                            data-paper-title="{{ $paper['title'] }}"
+                            data-paper-author="{{ $paper['author'] }}"
+                            data-publication-year="{{ $paper['publishedAt']->format('Y') }}"
+                            data-category="{{ $paper['category'] }}">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                            </svg>
+                            Cite This Paper
+                        </button>
+
+                        <!-- RIS Download Button -->
+                        <a href="{{ route('papers.download-ris', ['submission' => $paper['id']]) }}" 
+                           class="cite-btn" 
+                           style="text-decoration: none; background-color: #c9a84c; color: #fff; border: none; cursor: pointer;"
+                           title="Download RIS format for Zotero, Mendeley, EndNote">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Export as RIS
+                        </a>
+                    </div>
+                    <p style="font-size:.75rem;color:var(--text-muted);margin-top:0.75rem;text-align:center">
+                        RIS format works with Zotero, Mendeley, EndNote, and other reference managers
+                    </p>
                 </div>
             </div>
         </div>
