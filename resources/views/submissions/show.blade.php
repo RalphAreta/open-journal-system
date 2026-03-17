@@ -121,7 +121,7 @@
         {{-- ── Page Header ── --}}
         <div class="relative pt-10 pb-7 mb-9 border-b border-[#e8dfd0] fu">
             <div
-                class="absolute bottom-[-1px] left-0 w-20 h-[3px]"
+                class="absolute bottom-px left-0 w-20 h-0.5"
                 style="background: linear-gradient(90deg, #2d8176, transparent)"
             ></div>
             <div
@@ -162,7 +162,7 @@
                         {{ $submission->title }}
                     </h1>
                     <div
-                        class="mt-3 w-14 h-[2px]"
+                        class="mt-3 w-14 h-0.5"
                         style="
                             background: linear-gradient(
                                 90deg,
@@ -176,7 +176,7 @@
                     @if ($submission->isEditableByAuthor() && auth()->user()->id === $submission->author_id && $submission->status === 'submitted')
                         <a
                             href="{{ route('submissions.edit', $submission) }}"
-                            class="inline-flex items-center gap-2 px-5 py-[9px] rounded-lg bg-white border border-[#c9b99a] text-[.72rem] font-bold tracking-[.08em] uppercase text-[#6b5740] shadow-[0_2px_8px_rgba(26,18,9,.06)] hover:border-[#2d8176] hover:text-[#2d8176] hover:bg-[#e8f4f2] transition-all"
+                            class="inline-flex items-center gap-2 px-5 py-2.25 rounded-lg bg-white border border-[#c9b99a] text-[.72rem] font-bold tracking-[.08em] uppercase text-[#6b5740] shadow-[0_2px_8px_rgba(26,18,9,.06)] hover:border-[#2d8176] hover:text-[#2d8176] hover:bg-[#e8f4f2] transition-all"
                         >
                             <svg
                                 class="w-3.5 h-3.5"
@@ -196,7 +196,7 @@
 
                     <a
                         href="{{ route('submissions.index') }}"
-                        class="relative overflow-hidden inline-flex items-center gap-2 px-5 py-[9px] rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.72rem] font-bold tracking-[.08em] uppercase transition-all shadow-[0_4px_14px_rgba(45,129,118,.28)] hover:-translate-y-0.5"
+                        class="relative overflow-hidden inline-flex items-center gap-2 px-5 py-2.25 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.72rem] font-bold tracking-[.08em] uppercase transition-all shadow-[0_4px_14px_rgba(45,129,118,.28)] hover:-translate-y-0.5"
                     >
                         <span
                             class="absolute inset-0 pointer-events-none"
@@ -244,13 +244,13 @@
                         class="fu1 flex overflow-hidden border border-[#fed7aa] rounded-[14px] shadow-[0_4px_20px_rgba(26,18,9,.09)]"
                         style="background: #fffdf9"
                     >
-                        <div class="w-[5px] shrink-0 bg-[#f97316]"></div>
+                        <div class="w-1.25 shrink-0 bg-[#f97316]"></div>
                         <div
                             class="flex-1 px-5 py-4 flex flex-wrap items-center justify-between gap-4"
                         >
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="w-[38px] h-[38px] rounded-[10px] shrink-0 bg-[#fff7ed] text-[#ea580c] flex items-center justify-center"
+                                    class="w-9.5 h-9.5 rounded-[10px] shrink-0 bg-[#fff7ed] text-[#ea580c] flex items-center justify-center"
                                 >
                                     <svg
                                         class="w-5 h-5"
@@ -303,14 +303,14 @@
                         "
                     >
                         <div
-                            class="w-[5px] shrink-0 {{ $isAcc ? 'bg-[#2d8176]' : 'bg-[#dc2626]' }}"
+                            class="w-1.25 shrink-0 {{ $isAcc ? 'bg-[#2d8176]' : 'bg-[#dc2626]' }}"
                         ></div>
                         <div
                             class="flex-1 px-5 py-4 flex flex-wrap items-center justify-between gap-4"
                         >
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="w-[38px] h-[38px] rounded-[10px] shrink-0 flex items-center justify-center font-['Libre_Baskerville',serif] text-[1.1rem] font-bold {{ $isAcc ? 'bg-[#e8f4f2] text-[#2d8176]' : 'bg-[#fef2f2] text-[#dc2626]' }}"
+                                    class="w-9.5 h-9.5 rounded-[10px] shrink-0 flex items-center justify-center font-['Libre_Baskerville',serif] text-[1.1rem] font-bold {{ $isAcc ? 'bg-[#e8f4f2] text-[#2d8176]' : 'bg-[#fef2f2] text-[#dc2626]' }}"
                                 >
                                     {{ $isAcc ? '✓' : '✕' }}
                                 </div>
@@ -639,7 +639,7 @@
                                 class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border text-[.72rem] font-bold tracking-[.06em] uppercase {{ $sCls }}"
                             >
                                 <span
-                                    class="w-[7px] h-[7px] rounded-full animate-pulse {{ $sDot }}"
+                                    class="w-1.75 h-1.75 rounded-full animate-pulse {{ $sDot }}"
                                 ></span>
                                 {{ $sLabel }}
                             </span>
@@ -718,7 +718,7 @@
                                     class="flex items-center gap-3 px-4 py-3 bg-[#f3ece0] border border-[#e8dfd0] rounded-xl"
                                 >
                                     <div
-                                        class="w-[38px] h-[38px] rounded-lg shrink-0 bg-white border border-[#e8dfd0] flex items-center justify-center text-[#2d8176]"
+                                        class="w-9.5 h-9.5 rounded-lg shrink-0 bg-white border border-[#e8dfd0] flex items-center justify-center text-[#2d8176]"
                                     >
                                         <svg
                                             class="w-5 h-5"
@@ -775,7 +775,7 @@
                                                 class="flex items-center gap-3 px-4 py-3 bg-[#e8f4f2] border border-[rgba(45,129,118,.3)] rounded-xl mb-3"
                                             >
                                                 <div
-                                                    class="w-[38px] h-[38px] rounded-lg shrink-0 bg-white border border-[rgba(45,129,118,.2)] flex items-center justify-center text-[#2d8176]"
+                                                    class="w-9.5 h-9.5 rounded-lg shrink-0 bg-white border border-[rgba(45,129,118,.2)] flex items-center justify-center text-[#2d8176]"
                                                 >
                                                     <svg
                                                         class="w-5 h-5"
@@ -832,7 +832,7 @@
                                                     class="mt-3 px-3 py-3 bg-[#fffdf9] border border-[rgba(201,168,76,.3)] border-l-4 border-l-[#c9a84c] rounded-lg"
                                                 >
                                                     <p
-                                                        class="text-[.58rem] font-extrabold tracking-[.1em] uppercase text-[#8a6e28] mb-1"
+                                                        class="text-[.58rem] font-extrabold tracking-widest uppercase text-[#8a6e28] mb-1"
                                                     >
                                                         Layout Notes
                                                     </p>
@@ -985,7 +985,7 @@
                                             class="flex items-center gap-3 px-4 py-3 bg-[#f3ece0] border border-[#e8dfd0] rounded-xl"
                                         >
                                             <div
-                                                class="w-[38px] h-[38px] rounded-lg shrink-0 bg-white border border-[#e8dfd0] flex items-center justify-center text-[#8a6e28]"
+                                                class="w-9.5 h-9.5 rounded-lg shrink-0 bg-white border border-[#e8dfd0] flex items-center justify-center text-[#8a6e28]"
                                             >
                                                 <svg
                                                     class="w-5 h-5"
@@ -1061,7 +1061,7 @@
                 <div class="feedback-modal-header">
                     <div class="flex items-center gap-3">
                         <div
-                            class="w-8 h-8 rounded-[8px] bg-[#fdf8ec] border border-[#e8dfd0] text-[#8a6e28] flex items-center justify-center"
+                            class="w-8 h-8 rounded-lg bg-[#fdf8ec] border border-[#e8dfd0] text-[#8a6e28] flex items-center justify-center"
                         >
                             <svg
                                 class="w-4 h-4"
@@ -1187,7 +1187,7 @@
                 <div class="feedback-modal-header">
                     <div class="flex items-center gap-3">
                         <div
-                            class="w-8 h-8 rounded-[8px] bg-[#e8f4f2] border border-[rgba(45,129,118,.2)] text-[#2d8176] flex items-center justify-center"
+                            class="w-8 h-8 rounded-lg bg-[#e8f4f2] border border-[rgba(45,129,118,.2)] text-[#2d8176] flex items-center justify-center"
                         >
                             <svg
                                 class="w-4 h-4"
@@ -1303,7 +1303,7 @@
                 <div class="feedback-modal-header">
                     <div class="flex items-center gap-3">
                         <div
-                            class="w-8 h-8 rounded-[8px] bg-[#fdf8ec] border border-[#e8dfd0] text-[#8a6e28] flex items-center justify-center"
+                            class="w-8 h-8 rounded-lg bg-[#fdf8ec] border border-[#e8dfd0] text-[#8a6e28] flex items-center justify-center"
                         >
                             <svg
                                 class="w-4 h-4"
@@ -1434,7 +1434,7 @@
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.58rem] font-extrabold tracking-[.08em] uppercase bg-[#f0fdf4] border-[#86efac] text-[#1a4d46]"
                                     >
                                         <span
-                                            class="w-[5px] h-[5px] rounded-full bg-[#2d8176]"
+                                            class="w-1.25 h-1.25 rounded-full bg-[#2d8176]"
                                         ></span>
                                         Accepted
                                     </span>
@@ -1443,7 +1443,7 @@
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.58rem] font-extrabold tracking-[.08em] uppercase bg-[#fef2f2] border-[#fecaca] text-[#991b1b]"
                                     >
                                         <span
-                                            class="w-[5px] h-[5px] rounded-full bg-[#c0392b]"
+                                            class="w-1.25 h-1.25 rounded-full bg-[#c0392b]"
                                         ></span>
                                         Rejected
                                     </span>
@@ -1530,7 +1530,7 @@
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.58rem] font-extrabold tracking-[.08em] uppercase bg-[#f0fdf4] border-[#86efac] text-[#1a4d46]"
                                     >
                                         <span
-                                            class="w-[5px] h-[5px] rounded-full bg-[#2d8176]"
+                                            class="w-1.25 h-1.25 rounded-full bg-[#2d8176]"
                                         ></span>
                                         Approved
                                     </span>
@@ -1539,7 +1539,7 @@
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.58rem] font-extrabold tracking-[.08em] uppercase bg-[#fef2f2] border-[#fecaca] text-[#991b1b]"
                                     >
                                         <span
-                                            class="w-[5px] h-[5px] rounded-full bg-[#c0392b]"
+                                            class="w-1.25 h-1.25 rounded-full bg-[#c0392b]"
                                         ></span>
                                         Failed at Initial Screening
                                     </span>
@@ -1548,7 +1548,7 @@
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.58rem] font-extrabold tracking-[.08em] uppercase bg-[#fffbeb] border-[#fde68a] text-[#92400e]"
                                     >
                                         <span
-                                            class="w-[5px] h-[5px] rounded-full bg-[#f59e0b]"
+                                            class="w-1.25 h-1.25 rounded-full bg-[#f59e0b]"
                                         ></span>
                                         Pending
                                     </span>

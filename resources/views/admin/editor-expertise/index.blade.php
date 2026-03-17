@@ -10,7 +10,7 @@
     <style>
         :root {
             --teal: #2d8176;
-            --teal-dark: #1a4d46;
+            --teal-dark: #1a4d46;               
             --teal-light: #e8f4f2;
             --ink: #1a1209;
             --ink-soft: #6b5740;
@@ -27,9 +27,9 @@
         }
 
         .aw {
-            font-family: 'Source Sans 3', sans-serif;
-            color: var(--ink);
-        }
+            font-family: 'Source Sans 3', sans-serif;       
+                                                                color: var(--ink);
+                                                            }
         .aw-bg {
             background-color: var(--cream);
             background-image:

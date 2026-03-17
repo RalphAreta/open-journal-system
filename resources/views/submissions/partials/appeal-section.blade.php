@@ -97,7 +97,7 @@
                             id="appeal_reason"
                             rows="7"
                             placeholder="Please explain why you believe your manuscript should be reconsidered. Provide details about the research quality, methodology, or any concerns about the previous feedback. This is your final opportunity to appeal..."
-                            class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-red-600 focus:border-transparent outline-none transition-all text-slate-700 @error('reason') border-red-500 @enderror"
+                            class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-red-600 focus:border-transparent outline-none transition-all text-slate-700 @error('reason') @enderror"
                             required>{{ old('reason') }}</textarea>
                         <p class="text-xs text-slate-500 mt-2">Minimum 50 characters required ({{ strlen(old('reason', '')) }}/50)</p>
                         @error('reason')
@@ -128,7 +128,7 @@
                             id="appeal_reason"
                             rows="7"
                             placeholder="Please explain why you believe your manuscript should be reconsidered. Provide details about the research quality, methodology, or any concerns about the initial screening decision..."
-                            class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-red-600 focus:border-transparent outline-none transition-all text-slate-700 @error('reason') border-red-500 @enderror"
+                            class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-red-600 focus:border-transparent outline-none transition-all text-slate-700 @error('reason') @enderror"
                             required>{{ old('reason') }}</textarea>
                         <p class="text-xs text-slate-500 mt-2">Minimum 50 characters required ({{ strlen(old('reason', '')) }}/50)</p>
                         @error('reason')
