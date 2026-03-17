@@ -105,12 +105,6 @@
                 </a>
                 <div class="hidden md:flex items-center gap-8">
                     <a
-                        href="/published-papers"
-                        class="text-sm font-bold text-[#2D8176] hover:text-[#c9a84c] transition-colors"
-                    >
-                        Published Papers
-                    </a>
-                    <a
                         href="/login"
                         class="text-sm font-bold text-[#2D8176] hover:text-[#c9a84c] transition-colors"
                     >
@@ -128,34 +122,81 @@
 
         <!-- HEADER SECTION -->
         <section
-            class="relative h-80 md:h-96 flex items-center justify-center text-center px-4 overflow-hidden bg-gradient-to-br from-[#2D8176] via-[#2a8675] to-[#1a5451]"
+            class="relative h-96 md:h-[28rem] lg:h-[32rem] flex items-center justify-center text-center px-4 overflow-hidden bg-gradient-to-br from-[#2D8176] via-[#2a8f84] to-[#1a4d46]"
         >
-            <div class="absolute inset-0 opacity-10">
-                <svg class="w-full h-full" viewBox="0 0 1000 600" preserveAspectRatio="none">
+            <!-- Decorative background elements -->
+            <div class="absolute inset-0">
+                <!-- Top right circle blur -->
+                <div class="absolute -top-40 -right-40 w-80 h-80 bg-[#c9a84c]/10 rounded-full blur-3xl"></div>
+                <!-- Bottom left circle blur -->
+                <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-[#f0d678]/5 rounded-full blur-3xl"></div>
+                <!-- Background pattern -->
+                <svg class="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 1000 600" preserveAspectRatio="none">
                     <defs>
-                        <pattern id="dots" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                            <circle cx="50" cy="50" r="1" fill="white" opacity="0.5"/>
+                        <linearGradient id="headerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:white;stop-opacity:0.1" />
+                            <stop offset="100%" style="stop-color:white;stop-opacity:0" />
+                        </linearGradient>
+                        <pattern id="dotsPattern" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+                            <circle cx="40" cy="40" r="1.5" fill="white" opacity="0.3"/>
                         </pattern>
                     </defs>
-                    <rect width="1000" height="600" fill="url(#dots)"/>
+                    <rect width="1000" height="600" fill="url(#dotsPattern)"/>
                 </svg>
             </div>
-            <div class="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-[rgba(45,129,118,0.1)]"></div>
 
-            <div class="relative z-10 max-w-4xl">
-                <div class="inline-block mb-4 px-4 py-2 bg-white/15 backdrop-blur-md rounded-full border border-white/20">
-                    <p class="text-[#f0d678] font-bold tracking-[0.2em] text-xs md:text-sm uppercase">
-                        📚 Research Repository
+            <!-- Gradient overlay -->
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[rgba(13,22,40,0.3)]"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-[rgba(45,129,118,0.15)]"></div>
+
+            <!-- Content -->
+            <div class="relative z-10 max-w-5xl mx-auto">
+                <!-- Badge -->
+                <div class="inline-block mb-6 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-lg hover:bg-white/15 transition-all duration-300">
+                    <p class="text-[#f0d678] font-bold tracking-[0.25em] text-xs md:text-sm uppercase flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                        </svg>
+                        Research Repository
                     </p>
                 </div>
+
+                <!-- Main heading -->
                 <h1
-                    class="font-libre text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight mb-6 drop-shadow-2xl leading-tight"
+                    class="font-libre text-6xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight mb-6 drop-shadow-lg leading-none"
                 >
                     Published Papers
                 </h1>
-                <p class="text-white/90 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-                    Explore cutting-edge research published in our peer-reviewed journal. All papers have been rigorously reviewed and validated by leading academics.
+
+                <!-- Decorative line -->
+                <div class="mx-auto mb-8 w-24 h-1 bg-gradient-to-r from-transparent via-[#f0d678] to-transparent rounded-full"></div>
+
+                <!-- Description -->
+                <p class="text-white/90 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed font-light">
+                    Explore cutting-edge research published in our peer-reviewed journal. All papers have been rigorously reviewed and validated by leading academics in their fields.
                 </p>
+
+                <!-- Stats hint -->
+                <div class="mt-10 flex justify-center gap-8 text-sm text-white/70">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-[#c9a84c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Peer Reviewed</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-[#c9a84c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span>Impact Driven</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-[#c9a84c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m0 0h6m-6 0H6" />
+                        </svg>
+                        <span>Openly Accessible</span>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -300,16 +341,31 @@
                                     Published {{ $paper['publishedAt']?->format('M d, Y') ?? 'N/A' }}
                                 </div>
 
-                                <!-- CTA Button -->
-                                <a
-                                    href="{{ route('papers.show', ['submission' => $paper['id']]) }}"
-                                    class="inline-block w-full px-5 py-3.5 bg-gradient-to-r from-[#2D8176] to-[#1a4d46] text-white rounded-xl font-bold text-sm uppercase tracking-wider text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex items-center justify-center gap-2 group-hover:from-[#c9a84c] group-hover:to-[#a07830]"
-                                >
-                                    <span>Read Full Article</span>
-                                    <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                    </svg>
-                                </a>
+                                <!-- Action Buttons -->
+                                <div class="flex flex-col gap-2">
+                                    <!-- Read Article Button -->
+                                    <a
+                                        href="{{ route('papers.show', ['submission' => $paper['id']]) }}"
+                                        class="inline-block w-full px-5 py-3.5 bg-gradient-to-r from-[#2D8176] to-[#1a4d46] text-white rounded-xl font-bold text-sm uppercase tracking-wider text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex items-center justify-center gap-2 group-hover:from-[#c9a84c] group-hover:to-[#a07830]"
+                                    >
+                                        <span>Read Full Article</span>
+                                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                        </svg>
+                                    </a>
+
+                                    <!-- Citation Export Button (RIS download) -->
+                                    <a
+                                        href="{{ route('papers.download-ris', ['submission' => $paper['id']]) }}"
+                                        class="inline-block w-full px-5 py-2.5 bg-white border-2 border-[#c9a84c] text-[#c9a84c] rounded-xl font-bold text-xs uppercase tracking-wider text-center hover:bg-[#c9a84c] hover:text-white transition-all duration-200 flex items-center justify-center gap-2"
+                                        title="Download citation in RIS format for Zotero, Mendeley, EndNote"
+                                    >
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm8-5.5V5a2 2 0 00-2-2H6a2 2 0 00-2 2v6.5" />
+                                        </svg>
+                                        <span>Export Citation</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     @endforeach

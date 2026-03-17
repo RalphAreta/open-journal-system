@@ -27,6 +27,7 @@ Route::get('/', function () {
 Route::get('/published-papers', [HomeController::class, 'publishedPapers'])->name('published-papers');
 Route::get('/papers/{submission}', [HomeController::class, 'showPublicPaper'])->name('papers.show');
 Route::get('/papers/{submission}/download', [HomeController::class, 'downloadPublicPaper'])->name('papers.download');
+Route::get('/papers/{submission}/download-ris', [HomeController::class, 'downloadPublicPaperRis'])->name('papers.download-ris');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');

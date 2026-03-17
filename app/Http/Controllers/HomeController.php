@@ -280,6 +280,60 @@ class HomeController extends Controller
         );
     }
 
+    /**
+     * Download paper citation in RIS format
+     * 
+     * Generates a .ris file containing bibliographic information that can be imported
+     * into citation management software (Zotero, Mendeley, EndNote, etc.)
+     * 
+     * @param Submission $submission
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function downloadPublicPaperRis(Submission $submission)
+    {
+        // Only allow downloading RIS for published papers
+        if ($submission->status !== Submission::STATUS_PUBLISHED) {
+            abort(403, 'This paper is not available for citation export.');
+        }
+
+        // Generate RIS content using the service
+        $risService = app(\App\Services\RisExportService::class);
+        $risContent = $risService->generateRis($submission);
+
+        // Create filename
+        $filename = $this->sanitizeFilename($submission->title ?? 'paper') . '.ris';
+
+        // Return as downloadable file
+        return response()
+            ->streamDownload(function () use ($risContent) {
+                echo $risContent;
+            }, $filename, [
+                'Content-Type' => 'application/x-research-info-systems',
+                'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            ]);
+    }
+
+    /**
+     * Sanitize filename to remove special characters
+     * 
+     * @param string $filename
+     * @return string
+     */
+    private function sanitizeFilename(string $filename): string
+    {
+        // Remove special characters but keep spaces and hyphens
+        $filename = preg_replace('/[^a-zA-Z0-9\s\-_]/', '', $filename);
+        
+        // Replace spaces with underscores
+        $filename = str_replace(' ', '_', $filename);
+        
+        // Remove multiple underscores
+        $filename = preg_replace('/_+/', '_', $filename);
+        
+        // Limit length
+        return substr($filename, 0, 100);
+    }
+
     public function publishedPapers()
     {
         // Get all published papers with pagination
