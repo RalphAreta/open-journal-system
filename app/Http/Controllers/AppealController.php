@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appeal;
 use App\Models\Submission;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -47,6 +48,17 @@ class AppealController extends Controller
             'reason' => $validated['reason'],
             'status' => Appeal::STATUS_PENDING,
         ]);
+
+        // Notify editor-in-chief of the new appeal
+        $chiefEditors = User::whereHas('roles', fn ($q) => $q->where('name', 'editor-in-chief'))->get();
+        foreach ($chiefEditors as $chiefEditor) {
+            \App\Models\Notification::create([
+                'user_id'    => $chiefEditor->id,
+                'role'       => 'editor-in-chief',
+                'title'      => '📋 New Appeal Submitted',
+                'message'    => "Author {$submission->author->name} has submitted an appeal for manuscript: {$submission->title}",
+            ]);
+        }
 
         return redirect()->route('submissions.show', $submission)
             ->with('success', 'Your appeal has been submitted successfully. The editor will review it shortly.');
@@ -109,6 +121,14 @@ class AppealController extends Controller
                 'initial_screening_status' => Submission::SCREENING_STATUS_PASSED,
             ]);
 
+            // Notify author of appeal approval
+            \App\Models\Notification::create([
+                'user_id'    => $appeal->author_id,
+                'role'       => 'author',
+                'title'      => '✅ Appeal Approved',
+                'message'    => "Your appeal for '{$appeal->submission->title}' has been approved. Your manuscript will now proceed to the review stage.",
+            ]);
+
             $message = 'Appeal approved. The submission will now proceed to the review stage.';
         } else if ($validated['status'] === Appeal::STATUS_REJECTED) {
             // If this is a rejection, check if we've reached max rejections
@@ -121,10 +141,20 @@ class AppealController extends Controller
                     'initial_screening_status' => Submission::SCREENING_STATUS_FAILED,
                 ]);
                 $message = 'Appeal rejected. The submission has completed the appeal process and cannot be appealed further.';
+                $appealNum = 'final';
             } else {
                 // Author still has appeals remaining
                 $message = 'Appeal rejected. The author may submit one additional appeal.';
+                $appealNum = 'first';
             }
+
+            // Notify author of appeal rejection
+            \App\Models\Notification::create([
+                'user_id'    => $appeal->author_id,
+                'role'       => 'author',
+                'title'      => '❌ Appeal Rejected',
+                'message'    => "Your $appealNum appeal for '{$appeal->submission->title}' has been reviewed and rejected. Editor's response: {$validated['editor_response']}",
+            ]);
         }
 
         return redirect()->route('appeals.index')
