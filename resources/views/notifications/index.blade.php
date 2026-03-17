@@ -1,6 +1,29 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Notifications | Journal System</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-@section('title', 'Notifications')
+            :root {
+                --teal: #2d8176;
+                --teal-dark: #1f5d54;
+                --teal-pale: #e8f4f2;
+                --gold: #c9a84c;
+                --gold-deep: #a07830;
+                --gold-lt: #f0d678;
 
 @section('content')
     <div class="max-w-7xl mx-auto">
