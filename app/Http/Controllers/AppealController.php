@@ -53,10 +53,12 @@ class AppealController extends Controller
         $chiefEditors = User::whereHas('roles', fn ($q) => $q->where('name', 'editor-in-chief'))->get();
         foreach ($chiefEditors as $chiefEditor) {
             \App\Models\Notification::create([
-                'user_id'    => $chiefEditor->id,
-                'role'       => 'editor-in-chief',
-                'title'      => '📋 New Appeal Submitted',
-                'message'    => "Author {$submission->author->name} has submitted an appeal for manuscript: {$submission->title}",
+                'user_id'         => $chiefEditor->id,
+                'role'            => 'editor-in-chief',
+                'title'           => '📋 New Appeal Submitted',
+                'message'         => "Author {$submission->author->name} has submitted an appeal for manuscript: {$submission->title}",
+                'notifiable_id'   => $submission->id,
+                'notifiable_type' => Submission::class,
             ]);
         }
 
@@ -123,10 +125,12 @@ class AppealController extends Controller
 
             // Notify author of appeal approval
             \App\Models\Notification::create([
-                'user_id'    => $appeal->author_id,
-                'role'       => 'author',
-                'title'      => '✅ Appeal Approved',
-                'message'    => "Your appeal for '{$appeal->submission->title}' has been approved. Your manuscript will now proceed to the review stage.",
+                'user_id'         => $appeal->author_id,
+                'role'            => 'author',
+                'title'           => '✅ Appeal Approved',
+                'message'         => "Your appeal for '{$appeal->submission->title}' has been approved. Your manuscript will now proceed to the review stage.",
+                'notifiable_id'   => $appeal->submission_id,
+                'notifiable_type' => Submission::class,
             ]);
 
             $message = 'Appeal approved. The submission will now proceed to the review stage.';
@@ -150,10 +154,12 @@ class AppealController extends Controller
 
             // Notify author of appeal rejection
             \App\Models\Notification::create([
-                'user_id'    => $appeal->author_id,
-                'role'       => 'author',
-                'title'      => '❌ Appeal Rejected',
-                'message'    => "Your $appealNum appeal for '{$appeal->submission->title}' has been reviewed and rejected. Editor's response: {$validated['editor_response']}",
+                'user_id'         => $appeal->author_id,
+                'role'            => 'author',
+                'title'           => '❌ Appeal Rejected',
+                'message'         => "Your $appealNum appeal for '{$appeal->submission->title}' has been reviewed and rejected. Editor's response: {$validated['editor_response']}",
+                'notifiable_id'   => $appeal->submission_id,
+                'notifiable_type' => Submission::class,
             ]);
         }
 
