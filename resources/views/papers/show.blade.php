@@ -1188,10 +1188,6 @@
                             <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Language</p>
                             <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-body); margin: 0;">English</p>
                         </div>
-                        <div>
-                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">License</p>
-                            <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" style="font-size: 0.9rem; font-weight: 600; color: var(--teal); text-decoration: none;">CC BY 4.0 Open Access</a>
-                        </div>
                     </div>
                 </div>
 
