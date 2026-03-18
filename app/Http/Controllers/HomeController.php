@@ -150,8 +150,8 @@ class HomeController extends Controller
                     'title' => $submission->title,
                     'abstract' => substr($submission->abstract, 0, 150) . '...',
                     'category' => $submission->research_field,
-                    'citations' => rand(50, 200),
-                    'downloads' => rand(1000, 5000),
+                    'citations' => $reviewCount,
+                    'downloads' => $submission->download_count ?? 0,
                     'author' => $submission->author->name ?? 'Anonymous',
                     'publishedAt' => $submission->editor_decision_at,
                 ];
@@ -254,8 +254,8 @@ class HomeController extends Controller
                 'author' => $submission->author->name ?? 'Anonymous',
                 'authorId' => $submission->author_id,
                 'publishedAt' => $submission->published_at,
-                'citations' => rand(50, 200),
-                'downloads' => rand(1000, 5000),
+                'citations' => $reviewCount,
+                'downloads' => $submission->download_count ?? 0,
                 'reviews' => $reviewCount,
                 'filePath' => $submission->file_path,
                 'fileName' => $submission->file_name,
@@ -273,6 +273,9 @@ class HomeController extends Controller
         if (!$submission->file_path || !Storage::disk('local')->exists($submission->file_path)) {
             abort(404, 'File not found.');
         }
+
+        // Increment download count
+        $submission->increment('download_count');
 
         return response()->download(
             Storage::disk('local')->path($submission->file_path),
@@ -356,7 +359,7 @@ class HomeController extends Controller
                 'category' => $submission->research_field,
                 'author' => $submission->author->name ?? 'Anonymous',
                 'publishedAt' => $submission->published_at,
-                'downloads' => rand(1000, 5000),
+                'downloads' => $submission->download_count ?? 0,
                 'reviews' => $reviewCount,
             ];
         });
