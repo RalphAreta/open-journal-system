@@ -610,8 +610,8 @@ class SubmissionController extends Controller
     }
 
     /**
-     * Generate filename for original submission in format: MS-YYYY-###.ext
-     * Example: MS-2026-023.pdf
+     * Generate filename for original submission in format: [Journal]-D-YYYY-###.ext
+     * Example: [Journal]-D-2026-023.pdf
      */
     private function generateOriginalSubmissionFileName(int $submissionNumber, \Illuminate\Http\UploadedFile $file): string
     {
@@ -619,12 +619,12 @@ class SubmissionController extends Controller
         $paddedNumber = str_pad($submissionNumber, 3, '0', STR_PAD_LEFT);
         $extension = $file->getClientOriginalExtension();
 
-        return "MS-{$year}-{$paddedNumber}.{$extension}";
+        return "[Journal]-D-{$year}-{$paddedNumber}.{$extension}";
     }
 
     /**
-     * Generate filename in format: MS-YYYY-###-R#.ext
-     * Example: MS-2026-023-R2.pdf
+     * Generate filename in format: [Journal]-D-YYYY-###R#.ext
+     * Example: [Journal]-D-2026-023R2.pdf
      */
     private function generateRevisionFileName(Submission $submission, \Illuminate\Http\UploadedFile $file): string
     {
@@ -633,6 +633,6 @@ class SubmissionController extends Controller
         $revisionCount = $this->countSubmissionRevisions($submission) + 1;
         $extension = $file->getClientOriginalExtension();
 
-        return "MS-{$year}-{$submissionNumber}-R{$revisionCount}.{$extension}";
+        return "[Journal]-D-{$year}-{$submissionNumber}R{$revisionCount}.{$extension}";
     }
 }

@@ -81,10 +81,10 @@ class RevisionService
                 $submission->update($updateData);
 
                 // ── SAVE file info on the revision request itself ─────────
-                // Check if the filename already follows the MS format (MS-YYYY-###-R#)
+                // Check if the filename already follows the [Journal]-D-YYYY-###R# format
                 // If so, use it as-is; otherwise, add the R{n} prefix for backwards compatibility
-                if (preg_match('/^MS-\d{4}-\d{3}-R\d+\./', $originalFileName)) {
-                    // Already formatted with MS-YYYY-###-R# pattern
+                if (preg_match('/^\[Journal\]-D-\d{4}-\d{3}R\d+\./', $originalFileName)) {
+                    // Already formatted with [Journal]-D-YYYY-###R# pattern
                     $displayName = $originalFileName;
                 } else {
                     // Legacy format or no format - add R{n} prefix
