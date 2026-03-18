@@ -300,7 +300,7 @@
                 margin: 0 auto;
                 padding: 2.5rem 1.5rem 5rem;
                 display: grid;
-                grid-template-columns: 1fr 18rem;
+                grid-template-columns: 1fr 280px;
                 gap: 2rem;
                 align-items: start;
                 position: relative;
@@ -310,13 +310,14 @@
                 .main-wrap {
                     grid-template-columns: 1fr;
                 }
-                .sidebar {
+                .main-wrap > aside {
                     order: -1;
                 }
             }
 
-            .paper-section {
-                margin-bottom: 2rem;
+            .main-wrap > aside {
+                display: flex;
+                flex-direction: column;
             }
 
             .section-heading {
@@ -730,6 +731,7 @@
             }
             .modal-top-bar {
                 height: 3px;
+                background: linear-gradient(90deg, var(--teal-dark) 0%, var(--teal) 100%);
             }
             .modal-inner {
                 padding: 2rem;
@@ -918,6 +920,9 @@
     <body>
         <div class="page-texture"></div>
 
+        {{-- Decorative Top Bar --}}
+        <div style="height: 12px; background: linear-gradient(90deg, var(--teal-dark) 0%, var(--teal) 50%, #3aaba0 100%);"></div>
+
         {{-- HEADER --}}
         <header class="site-header">
             <div class="shimmer-bar" style="height: 2px"></div>
@@ -1030,44 +1035,187 @@
                         </div>
                     </div>
                 </div>
-                Citation
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1.25rem">
-                        Choose your preferred citation style or export to reference management software.
-                    </p>
-                    <div style="display: flex; gap: 0.75rem; flex-direction: column">
-                        <!-- Cite Modal Button -->
-                        <button class="cite-btn" onclick="openCitationModal()"
-                            data-paper-title="{{ $paper['title'] }}"
-                            data-paper-author="{{ $paper['author'] }}"
-                            data-publication-year="{{ $paper['publishedAt']->format('Y') }}"
-                            data-category="{{ $paper['category'] }}">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                            </svg>
-                            Cite This Paper
-                        </button>
 
-                        <!-- RIS Download Button -->
-                        <a href="{{ route('papers.download-ris', ['submission' => $paper['id']]) }}" 
-                           class="cite-btn" 
-                           style="text-decoration: none; background-color: #c9a84c; color: #fff; border: none; cursor: pointer;"
-                           title="Download RIS format for Zotero, Mendeley, EndNote">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                {{-- Abstract Section --}}
+                <div class="paper-section reveal" style="transition-delay:.05s">
+                    <div class="section-heading">
+                        <div class="section-icon">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M9 12h6m-6 4h4M7 20H5a2 2 0 01-2-2V5a2 2 0 012-2h6.414a2 2 0 011.414.586l4.586 4.586A2 2 0 0117 9.414V15a2 2 0 01-2 2h-4v4a2 2 0 01-2 2z"/>
                             </svg>
-                            Export as RIS
-                        </a>
+                        </div>
+                        Abstract
                     </div>
-                    <p style="font-size:.75rem;color:var(--text-muted);margin-top:0.75rem;text-align:center">
-                        RIS format works with Zotero, Mendeley, EndNote, and other reference managers
-                    </p>
+                    <div class="card">
+                        <div class="card-body" style="border-left: 4px solid var(--gold); background: var(--cream);">
+                            <p style="font-size:.85rem;color:var(--text-body);line-height:1.75;margin:0">
+                                {{ $paper['abstract'] ?? 'Lorem ipsum dolor es ma et al' }}
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                {{-- Keywords Section --}}
+                <div class="paper-section reveal" style="transition-delay:.1s">
+                    <div class="section-heading">
+                        <div class="section-icon">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        Keywords
+                    </div>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; padding: 0;">
+                        @if(isset($paper['keywords']) && is_array($paper['keywords']) && count($paper['keywords']) > 0)
+                            @foreach($paper['keywords'] as $keyword)
+                                <span style="display: inline-block; padding: 0.5rem 1rem; background: rgba(45, 129, 118, 0.08); border: 1px solid rgba(45, 129, 118, 0.3); color: var(--teal); border-radius: 999px; font-size: 0.8rem; font-weight: 500;">
+                                    {{ $keyword }}
+                                </span>
+                            @endforeach
+                        @else
+                            <span style="display: inline-block; padding: 0.5rem 1rem; background: rgba(45, 129, 118, 0.08); border: 1px solid rgba(45, 129, 118, 0.3); color: var(--teal); border-radius: 999px; font-size: 0.8rem; font-weight: 500;">Keyword 1</span>
+                            <span style="display: inline-block; padding: 0.5rem 1rem; background: rgba(45, 129, 118, 0.08); border: 1px solid rgba(45, 129, 118, 0.3); color: var(--teal); border-radius: 999px; font-size: 0.8rem; font-weight: 500;">Keyword 2</span>
+                            <span style="display: inline-block; padding: 0.5rem 1rem; background: rgba(45, 129, 118, 0.08); border: 1px solid rgba(45, 129, 118, 0.3); color: var(--teal); border-radius: 999px; font-size: 0.8rem; font-weight: 500;">Keyword 3</span>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Access Paper Section --}}
+                <div class="paper-section reveal" style="transition-delay:.15s">
+                    <div class="section-heading">
+                        <div class="section-icon">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm8-5.5V5a2 2 0 00-2-2H6a2 2 0 00-2 2v6.5"/>
+                            </svg>
+                        </div>
+                        Access Paper
+                    </div>
+                    <div class="download-card">
+                        <div class="download-inner">
+                            <div class="download-text">
+                                <h3>Full Paper Available</h3>
+                                <p>Download the complete PDF to access methodology, results, and references.</p>
+                            </div>
+                            <a href="{{ route('papers.download', ['submission' => $paper['id']]) }}" class="download-btn">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Citation Section --}}
+                <div class="paper-section reveal" style="transition-delay:.2s">
+                    <div class="section-heading">
+                        <div class="section-icon">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        Citation
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1.25rem">
+                                Choose your preferred citation style or export to reference management software.
+                            </p>
+                            <div style="display: flex; gap: 0.75rem; flex-direction: column">
+                                <!-- Cite Modal Button -->
+                                <button class="cite-btn" onclick="openCitationModal()"
+                                    data-paper-title="{{ $paper['title'] }}"
+                                    data-paper-author="{{ $paper['author'] }}"
+                                    data-publication-year="{{ $paper['publishedAt']->format('Y') }}"
+                                    data-category="{{ $paper['category'] }}"
+                                    style="width: 100%; display: flex; align-items: center; justify-content: center;">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                    </svg>
+                                    CITE THIS PAPER
+                                </button>
+
+                                <!-- RIS Download Button -->
+                                <a href="{{ route('papers.download-ris', ['submission' => $paper['id']]) }}" 
+                                   class="cite-btn" 
+                                   style="width: 100%; display: flex; align-items: center; justify-content: center; text-decoration: none; background-color: #c9a84c; color: #fff; border: none; cursor: pointer;"
+                                   title="Download RIS format for Zotero, Mendeley, EndNote">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                                    </svg>
+                                    EXPORT AS RIS
+                                </a>
+                            </div>
+                            <p style="font-size:.75rem;color:var(--text-muted);margin-top:0.75rem;text-align:center">
+                                RIS format works with Zotero, Mendeley, EndNote, and other reference managers
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            {{-- Sidebar --}}
+            <aside style="width: 100%; max-width: 280px;">
+                {{-- Paper Details --}}
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="card-header" style="padding: 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                        Paper Details
+                    </div>
+                    <div class="card-body" style="padding: 1rem;">
+                        <div style="margin-bottom: 1.25rem;">
+                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Category</p>
+                            <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-body); margin: 0;">{{ $paper['category'] ?? 'Engineering' }}</p>
+                        </div>
+                        <div style="margin-bottom: 1.25rem;">
+                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Journal</p>
+                            <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-body); margin: 0;">Open Journal System</p>
+                        </div>
+                        <div style="margin-bottom: 1.25rem;">
+                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Volume / Issue</p>
+                            <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-body); margin: 0;">Vol. 8, No. 1</p>
+                        </div>
+                        <div style="margin-bottom: 1.25rem;">
+                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Pages</p>
+                            <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-body); margin: 0;">pp. 14–28</p>
+                        </div>
+                        <div style="margin-bottom: 1.25rem;">
+                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Language</p>
+                            <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-body); margin: 0;">English</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">License</p>
+                            <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" style="font-size: 0.9rem; font-weight: 600; color: var(--teal); text-decoration: none;">CC BY 4.0 Open Access</a>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- About the Author --}}
+                <div class="card">
+                    <div class="card-header" style="padding: 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        About the Author
+                    </div>
+                    <div class="card-body" style="padding: 1.5rem; text-align: center;">
+                        <div style="width: 60px; height: 60px; margin: 0 auto 1rem; background: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.4rem;">
+                            {{ substr($paper['author'] ?? 'RA', 0, 2) }}
+                        </div>
+                        <p style="font-size: 0.95rem; font-weight: 700; color: var(--text-body); margin: 0 0 0.25rem;">{{ $paper['author'] ?? 'Ralph Areta' }}</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 0.75rem;">Lead Researcher</p>
+                        <p style="font-size: 0.8rem; color: var(--text-body); line-height: 1.6; margin: 0;">
+                            Researcher and author contributing to the Open Journal System academic community.
+                        </p>
+                    </div>
+                </div>
+            </aside>
         </div>
 
         <script>
@@ -1151,5 +1299,34 @@
                     if (e.target === this) closeCitationModal();
                 });
         </script>
+
+        {{-- Citation Modal --}}
+        <div id="citationModal" class="citation-modal">
+            <div class="modal-box">
+                <div class="modal-top-bar"></div>
+                <button class="modal-close" onclick="closeCitationModal()">&times;</button>
+                <div class="modal-inner">
+                    <h2 class="modal-title">Cite This Paper</h2>
+                    <p class="modal-subtitle">Select a format and copy the formatted reference.</p>
+
+                    <div class="citation-tabs">
+                        <button class="citation-tab-btn active" onclick="switchCitationStyle(this, 'apa')">APA</button>
+                        <button class="citation-tab-btn" onclick="switchCitationStyle(this, 'chicago')">Chicago</button>
+                        <button class="citation-tab-btn" onclick="switchCitationStyle(this, 'mla')">MLA</button>
+                        <button class="citation-tab-btn" onclick="switchCitationStyle(this, 'harvard')">Harvard</button>
+                    </div>
+
+                    <div id="apa" class="citation-content active"></div>
+                    <div id="chicago" class="citation-content"></div>
+                    <div id="mla" class="citation-content"></div>
+                    <div id="harvard" class="citation-content"></div>
+
+                    <button class="copy-btn" onclick="copyCitation()">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+                        Copy Citation
+                    </button>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
