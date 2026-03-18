@@ -128,7 +128,7 @@ class SubmissionController extends Controller
         // ── File upload ─────────────────────────────────────────────────────
         $file = $request->file('file');
         $nextSubmissionNumber = $this->getNextSubmissionNumber();
-        
+
         // Generate original submission filename: MS-2026-001.pdf
         $originalFileName = $this->generateOriginalSubmissionFileName($nextSubmissionNumber, $file);
         $path = $file->storeAs('submissions/' . Auth::id(), $originalFileName, 'local');
@@ -300,7 +300,7 @@ class SubmissionController extends Controller
         }
 
         $file = $request->file('file');
-        
+
         // Generate revision filename: MS-2026-023-R2.pdf
         $revisionFileName = $this->generateRevisionFileName($submission, $file);
         $path = $file->storeAs('submissions/' . Auth::id() . '/revisions', $revisionFileName, 'local');
@@ -309,7 +309,7 @@ class SubmissionController extends Controller
             $revisionRequest,
             $path,
             $validated['revision_notes'],
-            $revisionFileName  
+            $revisionFileName
         );
 
         return redirect()->route('submissions.show', $submission)
