@@ -105,6 +105,12 @@
                 </a>
                 <div class="hidden md:flex items-center gap-8">
                     <a
+                        href="/published-papers"
+                        class="text-sm font-bold text-[#2D8176] hover:text-[#c9a84c] transition-colors"
+                    >
+                        Published Papers
+                    </a>
+                    <a
                         href="/login"
                         class="text-sm font-bold text-[#2D8176] hover:text-[#c9a84c] transition-colors"
                     >
@@ -364,6 +370,18 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm8-5.5V5a2 2 0 00-2-2H6a2 2 0 00-2 2v6.5" />
                                         </svg>
                                         <span>Export Citation</span>
+                                    </a>
+
+                                    <!-- Download PDF Button -->
+                                    <a
+                                        href="{{ route('papers.download', ['submission' => $paper['id']]) }}"
+                                        class="inline-block w-full px-5 py-2.5 bg-white border-2 border-[#2D8176] text-[#2D8176] rounded-xl font-bold text-xs uppercase tracking-wider text-center hover:bg-[#2D8176] hover:text-white transition-all duration-200 flex items-center justify-center gap-2"
+                                        title="Download the full paper as PDF"
+                                    >
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        <span>Download PDF</span>
                                     </a>
                                 </div>
                             </div>
