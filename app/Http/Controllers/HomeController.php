@@ -285,10 +285,10 @@ class HomeController extends Controller
 
     /**
      * Download paper citation in RIS format
-     * 
+     *
      * Generates a .ris file containing bibliographic information that can be imported
      * into citation management software (Zotero, Mendeley, EndNote, etc.)
-     * 
+     *
      * @param Submission $submission
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
@@ -318,7 +318,7 @@ class HomeController extends Controller
 
     /**
      * Sanitize filename to remove special characters
-     * 
+     *
      * @param string $filename
      * @return string
      */
@@ -326,13 +326,13 @@ class HomeController extends Controller
     {
         // Remove special characters but keep spaces and hyphens
         $filename = preg_replace('/[^a-zA-Z0-9\s\-_]/', '', $filename);
-        
+
         // Replace spaces with underscores
         $filename = str_replace(' ', '_', $filename);
-        
+
         // Remove multiple underscores
         $filename = preg_replace('/_+/', '_', $filename);
-        
+
         // Limit length
         return substr($filename, 0, 100);
     }
