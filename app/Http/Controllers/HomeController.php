@@ -28,7 +28,7 @@ class HomeController extends Controller
             ->with('submission')
             ->get();
 
-        $avgReviewDays = 12; // default
+        $avgReviewDays = 0;
         if ($completedReviews->count() > 0) {
             $totalDays = 0;
             foreach ($completedReviews as $review) {
@@ -42,7 +42,7 @@ class HomeController extends Controller
         $totalSubmissions = Submission::where('status', '!=', Submission::STATUS_SUBMITTED)->count();
         $acceptanceRate = $totalSubmissions > 0
             ? round(($publishedPapersCount / $totalSubmissions) * 100)
-            : 37;
+            : 0;
 
         // LIVE RESEARCH ACTIVITY - Last 4 activities (mixed: submissions, reviews, publications)
         $activities = collect();
@@ -124,15 +124,7 @@ class HomeController extends Controller
                 ];
             });
 
-        // Fallback editorial board if none exist
-        if ($editorialBoard->isEmpty()) {
-            $editorialBoard = collect([
-                ['id' => 1, 'name' => 'Dr. James Mitchell', 'expertise' => 'Computer Science', 'role' => 'chief_editor'],
-                ['id' => 2, 'name' => 'Dr. Sarah Chen', 'expertise' => 'Physics', 'role' => 'editor'],
-                ['id' => 3, 'name' => 'Prof. Andreas Weber', 'expertise' => 'Engineering', 'role' => 'editor'],
-                ['id' => 4, 'name' => 'Dr. Aisha Patel', 'expertise' => 'Data Science', 'role' => 'editor'],
-            ]);
-        }
+        // Editorial board - only show real database records
 
         // FEATURED RESEARCH - Recently accepted papers with highest impact
         $featuredResearch = Submission::where('status', Submission::STATUS_PUBLISHED)
@@ -204,25 +196,11 @@ class HomeController extends Controller
                 ];
             });
 
-        // Default research fields if database is empty
-        if ($researchFields->isEmpty()) {
-            $researchFields = collect([
-                ['name' => 'Artificial Intelligence', 'count' => 24],
-                ['name' => 'Software Systems', 'count' => 18],
-                ['name' => 'Cybersecurity', 'count' => 16],
-                ['name' => 'Renewable Energy', 'count' => 22],
-                ['name' => 'Data Engineering', 'count' => 20],
-                ['name' => 'Biotechnology', 'count' => 14],
-                ['name' => 'Networking', 'count' => 12],
-                ['name' => 'Cloud Computing', 'count' => 19],
-                ['name' => 'Data Science', 'count' => 26],
-                ['name' => 'Innovation Lab', 'count' => 8],
-            ]);
-        }
+        // Research fields - only show real database records
 
         return view('welcome', [
-            'publishedPapersCount' => $publishedPapersCount ?: 124,
-            'activeReviewersCount' => $activeReviewersCount ?: 89,
+            'publishedPapersCount' => $publishedPapersCount,
+            'activeReviewersCount' => $activeReviewersCount,
             'avgReviewDays' => $avgReviewDays,
             'acceptanceRate' => $acceptanceRate,
             'liveActivities' => $liveActivities,
