@@ -924,41 +924,35 @@
         <div style="height: 12px; background: linear-gradient(90deg, var(--teal-dark) 0%, var(--teal) 50%, #3aaba0 100%);"></div>
 
         {{-- HEADER --}}
-        <header class="site-header">
-            <div class="shimmer-bar" style="height: 2px"></div>
-            <div class="header-inner">
-                <a href="/" class="header-logo">
-                    <div class="logo-icon">
-                        <svg
-                            width="14"
-                            height="14"
-                            fill="none"
-                            stroke="#fff"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
-                        >
-                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                            <path
-                                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
-                            />
+        <header style="background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50;">
+            <div style="max-width: 90rem; margin: 0 auto; padding: 0 1.5rem; height: 5rem; display: flex; justify-content: space-between; align-items: center;">
+                <a href="/" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; group: true;">
+                    <div style="width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center; background: var(--teal-dark); border-radius: 50%; border: 1px solid rgba(201, 168, 76, 0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <svg class="text-[#f0d678] w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                         </svg>
                     </div>
-                    <span class="logo-text">Journals</span>
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: var(--teal-dark); line-height: 1;">Journal System</span>
+                        <span style="font-size: 0.5625rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.0625rem;">Academic Publishing Portal</span>
+                    </div>
                 </a>
-                <a href="/" class="back-link">
-                    <svg
-                        width="12"
-                        height="12"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                    >
-                        <line x1="19" y1="12" x2="5" y2="12" />
-                        <polyline points="12 19 5 12 12 5" />
-                    </svg>
-                    Back to Home
-                </a>
+
+                <div style="display: none; gap: 2rem; margin-left: auto;">
+                    <a href="/published-papers" style="font-size: 0.875rem; font-weight: 700; color: var(--teal-dark); text-decoration: none; transition: color 0.2s;">
+                        Published Papers
+                    </a>
+                </div>
+
+                <div style="display: flex; gap: 2rem; align-items: center; margin-left: auto;">
+                    <a href="/" style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem; transition: color 0.2s;">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Home
+                    </a>
+                </div>
             </div>
         </header>
 

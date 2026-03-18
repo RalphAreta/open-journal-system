@@ -104,11 +104,6 @@
                     </div>
                 </a>
                 <div class="hidden md:flex items-center gap-8">
-                    <a
-                        href="/published-papers"
-                        class="text-sm font-bold text-[#2D8176] hover:text-[#c9a84c] transition-colors"
-                    >
-                        Published Papers
                     </a>
                     <a
                         href="/login"
