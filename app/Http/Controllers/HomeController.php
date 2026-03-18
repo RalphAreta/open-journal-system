@@ -15,7 +15,7 @@ class HomeController extends Controller
     public function index()
     {
         // METRICS DASHBOARD DATA
-        $publishedPapersCount = Submission::where('status', Submission::STATUS_ACCEPTED)->count();
+        $publishedPapersCount = Submission::where('status', Submission::STATUS_PUBLISHED)->count();
         $activeReviewersCount = User::whereHas('roles', function ($query) {
             $query->where('name', 'reviewer');
         })->count();
@@ -23,7 +23,7 @@ class HomeController extends Controller
         // Calculate average review days
         $completedReviews = Review::where('status', Review::STATUS_SUBMITTED)
             ->whereHas('submission', function ($query) {
-                $query->where('status', Submission::STATUS_ACCEPTED);
+                $query->where('status', Submission::STATUS_PUBLISHED);
             })
             ->with('submission')
             ->get();
@@ -82,8 +82,8 @@ class HomeController extends Controller
             });
 
         // Get recently accepted papers
-        $recentlyAccepted = Submission::where('status', Submission::STATUS_ACCEPTED)
-            ->latest('editor_decision_at')
+        $recentlyAccepted = Submission::where('status', Submission::STATUS_PUBLISHED)
+            ->latest('published_at')
             ->limit(2)
             ->get()
             ->map(function ($submission) {
@@ -93,7 +93,7 @@ class HomeController extends Controller
                     'title' => 'Paper Published',
                     'description' => $submission->title,
                     'category' => $submission->research_field ?? 'Research',
-                    'timestamp' => $submission->editor_decision_at,
+                    'timestamp' => $submission->published_at,
                 ];
             });
 
@@ -135,9 +135,9 @@ class HomeController extends Controller
         }
 
         // FEATURED RESEARCH - Recently accepted papers with highest impact
-        $featuredResearch = Submission::where('status', Submission::STATUS_ACCEPTED)
+        $featuredResearch = Submission::where('status', Submission::STATUS_PUBLISHED)
             ->with('author')
-            ->latest('editor_decision_at')
+            ->latest('published_at')
             ->limit(2)
             ->get()
             ->map(function ($submission) {
@@ -153,7 +153,7 @@ class HomeController extends Controller
                     'citations' => $reviewCount,
                     'downloads' => $submission->download_count ?? 0,
                     'author' => $submission->author->name ?? 'Anonymous',
-                    'publishedAt' => $submission->editor_decision_at,
+                    'publishedAt' => $submission->published_at,
                 ];
             });
 
