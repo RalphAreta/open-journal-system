@@ -81,14 +81,21 @@ class RevisionService
                 $submission->update($updateData);
 
                 // ── SAVE file info on the revision request itself ─────────
-                // Build R{n} prefix based on how many revisions this submission already has.
-                $revisionNumber = RevisionRequest::where('submission_id', $submission->id)
-                    ->whereNotNull('revised_file_path')
-                    ->count() + 1;
+                // Check if the filename already follows the MS format (MS-YYYY-###-R#)
+                // If so, use it as-is; otherwise, add the R{n} prefix for backwards compatibility
+                if (preg_match('/^MS-\d{4}-\d{3}-R\d+\./', $originalFileName)) {
+                    // Already formatted with MS-YYYY-###-R# pattern
+                    $displayName = $originalFileName;
+                } else {
+                    // Legacy format or no format - add R{n} prefix
+                    $revisionNumber = RevisionRequest::where('submission_id', $submission->id)
+                        ->whereNotNull('revised_file_path')
+                        ->count() + 1;
 
-                $displayName = $originalFileName
-                    ? 'R' . $revisionNumber . ' - ' . $originalFileName
-                    : 'R' . $revisionNumber . ' - revision.pdf';
+                    $displayName = $originalFileName
+                        ? 'R' . $revisionNumber . ' - ' . $originalFileName
+                        : 'R' . $revisionNumber . ' - revision.pdf';
+                }
 
                 $revisionRequest->update([
                     'revised_at'        => now(),

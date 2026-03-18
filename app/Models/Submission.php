@@ -32,20 +32,21 @@ class Submission extends Model
         'initial_screening_at',
         'editor_decision_draft',
         'managing_editor_id',
-'managing_editor_assigned_at',
-'managing_editor_status',
-'ctf_sent_at',
-'forwarded_to_layout_at',
-'ctf_file_path',
-'ctf_file_name',
-'ctf_signed_file_path',   // ← dagdag
-'ctf_signed_file_name',   // ← dagdag
-'ctf_returned_at',
-'published_at',
-'layout_editor_assignment_id',
-  'author_feedback',
-    'author_feedback_at',
-    'author_status',
+        'managing_editor_assigned_at',
+        'managing_editor_status',
+        'ctf_sent_at',
+        'forwarded_to_layout_at',
+        'ctf_file_path',
+        'ctf_file_name',
+        'ctf_signed_file_path',   // ← dagdag
+        'ctf_signed_file_name',   // ← dagdag
+        'ctf_returned_at',
+        'published_at',
+        'layout_editor_assignment_id',
+        'author_feedback',
+        'author_feedback_at',
+        'author_status',
+        'submission_number',
     ];
 
     protected function casts(): array

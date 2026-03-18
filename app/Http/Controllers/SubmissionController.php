@@ -43,7 +43,7 @@ class SubmissionController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $search = trim($request->get('search', ''));
+        $search = trim($request->input('search', ''));
 
         $submissions = $user->submissionsAsAuthor()
             ->when($search, function ($q) use ($search) {
@@ -127,7 +127,11 @@ class SubmissionController extends Controller
 
         // ── File upload ─────────────────────────────────────────────────────
         $file = $request->file('file');
-        $path = $file->store('submissions/' . Auth::id(), 'local');
+        $nextSubmissionNumber = $this->getNextSubmissionNumber();
+        
+        // Generate original submission filename: MS-2026-001.pdf
+        $originalFileName = $this->generateOriginalSubmissionFileName($nextSubmissionNumber, $file);
+        $path = $file->storeAs('submissions/' . Auth::id(), $originalFileName, 'local');
 
         // ── Persist ─────────────────────────────────────────────────────────
         $submission = Submission::create([
@@ -137,11 +141,12 @@ class SubmissionController extends Controller
             'keywords'           => $validated['keywords'] ?? null,
             'research_field'     => $validated['research_field'],
             'file_path'          => $path,
-            'file_name'          => $file->getClientOriginalName(),
+            'file_name'          => $originalFileName,
             'original_file_path' => $path,
-            'original_file_name' => $file->getClientOriginalName(),
+            'original_file_name' => $originalFileName,
             'status'             => Submission::STATUS_SUBMITTED,
             'submitted_at'       => now(),
+            'submission_number'  => $nextSubmissionNumber,
         ]);
 
         // ── Notify chief editors ────────────────────────────────────────────
@@ -295,13 +300,16 @@ class SubmissionController extends Controller
         }
 
         $file = $request->file('file');
-        $path = $file->store('submissions/' . Auth::id() . '/revisions', 'local');
+        
+        // Generate revision filename: MS-2026-023-R2.pdf
+        $revisionFileName = $this->generateRevisionFileName($submission, $file);
+        $path = $file->storeAs('submissions/' . Auth::id() . '/revisions', $revisionFileName, 'local');
 
         RevisionService::processRevisionSubmission(
             $revisionRequest,
             $path,
             $validated['revision_notes'],
-             $file->getClientOriginalName()  
+            $revisionFileName  
         );
 
         return redirect()->route('submissions.show', $submission)
@@ -561,5 +569,70 @@ class SubmissionController extends Controller
         }
 
         return back()->with('success', 'Revision request sent to the Managing Editor.');
+    }
+
+    // ───────────────────────────────────────────────────────────────────────
+    //  HELPER: Generate and track submission numbers
+    // ───────────────────────────────────────────────────────────────────────
+    private function getNextSubmissionNumber(): int
+    {
+        $lastSubmission = Submission::where('submission_number', '!=', null)
+            ->orderByDesc('submission_number')
+            ->first();
+
+        return ($lastSubmission?->submission_number ?? 0) + 1;
+    }
+
+    /**
+     * Ensure submission has a submission_number, assign if missing
+     */
+    private function ensureSubmissionNumber(Submission $submission): int
+    {
+        if ($submission->submission_number !== null) {
+            return $submission->submission_number;
+        }
+
+        // Submission doesn't have a number - assign one
+        $nextNumber = $this->getNextSubmissionNumber();
+        $submission->update(['submission_number' => $nextNumber]);
+        return $nextNumber;
+    }
+
+    /**
+     * Count how many revisions have been submitted for this submission.
+     * This is used to determine the revision number (R1, R2, etc.)
+     */
+    private function countSubmissionRevisions(Submission $submission): int
+    {
+        return RevisionRequest::where('submission_id', $submission->id)
+            ->whereNotNull('revised_at')
+            ->count();
+    }
+
+    /**
+     * Generate filename for original submission in format: MS-YYYY-###.ext
+     * Example: MS-2026-023.pdf
+     */
+    private function generateOriginalSubmissionFileName(int $submissionNumber, \Illuminate\Http\UploadedFile $file): string
+    {
+        $year = now()->year;
+        $paddedNumber = str_pad($submissionNumber, 3, '0', STR_PAD_LEFT);
+        $extension = $file->getClientOriginalExtension();
+
+        return "MS-{$year}-{$paddedNumber}.{$extension}";
+    }
+
+    /**
+     * Generate filename in format: MS-YYYY-###-R#.ext
+     * Example: MS-2026-023-R2.pdf
+     */
+    private function generateRevisionFileName(Submission $submission, \Illuminate\Http\UploadedFile $file): string
+    {
+        $year = now()->year;
+        $submissionNumber = str_pad($this->ensureSubmissionNumber($submission), 3, '0', STR_PAD_LEFT);
+        $revisionCount = $this->countSubmissionRevisions($submission) + 1;
+        $extension = $file->getClientOriginalExtension();
+
+        return "MS-{$year}-{$submissionNumber}-R{$revisionCount}.{$extension}";
     }
 }

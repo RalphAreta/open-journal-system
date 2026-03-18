@@ -1472,7 +1472,7 @@
                             ⚠ Author's Revision Note
                         </p>
                         <p
-                            class="text-[.85rem] text-[var(--ink-mid)] italic leading-relaxed"
+                            class="text-[.85rem] text-(--ink-mid) italic leading-relaxed"
                             id="reassignAuthorFeedback"
                         >
                             —

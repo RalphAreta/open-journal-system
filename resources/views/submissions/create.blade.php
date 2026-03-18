@@ -597,7 +597,7 @@
                                     </p>
                                     <div
                                         id="file-name-display"
-                                        class="hidden mt-4 inline-flex items-center gap-2 bg-[#e8f4f2] border border-[rgba(45,129,118,.3)] text-[#1a4d46] text-[.8rem] font-bold px-4 py-1.5 rounded-full"
+                                        class="hidden mt-4 items-center gap-2 bg-[#e8f4f2] border border-[rgba(45,129,118,.3)] text-[#1a4d46] text-[.8rem] font-bold px-4 py-1.5 rounded-full"
                                     >
                                         <svg
                                             class="w-4 h-4"

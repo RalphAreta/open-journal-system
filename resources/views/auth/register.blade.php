@@ -280,12 +280,12 @@
                 background-size:cover; background-position:center 30%;">
 
         {{-- Layer 1: teal brand wash --}}
-        <div class="absolute inset-0 z-[1]"
+        <div class="absolute inset-0 z-1"
              style="background:linear-gradient(160deg,rgba(18,72,65,.91) 0%,rgba(36,105,96,.86) 40%,rgba(28,84,76,.93) 100%);
                     mix-blend-mode:multiply;"></div>
 
         {{-- Layer 2: vignette + gold light spill --}}
-        <div class="absolute inset-0 z-[2] pointer-events-none"
+        <div class="absolute inset-0 z-2 pointer-events-none"
              style="background:
                  radial-gradient(ellipse 70% 55% at 80% 15%, rgba(201,168,76,.18) 0%, transparent 55%),
                  radial-gradient(ellipse 65% 65% at 0%  90%, rgba(0,0,0,.45)       0%, transparent 50%),
@@ -293,23 +293,23 @@
                  radial-gradient(ellipse 80%  20% at 50%   0%, rgba(0,0,0,.2)       0%, transparent 50%)"></div>
 
         {{-- Dot-grid texture --}}
-        <div class="absolute inset-0 z-[3] opacity-[.04] pointer-events-none"
+        <div class="absolute inset-0 z-3 opacity-[.04] pointer-events-none"
              style="background-image:radial-gradient(circle,#fff 1px,transparent 1px);
                     background-size:26px 26px;"></div>
 
         {{-- Floating orbs --}}
         <div class="orb absolute -top-24 -right-16 w-80 h-80 rounded-full
-                    opacity-25 blur-3xl pointer-events-none z-[4]"
+                    opacity-25 blur-3xl pointer-events-none z-4"
              style="background:radial-gradient(circle at 40% 40%,#c9a84c,transparent 70%)"></div>
         <div class="orb-2 absolute -bottom-32 -left-20 w-96 h-96 rounded-full
-                    opacity-20 blur-3xl pointer-events-none z-[4]"
+                    opacity-20 blur-3xl pointer-events-none z-4"
              style="background:radial-gradient(circle at 60% 60%,#1a3a5c,transparent 70%)"></div>
 
         {{-- Top shimmer accent --}}
         <div class="top-accent shimmer-bar" style="z-index:20;"></div>
 
         {{-- Content --}}
-        <div class="relative z-[10] max-w-sm">
+        <div class="relative z-10 max-w-sm">
 
             {{-- Pill badge --}}
             <div class="lp-fade-up mb-8" style="animation-delay:.08s">
@@ -344,7 +344,7 @@
 
             {{-- Gold rule --}}
             <div class="lp-fade-up mb-6" style="animation-delay:.46s">
-                <div class="w-10 h-[2px] rounded-full bg-[#c9a84c]"></div>
+                <div class="w-10 h-0.5 rounded-full bg-[#c9a84c]"></div>
             </div>
 
             {{-- Steps list --}}
@@ -395,7 +395,7 @@
                     overflow-hidden my-6">
 
             {{-- Card top shimmer stripe --}}
-            <div class="h-[3px] w-full shimmer-bar"></div>
+            <div class="h-0.75 w-full shimmer-bar"></div>
 
             <div class="p-8 md:p-10">
 

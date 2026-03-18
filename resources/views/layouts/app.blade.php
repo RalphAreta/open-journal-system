@@ -485,7 +485,7 @@
                                                     class="flex items-start gap-3"
                                                 >
                                                     <div
-                                                        class="shrink-0 mt-[5px]"
+                                                        class="shrink-0 mt-1.25"
                                                     >
                                                         {{-- dati mt-1 --}}
                                                         @if ($notif->type === 'success')

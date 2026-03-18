@@ -441,7 +441,7 @@
                 <p class="text-[10px] font-bold uppercase tracking-[0.3em] mb-5 text-[#f0d678]">
                     Advancing Knowledge • Inspiring Innovation
                 </p>
-                <div class="h-1 w-20 bg-gradient-to-r from-[#c9a84c] to-transparent mx-auto mb-6"></div>
+                <div class="h-1 w-20 bg-gradienzt-to-r from-[#c9a84c] to-transparent mx-auto mb-6"></div>
                 <p class="text-[10px] font-semibold uppercase tracking-wider">
                     © 2026 Academic Publishing Portal • All Rights Reserved
                 </p>
