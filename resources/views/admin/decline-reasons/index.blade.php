@@ -999,7 +999,6 @@
                     {{ $reasons->where('is_active', true)->count() }} active ·
                     {{ $reasons->where('is_active', false)->count() }} inactive
                 </span>
-                <span class="table-footer-brand">BatStateU · BIRJISE</span>
             </div>
         </div>
     </div>
