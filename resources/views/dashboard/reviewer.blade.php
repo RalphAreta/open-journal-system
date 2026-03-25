@@ -1439,11 +1439,315 @@
             lessText.classList.toggle('hidden', hidden);
         }
 
+        /* ── Enhanced styles injected once ── */
+        (function injectSwalStyles() {
+            if (document.getElementById('swal-custom-styles')) return;
+            const s = document.createElement('style');
+            s.id = 'swal-custom-styles';
+            s.textContent = `
+            /* Popup shell */
+            .swal-decline-popup {
+                border-radius: 20px !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+                box-shadow: 0 32px 80px rgba(26,18,9,.22) !important;
+                border: 1.5px solid #e8dfd0 !important;
+                font-family: 'Source Sans 3', sans-serif !important;
+                max-width: 520px !important;
+            }
+
+            /* Teal accent bar at top */
+            .swal-decline-popup::before {
+                content: '';
+                display: block;
+                height: 4px;
+                background: linear-gradient(90deg, #2d8176, #c9a84c, #2d8176);
+                background-size: 200% 100%;
+                animation: swalShimmer 3s linear infinite;
+            }
+            @keyframes swalShimmer {
+                0%   { background-position: 0% 0; }
+                100% { background-position: 200% 0; }
+            }
+
+            /* Icon area */
+            .swal-decline-popup .swal2-icon {
+                border-color: #fecaca !important;
+                color: #c0392b !important;
+                margin: 28px auto 0 !important;
+                width: 52px !important;
+                height: 52px !important;
+            }
+            .swal-decline-popup .swal2-icon .swal2-icon-content {
+                font-size: 28px !important;
+            }
+
+            /* Title */
+            .swal-decline-popup .swal2-title {
+                font-family: 'Libre Baskerville', serif !important;
+                font-size: 1.4rem !important;
+                font-weight: 700 !important;
+                color: #1a1209 !important;
+                padding: 10px 32px 0 !important;
+                letter-spacing: -.01em !important;
+            }
+
+            /* HTML content area */
+            .swal-decline-popup .swal2-html-container {
+                margin: 0 !important;
+                padding: 0 32px 4px !important;
+                font-size: .92rem !important;
+                color: #6b5740 !important;
+                line-height: 1.6 !important;
+            }
+
+            /* Reason list container */
+            .swal-reasons-wrap {
+                background: #faf6ef;
+                border: 1px solid #e8dfd0;
+                border-radius: 12px;
+                padding: 6px 4px;
+                margin: 12px 0 0;
+            }
+
+            /* Each reason row */
+            .swal-reason-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 14px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background .13s;
+                margin: 2px 0;
+            }
+            .swal-reason-row:hover {
+                background: #e8f4f2;
+            }
+            .swal-reason-row.selected {
+                background: #e8f4f2;
+                outline: 1.5px solid rgba(45,129,118,.35);
+            }
+
+            /* Custom radio dot */
+            .swal-radio-dot {
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                border: 2px solid #c9b99a;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: border-color .13s;
+            }
+            .swal-reason-row.selected .swal-radio-dot {
+                border-color: #2d8176;
+            }
+            .swal-radio-dot::after {
+                content: '';
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #2d8176;
+                opacity: 0;
+                transition: opacity .13s;
+            }
+            .swal-reason-row.selected .swal-radio-dot::after {
+                opacity: 1;
+            }
+
+            /* Reason label text */
+            .swal-reason-label {
+                font-size: .88rem;
+                font-weight: 600;
+                color: #3d2f1a;
+                cursor: pointer;
+            }
+            .swal-reason-row.selected .swal-reason-label {
+                color: #1a4d46;
+            }
+
+            /* Other textarea */
+            .swal-other-wrap {
+                margin: 8px 0 4px;
+                display: none;
+            }
+            .swal-other-wrap.open { display: block; }
+            .swal-other-textarea {
+                width: 100%;
+                padding: 10px 14px;
+                border: 1.5px solid #c9b99a;
+                border-radius: 8px;
+                font-family: 'Source Sans 3', sans-serif;
+                font-size: .88rem;
+                color: #1a1209;
+                background: #fff;
+                resize: none;
+                height: 72px;
+                outline: none;
+                transition: border-color .15s, box-shadow .15s;
+            }
+            .swal-other-textarea:focus {
+                border-color: #2d8176;
+                box-shadow: 0 0 0 3px rgba(45,129,118,.12);
+            }
+            .swal-other-textarea::placeholder { color: #b5a595; }
+
+            /* Fallback textarea (no reasons configured) */
+            .swal-fallback-textarea {
+                width: 100%;
+                padding: 10px 14px;
+                border: 1.5px solid #c9b99a;
+                border-radius: 8px;
+                font-family: 'Source Sans 3', sans-serif;
+                font-size: .88rem;
+                color: #1a1209;
+                background: #faf6ef;
+                resize: none;
+                height: 80px;
+                outline: none;
+                margin-top: 12px;
+                transition: border-color .15s, box-shadow .15s;
+            }
+            .swal-fallback-textarea:focus {
+                border-color: #2d8176;
+                box-shadow: 0 0 0 3px rgba(45,129,118,.12);
+                background: #fff;
+            }
+            .swal-fallback-textarea::placeholder { color: #b5a595; }
+
+            /* Actions area */
+            .swal-decline-popup .swal2-actions {
+                padding: 16px 32px 28px !important;
+                gap: 10px !important;
+                margin: 0 !important;
+            }
+
+            /* Decline (confirm) button */
+            .swal-decline-popup .swal2-confirm {
+                background: #c0392b !important;
+                border-radius: 8px !important;
+                font-family: 'Source Sans 3', sans-serif !important;
+                font-size: .74rem !important;
+                font-weight: 800 !important;
+                letter-spacing: .1em !important;
+                text-transform: uppercase !important;
+                padding: 11px 24px !important;
+                box-shadow: 0 4px 14px rgba(192,57,43,.25) !important;
+                transition: background .15s, transform .12s, box-shadow .15s !important;
+            }
+            .swal-decline-popup .swal2-confirm:hover {
+                background: #a93226 !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 8px 20px rgba(192,57,43,.3) !important;
+            }
+
+            /* Cancel button */
+            .swal-decline-popup .swal2-cancel {
+                background: #fff !important;
+                color: #6b5740 !important;
+                border: 1.5px solid #c9b99a !important;
+                border-radius: 8px !important;
+                font-family: 'Source Sans 3', sans-serif !important;
+                font-size: .74rem !important;
+                font-weight: 800 !important;
+                letter-spacing: .1em !important;
+                text-transform: uppercase !important;
+                padding: 11px 24px !important;
+                box-shadow: none !important;
+                transition: all .15s !important;
+            }
+            .swal-decline-popup .swal2-cancel:hover {
+                background: #e8f4f2 !important;
+                color: #2d8176 !important;
+                border-color: #2d8176 !important;
+            }
+
+            /* Accept popup */
+            .swal-accept-popup {
+                border-radius: 20px !important;
+                overflow: hidden !important;
+                padding: 0 !important;
+                box-shadow: 0 32px 80px rgba(26,18,9,.18) !important;
+                border: 1.5px solid #e8dfd0 !important;
+                font-family: 'Source Sans 3', sans-serif !important;
+                max-width: 420px !important;
+            }
+            .swal-accept-popup::before {
+                content: '';
+                display: block;
+                height: 4px;
+                background: linear-gradient(90deg, #2d8176, #c9a84c);
+            }
+            .swal-accept-popup .swal2-icon {
+                border-color: rgba(45,129,118,.4) !important;
+                color: #2d8176 !important;
+                margin: 28px auto 0 !important;
+                width: 52px !important; height: 52px !important;
+            }
+            .swal-accept-popup .swal2-title {
+                font-family: 'Libre Baskerville', serif !important;
+                font-size: 1.3rem !important;
+                font-weight: 700 !important;
+                color: #1a1209 !important;
+                padding: 10px 32px 0 !important;
+            }
+            .swal-accept-popup .swal2-html-container {
+                margin: 0 !important;
+                padding: 4px 32px 4px !important;
+                font-size: .9rem !important;
+                color: #6b5740 !important;
+            }
+            .swal-accept-popup .swal2-actions {
+                padding: 16px 32px 28px !important;
+                gap: 10px !important;
+                margin: 0 !important;
+            }
+            .swal-accept-popup .swal2-confirm {
+                background: #2d8176 !important;
+                border-radius: 8px !important;
+                font-family: 'Source Sans 3', sans-serif !important;
+                font-size: .74rem !important;
+                font-weight: 800 !important;
+                letter-spacing: .1em !important;
+                text-transform: uppercase !important;
+                padding: 11px 24px !important;
+                box-shadow: 0 4px 14px rgba(45,129,118,.25) !important;
+                transition: background .15s, transform .12s !important;
+            }
+            .swal-accept-popup .swal2-confirm:hover {
+                background: #1a4d46 !important;
+                transform: translateY(-1px) !important;
+            }
+            .swal-accept-popup .swal2-cancel {
+                background: #fff !important;
+                color: #6b5740 !important;
+                border: 1.5px solid #c9b99a !important;
+                border-radius: 8px !important;
+                font-family: 'Source Sans 3', sans-serif !important;
+                font-size: .74rem !important;
+                font-weight: 800 !important;
+                letter-spacing: .1em !important;
+                text-transform: uppercase !important;
+                padding: 11px 24px !important;
+                box-shadow: none !important;
+                transition: all .15s !important;
+            }
+            .swal-accept-popup .swal2-cancel:hover {
+                background: #fef2f2 !important;
+                color: #c0392b !important;
+                border-color: #fecaca !important;
+            }
+        `;
+            document.head.appendChild(s);
+        })();
+
+        /* ── Decline Invitation ── */
         async function declineInvitation(event, assignmentId, title) {
             event.preventDefault();
 
             if (typeof Swal === 'undefined') {
-                // Fallback for when SweetAlert2 is not loaded
                 if (confirm('Decline this review invitation?')) {
                     const reason =
                         prompt('Why are you declining? (Optional)', '') || '';
@@ -1457,7 +1761,7 @@
                 return;
             }
 
-            // ── Fetch reasons from the API (managed by admin) ──
+            // Fetch reasons from API
             let reasons = [];
             try {
                 const res = await fetch('{{ route('api.decline-reasons') }}', {
@@ -1469,111 +1773,68 @@
                 });
                 reasons = await res.json();
             } catch (e) {
-                // Graceful fallback: show a simple textarea if API fails
                 reasons = [];
-            }
-
-            let reasonsHtml;
-
-            if (reasons.length > 0) {
-                const CUSTOM_LABEL = 'Other (please specify)';
-                const hasOther = reasons.includes(CUSTOM_LABEL);
-
-                reasonsHtml = `
-                <div style="text-align:left; margin:15px 0;">
-                    ${reasons
-                        .map(
-                            (reason, index) => `
-                        <div style="margin:10px 0;">
-                            <input type="radio" id="reason-${index}" name="decline-reason" value="${reason}" style="margin-right:8px;">
-                            <label for="reason-${index}" style="cursor:pointer; color:#3d2f1a;">${reason}</label>
-                        </div>
-                    `,
-                        )
-                        .join('')}
-                </div>
-                <div id="other-reason-input-container" style="display:none; margin-top:10px;">
-                    <textarea id="other-reason-input"
-                        placeholder="Please specify your reason..."
-                        style="width:100%;height:60px;padding:8px;border:1px solid #e8dfd0;border-radius:6px;font-family:inherit;font-size:14px;color:#3d2f1a;"></textarea>
-                </div>
-            `;
-            } else {
-                // No reasons configured yet — show plain textarea
-                reasonsHtml = `
-                <div style="margin-top:14px;">
-                    <textarea id="fallback-reason"
-                        placeholder="Please state your reason for declining (optional)..."
-                        style="width:100%;height:80px;padding:10px;border:1px solid #e8dfd0;border-radius:6px;font-family:inherit;font-size:14px;color:#3d2f1a;"></textarea>
-                </div>
-            `;
             }
 
             const CUSTOM_LABEL = 'Other (please specify)';
 
+            // Build HTML
+            let bodyHtml = `<p style="margin-bottom:4px;">You are declining the review invitation for:</p>
+            <p style="font-family:'Libre Baskerville',serif; font-weight:700; color:#1a1209; font-size:1rem; margin-bottom:14px; line-height:1.4;">"${title}"</p>`;
+
+            if (reasons.length > 0) {
+                bodyHtml += `<p style="font-size:.74rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#6b5740; margin-bottom:6px;">Select a reason</p>
+            <div class="swal-reasons-wrap" id="swal-reasons-wrap">
+                ${reasons
+                    .map(
+                        (reason, i) => `
+                    <div class="swal-reason-row" data-value="${reason}" onclick="selectReason(this, '${reason}', '${CUSTOM_LABEL}')">
+                        <span class="swal-radio-dot"></span>
+                        <span class="swal-reason-label">${reason}</span>
+                    </div>
+                `,
+                    )
+                    .join('')}
+            </div>
+            <div class="swal-other-wrap" id="swal-other-wrap">
+                <textarea class="swal-other-textarea" id="swal-other-textarea" placeholder="Please specify your reason..."></textarea>
+            </div>`;
+            } else {
+                bodyHtml += `<p style="font-size:.74rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#6b5740; margin-bottom:6px;">Reason (optional)</p>
+            <textarea class="swal-fallback-textarea" id="swal-fallback-textarea" placeholder="State your reason for declining..."></textarea>`;
+            }
+
             Swal.fire({
                 title: 'Decline Invitation?',
-                html: `Are you sure you want to decline the review for<br><strong>${title}</strong>?<br><br>${reasons.length > 0 ? 'Please select a reason:' : 'You may leave a reason below:'}<br>${reasonsHtml}`,
+                html: bodyHtml,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#c0392b',
-                cancelButtonColor: '#2d8176',
                 confirmButtonText: 'Yes, Decline',
                 cancelButtonText: 'Cancel',
                 reverseButtons: true,
-                customClass: {
-                    popup: 'rounded-2xl shadow-2xl',
-                    confirmButton:
-                        'px-6 py-3 rounded-lg text-xs font-bold uppercase tracking-widest mx-1',
-                    cancelButton:
-                        'px-6 py-3 rounded-lg text-xs font-bold uppercase tracking-widest mx-1',
-                },
-                didOpen: () => {
-                    const container = Swal.getHtmlContainer();
-                    const radioInputs = container.querySelectorAll(
-                        'input[name="decline-reason"]',
-                    );
-                    const otherContainer = container.querySelector(
-                        '#other-reason-input-container',
-                    );
-
-                    radioInputs.forEach((input) => {
-                        input.addEventListener('change', () => {
-                            if (otherContainer) {
-                                otherContainer.style.display =
-                                    input.value === CUSTOM_LABEL
-                                        ? 'block'
-                                        : 'none';
-                            }
-                        });
-                    });
-                },
+                customClass: { popup: 'swal-decline-popup' },
+                focusConfirm: false,
             }).then((r) => {
                 if (!r.isConfirmed) return;
 
-                const container = Swal.getHtmlContainer();
                 let finalReason = '';
-
                 if (reasons.length > 0) {
                     const selected =
-                        container.querySelector(
-                            'input[name="decline-reason"]:checked',
-                        )?.value || '';
+                        document.querySelector('.swal-reason-row.selected')
+                            ?.dataset.value || '';
                     if (selected === CUSTOM_LABEL) {
-                        const otherText =
-                            container
-                                .querySelector('#other-reason-input')
+                        const other =
+                            document
+                                .getElementById('swal-other-textarea')
                                 ?.value?.trim() || '';
-                        finalReason = otherText
-                            ? 'Other: ' + otherText
-                            : selected;
+                        finalReason = other ? 'Other: ' + other : selected;
                     } else {
                         finalReason = selected;
                     }
                 } else {
                     finalReason =
-                        container
-                            .querySelector('#fallback-reason')
+                        document
+                            .getElementById('swal-fallback-textarea')
                             ?.value?.trim() || '';
                 }
 
@@ -1584,6 +1845,26 @@
                     .getElementById(`decline-form-${assignmentId}`)
                     .submit();
             });
+        }
+
+        function selectReason(el, value, customLabel) {
+            document
+                .querySelectorAll('.swal-reason-row')
+                .forEach((r) => r.classList.remove('selected'));
+            el.classList.add('selected');
+            const otherWrap = document.getElementById('swal-other-wrap');
+            if (otherWrap) {
+                otherWrap.classList.toggle('open', value === customLabel);
+                if (value === customLabel) {
+                    setTimeout(
+                        () =>
+                            document
+                                .getElementById('swal-other-textarea')
+                                ?.focus(),
+                        50,
+                    );
+                }
+            }
         }
     </script>
 @endpush
