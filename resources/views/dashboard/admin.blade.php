@@ -629,7 +629,6 @@
                     </div>
 
                     {{-- Placeholder --}}
-
                 </div>
             </div>
 
@@ -665,6 +664,13 @@
                                 'sub' => 'Reviewer field matching',
                                 'route' => 'admin.editor-expertise.index',
                                 'dot' => 'var(--teal-dk)',
+                                'badge' => 'Configure',
+                            ],
+                            [
+                                'label' => 'Decline Reasons',
+                                'sub' => 'Manage reviewer decline options',
+                                'route' => 'admin.decline-reasons.index',
+                                'dot' => 'var(--red)',
                                 'badge' => 'Configure',
                             ],
                         ];

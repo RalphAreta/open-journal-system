@@ -16,8 +16,9 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\AppealController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth; // Make sure this is at the top of the file
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ManagingEditorController;
+use App\Http\Controllers\Admin\DeclineReasonController;
 
 Route::get('/', function () {
     return Auth::check() ? redirect()->route('dashboard') : app(HomeController::class)->index();
@@ -166,6 +167,13 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/admin/expertise-categories', [ExpertiseCategoryController::class, 'store'])->name('admin.expertise-categories.store');
         Route::put('/admin/expertise-categories/{expertiseCategory}', [ExpertiseCategoryController::class, 'update'])->name('admin.expertise-categories.update');
         Route::delete('/admin/expertise-categories/{expertiseCategory}', [ExpertiseCategoryController::class, 'destroy'])->name('admin.expertise-categories.destroy');
+
+        // Decline Reasons Management
+Route::get('/admin/decline-reasons', [DeclineReasonController::class, 'index'])->name('admin.decline-reasons.index');
+Route::post('/admin/decline-reasons', [DeclineReasonController::class, 'store'])->name('admin.decline-reasons.store');
+Route::patch('/admin/decline-reasons/{declineReason}', [DeclineReasonController::class, 'update'])->name('admin.decline-reasons.update');
+Route::patch('/admin/decline-reasons/{declineReason}/toggle', [DeclineReasonController::class, 'toggleActive'])->name('admin.decline-reasons.toggle');
+Route::delete('/admin/decline-reasons/{declineReason}', [DeclineReasonController::class, 'destroy'])->name('admin.decline-reasons.destroy');
     });
 
   Route::middleware('auth')->group(function () {
@@ -177,6 +185,7 @@ Route::middleware('auth')->group(function (): void {
     ->name('author.layout.download');
     Route::get('submissions/{submission}/revision/{revisionRequest}/download', [SubmissionController::class, 'downloadRevisionFile'])
     ->name('submissions.revision-file.download');
+    Route::get('/api/decline-reasons', [DeclineReasonController::class, 'apiIndex'])->name('api.decline-reasons');
 });
 Route::middleware('role:managing-editor')->group(function (): void {
     Route::get('/managing-editor/dashboard', [ManagingEditorController::class, 'dashboard'])

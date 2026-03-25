@@ -1439,103 +1439,11 @@
             lessText.classList.toggle('hidden', hidden);
         }
 
-        function declineInvitation(event, assignmentId, title) {
+        async function declineInvitation(event, assignmentId, title) {
             event.preventDefault();
-            if (typeof Swal !== 'undefined') {
-                const reasons = [
-                    'Too busy at the moment',
-                    'Unable to meet the review deadline',
-                    'Outside my area of expertise',
-                    'Conflict of interest',
-                    'On leave / unavailable',
-                    'Already reviewing many manuscripts',
-                    'Other (please specify)',
-                ];
 
-                const reasonsHtml = `
-                    <div style="text-align: left; margin: 15px 0;">
-                        ${reasons
-                            .map(
-                                (reason, index) => `
-                            <div style="margin: 10px 0;">
-                                <input type="radio" id="reason-${index}" name="decline-reason" value="${reason}" style="margin-right: 8px;">
-                                <label for="reason-${index}" style="cursor: pointer; color: #3d2f1a;">${reason}</label>
-                            </div>
-                        `,
-                            )
-                            .join('')}
-                    </div>
-                    <div id="other-reason-input-container" style="display: none; margin-top: 10px;">
-                        <textarea id="other-reason-input" placeholder="Please specify your reason..." style="width:100%;height:60px;padding:8px;border:1px solid #e8dfd0;border-radius:6px;font-family:inherit;font-size:14px;color:#3d2f1a;"></textarea>
-                    </div>
-                `;
-
-                Swal.fire({
-                    title: 'Decline Invitation?',
-                    html: `Are you sure you want to decline the review for<br><strong>${title}</strong>?<br><br>Please select a reason:<br>${reasonsHtml}`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#c0392b',
-                    cancelButtonColor: '#2d8176',
-                    confirmButtonText: 'Yes, Decline',
-                    cancelButtonText: 'Cancel',
-                    reverseButtons: true,
-                    customClass: {
-                        popup: 'rounded-2xl shadow-2xl',
-                        confirmButton:
-                            'px-6 py-3 rounded-lg text-xs font-bold uppercase tracking-widest mx-1',
-                        cancelButton:
-                            'px-6 py-3 rounded-lg text-xs font-bold uppercase tracking-widest mx-1',
-                    },
-                    didOpen: () => {
-                        // Show/hide other reason textarea
-                        const reasonInputs =
-                            Swal.getHtmlContainer().querySelectorAll(
-                                'input[name="decline-reason"]',
-                            );
-                        const otherReasonContainer =
-                            Swal.getHtmlContainer().querySelector(
-                                '#other-reason-input-container',
-                            );
-
-                        reasonInputs.forEach((input) => {
-                            input.addEventListener('change', () => {
-                                if (input.value === 'Other (please specify)') {
-                                    otherReasonContainer.style.display =
-                                        'block';
-                                } else {
-                                    otherReasonContainer.style.display = 'none';
-                                }
-                            });
-                        });
-                    },
-                }).then((r) => {
-                    if (r.isConfirmed) {
-                        const selectedReason =
-                            Swal.getHtmlContainer().querySelector(
-                                'input[name="decline-reason"]:checked',
-                            )?.value || '';
-                        let finalReason = selectedReason;
-
-                        if (selectedReason === 'Other (please specify)') {
-                            const otherText =
-                                Swal.getHtmlContainer().querySelector(
-                                    '#other-reason-input',
-                                )?.value || '';
-                            finalReason = otherText
-                                ? 'Other: ' + otherText
-                                : selectedReason;
-                        }
-
-                        document.getElementById(
-                            `decline-reason-${assignmentId}`,
-                        ).value = finalReason;
-                        document
-                            .getElementById(`decline-form-${assignmentId}`)
-                            .submit();
-                    }
-                });
-            } else {
+            if (typeof Swal === 'undefined') {
+                // Fallback for when SweetAlert2 is not loaded
                 if (confirm('Decline this review invitation?')) {
                     const reason =
                         prompt('Why are you declining? (Optional)', '') || '';
@@ -1546,7 +1454,136 @@
                         .getElementById(`decline-form-${assignmentId}`)
                         .submit();
                 }
+                return;
             }
+
+            // ── Fetch reasons from the API (managed by admin) ──
+            let reasons = [];
+            try {
+                const res = await fetch('{{ route('api.decline-reasons') }}', {
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector(
+                            'meta[name="csrf-token"]',
+                        ).content,
+                    },
+                });
+                reasons = await res.json();
+            } catch (e) {
+                // Graceful fallback: show a simple textarea if API fails
+                reasons = [];
+            }
+
+            let reasonsHtml;
+
+            if (reasons.length > 0) {
+                const CUSTOM_LABEL = 'Other (please specify)';
+                const hasOther = reasons.includes(CUSTOM_LABEL);
+
+                reasonsHtml = `
+                <div style="text-align:left; margin:15px 0;">
+                    ${reasons
+                        .map(
+                            (reason, index) => `
+                        <div style="margin:10px 0;">
+                            <input type="radio" id="reason-${index}" name="decline-reason" value="${reason}" style="margin-right:8px;">
+                            <label for="reason-${index}" style="cursor:pointer; color:#3d2f1a;">${reason}</label>
+                        </div>
+                    `,
+                        )
+                        .join('')}
+                </div>
+                <div id="other-reason-input-container" style="display:none; margin-top:10px;">
+                    <textarea id="other-reason-input"
+                        placeholder="Please specify your reason..."
+                        style="width:100%;height:60px;padding:8px;border:1px solid #e8dfd0;border-radius:6px;font-family:inherit;font-size:14px;color:#3d2f1a;"></textarea>
+                </div>
+            `;
+            } else {
+                // No reasons configured yet — show plain textarea
+                reasonsHtml = `
+                <div style="margin-top:14px;">
+                    <textarea id="fallback-reason"
+                        placeholder="Please state your reason for declining (optional)..."
+                        style="width:100%;height:80px;padding:10px;border:1px solid #e8dfd0;border-radius:6px;font-family:inherit;font-size:14px;color:#3d2f1a;"></textarea>
+                </div>
+            `;
+            }
+
+            const CUSTOM_LABEL = 'Other (please specify)';
+
+            Swal.fire({
+                title: 'Decline Invitation?',
+                html: `Are you sure you want to decline the review for<br><strong>${title}</strong>?<br><br>${reasons.length > 0 ? 'Please select a reason:' : 'You may leave a reason below:'}<br>${reasonsHtml}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#c0392b',
+                cancelButtonColor: '#2d8176',
+                confirmButtonText: 'Yes, Decline',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-2xl shadow-2xl',
+                    confirmButton:
+                        'px-6 py-3 rounded-lg text-xs font-bold uppercase tracking-widest mx-1',
+                    cancelButton:
+                        'px-6 py-3 rounded-lg text-xs font-bold uppercase tracking-widest mx-1',
+                },
+                didOpen: () => {
+                    const container = Swal.getHtmlContainer();
+                    const radioInputs = container.querySelectorAll(
+                        'input[name="decline-reason"]',
+                    );
+                    const otherContainer = container.querySelector(
+                        '#other-reason-input-container',
+                    );
+
+                    radioInputs.forEach((input) => {
+                        input.addEventListener('change', () => {
+                            if (otherContainer) {
+                                otherContainer.style.display =
+                                    input.value === CUSTOM_LABEL
+                                        ? 'block'
+                                        : 'none';
+                            }
+                        });
+                    });
+                },
+            }).then((r) => {
+                if (!r.isConfirmed) return;
+
+                const container = Swal.getHtmlContainer();
+                let finalReason = '';
+
+                if (reasons.length > 0) {
+                    const selected =
+                        container.querySelector(
+                            'input[name="decline-reason"]:checked',
+                        )?.value || '';
+                    if (selected === CUSTOM_LABEL) {
+                        const otherText =
+                            container
+                                .querySelector('#other-reason-input')
+                                ?.value?.trim() || '';
+                        finalReason = otherText
+                            ? 'Other: ' + otherText
+                            : selected;
+                    } else {
+                        finalReason = selected;
+                    }
+                } else {
+                    finalReason =
+                        container
+                            .querySelector('#fallback-reason')
+                            ?.value?.trim() || '';
+                }
+
+                document.getElementById(
+                    `decline-reason-${assignmentId}`,
+                ).value = finalReason;
+                document
+                    .getElementById(`decline-form-${assignmentId}`)
+                    .submit();
+            });
         }
     </script>
 @endpush
