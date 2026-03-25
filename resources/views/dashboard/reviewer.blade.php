@@ -1411,7 +1411,6 @@
 
             <div class="table-footer">
                 <div class="text-sm">{{ $assignments->links() }}</div>
-                <span class="table-footer-brand">BatStateU · BIRJISE</span>
             </div>
         </div>
     </div>
