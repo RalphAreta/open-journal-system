@@ -782,7 +782,6 @@
                 <div class="text-sm text-[#b0aaa0]">
                     {{ $submissions->links() }}
                 </div>
-                <span class="table-footer-brand">BatStateU · BIRJISE</span>
             </div>
         </div>
     </div>
