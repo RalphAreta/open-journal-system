@@ -21,6 +21,7 @@
             --border: #e8dfd0;
             --border-dk: #c9b99a;
             --emerald: #1a4d46;
+            --red: #c0392b;
         }
 
         * {
