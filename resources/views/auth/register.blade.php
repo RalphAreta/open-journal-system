@@ -33,10 +33,6 @@
             from { opacity: 0; transform: translateY(28px) scale(.97); }
             to   { opacity: 1; transform: translateY(0)    scale(1);   }
         }
-        @keyframes expertise-open {
-            from { opacity: 0; transform: translateY(-8px); max-height: 0; }
-            to   { opacity: 1; transform: translateY(0);    max-height: 400px; }
-        }
 
         /* ── Base ── */
         .font-playfair { font-family: 'Playfair Display', Georgia, serif; }
@@ -102,17 +98,16 @@
             width: 1rem; height: 1rem; color: #b0bac8; pointer-events: none;
             transition: color .2s;
         }
-        .lp-input:focus ~ .field-icon { color: #c9a84c; }
 
         /* ── Role cards ── */
         .role-card input[type="checkbox"] { display: none; }
         .role-card-inner {
             display: flex; flex-direction: column; align-items: center;
-            gap: .4rem; padding: .875rem .5rem;
+            gap: .35rem; padding: .75rem .4rem;
             border: 1.5px solid #e2e8f2; border-radius: 12px;
             background: #f8f9fc; cursor: pointer;
             transition: border-color .2s, background .2s, box-shadow .2s, transform .15s;
-            text-align: center;
+            text-align: center; height: 100%;
         }
         .role-card-inner:hover {
             border-color: rgba(201,168,76,.5);
@@ -131,18 +126,20 @@
             color: #a07830;
         }
         .role-icon-wrap {
-            width: 2rem; height: 2rem; border-radius: 8px;
+            width: 1.85rem; height: 1.85rem; border-radius: 8px;
             background: rgba(180,190,210,.12);
             display: flex; align-items: center; justify-content: center;
             color: #8a96a8; transition: background .2s, color .2s;
+            flex-shrink: 0;
         }
         .role-label {
-            font-size: .65rem; font-weight: 700;
-            letter-spacing: .1em; text-transform: uppercase;
+            font-size: .6rem; font-weight: 700;
+            letter-spacing: .08em; text-transform: uppercase;
             color: #6a7890; transition: color .2s;
+            line-height: 1.2;
         }
         .role-desc {
-            font-size: .6rem; color: #a0aab8; line-height: 1.3;
+            font-size: .58rem; color: #a0aab8; line-height: 1.3;
         }
 
         /* ── Expertise panel ── */
@@ -156,23 +153,25 @@
             margin-top: 0;
         }
         #expertise-container.expertise-visible {
-            max-height: 400px;
+            max-height: 500px;
             opacity: 1;
             margin-top: 0;
         }
         .scroll-thin::-webkit-scrollbar       { width: 4px; }
         .scroll-thin::-webkit-scrollbar-thumb { background: #c9a84c; border-radius: 4px; }
 
-        /* Expertise checkbox ── */
+        /* ── Expertise checkbox ── */
         .exp-check {
             display: flex; align-items: flex-start; gap: .6rem;
-            cursor: pointer; padding: .35rem .5rem; border-radius: 8px;
+            cursor: pointer; padding: .4rem .5rem; border-radius: 8px;
             transition: background .15s;
+            /* Bigger tap target on mobile */
+            min-height: 2.25rem;
         }
         .exp-check:hover { background: rgba(201,168,76,.06); }
         .exp-check input[type="checkbox"] {
-            margin-top: .1rem; flex-shrink: 0;
-            width: .9rem; height: .9rem;
+            margin-top: .15rem; flex-shrink: 0;
+            width: 1rem; height: 1rem;
             accent-color: #a07830; cursor: pointer;
         }
         .exp-check span {
@@ -186,13 +185,15 @@
             position: absolute; right: .75rem; top: 50%; transform: translateY(-50%);
             background: none; border: none; cursor: pointer; padding: .25rem;
             color: #b0bac8; transition: color .2s;
-            display: flex; align-items: center;
+            display: flex; align-items: center; justify-content: center;
+            /* Larger tap target */
+            min-width: 2.25rem; min-height: 2.25rem;
         }
         .eye-btn:hover { color: #a07830; }
 
         /* ── Submit button ── */
         .lp-btn {
-            width: 100%; padding: .8rem 1rem;
+            width: 100%; padding: .85rem 1rem;
             background: linear-gradient(135deg, #c9a84c 0%, #a07830 100%);
             color: #fff; font-size: .875rem; font-weight: 600;
             letter-spacing: .04em; border: none; border-radius: 12px;
@@ -266,7 +267,51 @@
         /* ── Text shadow ── */
         .text-shadow { text-shadow: 0 2px 6px rgba(0,0,0,.25); }
 
-        .hidden { display: none !important; }
+        /* ── Mobile-hide helper ── */
+        .rp-mobile-hide { display: block; }
+
+        /* ════════════════════════════════
+           MOBILE OVERRIDES
+        ════════════════════════════════ */
+        @media (max-width: 767px) {
+            /* Brand panel: compact hero band */
+            .brand-panel {
+                padding: 2rem 1.25rem !important;
+            }
+            .brand-headline {
+                font-size: 1.7rem !important;
+                line-height: 1.25 !important;
+            }
+            .rp-mobile-hide { display: none !important; }
+            .stat-pill { font-size: .58rem; padding: .25rem .65rem; }
+
+            /* Card */
+            .register-card { border-radius: 1.25rem; }
+            .card-inner-pad { padding: 1.25rem !important; }
+
+            /* Role cards: 3 columns stay but tighter */
+            .role-card-inner { padding: .6rem .25rem; gap: .25rem; }
+            .role-icon-wrap  { width: 1.6rem; height: 1.6rem; }
+            .role-desc       { display: none; } /* hide sub-label on very small screens */
+
+            /* Expertise grid: single column on mobile */
+            .expertise-grid { grid-template-columns: 1fr !important; }
+
+            /* Expertise max-height increase so it doesn't feel cramped */
+            #expertise-container.expertise-visible { max-height: 600px; }
+        }
+
+        @media (max-width: 359px) {
+            /* Very small phones: role labels shorter */
+            .role-label { font-size: .55rem; letter-spacing: .04em; }
+        }
+
+        /* Safe-area inset for notched phones */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .right-panel {
+                padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+            }
+        }
     </style>
 @endpush
 
@@ -274,8 +319,8 @@
 <div class="font-dm flex flex-col md:flex-row min-h-[calc(100vh-64px)] overflow-x-hidden">
 
     {{-- ═══════════════════ LEFT: Brand Panel ═══════════════════ --}}
-    <div class="relative flex-none md:w-[42%] flex flex-col justify-center
-                px-8 py-14 md:p-14 lg:p-20 overflow-hidden"
+    <div class="brand-panel relative flex-none md:w-[42%] flex flex-col justify-center
+                px-6 py-10 md:p-14 lg:p-20 overflow-hidden"
          style="background-image:url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1400&q=85&auto=format&fit=crop&crop=center');
                 background-size:cover; background-position:center 30%;">
 
@@ -306,13 +351,13 @@
              style="background:radial-gradient(circle at 60% 60%,#1a3a5c,transparent 70%)"></div>
 
         {{-- Top shimmer accent --}}
-        <div class="top-accent shimmer-bar" style="z-index:20;"></div>
+        <div class="top-accent shimmer-bar"></div>
 
         {{-- Content --}}
         <div class="relative z-10 max-w-sm">
 
             {{-- Pill badge --}}
-            <div class="lp-fade-up mb-8" style="animation-delay:.08s">
+            <div class="lp-fade-up mb-4 md:mb-8" style="animation-delay:.08s">
                 <div class="stat-pill">
                     <span class="pulse-dot"></span>
                     <span>Researcher Registration</span>
@@ -320,9 +365,9 @@
             </div>
 
             {{-- Headline --}}
-            <h1 class="font-playfair text-shadow text-white
-                        text-4xl lg:text-[2.75rem] font-bold leading-[1.2]
-                        lp-fade-up mb-5"
+            <h1 class="brand-headline font-playfair text-shadow text-white
+                        text-3xl md:text-4xl lg:text-[2.75rem] font-bold leading-[1.2]
+                        lp-fade-up mb-3 md:mb-5"
                 style="animation-delay:.2s">
                 Start your
                 <em class="not-italic font-normal block mt-1"
@@ -334,8 +379,8 @@
                 today.
             </h1>
 
-            {{-- Description --}}
-            <p class="text-shadow text-[.875rem] leading-relaxed text-white/80
+            {{-- Description — hidden on mobile --}}
+            <p class="rp-mobile-hide text-shadow text-[.875rem] leading-relaxed text-white/80
                        lp-fade-up border-l-2 border-[#c9a84c]/50 pl-4 mb-8"
                style="animation-delay:.34s">
                 Create your account to submit manuscripts, track review
@@ -343,12 +388,12 @@
             </p>
 
             {{-- Gold rule --}}
-            <div class="lp-fade-up mb-6" style="animation-delay:.46s">
+            <div class="lp-fade-up mb-3 md:mb-6" style="animation-delay:.46s">
                 <div class="w-10 h-0.5 rounded-full bg-[#c9a84c]"></div>
             </div>
 
-            {{-- Steps list --}}
-            <div class="lp-fade-up space-y-3" style="animation-delay:.58s">
+            {{-- Steps list — hidden on mobile --}}
+            <div class="rp-mobile-hide lp-fade-up space-y-3" style="animation-delay:.58s">
                 @foreach([
                     ['01', 'Fill in your details',    'Name, email, and your role'],
                     ['02', 'Set your expertise',      'So we match you with relevant work'],
@@ -364,8 +409,8 @@
                 @endforeach
             </div>
 
-            {{-- Bottom stats --}}
-            <div class="lp-fade-up flex gap-5 mt-10 pt-8 border-t border-white/10"
+            {{-- Bottom stats — hidden on mobile, compact alternative shown --}}
+            <div class="rp-mobile-hide lp-fade-up flex gap-5 mt-10 pt-8 border-t border-white/10"
                  style="animation-delay:.7s">
                 @foreach([['100%','Peer Reviewed'],['Free','Open Access'],['Indexed','Impact Factor']] as [$v,$l])
                 <div>
@@ -374,12 +419,23 @@
                 </div>
                 @endforeach
             </div>
+
+            {{-- Mobile-only compact stats --}}
+            <div class="flex md:hidden gap-5 mt-3 pt-3 border-t border-white/10 lp-fade-up"
+                 style="animation-delay:.5s">
+                @foreach([['100%','Peer Reviewed'],['Free','Open Access'],['Indexed','Impact']] as [$v,$l])
+                <div>
+                    <div class="text-[#f0d678] font-semibold text-xs">{{ $v }}</div>
+                    <div class="text-white/50 text-[.58rem] tracking-widest uppercase mt-0.5">{{ $l }}</div>
+                </div>
+                @endforeach
+            </div>
         </div>
     </div>
 
     {{-- ═══════════════════ RIGHT: Registration Form ═══════════════════ --}}
-    <div class="flex-1 flex items-start md:items-center justify-center
-                p-6 md:p-10 lg:p-14 relative overflow-x-hidden overflow-y-auto"
+    <div class="right-panel flex-1 flex items-start md:items-center justify-center
+                p-3 sm:p-6 md:p-10 lg:p-14 relative overflow-x-hidden overflow-y-auto"
          style="background:linear-gradient(145deg,#f7f3ec 0%,#ede8df 50%,#e8e2f5 100%)">
 
         {{-- Diagonal stripe --}}
@@ -392,31 +448,32 @@
                     bg-white/85 backdrop-blur-2xl
                     border border-[#c9a84c]/18
                     rounded-2xl shadow-2xl shadow-[#a07830]/12
-                    overflow-hidden my-6">
+                    overflow-hidden my-4 md:my-6">
 
             {{-- Card top shimmer stripe --}}
             <div class="h-0.75 w-full shimmer-bar"></div>
 
-            <div class="p-8 md:p-10">
+            <div class="card-inner-pad p-5 sm:p-8 md:p-10">
 
                 {{-- Brand label --}}
-                <div class="flex items-center gap-2 mb-3">
+                <div class="flex items-center gap-2 mb-2 md:mb-3">
                     <div class="w-5 h-[1.5px] bg-[#c9a84c]/60"></div>
                     <span class="text-[.6rem] tracking-[.2em] uppercase text-[#a07830] font-semibold">
                         Journal System
                     </span>
                 </div>
 
-                <h2 class="font-playfair text-[1.6rem] font-bold text-[#0d1628] leading-tight mb-1">
+                <h2 class="font-playfair text-[1.3rem] sm:text-[1.6rem] font-bold
+                           text-[#0d1628] leading-tight mb-1">
                     Create your account
                 </h2>
-                <p class="text-[.8rem] text-[#8a96a8] font-light mb-7">
+                <p class="text-[.78rem] sm:text-[.8rem] text-[#8a96a8] font-light mb-5 md:mb-7">
                     Join our academic community — it only takes a minute.
                 </p>
 
                 {{-- Error alert --}}
                 @if ($errors->any())
-                <div class="lp-error mb-6" role="alert">
+                <div class="lp-error mb-5" role="alert">
                     <div class="flex items-start gap-2">
                         <svg class="mt-0.5 shrink-0" width="14" height="14" fill="none"
                              stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -433,13 +490,13 @@
                 </div>
                 @endif
 
-                <form method="POST" action="{{ route('register') }}" class="space-y-6">
+                <form method="POST" action="{{ route('register') }}" class="space-y-5 md:space-y-6">
                     @csrf
 
                     {{-- ── Section: Personal Info ── --}}
                     <div>
                         <div class="form-section-label">Personal Information</div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
 
                             {{-- Full Name --}}
                             <div>
@@ -488,7 +545,8 @@
                     {{-- ── Section: Role ── --}}
                     <div>
                         <div class="form-section-label">Register as</div>
-                        <div class="grid grid-cols-3 gap-3">
+                        {{-- 3 cols on all sizes; role-desc hidden on mobile via CSS --}}
+                        <div class="grid grid-cols-3 gap-2 sm:gap-3">
 
                             {{-- Author --}}
                             <label class="role-card">
@@ -497,7 +555,7 @@
                                        {{ (is_array(old('roles')) && in_array('author', old('roles'))) || (!old('roles')) ? 'checked' : '' }}/>
                                 <div class="role-card-inner">
                                     <div class="role-icon-wrap">
-                                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                             <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
                                         </svg>
                                     </div>
@@ -513,7 +571,7 @@
                                        {{ is_array(old('roles')) && in_array('reviewer', old('roles')) ? 'checked' : '' }}/>
                                 <div class="role-card-inner">
                                     <div class="role-icon-wrap">
-                                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                                             <circle cx="12" cy="12" r="3"/>
                                         </svg>
@@ -530,7 +588,7 @@
                                        {{ is_array(old('roles')) && in_array('editor', old('roles')) ? 'checked' : '' }}/>
                                 <div class="role-card-inner">
                                     <div class="role-icon-wrap">
-                                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                         </svg>
@@ -544,7 +602,7 @@
 
                     {{-- ── Expertise Panel (conditional) ── --}}
                     <div id="expertise-container">
-                        <div class="p-5 border border-dashed border-[#c9a84c]/35
+                        <div class="p-4 sm:p-5 border border-dashed border-[#c9a84c]/35
                                     rounded-xl bg-[#fdfcf8]">
                             <div class="form-section-label" style="margin-bottom:.875rem">
                                 Fields of Expertise
@@ -552,7 +610,7 @@
                             <p class="text-[.72rem] text-[#a0aab8] mb-3 -mt-1">
                                 Select all areas that match your academic background.
                             </p>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-0.5
+                            <div class="expertise-grid grid grid-cols-1 sm:grid-cols-2 gap-0.5
                                         max-h-44 overflow-y-auto pr-1 scroll-thin">
                                 @foreach ($categories as $category)
                                 <label class="exp-check">
@@ -568,7 +626,7 @@
                     {{-- ── Section: Password ── --}}
                     <div>
                         <div class="form-section-label">Security</div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
 
                             {{-- Password --}}
                             <div>
@@ -591,8 +649,8 @@
                                     <button type="button" class="eye-btn"
                                             onclick="togglePassword('password', this)"
                                             aria-label="Toggle password visibility">
-                                        <span class="eye-open" style="font-size: 18px; line-height: 1">🐱</span>
-                                        <span class="eye-closed hidden" style="font-size: 18px; line-height: 1">🙀</span>
+                                        <span class="eye-open" style="font-size:18px;line-height:1">🐱</span>
+                                        <span class="eye-closed" style="font-size:18px;line-height:1;display:none">🙀</span>
                                     </button>
                                 </div>
                                 {{-- Strength bar --}}
@@ -619,10 +677,15 @@
                                            placeholder="••••••••"
                                            autocomplete="new-password"
                                            required/>
-                                        </svg>
+                                    <button type="button" class="eye-btn"
+                                            onclick="togglePassword('password_confirmation', this)"
+                                            aria-label="Toggle confirm password visibility">
+                                        <span class="eye-open" style="font-size:18px;line-height:1">🐱</span>
+                                        <span class="eye-closed" style="font-size:18px;line-height:1;display:none">🙀</span>
                                     </button>
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
@@ -651,7 +714,7 @@
                 </form>
 
                 {{-- Login link --}}
-                <p class="text-center mt-6 text-[.8rem] text-[#8a96a8]">
+                <p class="text-center mt-5 md:mt-6 text-[.8rem] text-[#8a96a8]">
                     Already have an account?&nbsp;
                     <a href="{{ route('login') }}"
                        class="text-[#a07830] font-semibold
@@ -669,8 +732,8 @@
 <script>
 /* ── Expertise visibility ── */
 document.addEventListener('DOMContentLoaded', function () {
-    const triggers   = document.querySelectorAll('.role-trigger');
-    const container  = document.getElementById('expertise-container');
+    const triggers  = document.querySelectorAll('.role-trigger');
+    const container = document.getElementById('expertise-container');
 
     function toggleExpertise() {
         const selected = [...document.querySelectorAll('.role-trigger:checked')]
@@ -685,11 +748,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /* ── Password toggle ── */
 function togglePassword(fieldId, btn) {
-    const input   = document.getElementById(fieldId);
-    const isHide  = input.type === 'password';
-    input.type    = isHide ? 'text' : 'password';
-    btn.querySelectorAll('.eye-open') .forEach(el => el.classList.toggle('hidden',  isHide));
-    btn.querySelectorAll('.eye-closed').forEach(el => el.classList.toggle('hidden', !isHide));
+    const input  = document.getElementById(fieldId);
+    const isHide = input.type === 'password';
+    input.type   = isHide ? 'text' : 'password';
+
+    const open   = btn.querySelector('.eye-open');
+    const closed = btn.querySelector('.eye-closed');
+    if (isHide) {
+        open.style.display   = 'none';
+        closed.style.display = 'inline';
+    } else {
+        open.style.display   = 'inline';
+        closed.style.display = 'none';
+    }
 }
 
 /* ── Password strength ── */
@@ -697,17 +768,17 @@ function checkStrength(val) {
     const bar   = document.getElementById('strengthBar');
     const label = document.getElementById('strengthLabel');
     let score   = 0;
-    if (val.length >= 8)              score++;
-    if (/[A-Z]/.test(val))            score++;
-    if (/[0-9]/.test(val))            score++;
-    if (/[^A-Za-z0-9]/.test(val))     score++;
+    if (val.length >= 8)          score++;
+    if (/[A-Z]/.test(val))        score++;
+    if (/[0-9]/.test(val))        score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
 
     const levels = [
-        { w: '0%',    bg: 'transparent',  txt: 'Enter a password' },
-        { w: '25%',   bg: '#ef4444',      txt: 'Weak' },
-        { w: '50%',   bg: '#f97316',      txt: 'Fair' },
-        { w: '75%',   bg: '#eab308',      txt: 'Good' },
-        { w: '100%',  bg: '#22c55e',      txt: 'Strong ✓' },
+        { w: '0%',   bg: 'transparent', txt: 'Enter a password' },
+        { w: '25%',  bg: '#ef4444',     txt: 'Weak'             },
+        { w: '50%',  bg: '#f97316',     txt: 'Fair'             },
+        { w: '75%',  bg: '#eab308',     txt: 'Good'             },
+        { w: '100%', bg: '#22c55e',     txt: 'Strong ✓'         },
     ];
     const l = levels[val.length === 0 ? 0 : score] || levels[0];
     bar.style.width      = l.w;

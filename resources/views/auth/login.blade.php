@@ -33,10 +33,6 @@
             from { opacity: 0; transform: translateY(28px) scale(.97); }
             to   { opacity: 1; transform: translateY(0)   scale(1);    }
         }
-        @keyframes input-focus-ring {
-            from { box-shadow: 0 0 0 0 rgba(201,168,76,.35); }
-            to   { box-shadow: 0 0 0 6px rgba(201,168,76,0); }
-        }
 
         /* ── Utility ── */
         .font-playfair { font-family: 'Playfair Display', Georgia, serif; }
@@ -60,7 +56,7 @@
         }
 
         /* ── Orbs ── */
-        .orb { animation: float-orb 8s ease-in-out infinite; }
+        .orb   { animation: float-orb 8s ease-in-out infinite; }
         .orb-2 { animation: float-orb 11s ease-in-out infinite reverse; animation-delay:-4s; }
 
         /* ── Card ── */
@@ -87,8 +83,6 @@
             background: #fff;
             box-shadow: 0 0 0 4px rgba(201,168,76,.12);
         }
-        .lp-input:focus + .input-icon,
-        .lp-input:focus ~ .input-icon { color: #c9a84c; }
 
         /* Select specific */
         .lp-select {
@@ -155,6 +149,8 @@
             background:none; border:none; cursor:pointer; padding:.25rem;
             color:#b0bac8; transition:color .2s;
             display:flex; align-items:center;
+            /* Larger tap target on mobile */
+            min-width: 2.5rem; min-height: 2.5rem; justify-content: center;
         }
         .eye-btn:hover { color:#a07830; }
 
@@ -206,7 +202,7 @@
 
         /* ── Checkbox custom ── */
         .lp-checkbox {
-            width:1rem; height:1rem; border-radius:4px;
+            width:1.1rem; height:1.1rem; border-radius:4px;
             border:1.5px solid #c9a84c; cursor:pointer;
             accent-color:#a07830; flex-shrink:0;
         }
@@ -224,15 +220,62 @@
             transform-origin:left;
             animation: line-grow .8s cubic-bezier(.22,.68,0,1.2) .1s both;
         }
+
+        /* ═══════════════════════════════════════════
+           MOBILE-SPECIFIC OVERRIDES
+        ═══════════════════════════════════════════ */
+
+        /* Left panel: compact hero on mobile */
+        @media (max-width: 767px) {
+            .brand-panel {
+                padding: 2rem 1.25rem !important;
+                min-height: auto !important;
+            }
+            /* Stack the two-col row as column, hero on top */
+            .lp-row {
+                flex-direction: column !important;
+            }
+            /* Make card full-width, remove card max-width restriction on very small screens */
+            .login-card {
+                border-radius: 1.25rem;
+            }
+            .card-inner-pad {
+                padding: 1.5rem !important;
+            }
+            /* Reduce heading sizes */
+            .brand-headline {
+                font-size: 1.75rem !important;
+                line-height: 1.25 !important;
+            }
+            /* Hide elements that clutter the compact mobile hero */
+            .lp-mobile-hide { display: none !important; }
+            /* Shrink the stat pill text */
+            .stat-pill { font-size: .58rem; padding: .25rem .6rem; }
+            /* Reduce form spacing */
+            .lp-form-space { gap: 1rem !important; }
+        }
+
+        /* Mid-range: tablet landscape */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .brand-panel { padding: 2.5rem !important; }
+            .card-inner-pad { padding: 2rem !important; }
+        }
+
+        /* Tall-phone safe area helpers */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .right-panel {
+                padding-bottom: max(2rem, env(safe-area-inset-bottom));
+            }
+        }
     </style>
 @endpush
 
 @section('content')
-<div class="font-dm flex flex-col md:flex-row min-h-[calc(100vh-64px)] overflow-hidden">
+<div class="font-dm flex flex-col md:flex-row min-h-[calc(100vh-64px)] overflow-hidden lp-row">
 
     {{-- ═══════════════════ LEFT: Brand Panel ═══════════════════ --}}
-    <div class="relative flex-none md:w-[48%] flex flex-col justify-center
-                px-8 py-14 md:p-14 lg:p-20 overflow-hidden"
+    <div class="brand-panel relative flex-none md:w-[48%] flex flex-col justify-center
+                px-6 py-10 md:p-14 lg:p-20 overflow-hidden"
          style="background-image:url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1400&q=85&auto=format&fit=crop&crop=center');
                 background-size:cover;background-position:center 30%;">
 
@@ -278,7 +321,7 @@
                 } catch (\Throwable $_) {}
             @endphp
 
-            <div class="lp-fade-up mb-8" style="animation-delay:.08s">
+            <div class="lp-fade-up mb-4 md:mb-8" style="animation-delay:.08s">
                 <div class="stat-pill">
                     <span class="pulse-dot"></span>
                     <span>Official Research Portal</span>
@@ -291,11 +334,11 @@
             </div>
 
             {{-- Headline --}}
-            <h1 class="font-playfair text-shadow text-white
-                        text-4xl lg:text-[2.85rem] font-bold leading-[1.2]
-                        lp-fade-up mb-5"
+            <h1 class="brand-headline font-playfair text-shadow text-white
+                        text-3xl md:text-4xl lg:text-[2.85rem] font-bold leading-[1.2]
+                        lp-fade-up mb-3 md:mb-5"
                 style="animation-delay:.2s">
-                Advancing<br>Knowledge.
+                Advancing Knowledge.
                 <em class="not-italic font-normal block mt-1"
                     style="background:linear-gradient(90deg,#c9a84c,#f0d678,#c9a84c);
                            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
@@ -304,20 +347,20 @@
                 </em>
             </h1>
 
-            {{-- Description --}}
-            <p class="text-shadow text-[.875rem] leading-relaxed text-white/80
+            {{-- Description — hidden on mobile to keep hero compact --}}
+            <p class="lp-mobile-hide text-shadow text-[.875rem] leading-relaxed text-white/80
                        lp-fade-up mb-7"
                style="animation-delay:.34s">
                 A peer-reviewed, open-access journal publishing original research across science, technology, engineering, and innovation — connecting scholars and advancing knowledge for the global academic community.
             </p>
 
-            {{-- Gold rule --}}
-            <div class="lp-fade-up mb-6" style="animation-delay:.46s">
+            {{-- Gold rule — visible on all, tighter on mobile --}}
+            <div class="lp-fade-up mb-3 md:mb-6" style="animation-delay:.46s">
                 <div class="w-10 h-0.5 rounded-full bg-[#c9a84c]"></div>
             </div>
 
-            {{-- Pull quote --}}
-            <div class="lp-fade-up flex gap-3" style="animation-delay:.58s">
+            {{-- Pull quote — hidden on mobile --}}
+            <div class="lp-mobile-hide lp-fade-up flex gap-3" style="animation-delay:.58s">
                 <div class="quote-glyph">&ldquo;</div>
                 <p class="font-playfair italic text-[.8rem] text-white/85
                            leading-relaxed pt-5">
@@ -326,8 +369,8 @@
                 </p>
             </div>
 
-            {{-- Bottom stats row --}}
-            <div class="lp-fade-up flex gap-5 mt-10 pt-8
+            {{-- Bottom stats row — hidden on mobile --}}
+            <div class="lp-mobile-hide lp-fade-up flex gap-5 mt-10 pt-8
                         border-t border-white/10"
                  style="animation-delay:.7s">
                 @foreach([['Peer Reviewed','100%'],['Open Access','Free'],['Impact Factor','Indexed']] as [$label,$val])
@@ -337,14 +380,24 @@
                 </div>
                 @endforeach
             </div>
+
+            {{-- Mobile-only compact stats row --}}
+            <div class="flex md:hidden gap-5 mt-3 pt-3 border-t border-white/10 lp-fade-up"
+                 style="animation-delay:.5s">
+                @foreach([['Peer Reviewed','100%'],['Open Access','Free'],['Indexed','Impact']] as [$label,$val])
+                <div>
+                    <div class="text-[#f0d678] font-semibold text-xs">{{ $val }}</div>
+                    <div class="text-white/50 text-[.58rem] tracking-widest uppercase mt-0.5">{{ $label }}</div>
+                </div>
+                @endforeach
+            </div>
         </div>
     </div>
 
     {{-- ═══════════════════ RIGHT: Login Form ═══════════════════ --}}
-    <div class="flex-1 flex items-center justify-center
-                p-8 md:p-10 lg:p-16 relative overflow-hidden"
+    <div class="right-panel flex-1 flex items-center justify-center
+                p-4 sm:p-6 md:p-10 lg:p-16 relative overflow-hidden"
          style="background:linear-gradient(145deg,#f7f3ec 0%,#ede8df 50%,#e8e2f5 100%)">
-
 
         {{-- Diagonal stripe texture --}}
         <div class="absolute inset-0 opacity-[.03] pointer-events-none"
@@ -352,7 +405,7 @@
                         #8a6520 0px,#8a6520 1px,transparent 1px,transparent 22px)"></div>
 
         {{-- ── Login Card ── --}}
-        <div class="login-card relative z-10 w-full max-w-104
+        <div class="login-card relative z-10 w-full max-w-md md:max-w-[26rem] lg:max-w-[28rem]
                     bg-white/85 backdrop-blur-2xl
                     border border-[#c9a84c]/18
                     rounded-2xl shadow-2xl shadow-[#a07830]/12
@@ -361,10 +414,10 @@
             {{-- Card top accent stripe --}}
             <div class="h-0.75 w-full shimmer-bar"></div>
 
-            <div class="p-8 md:p-10">
+            <div class="card-inner-pad p-6 sm:p-8 md:p-10">
 
                 {{-- Brand label --}}
-                <div class="flex items-center gap-2 mb-3">
+                <div class="flex items-center gap-2 mb-2 md:mb-3">
                     <div class="w-5 h-[1.5px] bg-[#c9a84c]/60"></div>
                     <span class="text-[.6rem] tracking-[.2em] uppercase
                                  text-[#a07830] font-semibold">
@@ -373,17 +426,17 @@
                 </div>
 
                 {{-- Heading --}}
-                <h2 class="font-playfair text-[1.6rem] font-bold
+                <h2 class="font-playfair text-[1.35rem] sm:text-[1.6rem] font-bold
                            text-[#0d1628] leading-tight mb-1">
                     Sign in to your account
                 </h2>
-                <p class="text-[.8rem] text-[#8a96a8] font-light mb-7">
+                <p class="text-[.78rem] sm:text-[.8rem] text-[#8a96a8] font-light mb-5 md:mb-7">
                     Enter your credentials to access the portal.
                 </p>
 
                 {{-- Error alert --}}
                 @if($errors->any())
-                <div class="lp-error mb-5" role="alert">
+                <div class="lp-error mb-4 md:mb-5" role="alert">
                     <div class="flex items-start gap-2">
                         <svg class="mt-0.5 shrink-0" width="14" height="14" fill="none"
                              stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -400,7 +453,7 @@
                 </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}" class="space-y-5">
+                <form method="POST" action="{{ route('login') }}" class="lp-form-space flex flex-col gap-4 md:gap-5">
                     @csrf
 
                     {{-- Role --}}
@@ -472,11 +525,6 @@
                                    for="password">
                                 Password
                             </label>
-                            {{-- Optional: forgot password link --}}
-                            {{-- <a href="#" class="text-[.72rem] text-[#a07830] hover:text-[#c9a84c]
-                                                    transition-colors border-b border-dashed border-[#a07830]/40">
-                                Forgot?
-                            </a> --}}
                         </div>
                         <div class="relative">
                             <svg class="role-icon" fill="none" stroke="currentColor"
@@ -493,9 +541,7 @@
                                     onclick="togglePassword()"
                                     class="eye-btn"
                                     aria-label="Toggle password visibility">
-                                {{-- Cat hidden (normal eye) --}}
-                                <span id="eyeOpen" style="font-size: 18px; line-height: 1">🐱</span>
-                                {{-- Cat weary (viewing password) --}}
+                                <span id="eyeOpen"   style="font-size: 18px; line-height: 1">🐱</span>
                                 <span id="eyeClosed" style="font-size: 18px; line-height: 1" class="hidden">🙀</span>
                             </button>
                         </div>
@@ -533,7 +579,7 @@
                 </form>
 
                 {{-- Register link --}}
-                <p class="text-center mt-6 text-[.8rem] text-[#8a96a8]">
+                <p class="text-center mt-5 md:mt-6 text-[.8rem] text-[#8a96a8]">
                     New to the journal?&nbsp;
                     <a href="{{ route('register') }}"
                        class="text-[#a07830] font-semibold
@@ -560,12 +606,12 @@
         eyeClosed.classList.toggle('hidden', !isHidden);
     }
 
-    /* Subtle input icon color sync via JS (complements CSS :focus) */
+    /* Subtle input icon color sync via JS */
     document.querySelectorAll('.lp-input, .lp-select').forEach(el => {
         const icon = el.parentElement.querySelector('.role-icon');
         if (!icon) return;
-        el.addEventListener('focus',  () => icon.style.color = '#c9a84c');
-        el.addEventListener('blur',   () => icon.style.color = '');
+        el.addEventListener('focus', () => icon.style.color = '#c9a84c');
+        el.addEventListener('blur',  () => icon.style.color = '');
     });
 </script>
 @endsection
