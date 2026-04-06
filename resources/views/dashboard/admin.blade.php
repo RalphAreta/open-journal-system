@@ -51,9 +51,15 @@
         /* ── Hero Header ── */
         .hero-header {
             position: relative;
-            padding: 44px 0 32px;
+            padding: 28px 0 24px;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 36px;
+            margin-bottom: 28px;
+        }
+        @media (min-width: 768px) {
+            .hero-header {
+                padding: 44px 0 32px;
+                margin-bottom: 36px;
+            }
         }
         .hero-header::after {
             content: '';
@@ -83,21 +89,31 @@
         }
         .hero-title {
             font-family: 'Libre Baskerville', serif;
-            font-size: 2.8rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--ink);
             letter-spacing: -0.01em;
             line-height: 1.15;
+        }
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
         }
         .hero-title em {
             font-style: italic;
             color: var(--teal);
         }
         .hero-sub {
-            font-size: 0.98rem;
+            font-size: 0.9rem;
             font-weight: 400;
             color: var(--ink-soft);
             margin-top: 8px;
+        }
+        @media (min-width: 768px) {
+            .hero-sub {
+                font-size: 0.98rem;
+            }
         }
         .date-pill {
             font-size: 0.78rem;
@@ -114,29 +130,40 @@
         /* ── Stat Grid ── */
         .stat-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr;
             background: var(--parchment);
             border: 1px solid var(--border-dk);
             border-radius: 14px;
             overflow: hidden;
             box-shadow: 0 2px 12px rgba(26, 18, 9, 0.07);
         }
-        @media (max-width: 700px) {
+        @media (min-width: 480px) {
             .stat-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(3, 1fr);
             }
         }
         .stat-cell {
-            padding: 24px 22px 18px;
-            border-right: 1px solid var(--border);
+            padding: 20px 18px 16px;
+            border-bottom: 1px solid var(--border);
+            border-right: none;
             position: relative;
             transition: background 0.18s;
             cursor: default;
             text-decoration: none;
             display: block;
         }
+        @media (min-width: 480px) {
+            .stat-cell {
+                padding: 24px 22px 18px;
+                border-bottom: none;
+                border-right: 1px solid var(--border);
+            }
+            .stat-cell:last-child {
+                border-right: none;
+            }
+        }
         .stat-cell:last-child {
-            border-right: none;
+            border-bottom: none;
         }
         .stat-cell:hover {
             background: #fff;
@@ -151,9 +178,14 @@
         }
         .stat-val {
             font-family: 'Libre Baskerville', serif;
-            font-size: 2.6rem;
+            font-size: 2.2rem;
             font-weight: 700;
             line-height: 1;
+        }
+        @media (min-width: 768px) {
+            .stat-val {
+                font-size: 2.6rem;
+            }
         }
         .stat-cta {
             display: flex;
@@ -234,11 +266,16 @@
             background: #fff;
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 22px;
+            padding: 18px;
             box-shadow: 0 1px 6px rgba(26, 18, 9, 0.05);
             transition:
                 transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
                 box-shadow 0.22s;
+        }
+        @media (min-width: 768px) {
+            .feature-card {
+                padding: 22px;
+            }
         }
         .feature-card:hover {
             transform: translateY(-4px);
@@ -254,20 +291,31 @@
             box-shadow: none;
         }
         .feature-icon {
-            width: 46px;
-            height: 46px;
+            width: 42px;
+            height: 42px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
+        @media (min-width: 768px) {
+            .feature-icon {
+                width: 46px;
+                height: 46px;
+            }
+        }
         .feature-title {
             font-family: 'Libre Baskerville', serif;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: var(--ink);
             margin-bottom: 4px;
+        }
+        @media (min-width: 768px) {
+            .feature-title {
+                font-size: 1rem;
+            }
         }
         .feature-desc {
             font-size: 0.82rem;
@@ -326,11 +374,17 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 13px 14px;
+            padding: 12px 12px;
             border-radius: 9px;
             text-decoration: none;
             transition: background 0.13s;
             margin: 2px 0;
+            gap: 8px;
+        }
+        @media (min-width: 768px) {
+            .action-row {
+                padding: 13px 14px;
+            }
         }
         .action-row:hover {
             background: var(--teal-lt);
@@ -345,53 +399,77 @@
             flex-shrink: 0;
         }
         .action-name {
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--ink);
             transition: color 0.13s;
         }
+        @media (min-width: 768px) {
+            .action-name {
+                font-size: 0.88rem;
+            }
+        }
         .action-sub {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: var(--ink-soft);
             margin-top: 2px;
         }
         .action-badge {
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             font-weight: 700;
             font-family: 'Source Sans 3', sans-serif;
             letter-spacing: 0.06em;
-            padding: 3px 11px;
+            padding: 3px 9px;
             border-radius: 20px;
             background: var(--parchment);
             color: var(--ink-soft);
             border: 1px solid var(--border);
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
         /* ── Health Strip ── */
         .health-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             background: var(--parchment);
             border: 1px solid var(--border-dk);
             border-radius: 14px;
             overflow: hidden;
             box-shadow: 0 2px 12px rgba(26, 18, 9, 0.07);
         }
-        @media (max-width: 800px) {
+        @media (min-width: 800px) {
             .health-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(4, 1fr);
             }
         }
         .health-cell {
-            padding: 22px 20px 18px;
+            padding: 18px 16px 14px;
             border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
             text-align: center;
             position: relative;
             transition: background 0.15s;
         }
-        .health-cell:last-child {
+        @media (min-width: 800px) {
+            .health-cell {
+                padding: 22px 20px 18px;
+                border-bottom: none;
+            }
+            .health-cell:last-child {
+                border-right: none;
+            }
+            /* Remove bottom border on last row for 4-col layout */
+            .health-cell:nth-child(n + 3) {
+                border-bottom: none;
+            }
+        }
+        /* For 2-col mobile: remove right border on even cells, remove bottom on last row */
+        .health-cell:nth-child(2n) {
             border-right: none;
+        }
+        .health-cell:nth-last-child(-n + 2) {
+            border-bottom: none;
         }
         .health-cell:hover {
             background: #fff;
@@ -416,11 +494,16 @@
         }
         .health-val {
             font-family: 'Libre Baskerville', serif;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--ink);
             margin: 8px 0 4px;
             line-height: 1;
+        }
+        @media (min-width: 768px) {
+            .health-val {
+                font-size: 2rem;
+            }
         }
         .health-lbl {
             font-size: 0.66rem;
@@ -447,6 +530,21 @@
         }
         .health-cell:hover .accent-line {
             width: 30px;
+        }
+
+        /* ── Two-col layout ── */
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+        @media (min-width: 768px) {
+            .two-col-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                margin-bottom: 40px;
+            }
         }
 
         /* ── Animations ── */
@@ -507,7 +605,7 @@
         </div>
 
         {{-- ── Stat Cards ── --}}
-        <div class="stat-grid fu1 mb-10">
+        <div class="stat-grid fu1 mb-8 md:mb-10">
             <a href="{{ route('admin.users.index') }}" class="stat-cell">
                 <p class="stat-lbl">Total Users</p>
                 <p class="stat-val sv-teal">
@@ -573,7 +671,7 @@
         </div>
 
         {{-- ── Two-column: Management Tools + Quick Actions ── --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10 fu2">
+        <div class="two-col-grid fu2">
             {{-- Management Tools --}}
             <div>
                 <div class="section-label">Management Tools</div>
@@ -682,12 +780,12 @@
                             href="{{ route($action['route']) }}"
                             class="action-row"
                         >
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
                                 <span
                                     class="action-dot"
                                     style="background: {{ $action['dot'] }}"
                                 ></span>
-                                <div>
+                                <div class="min-w-0">
                                     <p class="action-name">
                                         {{ $action['label'] }}
                                     </p>
@@ -706,7 +804,7 @@
         </div>
 
         {{-- ── System Health ── --}}
-        <div class="fu3 mb-12">
+        <div class="fu3 mb-10 md:mb-12">
             <div class="section-label">System Health</div>
             <div class="health-grid">
                 <div class="health-cell">
