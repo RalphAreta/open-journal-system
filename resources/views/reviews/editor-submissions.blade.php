@@ -54,7 +54,7 @@
             font-family: 'DM Mono', monospace;
         }
 
-        /* ── Hero Header (matches Author Dashboard) ── */
+        /* ── Hero Header ── */
         .hero-header {
             position: relative;
             padding: 44px 0 32px;
@@ -147,17 +147,6 @@
             gap: 12px;
             margin-bottom: 20px;
         }
-        @media (max-width: 900px) {
-            .stat-strip {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        @media (max-width: 560px) {
-            .stat-strip {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
         .stat-card {
             background: var(--white);
             border: 1px solid var(--border);
@@ -210,7 +199,7 @@
         .search-wrap {
             position: relative;
             flex: 1;
-            min-width: 220px;
+            min-width: 180px;
         }
         .search-icon {
             position: absolute;
@@ -259,7 +248,7 @@
             background-repeat: no-repeat;
             background-position: right 11px center;
             transition: border-color 0.15s;
-            min-width: 140px;
+            min-width: 130px;
         }
         .filter-select:focus {
             border-color: var(--teal);
@@ -537,6 +526,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
+            flex-wrap: wrap;
         }
         .rows-label {
             font-size: 11px;
@@ -563,6 +553,131 @@
             text-transform: uppercase;
             color: var(--muted);
             margin-right: 6px;
+        }
+
+        /* ══ MOBILE RESPONSIVE ══ */
+
+        /* Stat strip: 3 cols on tablet, 2 cols on phone */
+        @media (max-width: 900px) {
+            .stat-strip {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 560px) {
+            .stat-strip {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            /* Outer padding */
+            .aw.max-w-7xl {
+                padding-left: 14px !important;
+                padding-right: 14px !important;
+            }
+
+            /* Hero: shrink title */
+            .hero-header {
+                padding-top: 1.5rem;
+                padding-bottom: 1.25rem;
+                margin-bottom: 1.25rem;
+            }
+            .hero-title {
+                font-size: 1.75rem;
+            }
+            .hero-sub {
+                font-size: 0.88rem;
+                margin-top: 6px;
+            }
+
+            /* Toolbar: stack search full-width, selects side by side */
+            .toolbar {
+                gap: 8px;
+            }
+            .search-wrap {
+                flex: 0 0 100%;
+                min-width: 0;
+                width: 100%;
+            }
+            .filter-select {
+                flex: 1;
+                min-width: 0;
+            }
+
+            /* Stat cards: tighter */
+            .stat-card {
+                padding: 12px 10px;
+                gap: 8px;
+            }
+            .stat-icon {
+                width: 28px;
+                height: 28px;
+            }
+            .stat-num {
+                font-size: 18px;
+            }
+            .stat-label {
+                font-size: 9px;
+            }
+
+            /* Table: hide Author, Reviews columns — show only Title + Status + Action */
+            .tbl th.col-author,
+            .tbl td.col-author,
+            .tbl th.col-reviews,
+            .tbl td.col-reviews {
+                display: none;
+            }
+
+            /* Tighter table cell padding */
+            .tbl th {
+                padding: 10px 12px;
+            }
+            .tbl td {
+                padding: 12px 12px;
+            }
+
+            /* Title cell: allow wrap */
+            .title-text {
+                font-size: 12px;
+            }
+
+            /* Manage button: smaller */
+            .btn-manage {
+                padding: 7px 12px;
+                font-size: 10px;
+            }
+
+            /* Table footer: stack */
+            .table-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 12px 14px;
+            }
+
+            /* Legend: scrollable horizontally on small screens */
+            .legend-bar {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 12px 14px;
+                gap: 6px;
+            }
+            .legend-bar .legend-label:last-of-type {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .hero-title {
+                font-size: 1.45rem;
+            }
+            .stat-strip {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stat-card {
+                padding: 10px 8px;
+            }
         }
     </style>
 @endpush
@@ -759,9 +874,13 @@
                     <thead>
                         <tr>
                             <th style="width: 36%">Title</th>
-                            <th style="width: 16%">Author</th>
+                            <th style="width: 16%" class="col-author">
+                                Author
+                            </th>
                             <th style="width: 14%">Status</th>
-                            <th style="width: 22%">Reviews</th>
+                            <th style="width: 22%" class="col-reviews">
+                                Reviews
+                            </th>
                             <th style="width: 12%">Action</th>
                         </tr>
                     </thead>
@@ -830,7 +949,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="col-author">
                                     <div
                                         style="
                                             display: flex;
@@ -862,7 +981,7 @@
                                         {{ ucfirst(str_replace('_', ' ', $s->status)) }}
                                     </span>
                                 </td>
-                                <td>
+                                <td class="col-reviews">
                                     @if ($completed > 0 || $pending > 0)
                                         <div class="review-badges">
                                             @if ($accepts > 0)

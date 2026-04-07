@@ -77,18 +77,29 @@
             overflow: hidden;
         }
         .card-header {
-            padding: 14px 20px;
+            padding: 12px 16px;
             border-bottom: 1px solid #ede8e0;
             background: linear-gradient(to right, #faf8f5, #f5f0e8);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        @media (min-width: 640px) {
+            .card-header {
+                padding: 14px 20px;
+            }
         }
         .card-body {
-            padding: 20px;
+            padding: 14px;
+        }
+        @media (min-width: 640px) {
+            .card-body {
+                padding: 20px;
+            }
         }
 
-        /* Section label */
         .field-label {
             font-family: 'Source Sans 3', sans-serif;
             font-size: 9px;
@@ -118,6 +129,7 @@
             text-transform: uppercase;
             letter-spacing: 0.1em;
             border: 1px solid transparent;
+            white-space: nowrap;
         }
         .s-badge .dot {
             width: 6px;
@@ -201,20 +213,27 @@
             background: #f0fdf4;
             border: 1.5px solid #bbf7d0;
             border-radius: 14px;
-            padding: 16px;
+            padding: 14px;
         }
         .screen-fail {
             background: #fff5f5;
             border: 1.5px solid #fecaca;
             border-radius: 14px;
-            padding: 16px;
+            padding: 14px;
         }
         .screen-pending {
             background: #fffbeb;
             border: 1.5px solid #fde68a;
             border-radius: 14px;
-            padding: 16px;
+            padding: 14px;
             text-align: center;
+        }
+        @media (min-width: 640px) {
+            .screen-pass,
+            .screen-fail,
+            .screen-pending {
+                padding: 16px;
+            }
         }
 
         /* Revision item */
@@ -339,7 +358,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 9px 18px;
+            padding: 8px 14px;
             border-radius: 10px;
             font-family: 'Source Sans 3', sans-serif;
             font-size: 10px;
@@ -348,6 +367,11 @@
             letter-spacing: 0.1em;
             text-decoration: none;
             transition: all 0.15s;
+        }
+        @media (min-width: 640px) {
+            .btn-screen {
+                padding: 9px 18px;
+            }
         }
         .btn-screen-amber {
             background: #d97706;
@@ -394,12 +418,24 @@
             margin-top: 1px;
         }
 
-        /* Currently assigned badge */
         .assigned-editor-card {
             padding: 10px 12px;
             border-radius: 10px;
             border: 1px solid #bbf7d0;
             background: #f0fdf4;
+        }
+
+        /* Screen pass/fail inner grid — 1-col on mobile, 2-col on sm+ */
+        .screen-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        @media (min-width: 480px) {
+            .screen-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 @endpush
@@ -418,12 +454,12 @@
     >
         <div class="fixed top-0 left-0 right-0 h-0.5 shimmer-bar z-50"></div>
 
-        <div class="max-w-6xl mx-auto py-8 px-4">
+        <div class="max-w-6xl mx-auto py-6 sm:py-8 px-4 sm:px-6">
             {{-- Back + Header --}}
-            <div class="fade-up mb-6">
+            <div class="fade-up mb-5 sm:mb-6">
                 <a
                     href="{{ route('chief-editor.dashboard') }}"
-                    class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[#b0aaa0] hover:text-(--teal) transition-colors mb-4"
+                    class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[#b0aaa0] hover:text-[color:var(--teal)] transition-colors mb-3"
                 >
                     <svg
                         class="w-3 h-3"
@@ -440,15 +476,15 @@
                     </svg>
                     Back to Dashboard
                 </a>
-                <div class="flex items-start justify-between gap-4 flex-wrap">
+                <div class="flex items-start justify-between gap-3 flex-wrap">
                     <div class="flex-1 min-w-0">
                         <p
-                            class="text-[9px] font-black uppercase tracking-[.2em] text-(--teal) mb-1"
+                            class="text-[9px] font-black uppercase tracking-[.2em] text-[color:var(--teal)] mb-1"
                         >
                             Chief Editor · Review & Assign
                         </p>
                         <h1
-                            class="font-['Libre_Baskerville'] text-2xl font-bold text-(--ink) leading-snug"
+                            class="font-['Libre_Baskerville'] text-xl sm:text-2xl font-bold text-[color:var(--ink)] leading-snug"
                         >
                             {{ $submission->title }}
                         </h1>
@@ -469,7 +505,7 @@
                         };
                     @endphp
 
-                    <span class="s-badge {{ $sc }} mt-1">
+                    <span class="s-badge {{ $sc }} mt-1 shrink-0">
                         <span class="dot"></span>
                         {{ Submission::statusOptions()[$submission->status] ?? $submission->status }}
                     </span>
@@ -487,14 +523,14 @@
                     <div class="card">
                         <div class="card-header">
                             <h2
-                                class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
+                                class="font-['Libre_Baskerville'] text-sm font-bold text-[color:var(--ink)]"
                             >
                                 Submission Details
                             </h2>
                             @if ($originalFileExists)
                                 <a
                                     href="{{ route('submissions.download-original', $submission) }}"
-                                    class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-(--teal) hover:text-(--teal-d) transition-colors"
+                                    class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-[color:var(--teal)] hover:text-[color:var(--teal-d)] transition-colors"
                                 >
                                     <svg
                                         class="w-3.5 h-3.5"
@@ -514,7 +550,10 @@
                             @endif
                         </div>
                         <div class="card-body">
-                            <div class="grid grid-cols-2 gap-x-6 gap-y-4 mb-4">
+                            {{-- 1-col mobile, 2-col sm+ --}}
+                            <div
+                                class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mb-4"
+                            >
                                 <div>
                                     <p class="field-label">Research Field</p>
                                     <span class="field-badge">
@@ -560,7 +599,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h2
-                                class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
+                                class="font-['Libre_Baskerville'] text-sm font-bold text-[color:var(--ink)]"
                             >
                                 Initial Screening
                             </h2>
@@ -587,7 +626,7 @@
                             @elseif ($submission->hasPassedInitialScreening())
                                 <div class="screen-pass">
                                     <div
-                                        class="flex items-center justify-between mb-3"
+                                        class="flex items-start sm:items-center justify-between gap-2 mb-3 flex-wrap"
                                     >
                                         <p
                                             class="font-['Libre_Baskerville'] font-bold text-emerald-800"
@@ -601,7 +640,7 @@
                                             Edit Decision
                                         </a>
                                     </div>
-                                    <div class="grid grid-cols-2 gap-3 mb-3">
+                                    <div class="screen-grid">
                                         <div>
                                             <p
                                                 class="field-label"
@@ -644,7 +683,7 @@
                             @else
                                 <div class="screen-fail">
                                     <div
-                                        class="flex items-center justify-between mb-3"
+                                        class="flex items-start sm:items-center justify-between gap-2 mb-3 flex-wrap"
                                     >
                                         <p
                                             class="font-['Libre_Baskerville'] font-bold text-red-800"
@@ -658,7 +697,7 @@
                                             Override Decision
                                         </a>
                                     </div>
-                                    <div class="grid grid-cols-2 gap-3 mb-3">
+                                    <div class="screen-grid">
                                         <div>
                                             <p
                                                 class="field-label"
@@ -707,7 +746,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <h2
-                                    class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
+                                    class="font-['Libre_Baskerville'] text-sm font-bold text-[color:var(--ink)]"
                                 >
                                     Revision History
                                 </h2>
@@ -729,7 +768,7 @@
                                             >
                                                 <div>
                                                     <span
-                                                        class="text-sm font-bold text-(--ink)"
+                                                        class="text-sm font-bold text-[color:var(--ink)]"
                                                     >
                                                         {{ ucfirst($rev->revision_type) }}
                                                         Revision
@@ -822,7 +861,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <h2
-                                    class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
+                                    class="font-['Libre_Baskerville'] text-sm font-bold text-[color:var(--ink)]"
                                 >
                                     Appeal Decision
                                 </h2>
@@ -833,7 +872,6 @@
                                 </span>
                             </div>
                             <div class="card-body">
-                                {{-- Appeal Reason --}}
                                 <div class="mb-4">
                                     <p class="field-label mb-2">
                                         Appeal Reason
@@ -845,14 +883,12 @@
                                     </div>
                                 </div>
 
-                                {{-- Decision Status --}}
                                 @if (! $latestAppeal->isPending())
                                     <div class="border-t border-[#e8dfd0] pt-4">
                                         <div
-                                            class="result-block {{ $latestAppeal->isApproved() ? 'result-approved' : 'result-rejected' }}"
                                             style="
                                                 border-radius: 12px;
-                                                padding: 20px;
+                                                padding: 16px;
                                                 background: {{ $latestAppeal->isApproved() ? '#f0fdf4' : '#fef2f2' }};
                                                 border: 1.5px solid
                                                     {{ $latestAppeal->isApproved() ? '#a7f3d0' : '#fecaca' }};
@@ -863,7 +899,8 @@
                                                 style="
                                                     display: flex;
                                                     align-items: flex-start;
-                                                    gap: 14px;
+                                                    gap: 12px;
+                                                    flex-wrap: wrap;
                                                 "
                                             >
                                                 <div
@@ -906,13 +943,18 @@
                                                         </svg>
                                                     @endif
                                                 </div>
-                                                <div>
+                                                <div
+                                                    style="
+                                                        flex: 1;
+                                                        min-width: 0;
+                                                    "
+                                                >
                                                     <h4
                                                         style="
                                                             font-family:
                                                                 'Libre Baskerville',
                                                                 serif;
-                                                            font-size: 1.1rem;
+                                                            font-size: 1rem;
                                                             font-weight: 700;
                                                             color: {{ $latestAppeal->isApproved() ? '#065f46' : '#991b1b' }};
                                                         "
@@ -922,12 +964,13 @@
                                                     </h4>
                                                     <p
                                                         style="
-                                                            font-size: 12px;
+                                                            font-size: 11px;
                                                             color: {{ $latestAppeal->isApproved() ? '#059669' : '#dc2626' }};
                                                             margin-top: 4px;
                                                             font-family:
                                                                 'Courier New',
                                                                 monospace;
+                                                            word-break: break-word;
                                                         "
                                                     >
                                                         Reviewed on
@@ -941,13 +984,13 @@
                                                     </p>
                                                 </div>
                                             </div>
-
                                             @if ($latestAppeal->editor_response)
                                                 <div
                                                     style="
-                                                        padding-top: 16px;
+                                                        padding-top: 14px;
                                                         border-top: 1px solid
                                                             {{ $latestAppeal->isApproved() ? '#a7f3d0' : '#fecaca' }};
+                                                        margin-top: 14px;
                                                     "
                                                 >
                                                     <p
@@ -1053,7 +1096,7 @@
                                     @foreach ($currentAssignments as $ca)
                                         <div class="assigned-editor-card">
                                             <p
-                                                class="text-sm font-bold text-(--ink)"
+                                                class="text-sm font-bold text-[color:var(--ink)]"
                                             >
                                                 {{ $ca->assignedTo->name }}
                                             </p>
@@ -1088,7 +1131,7 @@
                                                 'assignments-card',
                                             ).style.display = 'none';
                                         "
-                                        class="w-full text-[10px] font-black uppercase tracking-widest text-(--teal) hover:text-(--teal-d) transition-colors pt-1"
+                                        class="w-full text-[10px] font-black uppercase tracking-widest text-[color:var(--teal)] hover:text-[color:var(--teal-d)] transition-colors pt-1"
                                     >
                                         Change Assignments →
                                     </button>
@@ -1104,7 +1147,7 @@
                         >
                             <div class="card-header">
                                 <h3
-                                    class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
+                                    class="font-['Libre_Baskerville'] text-sm font-bold text-[color:var(--ink)]"
                                 >
                                     {{ $submission->assignedEditor ? 'Reassign Editors' : 'Assign Editors' }}
                                 </h3>
@@ -1112,7 +1155,9 @@
                             <div class="card-body">
                                 <p class="text-[11px] text-[#8a96a8] mb-3">
                                     Matched to
-                                    <span class="font-black text-(--red)">
+                                    <span
+                                        class="font-black text-[color:var(--red)]"
+                                    >
                                         {{ $researchField }}
                                     </span>
                                 </p>
@@ -1126,15 +1171,14 @@
                                     <div
                                         class="space-y-2 mb-4 max-h-64 overflow-y-auto pr-1"
                                     >
-                                        {{-- Matched editors --}}
                                         @if (! empty($editorsByField))
                                             @foreach ($editorsByField as $field => $editors)
                                                 <div class="mb-2">
                                                     <p
-                                                        class="text-[9px] font-black uppercase tracking-[.15em] text-(--teal) mb-1.5 flex items-center gap-1"
+                                                        class="text-[9px] font-black uppercase tracking-[.15em] text-[color:var(--teal)] mb-1.5 flex items-center gap-1"
                                                     >
                                                         <span
-                                                            class="w-1.5 h-1.5 rounded-full bg-(--teal)"
+                                                            class="w-1.5 h-1.5 rounded-full bg-[color:var(--teal)]"
                                                         ></span>
                                                         {{ $field }} · Matched
                                                     </p>
@@ -1163,7 +1207,7 @@
                                                                     class="min-w-0 flex-1"
                                                                 >
                                                                     <p
-                                                                        class="text-sm font-bold text-(--ink) truncate"
+                                                                        class="text-sm font-bold text-[color:var(--ink)] truncate"
                                                                     >
                                                                         {{ $editor->name }}
                                                                         @if ($isAssignedHere)
@@ -1201,7 +1245,6 @@
                                             </div>
                                         @endif
 
-                                        {{-- Other editors --}}
                                         @php
                                             $otherFields = array_diff_key($allEditorsByField, $editorsByField);
                                         @endphp
@@ -1212,7 +1255,7 @@
                                                     type="button"
                                                     onclick="toggleOthers()"
                                                     id="toggle-others-btn"
-                                                    class="text-[10px] font-black uppercase tracking-wider text-[#b0aaa0] hover:text-(--teal) transition-colors mt-1"
+                                                    class="text-[10px] font-black uppercase tracking-wider text-[#b0aaa0] hover:text-[color:var(--teal)] transition-colors mt-1"
                                                 >
                                                     + Show other editors
                                                 </button>
@@ -1260,7 +1303,7 @@
                                                                             class="min-w-0 flex-1"
                                                                         >
                                                                             <p
-                                                                                class="text-sm font-bold text-(--ink) truncate"
+                                                                                class="text-sm font-bold text-[color:var(--ink)] truncate"
                                                                             >
                                                                                 {{ $editor->name }}
                                                                             </p>
@@ -1293,7 +1336,7 @@
                                             name="notes"
                                             rows="3"
                                             placeholder="Add assignment notes..."
-                                            class="w-full px-3 py-2.5 text-sm border border-[#e2ddd4] rounded-xl focus:border-(--teal) focus:ring-2 focus:ring-[rgba(45,129,118,.1)] outline-none font-['Source_Sans_3'] resize-none transition-all"
+                                            class="w-full px-3 py-2.5 text-sm border border-[#e2ddd4] rounded-xl focus:border-[color:var(--teal)] focus:ring-2 focus:ring-[rgba(45,129,118,.1)] outline-none font-['Source_Sans_3'] resize-none transition-all"
                                         ></textarea>
                                     </div>
 
@@ -1331,7 +1374,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h3
-                                        class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
+                                        class="font-['Libre_Baskerville'] text-sm font-bold text-[color:var(--ink)]"
                                     >
                                         Assignment History
                                     </h3>
@@ -1347,7 +1390,7 @@
                                             class="hist-item {{ $ha->isAccepted() ? 'accepted' : ($ha->isRejected() ? 'rejected' : 'pending') }}"
                                         >
                                             <p
-                                                class="text-sm font-bold text-(--ink)"
+                                                class="text-sm font-bold text-[color:var(--ink)]"
                                             >
                                                 {{ $ha->assignedTo->name }}
                                             </p>
@@ -1394,7 +1437,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3
-                                    class="font-['Libre_Baskerville'] text-sm font-bold text-(--ink)"
+                                    class="font-['Libre_Baskerville'] text-sm font-bold text-[color:var(--ink)]"
                                 >
                                     📋 Workflow
                                 </h3>
@@ -1439,8 +1482,6 @@
                     );
             });
         });
-
-        // Enable button if any checkbox already checked on load
         if (assignBtn)
             assignBtn.disabled = ![...checkboxes].some((c) => c.checked);
 

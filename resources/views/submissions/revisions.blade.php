@@ -40,6 +40,12 @@
             border-bottom: 1px solid var(--border);
             margin-bottom: 36px;
         }
+        @media (max-width: 640px) {
+            .hero-header {
+                padding: 28px 0 22px;
+                margin-bottom: 24px;
+            }
+        }
         .hero-header::after {
             content: '';
             position: absolute;
@@ -74,6 +80,16 @@
             letter-spacing: -0.01em;
             line-height: 1.15;
         }
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+        }
+        @media (max-width: 400px) {
+            .hero-title {
+                font-size: 1.65rem;
+            }
+        }
         .hero-title em {
             font-style: italic;
             color: var(--teal);
@@ -83,6 +99,27 @@
             font-weight: 400;
             color: var(--ink-soft);
             margin-top: 8px;
+        }
+        @media (max-width: 640px) {
+            .hero-sub {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Hero layout row */
+        .hero-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 16px;
+        }
+        @media (max-width: 640px) {
+            .hero-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
         }
 
         /* Back link */
@@ -101,6 +138,7 @@
             border: 1.5px solid var(--border);
             background: var(--parchment);
             transition: all 0.15s;
+            white-space: nowrap;
         }
         .back-link:hover {
             border-color: var(--teal);
@@ -130,12 +168,24 @@
             justify-content: space-between;
             gap: 16px;
         }
+        @media (max-width: 640px) {
+            .rev-card-header {
+                padding: 16px 16px 14px;
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
         .rev-type-label {
             font-family: 'Libre Baskerville', serif;
             font-size: 1.2rem;
             font-weight: 700;
             color: var(--ink);
             margin-bottom: 6px;
+        }
+        @media (max-width: 640px) {
+            .rev-type-label {
+                font-size: 1.05rem;
+            }
         }
         .rev-meta {
             display: flex;
@@ -181,10 +231,31 @@
             color: var(--border-dk);
             font-size: 0.7rem;
         }
+        @media (max-width: 480px) {
+            .rev-dot {
+                display: none;
+            }
+        }
         .rev-date {
             font-size: 0.75rem;
             color: var(--ink-soft);
             letter-spacing: 0.03em;
+        }
+
+        /* Badge group in header */
+        .rev-badge-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        @media (max-width: 640px) {
+            .rev-badge-group {
+                flex-direction: row;
+                align-items: center;
+                flex-wrap: wrap;
+            }
         }
 
         /* Type + status badges */
@@ -251,6 +322,11 @@
         .rev-card-body {
             padding: 24px 28px;
         }
+        @media (max-width: 640px) {
+            .rev-card-body {
+                padding: 16px 16px;
+            }
+        }
         .reason-block {
             background: var(--parchment);
             border: 1px solid var(--border);
@@ -258,6 +334,12 @@
             border-radius: 8px;
             padding: 16px 20px;
             margin-bottom: 22px;
+        }
+        @media (max-width: 640px) {
+            .reason-block {
+                padding: 12px 14px;
+                margin-bottom: 16px;
+            }
         }
         .reason-label {
             font-size: 0.68rem;
@@ -272,6 +354,7 @@
             color: var(--ink-mid);
             line-height: 1.7;
             white-space: pre-wrap;
+            word-break: break-word;
         }
 
         /* Resolved state */
@@ -280,6 +363,11 @@
             border: 1px solid #86efac;
             border-radius: 10px;
             padding: 18px 22px;
+        }
+        @media (max-width: 640px) {
+            .resolved-block {
+                padding: 14px 16px;
+            }
         }
         .resolved-title {
             font-size: 0.8rem;
@@ -304,6 +392,7 @@
             font-size: 0.88rem;
             color: #15803d;
             line-height: 1.6;
+            word-break: break-word;
         }
         .resolved-notes strong {
             font-weight: 700;
@@ -319,6 +408,12 @@
             display: flex;
             align-items: center;
             gap: 12px;
+        }
+        @media (max-width: 480px) {
+            .awaiting-block {
+                padding: 14px 14px;
+                gap: 10px;
+            }
         }
         .awaiting-icon {
             width: 36px;
@@ -375,6 +470,11 @@
                 background 0.15s;
             background: var(--cream);
         }
+        @media (max-width: 640px) {
+            .dropzone {
+                padding: 24px 16px;
+            }
+        }
         .dropzone:hover,
         .dropzone.drag-over {
             border-color: var(--teal);
@@ -413,6 +513,7 @@
             font-weight: 700;
             color: var(--teal);
             display: none;
+            word-break: break-all;
         }
 
         .form-textarea {
@@ -430,6 +531,12 @@
                 border-color 0.15s,
                 box-shadow 0.15s;
             box-shadow: 0 1px 4px rgba(26, 18, 9, 0.05);
+        }
+        @media (max-width: 640px) {
+            .form-textarea {
+                padding: 11px 14px;
+                font-size: 1rem; /* prevent iOS zoom on focus */
+            }
         }
         .form-textarea:focus {
             border-color: var(--teal);
@@ -462,6 +569,16 @@
             box-shadow: 0 4px 14px rgba(45, 129, 118, 0.3);
             position: relative;
             overflow: hidden;
+            /* allow text to wrap on very small screens */
+            text-align: center;
+            word-break: break-word;
+        }
+        @media (max-width: 480px) {
+            .btn-submit-revision {
+                font-size: 0.72rem;
+                padding: 13px 16px;
+                letter-spacing: 0.08em;
+            }
         }
         .btn-submit-revision::before {
             content: '';
@@ -486,6 +603,11 @@
             border-radius: 14px;
             padding: 72px 24px;
             text-align: center;
+        }
+        @media (max-width: 640px) {
+            .empty-wrap {
+                padding: 48px 20px;
+            }
         }
         .empty-icon {
             width: 64px;
@@ -518,6 +640,14 @@
             margin-top: 5px;
         }
 
+        /* Outer page padding on small screens */
+        @media (max-width: 640px) {
+            .rw.max-w-7xl {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+        }
+
         /* Animations */
         .fu {
             animation: fu 0.45s ease both;
@@ -548,9 +678,7 @@
     <div class="rw max-w-7xl mx-auto px-1">
         {{-- Hero --}}
         <div class="hero-header fu">
-            <div
-                class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
-            >
+            <div class="hero-row">
                 <div>
                     <p class="hero-eyebrow">Manuscript Review</p>
                     <h1 class="hero-title">
@@ -660,15 +788,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div
-                                style="
-                                    display: flex;
-                                    flex-direction: column;
-                                    align-items: flex-end;
-                                    gap: 8px;
-                                    flex-shrink: 0;
-                                "
-                            >
+                            <div class="rev-badge-group">
                                 <span
                                     class="type-badge {{ $revision->revision_type === 'minor' ? 'minor' : 'major' }}"
                                 >

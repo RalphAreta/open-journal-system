@@ -46,12 +46,18 @@
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23faf6ef'/%3E%3Ccircle cx='1' cy='1' r='.4' fill='%23e8dfd0' opacity='.5'/%3E%3C/svg%3E");
         }
 
-        /* ── Hero Header ── */
+        /* ── Hero ── */
         .hero-header {
             position: relative;
             padding: 44px 0 32px;
             border-bottom: 1px solid var(--border);
             margin-bottom: 36px;
+        }
+        @media (max-width: 640px) {
+            .hero-header {
+                padding: 28px 0 22px;
+                margin-bottom: 24px;
+            }
         }
         .hero-header::after {
             content: '';
@@ -87,6 +93,11 @@
             letter-spacing: -0.01em;
             line-height: 1.15;
         }
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 1.9rem;
+            }
+        }
         .hero-title em {
             font-style: italic;
             color: var(--teal);
@@ -96,6 +107,11 @@
             font-weight: 400;
             color: var(--ink-soft);
             margin-top: 8px;
+        }
+        @media (max-width: 640px) {
+            .hero-sub {
+                font-size: 0.88rem;
+            }
         }
         .date-pill {
             font-size: 0.78rem;
@@ -126,6 +142,11 @@
             transition: background 0.18s;
             cursor: default;
         }
+        @media (max-width: 480px) {
+            .stat-cell {
+                padding: 16px 14px 14px;
+            }
+        }
         .stat-cell:last-child {
             border-right: none;
         }
@@ -140,16 +161,32 @@
             color: var(--ink-soft);
             margin-bottom: 10px;
         }
+        @media (max-width: 480px) {
+            .stat-lbl {
+                font-size: 0.6rem;
+                margin-bottom: 6px;
+            }
+        }
         .stat-val {
             font-family: 'Libre Baskerville', serif;
             font-size: 2.6rem;
             font-weight: 700;
             line-height: 1;
         }
+        @media (max-width: 480px) {
+            .stat-val {
+                font-size: 1.9rem;
+            }
+        }
         .stat-sub {
             font-size: 0.72rem;
             color: var(--ink-soft);
             margin-top: 8px;
+        }
+        @media (max-width: 480px) {
+            .stat-sub {
+                font-size: 0.65rem;
+            }
         }
         .stat-cell .accent-line {
             position: absolute;
@@ -227,6 +264,12 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
+            min-width: 0;
+        }
+        @media (max-width: 480px) {
+            .alert-strip-body {
+                padding: 14px;
+            }
         }
         .alert-tag {
             font-size: 0.7rem;
@@ -239,6 +282,11 @@
             font-size: 0.9rem;
             font-weight: 400;
         }
+        @media (max-width: 480px) {
+            .alert-desc {
+                font-size: 0.82rem;
+            }
+        }
         .btn-alert-action {
             font-size: 0.76rem;
             font-weight: 700;
@@ -250,6 +298,12 @@
             border: 1.5px solid;
             transition: all 0.15s;
             white-space: nowrap;
+        }
+        @media (max-width: 480px) {
+            .btn-alert-action {
+                width: 100%;
+                text-align: center;
+            }
         }
 
         /* ── Invitation cards ── */
@@ -266,6 +320,11 @@
         .invite-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 28px rgba(192, 57, 43, 0.1);
+        }
+        @media (max-width: 480px) {
+            .invite-card {
+                padding: 16px;
+            }
         }
         .invite-tag {
             font-size: 0.68rem;
@@ -287,6 +346,7 @@
             color: var(--ink);
             line-height: 1.4;
             margin-bottom: 4px;
+            word-break: break-word;
         }
         .invite-meta {
             font-size: 0.78rem;
@@ -323,7 +383,7 @@
             background: var(--red);
         }
 
-        /* Invite action buttons */
+        /* Invite buttons */
         .btn-accept {
             display: inline-flex;
             align-items: center;
@@ -374,98 +434,30 @@
             border-color: #fecaca;
         }
 
-        /* ── Notifications ── */
-        .notif-card {
-            background: #fff;
-            border: 1px solid var(--border-dk);
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 2px 12px rgba(26, 18, 9, 0.07);
-        }
-        .notif-head {
-            padding: 14px 22px 12px;
-            background: var(--parchment);
-            border-bottom: 1px solid var(--border);
+        /* Invite actions layout — row on mobile, column on sm+ */
+        .invite-actions {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .notif-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 14px 22px;
-            border-bottom: 1px solid #f5f0e8;
-            transition: background 0.12s;
-        }
-        .notif-item:last-child {
-            border-bottom: none;
-        }
-        .notif-item:hover {
-            background: var(--teal-lt);
-        }
-        .notif-item.unread {
-            background: #fff8f8;
-        }
-        .notif-item.unread:hover {
-            background: var(--teal-lt);
-        }
-        .notif-unread-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--red);
-            flex-shrink: 0;
-            margin-top: 6px;
-        }
-        .notif-title {
-            font-size: 0.88rem;
-            font-weight: 700;
-            color: var(--ink);
-        }
-        .notif-msg {
-            font-size: 0.78rem;
-            color: var(--ink-soft);
-            line-height: 1.5;
-            margin-top: 2px;
-        }
-        .notif-time {
-            font-size: 0.68rem;
-            color: #c9b99a;
-            white-space: nowrap;
-        }
-        .notif-link {
-            font-size: 0.68rem;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--teal);
-            text-decoration: none;
-            margin-top: 4px;
-            display: inline-block;
-        }
-        .notif-link:hover {
-            color: var(--teal-dk);
-        }
-        .btn-toggle-notif {
+            flex-direction: row;
+            gap: 10px;
             width: 100%;
-            padding: 11px;
-            background: var(--parchment);
-            border-top: 1px solid var(--border);
-            border: none;
-            font-size: 0.68rem;
-            font-weight: 800;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--ink-soft);
-            cursor: pointer;
-            transition:
-                background 0.15s,
-                color 0.15s;
+            margin-top: 14px;
         }
-        .btn-toggle-notif:hover {
-            background: var(--teal-lt);
-            color: var(--teal);
+        .invite-actions form,
+        .invite-actions button {
+            flex: 1;
+        }
+        @media (min-width: 640px) {
+            .invite-actions {
+                flex-direction: column;
+                width: 144px;
+                margin-top: 0;
+                flex-shrink: 0;
+            }
+            .invite-actions form,
+            .invite-actions button {
+                flex: unset;
+                width: 100%;
+            }
         }
 
         /* ── Tables ── */
@@ -483,6 +475,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        @media (max-width: 480px) {
+            .ms-table-head {
+                padding: 14px 16px 12px;
+            }
         }
         .ms-table-head-title {
             font-family: 'Libre Baskerville', serif;
@@ -539,6 +538,51 @@
             color: var(--teal);
         }
 
+        /* Revised Manuscripts table — mobile: hide Author + Type columns */
+        @media (max-width: 640px) {
+            .mst-revised th,
+            .mst-revised td {
+                padding: 12px 14px;
+            }
+            /* Hide Author column (2nd) */
+            .mst-revised th:nth-child(2),
+            .mst-revised td:nth-child(2) {
+                display: none;
+            }
+            /* Hide Type column (3rd) */
+            .mst-revised th:nth-child(3),
+            .mst-revised td:nth-child(3) {
+                display: none;
+            }
+        }
+
+        /* Active Assignments table — mobile: hide Status column */
+        @media (max-width: 640px) {
+            .mst-assignments th,
+            .mst-assignments td {
+                padding: 12px 14px;
+            }
+            /* Hide Status column (3rd) */
+            .mst-assignments th:nth-child(3),
+            .mst-assignments td:nth-child(3) {
+                display: none;
+            }
+        }
+
+        /* Mobile meta row under title */
+        .ms-mobile-meta {
+            display: none;
+        }
+        @media (max-width: 640px) {
+            .ms-mobile-meta {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex-wrap: wrap;
+                margin-top: 5px;
+            }
+        }
+
         .ms-row-title {
             font-family: 'Libre Baskerville', serif;
             font-size: 0.92rem;
@@ -547,6 +591,7 @@
             color: var(--ink);
             line-height: 1.4;
             transition: color 0.12s;
+            word-break: break-word;
         }
         .ms-author {
             font-size: 0.76rem;
@@ -554,7 +599,7 @@
             margin-top: 2px;
         }
 
-        /* Status badges */
+        /* ── Status badges ── */
         .sbadge {
             display: inline-flex;
             align-items: center;
@@ -567,6 +612,12 @@
             text-transform: uppercase;
             border: 1px solid;
             white-space: nowrap;
+        }
+        @media (max-width: 480px) {
+            .sbadge {
+                font-size: 0.6rem;
+                padding: 3px 9px;
+            }
         }
         .sbadge .dot {
             width: 6px;
@@ -636,7 +687,7 @@
             margin-top: 2px;
         }
 
-        /* Action buttons */
+        /* ── Action buttons ── */
         .btn-submit-review {
             display: inline-flex;
             align-items: center;
@@ -657,6 +708,7 @@
                 transform 0.12s,
                 box-shadow 0.15s;
             box-shadow: 0 3px 10px rgba(192, 57, 43, 0.2);
+            white-space: nowrap;
         }
         .btn-submit-review:hover {
             background: #a93226;
@@ -679,6 +731,7 @@
                 background 0.15s,
                 transform 0.12s;
             box-shadow: 0 3px 10px rgba(138, 110, 40, 0.2);
+            white-space: nowrap;
         }
         .btn-revision-review:hover {
             background: #6e5820;
@@ -699,6 +752,7 @@
             border: 1.5px solid var(--border-dk);
             text-decoration: none;
             transition: all 0.15s;
+            white-space: nowrap;
         }
         .btn-peer-reviews:hover {
             background: var(--teal-lt);
@@ -721,13 +775,30 @@
             transition:
                 background 0.15s,
                 transform 0.12s;
+            white-space: nowrap;
         }
         .btn-all-pending:hover {
             background: var(--teal);
             transform: translateY(-1px);
         }
 
-        /* Table footer */
+        /* Icon-only buttons on very small screens */
+        @media (max-width: 480px) {
+            .btn-submit-review,
+            .btn-revision-review {
+                padding: 8px 10px;
+                font-size: 0;
+                letter-spacing: 0;
+                gap: 0;
+            }
+            .btn-submit-review svg,
+            .btn-revision-review svg {
+                width: 15px !important;
+                height: 15px !important;
+            }
+        }
+
+        /* ── Table footer ── */
         .table-footer {
             padding: 12px 24px;
             background: var(--parchment);
@@ -735,6 +806,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        @media (max-width: 480px) {
+            .table-footer {
+                padding: 10px 16px;
+            }
         }
         .table-footer-brand {
             font-size: 0.65rem;
@@ -744,10 +822,15 @@
             color: #c9b99a;
         }
 
-        /* Empty state */
+        /* ── Empty state ── */
         .empty-state {
             padding: 70px 24px;
             text-align: center;
+        }
+        @media (max-width: 480px) {
+            .empty-state {
+                padding: 48px 16px;
+            }
         }
         .empty-state-icon {
             width: 60px;
@@ -825,7 +908,7 @@
         </div>
 
         {{-- ── Stats ── --}}
-        <div class="stat-grid fu1 mb-10">
+        <div class="stat-grid fu1 mb-8 sm:mb-10">
             <div class="stat-cell">
                 <p class="stat-lbl">Pending Reviews</p>
                 <p class="stat-val sv-red">
@@ -864,6 +947,7 @@
                         @endphp
 
                         <div class="invite-card">
+                            {{-- Flexible layout: stacked on mobile, side-by-side on sm+ --}}
                             <div
                                 class="flex flex-col sm:flex-row sm:items-start gap-5"
                             >
@@ -890,7 +974,14 @@
                                     @if ($dueDate)
                                         <div class="mt-4">
                                             <div
-                                                class="flex items-center justify-between mb-1"
+                                                style="
+                                                    display: flex;
+                                                    align-items: center;
+                                                    justify-content: space-between;
+                                                    margin-bottom: 4px;
+                                                    flex-wrap: wrap;
+                                                    gap: 4px;
+                                                "
                                             >
                                                 <span
                                                     style="
@@ -972,11 +1063,12 @@
                                     @endif
                                 </div>
 
-                                <div class="flex sm:flex-col gap-2 sm:w-36">
+                                {{-- Accept/Decline buttons: row on mobile, column on sm+ --}}
+                                <div class="invite-actions">
                                     <form
                                         method="POST"
                                         action="{{ route('reviewer.invitation.accept', $a) }}"
-                                        class="w-full"
+                                        style="flex: 1"
                                     >
                                         @csrf
                                         <button
@@ -1015,6 +1107,7 @@
                                     <button
                                         type="button"
                                         class="btn-decline"
+                                        style="flex: 1"
                                         onclick="
                                             declineInvitation(
                                                 event,
@@ -1075,10 +1168,10 @@
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="mst">
+                    <table class="mst mst-revised">
                         <thead>
                             <tr>
-                                <th style="width: 35%">Manuscript</th>
+                                <th style="width: 40%">Manuscript</th>
                                 <th>Author</th>
                                 <th>Type</th>
                                 <th>Deadline</th>
@@ -1089,6 +1182,7 @@
                             @foreach ($revisionReviews as $rr)
                                 @php
                                     $daysLeft = $rr->due_at ? (int) now()->diffInDays($rr->due_at, false) : null;
+                                    $revType = $rr->revisionRequest->revision_type ?? null;
                                 @endphp
 
                                 <tr>
@@ -1099,6 +1193,21 @@
                                         <p class="ms-author">
                                             {{ $rr->revisionRequest->submission->author->name ?? '—' }}
                                         </p>
+
+                                        {{-- Mobile meta: type badge --}}
+                                        <div class="ms-mobile-meta">
+                                            @if ($revType === 'minor')
+                                                <span class="sbadge amber">
+                                                    <span class="dot"></span>
+                                                    Minor
+                                                </span>
+                                            @else
+                                                <span class="sbadge orange">
+                                                    <span class="dot"></span>
+                                                    Major
+                                                </span>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td>
                                         <span
@@ -1111,7 +1220,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        @if ($rr->revisionRequest->revision_type === 'minor')
+                                        @if ($revType === 'minor')
                                             <span class="sbadge amber">
                                                 <span class="dot"></span>
                                                 Minor
@@ -1175,6 +1284,7 @@
                                         <a
                                             href="{{ route('reviews.revision-review-create', $rr) }}"
                                             class="btn-revision-review"
+                                            title="Review"
                                         >
                                             <svg
                                                 class="w-3.5 h-3.5"
@@ -1201,7 +1311,7 @@
         @endif
 
         {{-- ── Active Assignments ── --}}
-        <div class="fu3 ms-table-wrap mb-12">
+        <div class="fu3 ms-table-wrap mb-10 sm:mb-12">
             <div class="ms-table-head">
                 <div>
                     <p class="ms-table-head-eyebrow">Your Workload</p>
@@ -1218,10 +1328,10 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="mst">
+                <table class="mst mst-assignments">
                     <thead>
                         <tr>
-                            <th style="width: 35%">Submission</th>
+                            <th style="width: 38%">Submission</th>
                             <th>Deadline</th>
                             <th>Status</th>
                             <th style="text-align: right">Action</th>
@@ -1232,6 +1342,15 @@
                             @php
                                 $dueDate = $a->due_at ? \Carbon\Carbon::parse($a->due_at) : null;
                                 $daysLeft = $dueDate ? (int) now()->diffInDays($dueDate, false) : null;
+                                $badgeCls = match ($a->status) {
+                                    'completed' => 'completed',
+                                    'assigned', 'accepted' => 'accepted',
+                                    default => 'default',
+                                };
+                                $badgeLbl = match ($a->status) {
+                                    'assigned' => 'Accepted',
+                                    default => ucfirst($a->status),
+                                };
                             @endphp
 
                             <tr>
@@ -1242,6 +1361,14 @@
                                     <p class="ms-author">
                                         {{ $a->submission->author->name ?? '—' }}
                                     </p>
+
+                                    {{-- Mobile meta: status badge --}}
+                                    <div class="ms-mobile-meta">
+                                        <span class="sbadge {{ $badgeCls }}">
+                                            <span class="dot"></span>
+                                            {{ $badgeLbl }}
+                                        </span>
+                                    </div>
                                 </td>
                                 <td>
                                     @if ($a->status === 'completed')
@@ -1297,18 +1424,6 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @php
-                                        $badgeCls = match ($a->status) {
-                                            'completed' => 'completed',
-                                            'assigned', 'accepted' => 'accepted',
-                                            default => 'default',
-                                        };
-                                        $badgeLbl = match ($a->status) {
-                                            'assigned' => 'Accepted',
-                                            default => ucfirst($a->status),
-                                        };
-                                    @endphp
-
                                     <span class="sbadge {{ $badgeCls }}">
                                         <span class="dot"></span>
                                         {{ $badgeLbl }}
@@ -1319,6 +1434,7 @@
                                         <a
                                             href="{{ route('reviews.create', ['assignment' => $a]) }}"
                                             class="btn-submit-review"
+                                            title="Submit Review"
                                         >
                                             <svg
                                                 class="w-3.5 h-3.5"
@@ -1337,7 +1453,12 @@
                                         </a>
                                     @else
                                         <div
-                                            class="flex flex-col items-end gap-2"
+                                            style="
+                                                display: flex;
+                                                flex-direction: column;
+                                                align-items: flex-end;
+                                                gap: 6px;
+                                            "
                                         >
                                             <span
                                                 style="
@@ -1438,307 +1559,61 @@
             lessText.classList.toggle('hidden', hidden);
         }
 
-        /* ── Enhanced styles injected once ── */
+        /* ── Enhanced SweetAlert2 styles ── */
         (function injectSwalStyles() {
             if (document.getElementById('swal-custom-styles')) return;
             const s = document.createElement('style');
             s.id = 'swal-custom-styles';
             s.textContent = `
-            /* Popup shell */
             .swal-decline-popup {
-                border-radius: 20px !important;
-                padding: 0 !important;
-                overflow: hidden !important;
-                box-shadow: 0 32px 80px rgba(26,18,9,.22) !important;
-                border: 1.5px solid #e8dfd0 !important;
-                font-family: 'Source Sans 3', sans-serif !important;
-                max-width: 520px !important;
+                border-radius: 20px !important; padding: 0 !important; overflow: hidden !important;
+                box-shadow: 0 32px 80px rgba(26,18,9,.22) !important; border: 1.5px solid #e8dfd0 !important;
+                font-family: 'Source Sans 3', sans-serif !important; max-width: 520px !important;
             }
-
-            /* Teal accent bar at top */
             .swal-decline-popup::before {
-                content: '';
-                display: block;
-                height: 4px;
+                content: ''; display: block; height: 4px;
                 background: linear-gradient(90deg, #2d8176, #c9a84c, #2d8176);
-                background-size: 200% 100%;
-                animation: swalShimmer 3s linear infinite;
+                background-size: 200% 100%; animation: swalShimmer 3s linear infinite;
             }
-            @keyframes swalShimmer {
-                0%   { background-position: 0% 0; }
-                100% { background-position: 200% 0; }
-            }
-
-            /* Icon area */
-            .swal-decline-popup .swal2-icon {
-                border-color: #fecaca !important;
-                color: #c0392b !important;
-                margin: 28px auto 0 !important;
-                width: 52px !important;
-                height: 52px !important;
-            }
-            .swal-decline-popup .swal2-icon .swal2-icon-content {
-                font-size: 28px !important;
-            }
-
-            /* Title */
-            .swal-decline-popup .swal2-title {
-                font-family: 'Libre Baskerville', serif !important;
-                font-size: 1.4rem !important;
-                font-weight: 700 !important;
-                color: #1a1209 !important;
-                padding: 10px 32px 0 !important;
-                letter-spacing: -.01em !important;
-            }
-
-            /* HTML content area */
-            .swal-decline-popup .swal2-html-container {
-                margin: 0 !important;
-                padding: 0 32px 4px !important;
-                font-size: .92rem !important;
-                color: #6b5740 !important;
-                line-height: 1.6 !important;
-            }
-
-            /* Reason list container */
-            .swal-reasons-wrap {
-                background: #faf6ef;
-                border: 1px solid #e8dfd0;
-                border-radius: 12px;
-                padding: 6px 4px;
-                margin: 12px 0 0;
-            }
-
-            /* Each reason row */
-            .swal-reason-row {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 10px 14px;
-                border-radius: 8px;
-                cursor: pointer;
-                transition: background .13s;
-                margin: 2px 0;
-            }
-            .swal-reason-row:hover {
-                background: #e8f4f2;
-            }
-            .swal-reason-row.selected {
-                background: #e8f4f2;
-                outline: 1.5px solid rgba(45,129,118,.35);
-            }
-
-            /* Custom radio dot */
-            .swal-radio-dot {
-                width: 18px;
-                height: 18px;
-                border-radius: 50%;
-                border: 2px solid #c9b99a;
-                flex-shrink: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: border-color .13s;
-            }
-            .swal-reason-row.selected .swal-radio-dot {
-                border-color: #2d8176;
-            }
-            .swal-radio-dot::after {
-                content: '';
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                background: #2d8176;
-                opacity: 0;
-                transition: opacity .13s;
-            }
-            .swal-reason-row.selected .swal-radio-dot::after {
-                opacity: 1;
-            }
-
-            /* Reason label text */
-            .swal-reason-label {
-                font-size: .88rem;
-                font-weight: 600;
-                color: #3d2f1a;
-                cursor: pointer;
-            }
-            .swal-reason-row.selected .swal-reason-label {
-                color: #1a4d46;
-            }
-
-            /* Other textarea */
-            .swal-other-wrap {
-                margin: 8px 0 4px;
-                display: none;
-            }
+            @keyframes swalShimmer { 0% { background-position: 0% 0; } 100% { background-position: 200% 0; } }
+            .swal-decline-popup .swal2-icon { border-color: #fecaca !important; color: #c0392b !important; margin: 28px auto 0 !important; width: 52px !important; height: 52px !important; }
+            .swal-decline-popup .swal2-icon .swal2-icon-content { font-size: 28px !important; }
+            .swal-decline-popup .swal2-title { font-family: 'Libre Baskerville', serif !important; font-size: 1.4rem !important; font-weight: 700 !important; color: #1a1209 !important; padding: 10px 32px 0 !important; letter-spacing: -.01em !important; }
+            .swal-decline-popup .swal2-html-container { margin: 0 !important; padding: 0 32px 4px !important; font-size: .92rem !important; color: #6b5740 !important; line-height: 1.6 !important; }
+            .swal-reasons-wrap { background: #faf6ef; border: 1px solid #e8dfd0; border-radius: 12px; padding: 6px 4px; margin: 12px 0 0; }
+            .swal-reason-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: background .13s; margin: 2px 0; }
+            .swal-reason-row:hover { background: #e8f4f2; }
+            .swal-reason-row.selected { background: #e8f4f2; outline: 1.5px solid rgba(45,129,118,.35); }
+            .swal-radio-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #c9b99a; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: border-color .13s; }
+            .swal-reason-row.selected .swal-radio-dot { border-color: #2d8176; }
+            .swal-radio-dot::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #2d8176; opacity: 0; transition: opacity .13s; }
+            .swal-reason-row.selected .swal-radio-dot::after { opacity: 1; }
+            .swal-reason-label { font-size: .88rem; font-weight: 600; color: #3d2f1a; cursor: pointer; }
+            .swal-reason-row.selected .swal-reason-label { color: #1a4d46; }
+            .swal-other-wrap { margin: 8px 0 4px; display: none; }
             .swal-other-wrap.open { display: block; }
-            .swal-other-textarea {
-                width: 100%;
-                padding: 10px 14px;
-                border: 1.5px solid #c9b99a;
-                border-radius: 8px;
-                font-family: 'Source Sans 3', sans-serif;
-                font-size: .88rem;
-                color: #1a1209;
-                background: #fff;
-                resize: none;
-                height: 72px;
-                outline: none;
-                transition: border-color .15s, box-shadow .15s;
-            }
-            .swal-other-textarea:focus {
-                border-color: #2d8176;
-                box-shadow: 0 0 0 3px rgba(45,129,118,.12);
-            }
+            .swal-other-textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #c9b99a; border-radius: 8px; font-family: 'Source Sans 3', sans-serif; font-size: .88rem; color: #1a1209; background: #fff; resize: none; height: 72px; outline: none; transition: border-color .15s, box-shadow .15s; }
+            .swal-other-textarea:focus { border-color: #2d8176; box-shadow: 0 0 0 3px rgba(45,129,118,.12); }
             .swal-other-textarea::placeholder { color: #b5a595; }
-
-            /* Fallback textarea (no reasons configured) */
-            .swal-fallback-textarea {
-                width: 100%;
-                padding: 10px 14px;
-                border: 1.5px solid #c9b99a;
-                border-radius: 8px;
-                font-family: 'Source Sans 3', sans-serif;
-                font-size: .88rem;
-                color: #1a1209;
-                background: #faf6ef;
-                resize: none;
-                height: 80px;
-                outline: none;
-                margin-top: 12px;
-                transition: border-color .15s, box-shadow .15s;
-            }
-            .swal-fallback-textarea:focus {
-                border-color: #2d8176;
-                box-shadow: 0 0 0 3px rgba(45,129,118,.12);
-                background: #fff;
-            }
+            .swal-fallback-textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #c9b99a; border-radius: 8px; font-family: 'Source Sans 3', sans-serif; font-size: .88rem; color: #1a1209; background: #faf6ef; resize: none; height: 80px; outline: none; margin-top: 12px; transition: border-color .15s, box-shadow .15s; }
+            .swal-fallback-textarea:focus { border-color: #2d8176; box-shadow: 0 0 0 3px rgba(45,129,118,.12); background: #fff; }
             .swal-fallback-textarea::placeholder { color: #b5a595; }
-
-            /* Actions area */
-            .swal-decline-popup .swal2-actions {
-                padding: 16px 32px 28px !important;
-                gap: 10px !important;
-                margin: 0 !important;
-            }
-
-            /* Decline (confirm) button */
-            .swal-decline-popup .swal2-confirm {
-                background: #c0392b !important;
-                border-radius: 8px !important;
-                font-family: 'Source Sans 3', sans-serif !important;
-                font-size: .74rem !important;
-                font-weight: 800 !important;
-                letter-spacing: .1em !important;
-                text-transform: uppercase !important;
-                padding: 11px 24px !important;
-                box-shadow: 0 4px 14px rgba(192,57,43,.25) !important;
-                transition: background .15s, transform .12s, box-shadow .15s !important;
-            }
-            .swal-decline-popup .swal2-confirm:hover {
-                background: #a93226 !important;
-                transform: translateY(-1px) !important;
-                box-shadow: 0 8px 20px rgba(192,57,43,.3) !important;
-            }
-
-            /* Cancel button */
-            .swal-decline-popup .swal2-cancel {
-                background: #fff !important;
-                color: #6b5740 !important;
-                border: 1.5px solid #c9b99a !important;
-                border-radius: 8px !important;
-                font-family: 'Source Sans 3', sans-serif !important;
-                font-size: .74rem !important;
-                font-weight: 800 !important;
-                letter-spacing: .1em !important;
-                text-transform: uppercase !important;
-                padding: 11px 24px !important;
-                box-shadow: none !important;
-                transition: all .15s !important;
-            }
-            .swal-decline-popup .swal2-cancel:hover {
-                background: #e8f4f2 !important;
-                color: #2d8176 !important;
-                border-color: #2d8176 !important;
-            }
-
-            /* Accept popup */
-            .swal-accept-popup {
-                border-radius: 20px !important;
-                overflow: hidden !important;
-                padding: 0 !important;
-                box-shadow: 0 32px 80px rgba(26,18,9,.18) !important;
-                border: 1.5px solid #e8dfd0 !important;
-                font-family: 'Source Sans 3', sans-serif !important;
-                max-width: 420px !important;
-            }
-            .swal-accept-popup::before {
-                content: '';
-                display: block;
-                height: 4px;
-                background: linear-gradient(90deg, #2d8176, #c9a84c);
-            }
-            .swal-accept-popup .swal2-icon {
-                border-color: rgba(45,129,118,.4) !important;
-                color: #2d8176 !important;
-                margin: 28px auto 0 !important;
-                width: 52px !important; height: 52px !important;
-            }
-            .swal-accept-popup .swal2-title {
-                font-family: 'Libre Baskerville', serif !important;
-                font-size: 1.3rem !important;
-                font-weight: 700 !important;
-                color: #1a1209 !important;
-                padding: 10px 32px 0 !important;
-            }
-            .swal-accept-popup .swal2-html-container {
-                margin: 0 !important;
-                padding: 4px 32px 4px !important;
-                font-size: .9rem !important;
-                color: #6b5740 !important;
-            }
-            .swal-accept-popup .swal2-actions {
-                padding: 16px 32px 28px !important;
-                gap: 10px !important;
-                margin: 0 !important;
-            }
-            .swal-accept-popup .swal2-confirm {
-                background: #2d8176 !important;
-                border-radius: 8px !important;
-                font-family: 'Source Sans 3', sans-serif !important;
-                font-size: .74rem !important;
-                font-weight: 800 !important;
-                letter-spacing: .1em !important;
-                text-transform: uppercase !important;
-                padding: 11px 24px !important;
-                box-shadow: 0 4px 14px rgba(45,129,118,.25) !important;
-                transition: background .15s, transform .12s !important;
-            }
-            .swal-accept-popup .swal2-confirm:hover {
-                background: #1a4d46 !important;
-                transform: translateY(-1px) !important;
-            }
-            .swal-accept-popup .swal2-cancel {
-                background: #fff !important;
-                color: #6b5740 !important;
-                border: 1.5px solid #c9b99a !important;
-                border-radius: 8px !important;
-                font-family: 'Source Sans 3', sans-serif !important;
-                font-size: .74rem !important;
-                font-weight: 800 !important;
-                letter-spacing: .1em !important;
-                text-transform: uppercase !important;
-                padding: 11px 24px !important;
-                box-shadow: none !important;
-                transition: all .15s !important;
-            }
-            .swal-accept-popup .swal2-cancel:hover {
-                background: #fef2f2 !important;
-                color: #c0392b !important;
-                border-color: #fecaca !important;
-            }
-        `;
+            .swal-decline-popup .swal2-actions { padding: 16px 32px 28px !important; gap: 10px !important; margin: 0 !important; }
+            .swal-decline-popup .swal2-confirm { background: #c0392b !important; border-radius: 8px !important; font-family: 'Source Sans 3', sans-serif !important; font-size: .74rem !important; font-weight: 800 !important; letter-spacing: .1em !important; text-transform: uppercase !important; padding: 11px 24px !important; box-shadow: 0 4px 14px rgba(192,57,43,.25) !important; transition: background .15s, transform .12s, box-shadow .15s !important; }
+            .swal-decline-popup .swal2-confirm:hover { background: #a93226 !important; transform: translateY(-1px) !important; box-shadow: 0 8px 20px rgba(192,57,43,.3) !important; }
+            .swal-decline-popup .swal2-cancel { background: #fff !important; color: #6b5740 !important; border: 1.5px solid #c9b99a !important; border-radius: 8px !important; font-family: 'Source Sans 3', sans-serif !important; font-size: .74rem !important; font-weight: 800 !important; letter-spacing: .1em !important; text-transform: uppercase !important; padding: 11px 24px !important; box-shadow: none !important; transition: all .15s !important; }
+            .swal-decline-popup .swal2-cancel:hover { background: #e8f4f2 !important; color: #2d8176 !important; border-color: #2d8176 !important; }
+            .swal-accept-popup { border-radius: 20px !important; overflow: hidden !important; padding: 0 !important; box-shadow: 0 32px 80px rgba(26,18,9,.18) !important; border: 1.5px solid #e8dfd0 !important; font-family: 'Source Sans 3', sans-serif !important; max-width: 420px !important; }
+            .swal-accept-popup::before { content: ''; display: block; height: 4px; background: linear-gradient(90deg, #2d8176, #c9a84c); }
+            .swal-accept-popup .swal2-icon { border-color: rgba(45,129,118,.4) !important; color: #2d8176 !important; margin: 28px auto 0 !important; width: 52px !important; height: 52px !important; }
+            .swal-accept-popup .swal2-title { font-family: 'Libre Baskerville', serif !important; font-size: 1.3rem !important; font-weight: 700 !important; color: #1a1209 !important; padding: 10px 32px 0 !important; }
+            .swal-accept-popup .swal2-html-container { margin: 0 !important; padding: 4px 32px 4px !important; font-size: .9rem !important; color: #6b5740 !important; }
+            .swal-accept-popup .swal2-actions { padding: 16px 32px 28px !important; gap: 10px !important; margin: 0 !important; }
+            .swal-accept-popup .swal2-confirm { background: #2d8176 !important; border-radius: 8px !important; font-family: 'Source Sans 3', sans-serif !important; font-size: .74rem !important; font-weight: 800 !important; letter-spacing: .1em !important; text-transform: uppercase !important; padding: 11px 24px !important; box-shadow: 0 4px 14px rgba(45,129,118,.25) !important; transition: background .15s, transform .12s !important; }
+            .swal-accept-popup .swal2-confirm:hover { background: #1a4d46 !important; transform: translateY(-1px) !important; }
+            .swal-accept-popup .swal2-cancel { background: #fff !important; color: #6b5740 !important; border: 1.5px solid #c9b99a !important; border-radius: 8px !important; font-family: 'Source Sans 3', sans-serif !important; font-size: .74rem !important; font-weight: 800 !important; letter-spacing: .1em !important; text-transform: uppercase !important; padding: 11px 24px !important; box-shadow: none !important; transition: all .15s !important; }
+            .swal-accept-popup .swal2-cancel:hover { background: #fef2f2 !important; color: #c0392b !important; border-color: #fecaca !important; }
+            `;
             document.head.appendChild(s);
         })();
 
@@ -1760,7 +1635,6 @@
                 return;
             }
 
-            // Fetch reasons from API
             let reasons = [];
             try {
                 const res = await fetch('{{ route('api.decline-reasons') }}', {
@@ -1777,30 +1651,28 @@
 
             const CUSTOM_LABEL = 'Other (please specify)';
 
-            // Build HTML
             let bodyHtml = `<p style="margin-bottom:4px;">You are declining the review invitation for:</p>
-            <p style="font-family:'Libre Baskerville',serif; font-weight:700; color:#1a1209; font-size:1rem; margin-bottom:14px; line-height:1.4;">"${title}"</p>`;
+            <p style="font-family:'Libre Baskerville',serif;font-weight:700;color:#1a1209;font-size:1rem;margin-bottom:14px;line-height:1.4;">"${title}"</p>`;
 
             if (reasons.length > 0) {
-                bodyHtml += `<p style="font-size:.74rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#6b5740; margin-bottom:6px;">Select a reason</p>
-            <div class="swal-reasons-wrap" id="swal-reasons-wrap">
-                ${reasons
-                    .map(
-                        (reason, i) => `
-                    <div class="swal-reason-row" data-value="${reason}" onclick="selectReason(this, '${reason}', '${CUSTOM_LABEL}')">
-                        <span class="swal-radio-dot"></span>
-                        <span class="swal-reason-label">${reason}</span>
-                    </div>
-                `,
-                    )
-                    .join('')}
-            </div>
-            <div class="swal-other-wrap" id="swal-other-wrap">
-                <textarea class="swal-other-textarea" id="swal-other-textarea" placeholder="Please specify your reason..."></textarea>
-            </div>`;
+                bodyHtml += `<p style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6b5740;margin-bottom:6px;">Select a reason</p>
+                <div class="swal-reasons-wrap" id="swal-reasons-wrap">
+                    ${reasons
+                        .map(
+                            (reason) => `
+                        <div class="swal-reason-row" data-value="${reason}" onclick="selectReason(this, '${reason}', '${CUSTOM_LABEL}')">
+                            <span class="swal-radio-dot"></span>
+                            <span class="swal-reason-label">${reason}</span>
+                        </div>`,
+                        )
+                        .join('')}
+                </div>
+                <div class="swal-other-wrap" id="swal-other-wrap">
+                    <textarea class="swal-other-textarea" id="swal-other-textarea" placeholder="Please specify your reason..."></textarea>
+                </div>`;
             } else {
-                bodyHtml += `<p style="font-size:.74rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#6b5740; margin-bottom:6px;">Reason (optional)</p>
-            <textarea class="swal-fallback-textarea" id="swal-fallback-textarea" placeholder="State your reason for declining..."></textarea>`;
+                bodyHtml += `<p style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6b5740;margin-bottom:6px;">Reason (optional)</p>
+                <textarea class="swal-fallback-textarea" id="swal-fallback-textarea" placeholder="State your reason for declining..."></textarea>`;
             }
 
             Swal.fire({
@@ -1815,7 +1687,6 @@
                 focusConfirm: false,
             }).then((r) => {
                 if (!r.isConfirmed) return;
-
                 let finalReason = '';
                 if (reasons.length > 0) {
                     const selected =
@@ -1836,7 +1707,6 @@
                             .getElementById('swal-fallback-textarea')
                             ?.value?.trim() || '';
                 }
-
                 document.getElementById(
                     `decline-reason-${assignmentId}`,
                 ).value = finalReason;

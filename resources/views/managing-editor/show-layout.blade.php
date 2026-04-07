@@ -19,17 +19,14 @@
             --border: #e8dfd0;
             --border-dk: #c9b99a;
         }
-
         * {
             box-sizing: border-box;
         }
-
         .aw {
             font-family: 'Source Sans 3', sans-serif;
             color: var(--ink);
             font-size: 16px;
         }
-
         .aw-bg {
             background-color: var(--cream);
             background-image:
@@ -63,6 +60,12 @@
             padding-bottom: 28px;
             margin-bottom: 32px;
             position: relative;
+        }
+        @media (max-width: 640px) {
+            .page-header {
+                padding-bottom: 20px;
+                margin-bottom: 24px;
+            }
         }
         .page-header::after {
             content: '';
@@ -98,6 +101,11 @@
             color: var(--ink);
             line-height: 1.3;
         }
+        @media (max-width: 640px) {
+            .ms-title {
+                font-size: 1.4rem;
+            }
+        }
 
         /* Cards */
         .card {
@@ -115,6 +123,11 @@
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+        @media (max-width: 480px) {
+            .card-header {
+                padding: 12px 16px;
+            }
         }
         .card-header-icon {
             width: 32px;
@@ -134,12 +147,23 @@
         .card-body {
             padding: 24px;
         }
+        @media (max-width: 480px) {
+            .card-body {
+                padding: 16px;
+            }
+        }
 
         /* Meta */
         .meta-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 16px;
+        }
+        @media (max-width: 480px) {
+            .meta-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
         }
         .meta-label {
             font-size: 0.66rem;
@@ -187,6 +211,7 @@
             font-size: 0.8rem;
             color: var(--ink-soft);
             margin-top: 2px;
+            word-break: break-all;
         }
 
         /* Layout file card */
@@ -199,6 +224,17 @@
             border: 1.5px solid var(--border-dk);
             border-radius: 10px;
             gap: 16px;
+            flex-wrap: wrap;
+        }
+        @media (max-width: 540px) {
+            .file-card {
+                padding: 14px 16px;
+                gap: 12px;
+            }
+            .file-card .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
         .file-icon {
             width: 48px;
@@ -234,6 +270,11 @@
             border-radius: 8px;
             padding: 16px 20px;
         }
+        @media (max-width: 480px) {
+            .notes-box {
+                padding: 12px 14px;
+            }
+        }
         .notes-label {
             font-size: 0.68rem;
             font-weight: 800;
@@ -257,6 +298,11 @@
             background: var(--parchment);
             border-radius: 10px;
             border: 1.5px dashed var(--border-dk);
+        }
+        @media (max-width: 480px) {
+            .no-file {
+                padding: 36px 16px;
+            }
         }
 
         /* Buttons */
@@ -340,6 +386,41 @@
             background: var(--gold);
         }
 
+        /* Approve section */
+        .approve-section {
+            background: #f0fdf8;
+            border: 1.5px solid rgba(45, 129, 118, 0.3);
+            border-radius: 14px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        @media (max-width: 540px) {
+            .approve-section {
+                padding: 18px 16px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .approve-section .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        .approve-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--teal-dk);
+            margin-bottom: 4px;
+        }
+        .approve-desc {
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+        }
+
         /* Animations */
         .fu {
             animation: fu 0.45s ease both;
@@ -363,35 +444,11 @@
                 transform: translateY(0);
             }
         }
-
-        /* Approve section */
-        .approve-section {
-            background: #f0fdf8;
-            border: 1.5px solid rgba(45, 129, 118, 0.3);
-            border-radius: 14px;
-            padding: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .approve-title {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--teal-dk);
-            margin-bottom: 4px;
-        }
-        .approve-desc {
-            font-size: 0.85rem;
-            color: var(--ink-soft);
-        }
     </style>
 @endpush
 
 @section('content')
-    <div class="aw aw-bg max-w-4xl mx-auto px-2 py-6">
+    <div class="aw aw-bg max-w-4xl mx-auto px-4 sm:px-6 py-6">
         {{-- Back --}}
         <a
             href="{{ route('managing-editor.dashboard') }}"
@@ -480,7 +537,7 @@
                     <div class="author-avatar">
                         {{ strtoupper(substr($submission->author->name ?? 'A', 0, 2)) }}
                     </div>
-                    <div>
+                    <div class="min-w-0">
                         <p class="author-name">
                             {{ $submission->author->name ?? 'Unknown' }}
                         </p>
@@ -638,10 +695,50 @@
 
                     {{-- Author feedback/revision notes --}}
                     @if ($layoutAssignment->author_feedback)
-                        <div style="background: #fffbf0; border: 1px solid rgba(217, 119, 6, 0.35); border-left: 4px solid #d97706; border-radius: 8px; padding: 16px 20px; margin-top: 12px;">
-                            <p style="font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #92400e; margin-bottom: 8px;">💬 Author's Revision Feedback</p>
-                            <p style="font-family: 'Libre Baskerville', serif; font-size: 0.92rem; color: #78350f; line-height: 1.7; white-space: pre-wrap;">{{ $layoutAssignment->author_feedback }}</p>
-                            <p style="font-size: 0.75rem; color: #b45309; margin-top: 8px;">📅 Submitted: {{ $layoutAssignment->author_feedback_at?->format('M d, Y \a\t g:i A') ?? 'N/A' }}</p>
+                        <div
+                            style="
+                                background: #fffbf0;
+                                border: 1px solid rgba(217, 119, 6, 0.35);
+                                border-left: 4px solid #d97706;
+                                border-radius: 8px;
+                                padding: 16px 20px;
+                                margin-top: 12px;
+                            "
+                        >
+                            <p
+                                style="
+                                    font-size: 0.68rem;
+                                    font-weight: 800;
+                                    letter-spacing: 0.12em;
+                                    text-transform: uppercase;
+                                    color: #92400e;
+                                    margin-bottom: 8px;
+                                "
+                            >
+                                💬 Author's Revision Feedback
+                            </p>
+                            <p
+                                style="
+                                    font-family: 'Libre Baskerville', serif;
+                                    font-size: 0.92rem;
+                                    color: #78350f;
+                                    line-height: 1.7;
+                                    white-space: pre-wrap;
+                                    word-break: break-word;
+                                "
+                            >
+                                {{ $layoutAssignment->author_feedback }}
+                            </p>
+                            <p
+                                style="
+                                    font-size: 0.75rem;
+                                    color: #b45309;
+                                    margin-top: 8px;
+                                "
+                            >
+                                📅 Submitted:
+                                {{ $layoutAssignment->author_feedback_at?->format('M d, Y \a\t g:i A') ?? 'N/A' }}
+                            </p>
                         </div>
                     @endif
                 @else
@@ -686,7 +783,7 @@
             </div>
         </div>
 
-        {{-- Approve & Forward to Editor --}}
+        {{-- Approve & Forward --}}
         @if ($layoutAssignment && $layoutAssignment->layout_file_path && $submission->status === \App\Models\Submission::STATUS_LAYOUT_REVIEW)
             <div class="approve-section fu3">
                 <div>
@@ -745,47 +842,41 @@
 @push('scripts')
     <script>
         @if(session('success'))
-                    Swal.fire({
-                        icon: 'success',
-                        title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
-                        html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
-                        confirmButtonText: 'Close',
-                        confirmButtonColor: '#2d8176',
-                        customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
-                        buttonsStyling: false,
-                    });
-                @endif
-                @if(session('error'))
         Swal.fire({
-            icon: 'error',
-            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Oops!</span>',
-            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('error') }}</p>',
-            confirmButtonText: 'Close',
-            confirmButtonColor: '#c9a84c',
+            icon: 'success',
+            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
+            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+            confirmButtonText: 'Close', confirmButtonColor: '#2d8176',
             customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
             buttonsStyling: false,
         });
         @endif
-
+        @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Oops!</span>',
+            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('error') }}</p>',
+            confirmButtonText: 'Close', confirmButtonColor: '#c9a84c',
+            customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
+            buttonsStyling: false,
+        });
+        @endif
         @if(session('info'))
         Swal.fire({
             icon: 'info',
             title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Note</span>',
             html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('info') }}</p>',
-            confirmButtonText: 'Got it',
-            confirmButtonColor: '#2d8176',
+            confirmButtonText: 'Got it', confirmButtonColor: '#2d8176',
             customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
             buttonsStyling: false,
         });
         @endif
-
         @if(session('warning'))
         Swal.fire({
             icon: 'warning',
             title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Warning</span>',
             html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('warning') }}</p>',
-            confirmButtonText: 'Understood',
-            confirmButtonColor: '#c9a84c',
+            confirmButtonText: 'Understood', confirmButtonColor: '#c9a84c',
             customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
             buttonsStyling: false,
         });

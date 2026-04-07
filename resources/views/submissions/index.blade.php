@@ -10,7 +10,6 @@
             background: #fff !important;
             box-shadow: 0 0 0 3px rgba(45, 129, 118, 0.12);
         }
-
         .fu {
             animation: fu 0.45s ease both;
         }
@@ -33,12 +32,63 @@
                 transform: translateY(0);
             }
         }
+
+        /* Hide less-critical columns on small screens */
+        @media (max-width: 640px) {
+            .col-date {
+                display: none;
+            }
+            .col-action {
+                display: none;
+            }
+        }
+
+        /* Mobile card list — hidden on sm+ */
+        .ms-card-list {
+            display: none;
+        }
+        @media (max-width: 640px) {
+            .board-table-wrap {
+                display: none;
+            }
+            .ms-card-list {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        .ms-card {
+            border-bottom: 1px solid #f5f0e8;
+            padding: 16px 20px;
+            display: block;
+            text-decoration: none;
+            transition: background 0.1s;
+        }
+        .ms-card:last-child {
+            border-bottom: none;
+        }
+        .ms-card:hover {
+            background: #e8f4f2;
+        }
+        .ms-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .ms-card-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
     </style>
 @endpush
 
 @section('content')
     <div
-        class="font-['Source_Sans_3',sans-serif] text-[#1a1209] max-w-7xl mx-auto px-1"
+        class="font-['Source_Sans_3',sans-serif] text-[#1a1209] max-w-7xl mx-auto px-4 sm:px-6"
         style="
             background-color: #faf6ef;
             background-image: radial-gradient(
@@ -49,17 +99,18 @@
         "
     >
         {{-- ── Page Header ── --}}
-        <div class="relative pt-10 pb-7 mb-9 border-b border-[#e8dfd0] fu">
+        <div
+            class="relative pt-8 sm:pt-10 pb-6 sm:pb-7 mb-7 sm:mb-9 border-b border-[#e8dfd0] fu"
+        >
             <div
                 class="absolute bottom-[-1px] left-0 w-20 h-[3px]"
                 style="background: linear-gradient(90deg, #2d8176, transparent)"
             ></div>
 
             <div
-                class="flex flex-col md:flex-row justify-between items-start md:items-end gap-5"
+                class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 sm:gap-5"
             >
                 <div>
-                    {{-- Eyebrow --}}
                     <p
                         class="flex items-center gap-2 mb-2 text-[11px] font-bold tracking-[.2em] uppercase text-[#2d8176]"
                     >
@@ -67,12 +118,14 @@
                         Author Workspace
                     </p>
                     <h1
-                        class="font-['Libre_Baskerville',serif] text-[2.4rem] font-bold text-[#1a1209] leading-tight tracking-tight"
+                        class="font-['Libre_Baskerville',serif] text-[1.9rem] sm:text-[2.4rem] font-bold text-[#1a1209] leading-tight tracking-tight"
                     >
                         Manuscript
                         <em class="italic text-[#2d8176]">Board</em>
                     </h1>
-                    <p class="mt-2 text-[.98rem] text-[#6b5740]">
+                    <p
+                        class="mt-2 text-[.95rem] sm:text-[.98rem] text-[#6b5740]"
+                    >
                         Manage and monitor all your research submissions in one
                         place.
                     </p>
@@ -86,10 +139,9 @@
                     >
                         {{ now()->format('D, M j Y') }}
                     </span>
-
                     <a
                         href="{{ route('submissions.create') }}"
-                        class="relative overflow-hidden inline-flex items-center gap-2 px-6 py-[11px] rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.72rem] font-bold tracking-[.1em] uppercase transition-all duration-150 shadow-[0_4px_14px_rgba(45,129,118,.30)] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(45,129,118,.36)] whitespace-nowrap"
+                        class="relative overflow-hidden inline-flex items-center gap-2 px-5 sm:px-6 py-[10px] sm:py-[11px] rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.72rem] font-bold tracking-[.1em] uppercase transition-all duration-150 shadow-[0_4px_14px_rgba(45,129,118,.30)] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(45,129,118,.36)] whitespace-nowrap"
                     >
                         <span
                             class="absolute inset-0 pointer-events-none"
@@ -102,7 +154,7 @@
                             "
                         ></span>
                         <svg
-                            class="w-3.5 h-3.5 relative z-10"
+                            class="w-3.5 h-3.5 relative z-10 shrink-0"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -148,9 +200,9 @@
         <div
             class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden shadow-[0_2px_16px_rgba(26,18,9,.07)] fu2"
         >
-            {{-- Table Header --}}
+            {{-- Header --}}
             <div
-                class="flex items-center justify-between px-7 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]"
+                class="flex items-center justify-between px-5 sm:px-7 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]"
             >
                 <span
                     class="font-['Libre_Baskerville',serif] text-[1.05rem] font-bold text-[#1a1209] tracking-wide"
@@ -165,7 +217,8 @@
                 </span>
             </div>
 
-            <div class="overflow-x-auto">
+            {{-- Desktop Table --}}
+            <div class="board-table-wrap overflow-x-auto">
                 <table class="w-full text-left" id="boardTable">
                     <thead class="bg-[#f3ece0] border-b border-[#c9b99a]">
                         <tr>
@@ -180,12 +233,12 @@
                                 Status
                             </th>
                             <th
-                                class="px-6 py-[10px] text-[.6rem] font-bold tracking-[.1em] uppercase text-[#6b5740] w-[130px]"
+                                class="col-date px-6 py-[10px] text-[.6rem] font-bold tracking-[.1em] uppercase text-[#6b5740] w-[130px]"
                             >
                                 Submitted
                             </th>
                             <th
-                                class="px-6 py-[10px] text-right text-[.6rem] font-bold tracking-[.1em] uppercase text-[#6b5740] w-[110px]"
+                                class="col-action px-6 py-[10px] text-right text-[.6rem] font-bold tracking-[.1em] uppercase text-[#6b5740] w-[110px]"
                             >
                                 Actions
                             </th>
@@ -193,6 +246,27 @@
                     </thead>
                     <tbody>
                         @forelse ($submissions as $s)
+                            @php
+                                $cls = match ($s->status) {
+                                    'accepted' => 'bg-[#f0fdf4] border-[#86efac] text-[#1a4d46]',
+                                    'under_review', 'revision_under_review' => 'bg-[#fdf8ec] border-[rgba(201,168,76,.4)] text-[#8a6e28]',
+                                    'revisions_requested' => 'bg-[#fff7ed] border-[#fed7aa] text-[#9a3412]',
+                                    'rejected' => 'bg-[#fef2f2] border-[#fecaca] text-[#991b1b]',
+                                    default => 'bg-[#e8f4f2] border-[rgba(45,129,118,.3)] text-[#1a4d46]',
+                                };
+                                $dot = match ($s->status) {
+                                    'accepted' => 'bg-[#2d8176]',
+                                    'under_review', 'revision_under_review' => 'bg-[#c9a84c]',
+                                    'revisions_requested' => 'bg-[#f97316]',
+                                    'rejected' => 'bg-[#c0392b]',
+                                    default => 'bg-[#2d8176]',
+                                };
+                                $label = match ($s->status) {
+                                    'revision_under_review' => 'Revision Review',
+                                    default => ucfirst(str_replace('_', ' ', $s->status)),
+                                };
+                            @endphp
+
                             <tr
                                 class="board-row border-b border-[#f5f0e8] last:border-0 hover:bg-[#e8f4f2] transition-colors group cursor-pointer"
                                 onclick="
@@ -200,7 +274,6 @@
                                         '{{ route('submissions.show', $s) }}'
                                 "
                             >
-                                {{-- Title + Ref --}}
                                 <td class="px-6 py-[17px]">
                                     <p
                                         class="font-['Libre_Baskerville',serif] italic text-[1.02rem] font-normal text-[#1a1209] group-hover:text-[#2d8176] transition-colors title-cell leading-snug"
@@ -213,32 +286,7 @@
                                         #{{ str_pad($s->id, 5, '0', STR_PAD_LEFT) }}
                                     </span>
                                 </td>
-
-                                {{-- Status Badge --}}
                                 <td class="px-6 py-[17px]">
-                                    @php
-                                        $cls = match ($s->status) {
-                                            'accepted' => 'bg-[#f0fdf4] border-[#86efac] text-[#1a4d46]',
-                                            'under_review',
-                                            'revision_under_review'
-                                                => 'bg-[#fdf8ec] border-[rgba(201,168,76,.4)] text-[#8a6e28]',
-                                            'revisions_requested' => 'bg-[#fff7ed] border-[#fed7aa] text-[#9a3412]',
-                                            'rejected' => 'bg-[#fef2f2] border-[#fecaca] text-[#991b1b]',
-                                            default => 'bg-[#e8f4f2] border-[rgba(45,129,118,.3)] text-[#1a4d46]',
-                                        };
-                                        $dot = match ($s->status) {
-                                            'accepted' => 'bg-[#2d8176]',
-                                            'under_review', 'revision_under_review' => 'bg-[#c9a84c]',
-                                            'revisions_requested' => 'bg-[#f97316]',
-                                            'rejected' => 'bg-[#c0392b]',
-                                            default => 'bg-[#2d8176]',
-                                        };
-                                        $label = match ($s->status) {
-                                            'revision_under_review' => 'Revision Review',
-                                            default => ucfirst(str_replace('_', ' ', $s->status)),
-                                        };
-                                    @endphp
-
                                     <span
                                         class="status-cell inline-flex items-center gap-[6px] px-[10px] py-[4px] rounded-full border text-[.62rem] font-bold tracking-[.06em] uppercase whitespace-nowrap {{ $cls }}"
                                     >
@@ -248,19 +296,15 @@
                                         {{ $label }}
                                     </span>
                                 </td>
-
-                                {{-- Date --}}
-                                <td class="px-6 py-[17px]">
+                                <td class="col-date px-6 py-[17px]">
                                     <span
                                         class="date-cell text-[.78rem] font-semibold text-[#6b5740] tracking-[.04em]"
                                     >
                                         {{ $s->submitted_at?->format('d M Y') ?? '—' }}
                                     </span>
                                 </td>
-
-                                {{-- Actions --}}
                                 <td
-                                    class="px-6 py-[17px] text-right"
+                                    class="col-action px-6 py-[17px] text-right"
                                     onclick="event.stopPropagation()"
                                 >
                                     <div
@@ -324,6 +368,102 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- Mobile Card List --}}
+            <div class="ms-card-list">
+                @forelse ($submissions as $s)
+                    @php
+                        $cls = match ($s->status) {
+                            'accepted' => 'bg-[#f0fdf4] border-[#86efac] text-[#1a4d46]',
+                            'under_review', 'revision_under_review' => 'bg-[#fdf8ec] border-[rgba(201,168,76,.4)] text-[#8a6e28]',
+                            'revisions_requested' => 'bg-[#fff7ed] border-[#fed7aa] text-[#9a3412]',
+                            'rejected' => 'bg-[#fef2f2] border-[#fecaca] text-[#991b1b]',
+                            default => 'bg-[#e8f4f2] border-[rgba(45,129,118,.3)] text-[#1a4d46]',
+                        };
+                        $dot = match ($s->status) {
+                            'accepted' => 'bg-[#2d8176]',
+                            'under_review', 'revision_under_review' => 'bg-[#c9a84c]',
+                            'revisions_requested' => 'bg-[#f97316]',
+                            'rejected' => 'bg-[#c0392b]',
+                            default => 'bg-[#2d8176]',
+                        };
+                        $label = match ($s->status) {
+                            'revision_under_review' => 'Revision Review',
+                            default => ucfirst(str_replace('_', ' ', $s->status)),
+                        };
+                    @endphp
+
+                    <a
+                        href="{{ route('submissions.show', $s) }}"
+                        class="ms-card board-row"
+                    >
+                        <div class="ms-card-top">
+                            <span
+                                class="text-[.68rem] font-bold text-[#2d8176] tracking-[.06em] bg-[rgba(45,129,118,.07)] border border-[rgba(45,129,118,.22)] px-2 py-[2px] rounded"
+                            >
+                                #{{ str_pad($s->id, 5, '0', STR_PAD_LEFT) }}
+                            </span>
+                            <span
+                                class="status-cell inline-flex items-center gap-[6px] px-[10px] py-[4px] rounded-full border text-[.62rem] font-bold tracking-[.06em] uppercase whitespace-nowrap {{ $cls }}"
+                            >
+                                <span
+                                    class="w-[5px] h-[5px] rounded-full flex-shrink-0 {{ $dot }}"
+                                ></span>
+                                {{ $label }}
+                            </span>
+                        </div>
+                        <p
+                            class="font-['Libre_Baskerville',serif] italic text-[.98rem] text-[#1a1209] leading-snug title-cell"
+                        >
+                            {{ Str::limit($s->title, 90) }}
+                        </p>
+                        <div class="ms-card-actions">
+                            <span
+                                class="date-cell text-[.75rem] font-semibold text-[#6b5740]"
+                            >
+                                {{ $s->submitted_at?->format('d M Y') ?? '—' }}
+                            </span>
+                            @if ($s->isEditableByAuthor())
+                                <span class="text-[#e8dfd0]">·</span>
+                                <a
+                                    href="{{ route('submissions.edit', $s) }}"
+                                    onclick="event.stopPropagation()"
+                                    class="text-[.68rem] font-bold tracking-[.06em] uppercase text-[#c9a84c] hover:text-[#8a6e28]"
+                                >
+                                    Edit
+                                </a>
+                            @endif
+                        </div>
+                    </a>
+                @empty
+                    <div class="px-6 py-16 text-center">
+                        <div
+                            class="w-[60px] h-[60px] rounded-full bg-[#f3ece0] border border-[#e8dfd0] flex items-center justify-center mx-auto mb-4"
+                        >
+                            <svg
+                                class="w-7 h-7"
+                                fill="none"
+                                stroke="#c9b99a"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                    stroke-width="1.5"
+                                    stroke-linecap="round"
+                                />
+                            </svg>
+                        </div>
+                        <p
+                            class="text-[.68rem] font-bold tracking-[.14em] uppercase text-[#c9b99a]"
+                        >
+                            No manuscripts found
+                        </p>
+                        <p class="text-[.82rem] text-[#b5a595] mt-1.5">
+                            Submit your first manuscript to get started
+                        </p>
+                    </div>
+                @endforelse
+            </div>
         </div>
 
         {{-- ── Pagination ── --}}
@@ -343,18 +483,14 @@
         }
 
         @if(session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
-                html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
-                confirmButtonText: 'Close',
-                confirmButtonColor: '#2d8176',
-                customClass: {
-                    popup: 'rounded-2xl',
-                    confirmButton: 'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'
-                },
-                buttonsStyling: false,
-            });
+        Swal.fire({
+            icon: 'success',
+            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
+            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+            confirmButtonText: 'Close', confirmButtonColor: '#2d8176',
+            customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
+            buttonsStyling: false,
+        });
         @endif
     </script>
 @endpush

@@ -14,7 +14,6 @@
             appearance: none;
             -webkit-appearance: none;
         }
-
         .fu {
             animation: fu 0.45s ease both;
         }
@@ -40,7 +39,6 @@
                 transform: translateY(0);
             }
         }
-
         .dropzone:hover .dropzone-icon,
         .dropzone.dragover .dropzone-icon {
             transform: translateY(-3px);
@@ -49,8 +47,6 @@
             border-color: #2d8176;
             background-color: #e8f4f2;
         }
-
-        /* similarity warning */
         .sim-warning {
             background: #fffbeb;
             border: 1.5px solid #fde68a;
@@ -69,7 +65,7 @@
 
 @section('content')
     <div
-        class="font-['Source_Sans_3',sans-serif] text-[#1a1209] max-w-7xl mx-auto px-1"
+        class="font-['Source_Sans_3',sans-serif] text-[#1a1209] max-w-7xl mx-auto px-4 sm:px-6"
         style="
             background-color: #faf6ef;
             background-image: radial-gradient(
@@ -80,7 +76,9 @@
         "
     >
         {{-- ── Page Header ── --}}
-        <div class="relative pt-10 pb-7 mb-9 border-b border-[#e8dfd0] fu">
+        <div
+            class="relative pt-8 sm:pt-10 pb-6 sm:pb-7 mb-7 sm:mb-9 border-b border-[#e8dfd0] fu"
+        >
             <div
                 class="absolute bottom-[-1px] left-0 w-20 h-[3px]"
                 style="background: linear-gradient(90deg, #2d8176, transparent)"
@@ -114,30 +112,25 @@
             </p>
 
             <h1
-                class="font-['Libre_Baskerville',serif] text-[2.4rem] font-bold text-[#1a1209] leading-tight tracking-tight"
+                class="font-['Libre_Baskerville',serif] text-[1.9rem] sm:text-[2.4rem] font-bold text-[#1a1209] leading-tight tracking-tight"
             >
                 Submit Your
                 <em class="italic text-[#2d8176]">Research</em>
             </h1>
-            <p class="mt-2 text-[.98rem] text-[#6b5740]">
+            <p class="mt-2 text-[.95rem] sm:text-[.98rem] text-[#6b5740]">
                 Join our global community of researchers. Ensure all fields are
                 accurate before submitting.
             </p>
         </div>
 
-        {{--
-            ══════════════════════════════════════════════════════════
-            RESTRICTION 1: Active submission block
-            ══════════════════════════════════════════════════════════
-        --}}
+        {{-- ── Active Submission Block ── --}}
         @if (isset($activeSubmission) && $activeSubmission && $activeSubmission->status !== 'rejected')
             <div class="mb-8 fu">
                 <div
                     class="bg-white border-2 border-amber-300 rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(217,119,6,.12)]"
                 >
-                    {{-- Block header --}}
                     <div
-                        class="flex items-center gap-4 px-7 py-4 bg-amber-50 border-b border-amber-200"
+                        class="flex items-start sm:items-center gap-3 sm:gap-4 px-5 sm:px-7 py-4 bg-amber-50 border-b border-amber-200"
                     >
                         <div
                             class="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center shrink-0"
@@ -162,15 +155,16 @@
                             >
                                 Submission Limit Reached
                             </p>
-                            <p class="text-[1rem] font-bold text-amber-900">
+                            <p
+                                class="text-[.95rem] sm:text-[1rem] font-bold text-amber-900"
+                            >
                                 You already have an active submission in
                                 progress
                             </p>
                         </div>
                     </div>
 
-                    {{-- Active submission details --}}
-                    <div class="px-7 py-6">
+                    <div class="px-5 sm:px-7 py-5 sm:py-6">
                         <p
                             class="text-[.9rem] text-[#6b5740] mb-5 leading-relaxed"
                         >
@@ -186,9 +180,8 @@
                             .
                         </p>
 
-                        {{-- Current submission card --}}
                         <div
-                            class="bg-[#faf6ef] border border-[#e8dfd0] rounded-xl p-5"
+                            class="bg-[#faf6ef] border border-[#e8dfd0] rounded-xl p-4 sm:p-5"
                         >
                             <p
                                 class="text-[.65rem] font-extrabold tracking-[.16em] uppercase text-[#6b5740] mb-3"
@@ -196,7 +189,7 @@
                                 Your Current Submission
                             </p>
                             <p
-                                class="font-['Libre_Baskerville',serif] text-[1.05rem] font-bold text-[#1a1209] mb-3 leading-snug"
+                                class="font-['Libre_Baskerville',serif] text-[1rem] sm:text-[1.05rem] font-bold text-[#1a1209] mb-3 leading-snug"
                             >
                                 {{ $activeSubmission->title }}
                             </p>
@@ -230,7 +223,6 @@
                             </div>
                         </div>
 
-                        {{-- CTA --}}
                         <div class="mt-5 flex flex-wrap items-center gap-3">
                             <a
                                 href="{{ route('submissions.show', $activeSubmission) }}"
@@ -261,25 +253,20 @@
                     </div>
                 </div>
             </div>
-
-            {{--
-                ══════════════════════════════════════════════════════════
-                NORMAL FORM (no active submission)
-                ══════════════════════════════════════════════════════════
-            --}}
         @else
+            {{-- ── Normal Form ── --}}
             <form
                 method="POST"
                 action="{{ route('submissions.store') }}"
                 enctype="multipart/form-data"
-                class="grid grid-cols-1 lg:grid-cols-12 gap-8"
+                class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8"
                 id="submission-form"
             >
                 @csrf
 
                 {{-- ════ LEFT: Form ════ --}}
                 <div class="lg:col-span-8 space-y-6">
-                    {{-- RESTRICTION 2: Similar articles warning --}}
+                    {{-- Similar articles warning --}}
                     @if (isset($similarSubmissions) && $similarSubmissions->isNotEmpty())
                         <div class="sim-warning fu">
                             <div class="flex items-start gap-3 mb-2">
@@ -318,7 +305,6 @@
                                     </p>
                                 </div>
                             </div>
-
                             @foreach ($similarSubmissions as $sim)
                                 <div class="sim-item">
                                     <p
@@ -362,8 +348,6 @@
                                 clearly distinguish your work, or contact the
                                 editorial office.
                             </p>
-
-                            {{-- Acknowledgement checkbox --}}
                             <label
                                 class="flex items-start gap-3 mt-4 cursor-pointer group"
                             >
@@ -391,7 +375,7 @@
                         class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden shadow-[0_2px_16px_rgba(26,18,9,.07)] fu1"
                     >
                         <div
-                            class="flex items-center gap-4 px-7 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]"
+                            class="flex items-center gap-4 px-5 sm:px-7 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]"
                         >
                             <div
                                 class="w-[30px] h-[30px] rounded-lg bg-[#2d8176] text-white flex items-center justify-center shrink-0 text-[.68rem] font-extrabold tracking-wider"
@@ -405,7 +389,7 @@
                             </h2>
                         </div>
 
-                        <div class="px-7 py-7 space-y-6">
+                        <div class="px-5 sm:px-7 py-5 sm:py-7 space-y-6">
                             {{-- Manuscript Title --}}
                             <div>
                                 <label
@@ -422,7 +406,6 @@
                                     required
                                     class="field w-full px-4 py-3 border rounded-lg bg-[#faf6ef] text-[.95rem] text-[#1a1209] leading-relaxed resize-none transition-all placeholder:text-[#b5a595] {{ $errors->has('title') ? 'border-red-300 bg-red-50' : 'border-[#e8dfd0]' }}"
                                     placeholder="e.g., Quantum Computing Advancements in 2026"
-                                    id="title-input"
                                 >
 {{ old('title') }}</textarea
                                 >
@@ -436,7 +419,7 @@
                             </div>
 
                             {{-- Research Field + Keywords --}}
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
                                     <label
                                         for="research_field"
@@ -542,7 +525,7 @@
                         class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden shadow-[0_2px_16px_rgba(26,18,9,.07)] fu2"
                     >
                         <div
-                            class="flex items-center gap-4 px-7 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]"
+                            class="flex items-center gap-4 px-5 sm:px-7 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]"
                         >
                             <div
                                 class="w-[30px] h-[30px] rounded-lg bg-[#2d8176] text-white flex items-center justify-center shrink-0 text-[.68rem] font-extrabold tracking-wider"
@@ -556,7 +539,7 @@
                             </h2>
                         </div>
 
-                        <div class="px-7 py-7">
+                        <div class="px-5 sm:px-7 py-5 sm:py-7">
                             <div
                                 class="dropzone relative cursor-pointer border-2 border-dashed border-[#c9b99a] rounded-[10px] bg-[#faf6ef] text-center transition-all duration-200 hover:border-[#2d8176] hover:bg-[#e8f4f2] {{ $errors->has('file') ? 'border-red-300' : '' }}"
                                 id="dropzone"
@@ -569,7 +552,7 @@
                                     required
                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                 />
-                                <div class="py-10 px-6">
+                                <div class="py-8 sm:py-10 px-4 sm:px-6">
                                     <div
                                         class="dropzone-icon w-[52px] h-[52px] mx-auto mb-4 bg-white border border-[#c9b99a] rounded-xl flex items-center justify-center shadow-[0_2px_8px_rgba(26,18,9,.06)] transition-transform duration-200"
                                     >
@@ -588,11 +571,13 @@
                                         </svg>
                                     </div>
                                     <p
-                                        class="font-['Libre_Baskerville',serif] text-[1rem] font-bold text-[#1a1209] mb-1"
+                                        class="font-['Libre_Baskerville',serif] text-[.95rem] sm:text-[1rem] font-bold text-[#1a1209] mb-1"
                                     >
                                         Click or drag file to upload
                                     </p>
-                                    <p class="text-[.85rem] text-[#6b5740]">
+                                    <p
+                                        class="text-[.82rem] sm:text-[.85rem] text-[#6b5740]"
+                                    >
                                         PDF, DOC, or DOCX — maximum 10 MB
                                     </p>
                                     <div
@@ -600,7 +585,7 @@
                                         class="hidden mt-4 items-center gap-2 bg-[#e8f4f2] border border-[rgba(45,129,118,.3)] text-[#1a4d46] text-[.8rem] font-bold px-4 py-1.5 rounded-full"
                                     >
                                         <svg
-                                            class="w-4 h-4"
+                                            class="w-4 h-4 shrink-0"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -612,7 +597,10 @@
                                                 d="M5 13l4 4L19 7"
                                             />
                                         </svg>
-                                        <span id="file-name-text"></span>
+                                        <span
+                                            id="file-name-text"
+                                            class="truncate"
+                                        ></span>
                                     </div>
                                 </div>
                             </div>
@@ -627,17 +615,19 @@
                     </div>
 
                     {{-- ── Action Buttons ── --}}
-                    <div class="flex items-center justify-end gap-3 pt-1 fu3">
+                    <div
+                        class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-1 fu3"
+                    >
                         <a
                             href="{{ route('submissions.index') }}"
-                            class="px-5 py-3 rounded-lg text-[.82rem] font-semibold tracking-[.06em] uppercase text-[#6b5740] transition-all hover:text-[#1a1209] hover:bg-[#f3ece0]"
+                            class="text-center px-5 py-3 rounded-lg text-[.82rem] font-semibold tracking-[.06em] uppercase text-[#6b5740] transition-all hover:text-[#1a1209] hover:bg-[#f3ece0]"
                         >
                             Cancel
                         </a>
                         <button
                             type="submit"
                             id="submit-btn"
-                            class="relative overflow-hidden inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.82rem] font-bold tracking-[.1em] uppercase transition-all duration-150 shadow-[0_4px_14px_rgba(45,129,118,.30)] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(45,129,118,.36)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                            class="relative overflow-hidden inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.82rem] font-bold tracking-[.1em] uppercase transition-all duration-150 shadow-[0_4px_14px_rgba(45,129,118,.30)] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(45,129,118,.36)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                         >
                             <span
                                 class="absolute inset-0 pointer-events-none"
@@ -650,7 +640,7 @@
                                 "
                             ></span>
                             <svg
-                                class="w-4 h-4 relative z-10"
+                                class="w-4 h-4 relative z-10 shrink-0"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -668,12 +658,13 @@
                 </div>
 
                 {{-- ════ RIGHT: Sidebar ════ --}}
-                <div class="lg:col-span-4 fu1">
+                {{-- On mobile: appears above the form cards (reordered via order utilities) --}}
+                <div class="lg:col-span-4 order-first lg:order-none fu1">
                     <div
-                        class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden shadow-[0_2px_16px_rgba(26,18,9,.07)] sticky top-7"
+                        class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden shadow-[0_2px_16px_rgba(26,18,9,.07)] lg:sticky lg:top-7"
                     >
                         <div
-                            class="px-6 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]"
+                            class="px-5 sm:px-6 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]"
                         >
                             <p
                                 class="text-[.68rem] font-extrabold tracking-[.16em] uppercase text-[#6b5740]"
@@ -682,7 +673,7 @@
                             </p>
                         </div>
 
-                        <div class="px-6 py-5">
+                        <div class="px-5 sm:px-6 py-5">
                             <ul class="divide-y divide-[#e8dfd0]">
                                 @foreach ([
                                         'Anonymize the manuscript file for double-blind peer review.',
@@ -713,7 +704,7 @@
                                             </svg>
                                         </div>
                                         <p
-                                            class="text-[.9rem] text-[#6b5740] leading-[1.55]"
+                                            class="text-[.88rem] text-[#6b5740] leading-[1.55]"
                                         >
                                             {{ $item }}
                                         </p>
@@ -721,7 +712,6 @@
                                 @endforeach
                             </ul>
 
-                            {{-- One-submission policy note --}}
                             <div class="mt-5 pt-5 border-t border-[#e8dfd0]">
                                 <div class="flex items-start gap-2 mb-3">
                                     <svg
@@ -772,132 +762,122 @@
 
 @push('scripts')
     <script>
-        // File name display
-                    const fileInput = document.getElementById('file');
-                    if (fileInput) {
-                        fileInput.addEventListener('change', function () {
-                            const display = document.getElementById('file-name-display');
-                            const text    = document.getElementById('file-name-text');
-                            if (this.files.length > 0) {
-                                text.textContent = this.files[0].name;
-                                display.classList.remove('hidden');
-                                display.style.display = 'inline-flex';
-                            }
-                        });
-                    }
-
-                    // Drag visual feedback
-                    const dz = document.getElementById('dropzone');
-                    if (dz) {
-                        dz.addEventListener('dragover',  (e) => { e.preventDefault(); dz.classList.add('dragover'); });
-                        dz.addEventListener('dragleave', ()  => dz.classList.remove('dragover'));
-                        dz.addEventListener('drop',      ()  => dz.classList.remove('dragover'));
-                    }
-                      (function () {
-                const titleEl   = document.getElementById('title');
-                const submitBtn = document.getElementById('submit-btn');
-                if (!titleEl) return;
-
-                let debounceTimer = null;
-                let liveWarning   = null;
-
-                titleEl.addEventListener('input', () => {
-                    clearTimeout(debounceTimer);
-                    debounceTimer = setTimeout(runCheck, 800);
-                });
-
-                async function runCheck() {
-                    const title    = titleEl.value.trim();
-                    const abstract = document.getElementById('abstract')?.value?.trim() ?? '';
-                    if (title.length < 10) { clearWarning(); return; }
-                    try {
-                        const res  = await fetch(
-                            `{{ route('submissions.check-similarity') }}?title=${encodeURIComponent(title)}&abstract=${encodeURIComponent(abstract)}`,
-                            { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
-                        );
-                        const data = await res.json();
-                        if (data.similar && data.similar.length > 0) renderWarning(data.similar);
-                        else clearWarning();
-                    } catch (e) {}
+        const fileInput = document.getElementById('file');
+        if (fileInput) {
+            fileInput.addEventListener('change', function () {
+                const display = document.getElementById('file-name-display');
+                const text    = document.getElementById('file-name-text');
+                if (this.files.length > 0) {
+                    text.textContent = this.files[0].name;
+                    display.classList.remove('hidden');
+                    display.style.display = 'inline-flex';
                 }
+            });
+        }
 
-                function renderWarning(similar) {
-                    if (!liveWarning) {
-                        liveWarning = document.createElement('div');
-                        liveWarning.id = 'live-sim-warning';
-                        const leftCol = document.querySelector('.lg\\:col-span-8');
-                        if (leftCol) leftCol.prepend(liveWarning);
-                    }
-                    const items = similar.map(s => `
-                        <div class="sim-item">
-                            <p style="font-size:.85rem;font-weight:700;color:#1a1209;margin-bottom:4px">${s.title}</p>
-                            <span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#fffbeb;border:1px solid #fde68a;color:#b45309;padding:2px 8px;border-radius:999px">${s.status}</span>
-                            ${s.research_field ? `<span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;padding:2px 8px;border-radius:999px;margin-left:4px">${s.research_field}</span>` : ''}
-                            <span style="font-size:.72rem;color:#6b5740;margin-left:6px">${s.created_at}</span>
-                        </div>`).join('');
-                    liveWarning.innerHTML = `
-                        <div class="sim-warning" style="margin-bottom:20px">
-                            <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:8px">
-                                <svg style="width:18px;height:18px;color:#d97706;flex-shrink:0;margin-top:2px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                                </svg>
-                                <div>
-                                    <p style="font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#b45309;margin-bottom:2px">Similar Articles Detected</p>
-                                    <p style="font-size:.88rem;color:#92400e">${similar.length} submission(s) with a similar title found.</p>
-                                </div>
+        const dz = document.getElementById('dropzone');
+        if (dz) {
+            dz.addEventListener('dragover',  (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+            dz.addEventListener('dragleave', ()  => dz.classList.remove('dragover'));
+            dz.addEventListener('drop',      ()  => dz.classList.remove('dragover'));
+        }
+
+        (function () {
+            const titleEl   = document.getElementById('title');
+            const submitBtn = document.getElementById('submit-btn');
+            if (!titleEl) return;
+
+            let debounceTimer = null;
+            let liveWarning   = null;
+
+            titleEl.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(runCheck, 800);
+            });
+
+            async function runCheck() {
+                const title    = titleEl.value.trim();
+                const abstract = document.getElementById('abstract')?.value?.trim() ?? '';
+                if (title.length < 10) { clearWarning(); return; }
+                try {
+                    const res  = await fetch(
+                        `{{ route('submissions.check-similarity') }}?title=${encodeURIComponent(title)}&abstract=${encodeURIComponent(abstract)}`,
+                        { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
+                    );
+                    const data = await res.json();
+                    if (data.similar && data.similar.length > 0) renderWarning(data.similar);
+                    else clearWarning();
+                } catch (e) {}
+            }
+
+            function renderWarning(similar) {
+                if (!liveWarning) {
+                    liveWarning = document.createElement('div');
+                    liveWarning.id = 'live-sim-warning';
+                    const leftCol = document.querySelector('.lg\\:col-span-8');
+                    if (leftCol) leftCol.prepend(liveWarning);
+                }
+                const items = similar.map(s => `
+                    <div class="sim-item">
+                        <p style="font-size:.85rem;font-weight:700;color:#1a1209;margin-bottom:4px">${s.title}</p>
+                        <span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#fffbeb;border:1px solid #fde68a;color:#b45309;padding:2px 8px;border-radius:999px">${s.status}</span>
+                        ${s.research_field ? `<span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;padding:2px 8px;border-radius:999px;margin-left:4px">${s.research_field}</span>` : ''}
+                        <span style="font-size:.72rem;color:#6b5740;margin-left:6px">${s.created_at}</span>
+                    </div>`).join('');
+                liveWarning.innerHTML = `
+                    <div class="sim-warning" style="margin-bottom:20px">
+                        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:8px">
+                            <svg style="width:18px;height:18px;color:#d97706;flex-shrink:0;margin-top:2px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                            </svg>
+                            <div>
+                                <p style="font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#b45309;margin-bottom:2px">Similar Articles Detected</p>
+                                <p style="font-size:.88rem;color:#92400e">${similar.length} submission(s) with a similar title found.</p>
                             </div>
-                            ${items}
-                            <label style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer">
-                                <input type="checkbox" id="live-sim-ack" name="similarity_acknowledged" value="1"
-                                       style="margin-top:3px;width:16px;height:16px;accent-color:#d97706;cursor:pointer;flex-shrink:0"/>
-                                <span style="font-size:.82rem;font-weight:600;color:#92400e;line-height:1.5">
-                                    I confirm my manuscript is <strong>original and distinct</strong> from the listed submissions.
-                                </span>
-                            </label>
-                        </div>`;
-                    if (submitBtn) {
-                        submitBtn.disabled = true;
-                        document.getElementById('live-sim-ack')?.addEventListener('change', function () {
-                            submitBtn.disabled = !this.checked;
-                        });
-                    }
+                        </div>
+                        ${items}
+                        <label style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer">
+                            <input type="checkbox" id="live-sim-ack" name="similarity_acknowledged" value="1"
+                                   style="margin-top:3px;width:16px;height:16px;accent-color:#d97706;cursor:pointer;flex-shrink:0"/>
+                            <span style="font-size:.82rem;font-weight:600;color:#92400e;line-height:1.5">
+                                I confirm my manuscript is <strong>original and distinct</strong> from the listed submissions.
+                            </span>
+                        </label>
+                    </div>`;
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    document.getElementById('live-sim-ack')?.addEventListener('change', function () {
+                        submitBtn.disabled = !this.checked;
+                    });
                 }
+            }
 
-                function clearWarning() {
-                    if (liveWarning) { liveWarning.remove(); liveWarning = null; }
-                    if (submitBtn && !document.getElementById('sim-ack')) submitBtn.disabled = false;
-                }
-            })();
+            function clearWarning() {
+                if (liveWarning) { liveWarning.remove(); liveWarning = null; }
+                if (submitBtn && !document.getElementById('sim-ack')) submitBtn.disabled = false;
+            }
+        })();
 
-                    // Similarity acknowledgement gate:
-                    // If there are similar articles shown, disable submit until checkbox is ticked
-                    const simAck    = document.getElementById('sim-ack');
-                    const submitBtn = document.getElementById('submit-btn');
+        const simAck    = document.getElementById('sim-ack');
+        const submitBtn = document.getElementById('submit-btn');
+        if (simAck && submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.title = 'Please acknowledge the similar submissions above first.';
+            simAck.addEventListener('change', function () {
+                submitBtn.disabled = !this.checked;
+                submitBtn.title = '';
+            });
+        }
 
-                    if (simAck && submitBtn) {
-                        // Start disabled
-                        submitBtn.disabled = true;
-                        submitBtn.title = 'Please acknowledge the similar submissions above first.';
-
-                        simAck.addEventListener('change', function () {
-                            submitBtn.disabled = !this.checked;
-                            submitBtn.title = '';
-                        });
-                    }
-
-                    @if(session('success'))
-                        Swal.fire({
-                            icon: 'success',
-                            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Submitted</span>',
-                            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
-                            confirmButtonText: 'Close',
-                            confirmButtonColor: '#2d8176',
-                            customClass: {
-                                popup: 'rounded-2xl',
-                                confirmButton: 'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'
-                            },
-                            buttonsStyling: false,
-                        });
-                    @endif
+        @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Submitted</span>',
+            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+            confirmButtonText: 'Close', confirmButtonColor: '#2d8176',
+            customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
+            buttonsStyling: false,
+        });
+        @endif
     </script>
 @endpush

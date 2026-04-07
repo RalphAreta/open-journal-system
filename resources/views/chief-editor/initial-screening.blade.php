@@ -37,15 +37,21 @@
                 transparent 1px,
                 transparent 22px
             );
-            padding-bottom: 80px;
+            padding-bottom: 60px;
         }
 
         /* ── Page hero ── */
         .page-hero {
-            padding: 36px 0 28px;
-            margin-bottom: 28px;
+            padding: 24px 0 20px;
+            margin-bottom: 20px;
             border-bottom: 1px solid var(--border);
             position: relative;
+        }
+        @media (min-width: 640px) {
+            .page-hero {
+                padding: 36px 0 28px;
+                margin-bottom: 28px;
+            }
         }
         .page-hero::after {
             content: '';
@@ -76,7 +82,7 @@
         }
         .hero-title {
             font-family: 'Libre Baskerville', serif;
-            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-size: clamp(1.6rem, 5vw, 2.8rem);
             font-weight: 700;
             color: var(--ink);
             line-height: 1.15;
@@ -88,8 +94,13 @@
             color: var(--teal);
         }
         .hero-sub {
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             color: var(--ink-soft);
+        }
+        @media (min-width: 640px) {
+            .hero-sub {
+                font-size: 0.88rem;
+            }
         }
         .hero-sub strong {
             color: var(--ink-mid);
@@ -110,7 +121,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 13px 22px;
+            padding: 11px 16px;
             border-bottom: 1px solid var(--border-lt);
             background: linear-gradient(
                 to right,
@@ -118,20 +129,30 @@
                 var(--parch-lt)
             );
         }
+        @media (min-width: 640px) {
+            .sc-card-head {
+                padding: 13px 22px;
+            }
+        }
         .sc-card-head h2 {
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             font-weight: 700;
             letter-spacing: 0.05em;
             color: var(--ink-mid);
         }
         .sc-card-head span {
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             color: var(--gold-dk);
             font-weight: 600;
             opacity: 0.8;
         }
         .sc-card-body {
-            padding: 22px;
+            padding: 16px;
+        }
+        @media (min-width: 640px) {
+            .sc-card-body {
+                padding: 22px;
+            }
         }
 
         .meta-label {
@@ -151,9 +172,9 @@
             background: rgba(45, 129, 118, 0.08);
             border: 1px solid rgba(45, 129, 118, 0.22);
             color: var(--teal-dk);
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 600;
         }
 
@@ -163,7 +184,7 @@
             background: var(--parchment);
             border: 1px solid var(--border);
             border-radius: 20px;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: var(--ink-soft);
             font-weight: 500;
         }
@@ -172,19 +193,21 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
             background: rgba(45, 129, 118, 0.06);
             border: 1px solid rgba(45, 129, 118, 0.18);
             border-radius: 10px;
-            padding: 12px 16px;
+            padding: 10px 14px;
         }
         .file-box-name {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--teal-dk);
+            word-break: break-all;
         }
         .file-box-dl {
             font-size: 0.7rem;
@@ -208,7 +231,7 @@
         .sc-divider {
             height: 1px;
             background: linear-gradient(to right, var(--border), transparent);
-            margin: 18px 0;
+            margin: 16px 0;
         }
 
         /* ── Decision panel ── */
@@ -216,10 +239,15 @@
             background: var(--parch-lt);
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 22px;
+            padding: 16px;
             box-shadow: 0 2px 12px rgba(26, 18, 9, 0.05);
             position: relative;
             overflow: hidden;
+        }
+        @media (min-width: 640px) {
+            .decision-panel {
+                padding: 22px;
+            }
         }
         .decision-panel::before {
             content: '';
@@ -239,22 +267,21 @@
         }
         .decision-panel h2 {
             font-family: 'Libre Baskerville', serif;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: var(--ink);
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             padding-top: 4px;
         }
 
-        /* Status badges */
         .status-badge {
             display: flex;
             align-items: center;
             gap: 10px;
             border-radius: 10px;
-            padding: 10px 14px;
-            margin-bottom: 18px;
-            font-size: 0.75rem;
+            padding: 9px 12px;
+            margin-bottom: 16px;
+            font-size: 0.72rem;
             font-weight: 600;
         }
         .status-badge .dot {
@@ -288,12 +315,11 @@
             background: #ef4444;
         }
 
-        /* Decision radio cards */
         .decision-card {
             display: flex;
             align-items: flex-start;
             gap: 12px;
-            padding: 12px 14px;
+            padding: 11px 13px;
             border-radius: 10px;
             border: 1.5px solid var(--border);
             cursor: pointer;
@@ -319,7 +345,7 @@
             color: var(--ink-mid);
         }
         .dc-hint {
-            font-size: 0.65rem;
+            font-size: 0.63rem;
             color: var(--gold-dk);
             margin-top: 2px;
             opacity: 0.75;
@@ -405,7 +431,7 @@
             background: rgba(201, 168, 76, 0.07);
             border: 1px solid rgba(201, 168, 76, 0.28);
             border-radius: 12px;
-            padding: 14px 16px;
+            padding: 13px 15px;
         }
         .tip-card p {
             font-size: 0.72rem;
@@ -424,8 +450,14 @@
             color: var(--ink-soft);
             text-decoration: none;
             transition: color 0.15s;
-            padding-top: 32px;
-            margin-bottom: 20px;
+            padding-top: 24px;
+            margin-bottom: 16px;
+        }
+        @media (min-width: 640px) {
+            .back-link {
+                padding-top: 32px;
+                margin-bottom: 20px;
+            }
         }
         .back-link:hover {
             color: var(--teal-dk);
@@ -441,7 +473,7 @@
 
 @section('content')
     <div class="screening-page">
-        <div class="max-w-6xl mx-auto px-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             {{-- Back link --}}
             <a
                 href="{{ route('chief-editor.submission.show', $submission) }}"
@@ -477,17 +509,20 @@
                 </p>
             </div>
 
-            {{-- Grid --}}
-            <div class="grid grid-cols-3 gap-6 items-start">
+            {{-- Grid: stacks on mobile, side-by-side on lg --}}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
                 {{-- LEFT --}}
-                <div class="col-span-2 flex flex-col gap-5">
+                <div class="lg:col-span-2 flex flex-col gap-5">
                     <div class="sc-card">
                         <div class="sc-card-head">
                             <h2>📄 Submission Details</h2>
                             <span>ID #{{ $submission->id }}</span>
                         </div>
                         <div class="sc-card-body">
-                            <div class="grid grid-cols-2 gap-x-10 gap-y-5 mb-4">
+                            {{-- 2-col on sm+, 1-col on mobile --}}
+                            <div
+                                class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 mb-4"
+                            >
                                 <div>
                                     <p class="meta-label">Research Field</p>
                                     <span class="field-badge">
@@ -579,7 +614,9 @@
                                 <h2>📋 Previous Screening Record</h2>
                             </div>
                             <div class="sc-card-body">
-                                <div class="grid grid-cols-2 gap-x-10 gap-y-4">
+                                <div
+                                    class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4"
+                                >
                                     <div>
                                         <p class="meta-label">Screened By</p>
                                         <p
@@ -608,7 +645,7 @@
                                         </p>
                                     </div>
                                     @if ($submission->initial_screening_comments)
-                                        <div class="col-span-2">
+                                        <div class="col-span-1 sm:col-span-2">
                                             <p class="meta-label">Comments</p>
                                             <p
                                                 class="text-sm leading-relaxed text-justify"
@@ -628,7 +665,7 @@
                 </div>
 
                 {{-- RIGHT --}}
-                <div class="col-span-1 flex flex-col gap-4">
+                <div class="lg:col-span-1 flex flex-col gap-4">
                     <div class="decision-panel">
                         <h2>⚖️ Make Decision</h2>
 

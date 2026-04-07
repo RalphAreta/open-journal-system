@@ -44,12 +44,18 @@
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23faf6ef'/%3E%3Ccircle cx='1' cy='1' r='.4' fill='%23e8dfd0' opacity='.5'/%3E%3C/svg%3E");
         }
 
-        /* ── Hero Header ── */
+        /* ── Hero ── */
         .hero-header {
             position: relative;
             padding: 44px 0 32px;
             border-bottom: 1px solid var(--border);
             margin-bottom: 36px;
+        }
+        @media (max-width: 640px) {
+            .hero-header {
+                padding: 28px 0 22px;
+                margin-bottom: 24px;
+            }
         }
         .hero-header::after {
             content: '';
@@ -85,6 +91,11 @@
             letter-spacing: -0.01em;
             line-height: 1.15;
         }
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 1.9rem;
+            }
+        }
         .hero-title em {
             font-style: italic;
             color: var(--teal);
@@ -94,6 +105,11 @@
             font-weight: 400;
             color: var(--ink-soft);
             margin-top: 8px;
+        }
+        @media (max-width: 640px) {
+            .hero-sub {
+                font-size: 0.88rem;
+            }
         }
         .date-pill {
             font-size: 0.78rem;
@@ -124,19 +140,47 @@
         }
         @media (max-width: 480px) {
             .stat-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                border-radius: 10px;
             }
         }
         .stat-cell {
             padding: 24px 22px 18px;
             border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
             position: relative;
             transition: background 0.18s;
             cursor: default;
         }
+        @media (max-width: 480px) {
+            .stat-cell {
+                padding: 16px 14px 14px;
+            }
+        }
+        /* Desktop: 4-col — last cell no right border, no bottom borders */
         .stat-cell:last-child {
             border-right: none;
         }
+        .stat-cell:nth-child(n) {
+            border-bottom: none;
+        }
+
+        /* Tablet & mobile: 2-col — right borders on even cells removed, bottom on first row */
+        @media (max-width: 800px) {
+            .stat-cell:last-child {
+                border-right: 1px solid var(--border);
+            }
+            .stat-cell:nth-child(2n) {
+                border-right: none;
+            }
+            .stat-cell:nth-child(-n + 2) {
+                border-bottom: 1px solid var(--border);
+            }
+            .stat-cell:nth-child(n + 3) {
+                border-bottom: none;
+            }
+        }
+
         .stat-cell:hover {
             background: #fff;
         }
@@ -148,16 +192,33 @@
             color: var(--ink-soft);
             margin-bottom: 10px;
         }
+        @media (max-width: 480px) {
+            .stat-lbl {
+                font-size: 0.6rem;
+                letter-spacing: 0.06em;
+                margin-bottom: 6px;
+            }
+        }
         .stat-val {
             font-family: 'Libre Baskerville', serif;
             font-size: 2.6rem;
             font-weight: 700;
             line-height: 1;
         }
+        @media (max-width: 480px) {
+            .stat-val {
+                font-size: 1.9rem;
+            }
+        }
         .stat-sub {
             font-size: 0.72rem;
             color: var(--ink-soft);
             margin-top: 8px;
+        }
+        @media (max-width: 480px) {
+            .stat-sub {
+                font-size: 0.65rem;
+            }
         }
         .stat-cell .accent-line {
             position: absolute;
@@ -217,6 +278,12 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
+            min-width: 0;
+        }
+        @media (max-width: 480px) {
+            .alert-strip-body {
+                padding: 14px;
+            }
         }
         .alert-tag {
             font-size: 0.7rem;
@@ -229,6 +296,11 @@
             font-size: 0.9rem;
             font-weight: 400;
         }
+        @media (max-width: 480px) {
+            .alert-desc {
+                font-size: 0.82rem;
+            }
+        }
         .btn-alert-action {
             font-size: 0.76rem;
             font-weight: 700;
@@ -240,6 +312,12 @@
             border: 1.5px solid;
             transition: all 0.15s;
             white-space: nowrap;
+        }
+        @media (max-width: 480px) {
+            .btn-alert-action {
+                width: 100%;
+                text-align: center;
+            }
         }
 
         /* ── Table ── */
@@ -257,6 +335,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        @media (max-width: 480px) {
+            .ms-table-head {
+                padding: 14px 16px 12px;
+            }
         }
         .ms-table-head-title {
             font-family: 'Libre Baskerville', serif;
@@ -289,6 +374,7 @@
             transition:
                 background 0.15s,
                 transform 0.12s;
+            white-space: nowrap;
         }
         .btn-view-all:hover {
             background: var(--teal);
@@ -335,6 +421,30 @@
             color: var(--teal);
         }
 
+        /* Mobile table: hide Status column, collapse Actions */
+        @media (max-width: 640px) {
+            table.mst th {
+                padding: 10px 16px;
+            }
+            table.mst td {
+                padding: 14px 16px;
+                vertical-align: top;
+            }
+
+            /* Hide Status column header & cells */
+            table.mst th:nth-child(2),
+            table.mst td:nth-child(2) {
+                display: none;
+            }
+
+            /* Shrink actions column */
+            table.mst th:last-child,
+            table.mst td:last-child {
+                width: 50px;
+                padding-left: 8px;
+            }
+        }
+
         .ms-row-title {
             font-family: 'Libre Baskerville', serif;
             font-size: 0.95rem;
@@ -343,6 +453,7 @@
             color: var(--ink);
             line-height: 1.4;
             transition: color 0.12s;
+            word-break: break-word;
         }
         .ms-author {
             font-size: 0.78rem;
@@ -350,7 +461,21 @@
             margin-top: 3px;
         }
 
-        /* Status badges */
+        /* Mobile meta: status + badge shown under title */
+        .ms-mobile-meta {
+            display: none;
+        }
+        @media (max-width: 640px) {
+            .ms-mobile-meta {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex-wrap: wrap;
+                margin-top: 6px;
+            }
+        }
+
+        /* ── Status badges ── */
         .sbadge {
             display: inline-flex;
             align-items: center;
@@ -363,6 +488,12 @@
             text-transform: uppercase;
             border: 1px solid;
             white-space: nowrap;
+        }
+        @media (max-width: 480px) {
+            .sbadge {
+                font-size: 0.62rem;
+                padding: 4px 9px;
+            }
         }
         .sbadge .dot {
             width: 6px;
@@ -419,7 +550,7 @@
             background: var(--border-dk);
         }
 
-        /* Manage button */
+        /* ── Manage button ── */
         .btn-manage {
             display: inline-flex;
             align-items: center;
@@ -438,17 +569,37 @@
                 transform 0.12s,
                 box-shadow 0.15s;
             box-shadow: 0 3px 10px rgba(45, 129, 118, 0.22);
+            white-space: nowrap;
         }
         .btn-manage:hover {
             background: var(--teal-dk);
             transform: translateY(-1px);
             box-shadow: 0 6px 16px rgba(45, 129, 118, 0.3);
         }
+        /* Icon-only on small screens */
+        @media (max-width: 640px) {
+            .btn-manage {
+                padding: 8px 10px;
+                font-size: 0; /* hide text */
+                letter-spacing: 0;
+                gap: 0;
+            }
+            .btn-manage svg {
+                width: 15px !important;
+                height: 15px !important;
+                font-size: initial;
+            }
+        }
 
-        /* Empty state */
+        /* ── Empty state ── */
         .empty-state {
             padding: 80px 24px;
             text-align: center;
+        }
+        @media (max-width: 480px) {
+            .empty-state {
+                padding: 48px 16px;
+            }
         }
         .empty-state-icon {
             width: 64px;
@@ -469,7 +620,7 @@
             color: #c9b99a;
         }
 
-        /* Table footer */
+        /* ── Table footer ── */
         .table-footer {
             padding: 12px 24px;
             background: var(--parchment);
@@ -477,6 +628,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        @media (max-width: 480px) {
+            .table-footer {
+                padding: 10px 16px;
+            }
         }
         .table-footer-brand {
             font-size: 0.65rem;
@@ -543,7 +701,7 @@
         </div>
 
         {{-- ── Stat Grid ── --}}
-        <div class="stat-grid fu1 mb-10">
+        <div class="stat-grid fu1 mb-8 sm:mb-10">
             <div class="stat-cell">
                 <p class="stat-lbl">Total</p>
                 <p class="stat-val sv-teal">
@@ -590,7 +748,13 @@
                         style="background: #f97316"
                     ></div>
                     <div class="alert-strip-body">
-                        <div class="flex items-center gap-3">
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                            "
+                        >
                             <div
                                 style="
                                     width: 38px;
@@ -640,7 +804,7 @@
         @endif
 
         {{-- ── Table ── --}}
-        <div class="ms-table-wrap fu3 mb-12">
+        <div class="ms-table-wrap fu3 mb-10 sm:mb-12">
             <div class="ms-table-head">
                 <div>
                     <p
@@ -657,7 +821,14 @@
                     </p>
                     <span class="ms-table-head-title">Recent Submissions</span>
                 </div>
-                <div class="flex items-center gap-3">
+                <div
+                    style="
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        flex-wrap: wrap;
+                    "
+                >
                     <span class="ms-table-head-count">
                         {{ $submissions->total() ?? $submissions->count() }}
                         records
@@ -675,13 +846,27 @@
                 <table class="mst">
                     <thead>
                         <tr>
-                            <th style="width: 45%">Title &amp; Author</th>
+                            <th style="width: 55%">Title &amp; Author</th>
                             <th>Status</th>
                             <th style="text-align: right">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($submissions as $s)
+                            @php
+                                $cls = match ($s->status) {
+                                    'submitted' => 'submitted',
+                                    'under_review' => 'under_review',
+                                    'accepted' => 'accepted',
+                                    'rejected' => 'rejected',
+                                    'revision',
+                                    'revisions_requested',
+                                    'revision_under_review'
+                                        => 'revision',
+                                    default => 'default',
+                                };
+                            @endphp
+
                             <tr
                                 onclick="
                                     window.location =
@@ -695,32 +880,30 @@
                                     <p class="ms-author">
                                         {{ $s->author->name ?? '—' }}
                                     </p>
-                                </td>
-                                <td>
-                                    @php
-                                        $cls = match ($s->status) {
-                                            'submitted' => 'submitted',
-                                            'under_review' => 'under_review',
-                                            'accepted' => 'accepted',
-                                            'rejected' => 'rejected',
-                                            'revision',
-                                            'revisions_requested',
-                                            'revision_under_review'
-                                                => 'revision',
-                                            default => 'default',
-                                        };
-                                    @endphp
 
+                                    {{-- Mobile-only: status badge shown under author --}}
+                                    <div class="ms-mobile-meta">
+                                        <span class="sbadge {{ $cls }}">
+                                            <span class="dot"></span>
+                                            {{ ucfirst(str_replace('_', ' ', $s->status)) }}
+                                        </span>
+                                    </div>
+                                </td>
+
+                                {{-- Status column (hidden on mobile, shown in ms-mobile-meta) --}}
+                                <td>
                                     <span class="sbadge {{ $cls }}">
                                         <span class="dot"></span>
                                         {{ ucfirst(str_replace('_', ' ', $s->status)) }}
                                     </span>
                                 </td>
+
                                 <td style="text-align: right">
                                     <a
                                         href="{{ route('editor.submission.show', $s) }}"
                                         onclick="event.stopPropagation()"
                                         class="btn-manage"
+                                        title="Manage"
                                     >
                                         <svg
                                             class="w-3 h-3"

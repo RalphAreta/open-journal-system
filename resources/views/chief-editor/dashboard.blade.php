@@ -54,9 +54,15 @@
         /* ── Hero ── */
         .hero-header {
             position: relative;
-            padding: 44px 0 32px;
+            padding: 32px 0 24px;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 36px;
+            margin-bottom: 28px;
+        }
+        @media (min-width: 640px) {
+            .hero-header {
+                padding: 44px 0 32px;
+                margin-bottom: 36px;
+            }
         }
         .hero-header::after {
             content: '';
@@ -86,21 +92,31 @@
         }
         .hero-title {
             font-family: 'Libre Baskerville', serif;
-            font-size: 2.8rem;
+            font-size: 2rem;
             font-weight: 700;
             color: var(--ink);
             letter-spacing: -0.01em;
             line-height: 1.15;
+        }
+        @media (min-width: 640px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
         }
         .hero-title em {
             font-style: italic;
             color: var(--teal);
         }
         .hero-sub {
-            font-size: 0.98rem;
+            font-size: 0.88rem;
             font-weight: 400;
             color: var(--ink-soft);
             margin-top: 8px;
+        }
+        @media (min-width: 640px) {
+            .hero-sub {
+                font-size: 0.98rem;
+            }
         }
         .date-pill {
             font-size: 0.78rem;
@@ -117,64 +133,106 @@
         /* ── Stat Grid ── */
         .stat-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             background: var(--parchment);
             border: 1px solid var(--border-dk);
             border-radius: 14px;
             overflow: hidden;
             box-shadow: 0 2px 12px rgba(26, 18, 9, 0.07);
         }
-        @media (max-width: 800px) {
+        @media (min-width: 800px) {
             .stat-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        @media (max-width: 480px) {
-            .stat-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(4, 1fr);
             }
         }
 
         .stat-cell {
-            padding: 24px 22px 18px;
+            padding: 18px 16px 14px;
             border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
             position: relative;
             transition: background 0.18s;
             cursor: default;
         }
-        .stat-cell:last-child {
+        @media (min-width: 640px) {
+            .stat-cell {
+                padding: 24px 22px 18px;
+            }
+        }
+        /* Remove right border on every 2nd cell in 2-col layout */
+        .stat-cell:nth-child(2n) {
             border-right: none;
+        }
+        /* Remove bottom border on last row in 2-col */
+        .stat-cell:nth-child(3),
+        .stat-cell:nth-child(4) {
+            border-bottom: none;
+        }
+        @media (min-width: 800px) {
+            /* Reset for 4-col layout */
+            .stat-cell {
+                border-bottom: none;
+            }
+            .stat-cell:nth-child(2n) {
+                border-right: 1px solid var(--border);
+            }
+            .stat-cell:last-child {
+                border-right: none;
+            }
         }
         .stat-cell:hover {
             background: #fff;
         }
+
         .stat-lbl {
-            font-size: 0.68rem;
+            font-size: 0.62rem;
             font-weight: 700;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             color: var(--ink-soft);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+        }
+        @media (min-width: 640px) {
+            .stat-lbl {
+                font-size: 0.68rem;
+                margin-bottom: 10px;
+            }
         }
         .stat-val {
             font-family: 'Libre Baskerville', serif;
-            font-size: 2.6rem;
+            font-size: 2rem;
             font-weight: 700;
             line-height: 1;
         }
+        @media (min-width: 640px) {
+            .stat-val {
+                font-size: 2.6rem;
+            }
+        }
         .stat-sub {
-            font-size: 0.72rem;
+            font-size: 0.68rem;
             color: var(--ink-soft);
-            margin-top: 8px;
+            margin-top: 6px;
+        }
+        @media (min-width: 640px) {
+            .stat-sub {
+                font-size: 0.72rem;
+                margin-top: 8px;
+            }
         }
         .stat-cell .accent-line {
             position: absolute;
             bottom: 0;
-            left: 22px;
+            left: 16px;
             height: 2px;
             width: 0;
             border-radius: 2px;
             transition: width 0.3s ease;
+        }
+        @media (min-width: 640px) {
+            .stat-cell .accent-line {
+                left: 22px;
+            }
         }
         .stat-cell:hover .accent-line {
             width: 36px;
@@ -211,21 +269,35 @@
             gap: 0;
             border-bottom: 1.5px solid var(--border-dk);
             margin-bottom: 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .tab-bar::-webkit-scrollbar {
+            display: none;
         }
         .tab-btn {
             position: relative;
-            padding: 12px 20px 14px;
+            padding: 10px 14px 12px;
             font-family: 'Source Sans 3', sans-serif;
-            font-size: 0.68rem;
+            font-size: 0.62rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.1em;
             color: var(--ink-soft);
             background: none;
             border: none;
             cursor: pointer;
             white-space: nowrap;
+            flex-shrink: 0;
             transition: color 0.18s;
+        }
+        @media (min-width: 640px) {
+            .tab-btn {
+                padding: 12px 20px 14px;
+                font-size: 0.68rem;
+                letter-spacing: 0.12em;
+            }
         }
         .tab-btn::after {
             content: '';
@@ -253,12 +325,12 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 18px;
-            height: 18px;
+            width: 17px;
+            height: 17px;
             border-radius: 50%;
-            font-size: 0.6rem;
+            font-size: 0.58rem;
             font-weight: 800;
-            margin-left: 6px;
+            margin-left: 5px;
             vertical-align: middle;
         }
         .tab-count.red {
@@ -305,14 +377,19 @@
         }
         .search-wrap input {
             flex: 1;
-            padding: 12px 10px;
+            padding: 10px 10px;
             border: none;
             background: transparent;
             font-family: 'Source Sans 3', sans-serif;
-            font-size: 0.92rem;
-            font-weight: 400;
+            font-size: 0.88rem;
             color: var(--ink);
             outline: none;
+        }
+        @media (min-width: 640px) {
+            .search-wrap input {
+                padding: 12px 10px;
+                font-size: 0.92rem;
+            }
         }
         .search-wrap input::placeholder {
             color: #b5a595;
@@ -326,10 +403,17 @@
             background: #fff;
             border: 1.5px solid var(--border);
             border-radius: 8px;
-            padding: 12px 14px;
+            padding: 10px 12px;
             outline: none;
             transition: border-color 0.18s;
             box-shadow: 0 1px 4px rgba(26, 18, 9, 0.05);
+            width: 100%;
+        }
+        @media (min-width: 640px) {
+            .filter-select {
+                padding: 12px 14px;
+                width: auto;
+            }
         }
         .filter-select:focus {
             border-color: var(--teal);
@@ -353,14 +437,20 @@
             border-bottom: 1.5px solid var(--border-dk);
         }
         table.mst th {
-            padding: 12px 20px;
-            font-size: 0.66rem;
+            padding: 10px 14px;
+            font-size: 0.62rem;
             font-weight: 700;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             color: var(--ink-soft);
             text-align: left;
             white-space: nowrap;
+        }
+        @media (min-width: 640px) {
+            table.mst th {
+                padding: 12px 20px;
+                font-size: 0.66rem;
+            }
         }
         table.mst th.sortable {
             cursor: pointer;
@@ -382,10 +472,16 @@
         }
 
         table.mst td {
-            padding: 15px 20px;
-            font-size: 0.9rem;
+            padding: 12px 14px;
+            font-size: 0.85rem;
             border-bottom: 1px solid #f5f0e8;
             vertical-align: middle;
+        }
+        @media (min-width: 640px) {
+            table.mst td {
+                padding: 15px 20px;
+                font-size: 0.9rem;
+            }
         }
         table.mst tbody tr:last-child td {
             border-bottom: none;
@@ -400,46 +496,63 @@
             color: var(--teal);
         }
 
+        /* Hide less-critical columns on small screens */
+        @media (max-width: 639px) {
+            .col-hide-sm {
+                display: none;
+            }
+        }
+
         .row-title {
             font-family: 'Libre Baskerville', serif;
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             font-weight: 700;
             font-style: italic;
             color: var(--ink);
             transition: color 0.12s;
             line-height: 1.4;
         }
+        @media (min-width: 640px) {
+            .row-title {
+                font-size: 0.88rem;
+            }
+        }
         .row-ref {
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             font-weight: 700;
             color: #c9b99a;
             letter-spacing: 0.06em;
             font-family: 'Source Sans 3', monospace;
         }
         .row-author {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: var(--ink-soft);
         }
         .row-email {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: #c9b99a;
             margin-top: 1px;
         }
 
-        /* Field badge */
         .field-badge {
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            padding: 3px 10px;
+            padding: 3px 8px;
             border-radius: 20px;
             background: var(--teal-lt);
             border: 1px solid rgba(45, 129, 118, 0.25);
-            font-size: 0.68rem;
+            font-size: 0.62rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             color: var(--teal-dk);
+        }
+        @media (min-width: 640px) {
+            .field-badge {
+                padding: 3px 10px;
+                font-size: 0.68rem;
+            }
         }
         .field-badge .dot {
             width: 5px;
@@ -449,19 +562,25 @@
             flex-shrink: 0;
         }
 
-        /* Status badges */
         .sbadge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 11px;
+            gap: 5px;
+            padding: 3px 9px;
             border-radius: 20px;
-            font-size: 0.68rem;
+            font-size: 0.62rem;
             font-weight: 700;
             letter-spacing: 0.06em;
             text-transform: uppercase;
             border: 1px solid;
             white-space: nowrap;
+        }
+        @media (min-width: 640px) {
+            .sbadge {
+                gap: 6px;
+                padding: 4px 11px;
+                font-size: 0.68rem;
+            }
         }
         .sbadge .dot {
             width: 6px;
@@ -526,16 +645,15 @@
             background: var(--border-dk);
         }
 
-        /* Buttons */
         .btn-assign {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 7px 14px;
+            gap: 4px;
+            padding: 6px 10px;
             border-radius: 6px;
-            font-size: 0.72rem;
+            font-size: 0.66rem;
             font-weight: 700;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
             background: var(--teal);
             color: #fff;
@@ -545,6 +663,15 @@
                 transform 0.12s,
                 box-shadow 0.15s;
             box-shadow: 0 3px 10px rgba(45, 129, 118, 0.22);
+            white-space: nowrap;
+        }
+        @media (min-width: 640px) {
+            .btn-assign {
+                padding: 7px 14px;
+                font-size: 0.72rem;
+                letter-spacing: 0.08em;
+                gap: 5px;
+            }
         }
         .btn-assign:hover {
             background: var(--teal-dk);
@@ -591,26 +718,24 @@
             background: var(--border);
         }
 
-        /* Table footer */
         .table-footer {
-            padding: 12px 20px;
+            padding: 10px 14px;
             background: var(--parchment);
             border-top: 1px solid var(--border);
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            font-size: 0.76rem;
+            gap: 8px;
+            font-size: 0.74rem;
             color: var(--ink-soft);
         }
-        .table-footer-brand {
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: #c9b99a;
+        @media (min-width: 640px) {
+            .table-footer {
+                padding: 12px 20px;
+            }
         }
 
-        /* Section label */
         .section-label {
             font-size: 0.68rem;
             font-weight: 700;
@@ -630,10 +755,14 @@
             background: var(--border);
         }
 
-        /* Empty state */
         .empty-state {
-            padding: 70px 24px;
+            padding: 50px 20px;
             text-align: center;
+        }
+        @media (min-width: 640px) {
+            .empty-state {
+                padding: 70px 24px;
+            }
         }
         .empty-state-icon {
             width: 60px;
@@ -658,7 +787,6 @@
             margin-top: 5px;
         }
 
-        /* Animations */
         .fu {
             animation: fu 0.45s ease both;
         }
@@ -685,7 +813,7 @@
 @endpush
 
 @section('content')
-   <div class="aw aw-bg max-w-7xl mx-auto px-4">
+    <div class="aw aw-bg max-w-7xl mx-auto px-4 sm:px-6">
         {{-- ── Hero ── --}}
         <div class="hero-header fu">
             <div
@@ -712,7 +840,7 @@
         </div>
 
         {{-- ── Stats ── --}}
-        <div class="stat-grid fu1 mb-10">
+        <div class="stat-grid fu1 mb-8 sm:mb-10">
             <div class="stat-cell">
                 <p class="stat-lbl">Total Submissions</p>
                 <p class="stat-val sv-teal">
@@ -831,7 +959,7 @@
                                             <span class="sort-icon">↕</span>
                                         </th>
                                         <th
-                                            class="sortable"
+                                            class="sortable col-hide-sm"
                                             onclick="
                                                 sortTable(
                                                     'pending-tbody',
@@ -844,7 +972,7 @@
                                             <span class="sort-icon">↕</span>
                                         </th>
                                         <th
-                                            class="sortable"
+                                            class="sortable col-hide-sm"
                                             onclick="
                                                 sortTable(
                                                     'pending-tbody',
@@ -857,7 +985,7 @@
                                             <span class="sort-icon">↕</span>
                                         </th>
                                         <th
-                                            class="sortable"
+                                            class="sortable col-hide-sm"
                                             onclick="
                                                 sortTable(
                                                     'pending-tbody',
@@ -883,19 +1011,26 @@
                                                 <p class="row-title">
                                                     {{ Str::limit($s->title, 52) }}
                                                 </p>
+                                                {{-- Show author & date inline on mobile --}}
+                                                <p class="row-author sm:hidden">
+                                                    {{ $s->author->name }}
+                                                </p>
+                                                <p class="row-email sm:hidden">
+                                                    {{ $s->submitted_at->format('M d, Y') }}
+                                                </p>
                                             </td>
-                                            <td>
+                                            <td class="col-hide-sm">
                                                 <span class="row-author">
                                                     {{ $s->author->name }}
                                                 </span>
                                             </td>
-                                            <td>
+                                            <td class="col-hide-sm">
                                                 <span class="field-badge">
                                                     <span class="dot"></span>
                                                     {{ $s->research_field ?? 'N/A' }}
                                                 </span>
                                             </td>
-                                            <td>
+                                            <td class="col-hide-sm">
                                                 <span
                                                     style="
                                                         font-size: 0.76rem;
@@ -923,7 +1058,12 @@
                                                             d="M9 5l7 7-7 7"
                                                         />
                                                     </svg>
-                                                    Review & Assign
+                                                    <span
+                                                        class="hidden sm:inline"
+                                                    >
+                                                        Review &amp;
+                                                    </span>
+                                                    Assign
                                                 </a>
                                             </td>
                                         </tr>
@@ -1038,7 +1178,7 @@
                                             <span class="sort-icon">↕</span>
                                         </th>
                                         <th
-                                            class="sortable"
+                                            class="sortable col-hide-sm"
                                             onclick="
                                                 sortTable(
                                                     'assigned-tbody',
@@ -1064,7 +1204,7 @@
                                             <span class="sort-icon">↕</span>
                                         </th>
                                         <th
-                                            class="sortable"
+                                            class="sortable col-hide-sm"
                                             onclick="
                                                 sortTable(
                                                     'assigned-tbody',
@@ -1100,8 +1240,12 @@
                                                 <p class="row-title">
                                                     {{ Str::limit($s->title, 52) }}
                                                 </p>
+                                                {{-- Show editor inline on mobile --}}
+                                                <p class="row-author sm:hidden">
+                                                    {{ $s->assignedEditor->name ?? '—' }}
+                                                </p>
                                             </td>
-                                            <td>
+                                            <td class="col-hide-sm">
                                                 <span class="row-author">
                                                     {{ $s->assignedEditor->name ?? '—' }}
                                                 </span>
@@ -1112,7 +1256,7 @@
                                                     {{ Submission::statusOptions()[$s->status] ?? $s->status }}
                                                 </span>
                                             </td>
-                                            <td>
+                                            <td class="col-hide-sm">
                                                 <span
                                                     style="
                                                         font-size: 0.76rem;
@@ -1213,8 +1357,8 @@
                                 <thead>
                                     <tr>
                                         <th>Manuscript</th>
-                                        <th>Author</th>
-                                        <th>Submitted</th>
+                                        <th class="col-hide-sm">Author</th>
+                                        <th class="col-hide-sm">Submitted</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -1232,8 +1376,12 @@
                                                 <p class="row-ref">
                                                     #{{ str_pad($appeal->submission->id, 5, '0', STR_PAD_LEFT) }}
                                                 </p>
+                                                {{-- Show author inline on mobile --}}
+                                                <p class="row-author sm:hidden">
+                                                    {{ $appeal->author->name }}
+                                                </p>
                                             </td>
-                                            <td>
+                                            <td class="col-hide-sm">
                                                 <p class="row-author">
                                                     {{ $appeal->author->name }}
                                                 </p>
@@ -1241,7 +1389,7 @@
                                                     {{ $appeal->author->email }}
                                                 </p>
                                             </td>
-                                            <td>
+                                            <td class="col-hide-sm">
                                                 <span
                                                     style="
                                                         font-size: 0.78rem;
@@ -1327,9 +1475,9 @@
                                 <thead>
                                     <tr>
                                         <th>Manuscript</th>
-                                        <th>Author</th>
+                                        <th class="col-hide-sm">Author</th>
                                         <th>Decision</th>
-                                        <th>Reviewed</th>
+                                        <th class="col-hide-sm">Reviewed</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -1346,8 +1494,11 @@
                                                 <p class="row-ref">
                                                     #{{ str_pad($appeal->submission->id, 5, '0', STR_PAD_LEFT) }}
                                                 </p>
+                                                <p class="row-author sm:hidden">
+                                                    {{ $appeal->author->name }}
+                                                </p>
                                             </td>
-                                            <td>
+                                            <td class="col-hide-sm">
                                                 <p class="row-author">
                                                     {{ $appeal->author->name }}
                                                 </p>
@@ -1376,7 +1527,7 @@
                                                     </span>
                                                 @endif
                                             </td>
-                                            <td>
+                                            <td class="col-hide-sm">
                                                 <span
                                                     style="
                                                         font-size: 0.78rem;

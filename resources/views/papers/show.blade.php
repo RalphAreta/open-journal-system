@@ -256,9 +256,9 @@
             }
             .paper-title {
                 font-family: 'Playfair Display', serif;
-                font-size: clamp(1.75rem, 4vw, 2.75rem);
+                font-size: clamp(1.4rem, 4vw, 2.75rem);
                 font-weight: 700;
-                line-height: 1.2;
+                line-height: 1.25;
                 color: #fff;
                 text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
                 margin-bottom: 2rem;
@@ -267,7 +267,7 @@
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
-                gap: 1.5rem;
+                gap: 1rem 1.5rem;
                 padding-top: 1.5rem;
                 border-top: 1px solid rgba(255, 255, 255, 0.15);
             }
@@ -305,14 +305,6 @@
                 align-items: start;
                 position: relative;
                 z-index: 1;
-            }
-            @media (max-width: 900px) {
-                .main-wrap {
-                    grid-template-columns: 1fr;
-                }
-                .main-wrap > aside {
-                    order: -1;
-                }
             }
 
             .main-wrap > aside {
@@ -475,7 +467,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                gap: 1.5rem;
+                gap: 1.25rem;
                 flex-wrap: wrap;
             }
             .download-text h3 {
@@ -551,11 +543,6 @@
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 1rem;
-            }
-            @media (max-width: 600px) {
-                .related-grid {
-                    grid-template-columns: 1fr;
-                }
             }
             .related-card {
                 background: rgba(255, 255, 255, 0.9);
@@ -712,6 +699,7 @@
                 backdrop-filter: blur(6px);
                 align-items: center;
                 justify-content: center;
+                padding: 1rem;
             }
             .citation-modal.show {
                 display: flex;
@@ -720,9 +708,9 @@
             .modal-box {
                 background: #fff;
                 border-radius: 20px;
-                width: 90%;
+                width: 100%;
                 max-width: 38rem;
-                max-height: 85vh;
+                max-height: 90vh;
                 overflow-y: auto;
                 box-shadow: 0 32px 80px rgba(0, 0, 0, 0.25);
                 animation: slideUp 0.3s cubic-bezier(0.22, 0.68, 0, 1.2);
@@ -731,7 +719,11 @@
             }
             .modal-top-bar {
                 height: 3px;
-                background: linear-gradient(90deg, var(--teal-dark) 0%, var(--teal) 100%);
+                background: linear-gradient(
+                    90deg,
+                    var(--teal-dark) 0%,
+                    var(--teal) 100%
+                );
             }
             .modal-inner {
                 padding: 2rem;
@@ -915,42 +907,283 @@
                     transparent 22px
                 );
             }
+
+            /* ══ MOBILE RESPONSIVE ══ */
+
+            /* Sidebar: goes below main on <900px */
+            @media (max-width: 900px) {
+                .main-wrap {
+                    grid-template-columns: 1fr;
+                    padding: 1.5rem 1rem 4rem;
+                    gap: 1.5rem;
+                }
+                .main-wrap > aside {
+                    order: -1; /* sidebar floats above on tablet */
+                    max-width: 100% !important;
+                    width: 100% !important;
+                }
+            }
+
+            /* Hero: tighten padding, hide meta dividers, let meta items wrap naturally */
+            @media (max-width: 640px) {
+                .paper-hero {
+                    padding: 2.5rem 1rem 2rem;
+                }
+                .paper-title {
+                    font-size: 1.35rem;
+                    margin-bottom: 1.25rem;
+                }
+                .category-badge {
+                    margin-bottom: 1rem;
+                }
+                .paper-meta-row {
+                    gap: 0.75rem 1rem;
+                    padding-top: 1rem;
+                }
+                /* Hide vertical dividers between meta items on mobile */
+                .meta-divider {
+                    display: none;
+                }
+                .meta-value {
+                    font-size: 0.82rem;
+                }
+
+                /* Header: shrink logo text on small screens */
+                .logo-text {
+                    font-size: 0.95rem;
+                }
+
+                /* Stats: smaller numbers */
+                .stats-inner {
+                    padding: 1rem;
+                }
+                .stat-val {
+                    font-size: 1.5rem;
+                }
+                .stat-lbl {
+                    font-size: 0.55rem;
+                }
+
+                /* Download card: stack text + button */
+                .download-inner {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    padding: 1.25rem;
+                    gap: 1rem;
+                }
+                .download-btn {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                /* Citation buttons: full-width */
+                .cite-btn {
+                    width: 100% !important;
+                    justify-content: center !important;
+                }
+
+                /* Card body: tighter padding */
+                .card-body {
+                    padding: 1.25rem;
+                }
+
+                /* Section heading: smaller font */
+                .section-heading {
+                    font-size: 1.05rem;
+                }
+
+                /* Related grid: 1 column */
+                .related-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                /* Modal: full width with safe insets */
+                .modal-inner {
+                    padding: 1.25rem;
+                }
+                .modal-title {
+                    font-size: 1.15rem;
+                    padding-right: 2.5rem;
+                }
+
+                /* Paper section spacing */
+                .paper-section {
+                    margin-bottom: 1.5rem;
+                }
+
+                /* Sidebar cards: use 2-col grid for paper details on mobile */
+                .sidebar-detail-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0;
+                }
+            }
+
+            @media (max-width: 400px) {
+                .paper-hero {
+                    padding: 2rem 0.875rem 1.75rem;
+                }
+                .paper-title {
+                    font-size: 1.2rem;
+                }
+                .stats-inner {
+                    padding: 0.75rem 0.5rem;
+                }
+                .stat-val {
+                    font-size: 1.25rem;
+                }
+                .card-body {
+                    padding: 1rem;
+                }
+                .main-wrap {
+                    padding: 1rem 0.75rem 3rem;
+                }
+            }
         </style>
     </head>
     <body>
         <div class="page-texture"></div>
 
         {{-- Decorative Top Bar --}}
-        <div style="height: 12px; background: linear-gradient(90deg, var(--teal-dark) 0%, var(--teal) 50%, #3aaba0 100%);"></div>
+        <div
+            style="
+                height: 12px;
+                background: linear-gradient(
+                    90deg,
+                    var(--teal-dark) 0%,
+                    var(--teal) 50%,
+                    #3aaba0 100%
+                );
+            "
+        ></div>
 
         {{-- HEADER --}}
-        <header style="background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50;">
-            <div style="max-width: 90rem; margin: 0 auto; padding: 0 1.5rem; height: 5rem; display: flex; justify-content: space-between; align-items: center;">
-                <a href="/" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; group: true;">
-                    <div style="width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center; background: var(--teal-dark); border-radius: 50%; border: 1px solid rgba(201, 168, 76, 0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                        <svg class="text-[#f0d678] w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        <header
+            style="
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(8px);
+                border-bottom: 1px solid var(--border);
+                position: sticky;
+                top: 0;
+                z-index: 50;
+            "
+        >
+            <div
+                style="
+                    max-width: 90rem;
+                    margin: 0 auto;
+                    padding: 0 1.25rem;
+                    height: 4.5rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 1rem;
+                "
+            >
+                <a
+                    href="/"
+                    style="
+                        display: flex;
+                        align-items: center;
+                        gap: 0.75rem;
+                        text-decoration: none;
+                        flex-shrink: 0;
+                    "
+                >
+                    <div
+                        style="
+                            width: 2.25rem;
+                            height: 2.25rem;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            background: var(--teal-dark);
+                            border-radius: 50%;
+                            border: 1px solid rgba(201, 168, 76, 0.3);
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                            flex-shrink: 0;
+                        "
+                    >
+                        <svg
+                            class="text-[#f0d678] w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                            />
                         </svg>
                     </div>
-                    <div style="display: flex; flex-direction: column;">
-                        <span style="font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: var(--teal-dark); line-height: 1;">Journal System</span>
-                        <span style="font-size: 0.5625rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.0625rem;">Academic Publishing Portal</span>
+                    <div
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            min-width: 0;
+                        "
+                    >
+                        <span
+                            style="
+                                font-family: 'Playfair Display', serif;
+                                font-size: clamp(0.9rem, 3vw, 1.25rem);
+                                font-weight: 700;
+                                color: var(--teal-dark);
+                                line-height: 1;
+                                white-space: nowrap;
+                            "
+                        >
+                            Journal System
+                        </span>
+                        <span
+                            style="
+                                font-size: 0.5rem;
+                                font-weight: 700;
+                                color: var(--gold);
+                                text-transform: uppercase;
+                                letter-spacing: 0.05rem;
+                                white-space: nowrap;
+                            "
+                        >
+                            Academic Publishing Portal
+                        </span>
                     </div>
                 </a>
 
-                <div style="display: none; gap: 2rem; margin-left: auto;">
-                    <a href="/published-papers" style="font-size: 0.875rem; font-weight: 700; color: var(--teal-dark); text-decoration: none; transition: color 0.2s;">
-                        Published Papers
-                    </a>
-                </div>
-
-                <div style="display: flex; gap: 2rem; align-items: center; margin-left: auto;">
-                    <a href="/" style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem; transition: color 0.2s;">
-                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <div
+                    style="
+                        display: flex;
+                        gap: 1rem;
+                        align-items: center;
+                        margin-left: auto;
+                    "
+                >
+                    <a
+                        href="/"
+                        style="
+                            font-size: 0.75rem;
+                            font-weight: 600;
+                            color: var(--text-muted);
+                            text-decoration: none;
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 0.25rem;
+                            transition: color 0.2s;
+                            white-space: nowrap;
+                        "
+                    >
+                        <svg
+                            width="12"
+                            height="12"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                        >
                             <line x1="19" y1="12" x2="5" y2="12"></line>
                             <polyline points="12 19 5 12 12 5"></polyline>
                         </svg>
-                        Back to Home
+                        <span class="back-label">Back to Home</span>
                     </a>
                 </div>
             </div>
@@ -1031,18 +1264,43 @@
                 </div>
 
                 {{-- Abstract Section --}}
-                <div class="paper-section reveal" style="transition-delay:.05s">
+                <div
+                    class="paper-section reveal"
+                    style="transition-delay: 0.05s; margin-bottom: 2rem"
+                >
                     <div class="section-heading">
                         <div class="section-icon">
-                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M9 12h6m-6 4h4M7 20H5a2 2 0 01-2-2V5a2 2 0 012-2h6.414a2 2 0 011.414.586l4.586 4.586A2 2 0 0117 9.414V15a2 2 0 01-2 2h-4v4a2 2 0 01-2 2z"/>
+                            <svg
+                                width="18"
+                                height="18"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    d="M9 12h6m-6 4h4M7 20H5a2 2 0 01-2-2V5a2 2 0 012-2h6.414a2 2 0 011.414.586l4.586 4.586A2 2 0 0117 9.414V15a2 2 0 01-2 2h-4v4a2 2 0 01-2 2z"
+                                />
                             </svg>
                         </div>
                         Abstract
                     </div>
                     <div class="card">
-                        <div class="card-body" style="border-left: 4px solid var(--gold); background: var(--cream);">
-                            <p style="font-size:.85rem;color:var(--text-body);line-height:1.75;margin:0">
+                        <div
+                            class="card-body"
+                            style="
+                                border-left: 4px solid var(--gold);
+                                background: var(--cream);
+                            "
+                        >
+                            <p
+                                style="
+                                    font-size: 0.85rem;
+                                    color: var(--text-body);
+                                    line-height: 1.75;
+                                    margin: 0;
+                                "
+                            >
                                 {{ $paper['abstract'] ?? 'Lorem ipsum dolor es ma et al' }}
                             </p>
                         </div>
@@ -1050,36 +1308,118 @@
                 </div>
 
                 {{-- Keywords Section --}}
-                <div class="paper-section reveal" style="transition-delay:.1s">
+                <div
+                    class="paper-section reveal"
+                    style="transition-delay: 0.1s; margin-bottom: 2rem"
+                >
                     <div class="section-heading">
                         <div class="section-icon">
-                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            <svg
+                                width="18"
+                                height="18"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                                />
                             </svg>
                         </div>
                         Keywords
                     </div>
-                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; padding: 0;">
-                        @if(isset($paper['keywords']) && is_array($paper['keywords']) && count($paper['keywords']) > 0)
-                            @foreach($paper['keywords'] as $keyword)
-                                <span style="display: inline-block; padding: 0.5rem 1rem; background: rgba(45, 129, 118, 0.08); border: 1px solid rgba(45, 129, 118, 0.3); color: var(--teal); border-radius: 999px; font-size: 0.8rem; font-weight: 500;">
+                    <div
+                        style="
+                            display: flex;
+                            gap: 0.75rem;
+                            flex-wrap: wrap;
+                            padding: 0;
+                        "
+                    >
+                        @if (isset($paper['keywords']) && is_array($paper['keywords']) && count($paper['keywords']) > 0)
+                            @foreach ($paper['keywords'] as $keyword)
+                                <span
+                                    style="
+                                        display: inline-block;
+                                        padding: 0.5rem 1rem;
+                                        background: rgba(45, 129, 118, 0.08);
+                                        border: 1px solid
+                                            rgba(45, 129, 118, 0.3);
+                                        color: var(--teal);
+                                        border-radius: 999px;
+                                        font-size: 0.8rem;
+                                        font-weight: 500;
+                                    "
+                                >
                                     {{ $keyword }}
                                 </span>
                             @endforeach
                         @else
-                            <span style="display: inline-block; padding: 0.5rem 1rem; background: rgba(45, 129, 118, 0.08); border: 1px solid rgba(45, 129, 118, 0.3); color: var(--teal); border-radius: 999px; font-size: 0.8rem; font-weight: 500;">Keyword 1</span>
-                            <span style="display: inline-block; padding: 0.5rem 1rem; background: rgba(45, 129, 118, 0.08); border: 1px solid rgba(45, 129, 118, 0.3); color: var(--teal); border-radius: 999px; font-size: 0.8rem; font-weight: 500;">Keyword 2</span>
-                            <span style="display: inline-block; padding: 0.5rem 1rem; background: rgba(45, 129, 118, 0.08); border: 1px solid rgba(45, 129, 118, 0.3); color: var(--teal); border-radius: 999px; font-size: 0.8rem; font-weight: 500;">Keyword 3</span>
+                            <span
+                                style="
+                                    display: inline-block;
+                                    padding: 0.5rem 1rem;
+                                    background: rgba(45, 129, 118, 0.08);
+                                    border: 1px solid rgba(45, 129, 118, 0.3);
+                                    color: var(--teal);
+                                    border-radius: 999px;
+                                    font-size: 0.8rem;
+                                    font-weight: 500;
+                                "
+                            >
+                                Keyword 1
+                            </span>
+                            <span
+                                style="
+                                    display: inline-block;
+                                    padding: 0.5rem 1rem;
+                                    background: rgba(45, 129, 118, 0.08);
+                                    border: 1px solid rgba(45, 129, 118, 0.3);
+                                    color: var(--teal);
+                                    border-radius: 999px;
+                                    font-size: 0.8rem;
+                                    font-weight: 500;
+                                "
+                            >
+                                Keyword 2
+                            </span>
+                            <span
+                                style="
+                                    display: inline-block;
+                                    padding: 0.5rem 1rem;
+                                    background: rgba(45, 129, 118, 0.08);
+                                    border: 1px solid rgba(45, 129, 118, 0.3);
+                                    color: var(--teal);
+                                    border-radius: 999px;
+                                    font-size: 0.8rem;
+                                    font-weight: 500;
+                                "
+                            >
+                                Keyword 3
+                            </span>
                         @endif
                     </div>
                 </div>
 
                 {{-- Access Paper Section --}}
-                <div class="paper-section reveal" style="transition-delay:.15s">
+                <div
+                    class="paper-section reveal"
+                    style="transition-delay: 0.15s; margin-bottom: 2rem"
+                >
                     <div class="section-heading">
                         <div class="section-icon">
-                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm8-5.5V5a2 2 0 00-2-2H6a2 2 0 00-2 2v6.5"/>
+                            <svg
+                                width="18"
+                                height="18"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm8-5.5V5a2 2 0 00-2-2H6a2 2 0 00-2 2v6.5"
+                                />
                             </svg>
                         </div>
                         Access Paper
@@ -1088,11 +1428,28 @@
                         <div class="download-inner">
                             <div class="download-text">
                                 <h3>Full Paper Available</h3>
-                                <p>Download the complete PDF to access methodology, results, and references.</p>
+                                <p>
+                                    Download the complete PDF to access
+                                    methodology, results, and references.
+                                </p>
                             </div>
-                            <a href="{{ route('papers.download', ['submission' => $paper['id']]) }}" class="download-btn">
-                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round"/>
+                            <a
+                                href="{{ route('papers.download', ['submission' => $paper['id']]) }}"
+                                class="download-btn"
+                            >
+                                <svg
+                                    width="14"
+                                    height="14"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.2"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
                                 </svg>
                                 Download PDF
                             </a>
@@ -1101,49 +1458,126 @@
                 </div>
 
                 {{-- Citation Section --}}
-                <div class="paper-section reveal" style="transition-delay:.2s">
+                <div
+                    class="paper-section reveal"
+                    style="transition-delay: 0.2s; margin-bottom: 2rem"
+                >
                     <div class="section-heading">
                         <div class="section-icon">
-                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            <svg
+                                width="18"
+                                height="18"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                                />
                             </svg>
                         </div>
                         Citation
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1.25rem">
-                                Choose your preferred citation style or export to reference management software.
+                            <p
+                                style="
+                                    font-size: 0.82rem;
+                                    color: var(--text-muted);
+                                    margin-bottom: 1.25rem;
+                                "
+                            >
+                                Choose your preferred citation style or export
+                                to reference management software.
                             </p>
-                            <div style="display: flex; gap: 0.75rem; flex-direction: column">
-                                <!-- Cite Modal Button -->
-                                <button class="cite-btn" onclick="openCitationModal()"
+                            <div
+                                style="
+                                    display: flex;
+                                    gap: 0.75rem;
+                                    flex-direction: column;
+                                "
+                            >
+                                <button
+                                    class="cite-btn"
+                                    onclick="openCitationModal()"
                                     data-paper-title="{{ $paper['title'] }}"
                                     data-paper-author="{{ $paper['author'] }}"
                                     data-publication-year="{{ $paper['publishedAt']->format('Y') }}"
                                     data-category="{{ $paper['category'] }}"
-                                    style="width: 100%; display: flex; align-items: center; justify-content: center;">
-                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                    style="
+                                        width: 100%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                    "
+                                >
+                                    <svg
+                                        width="14"
+                                        height="14"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2.2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <rect
+                                            x="9"
+                                            y="9"
+                                            width="13"
+                                            height="13"
+                                            rx="2"
+                                            ry="2"
+                                        />
+                                        <path
+                                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                                        />
                                     </svg>
                                     CITE THIS PAPER
                                 </button>
 
-                                <!-- RIS Download Button -->
-                                <a href="{{ route('papers.download-ris', ['submission' => $paper['id']]) }}" 
-                                   class="cite-btn" 
-                                   style="width: 100%; display: flex; align-items: center; justify-content: center; text-decoration: none; background-color: #c9a84c; color: #fff; border: none; cursor: pointer;"
-                                   title="Download RIS format for Zotero, Mendeley, EndNote">
-                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                        <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                                <a
+                                    href="{{ route('papers.download-ris', ['submission' => $paper['id']]) }}"
+                                    class="cite-btn"
+                                    style="
+                                        width: 100%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        text-decoration: none;
+                                        background-color: #c9a84c;
+                                        color: #fff;
+                                        border: none;
+                                        cursor: pointer;
+                                    "
+                                    title="Download RIS format for Zotero, Mendeley, EndNote"
+                                >
+                                    <svg
+                                        width="14"
+                                        height="14"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2.2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                                        />
+                                        <polyline points="7 10 12 15 17 10" />
+                                        <line x1="12" y1="15" x2="12" y2="3" />
                                     </svg>
                                     EXPORT AS RIS
                                 </a>
                             </div>
-                            <p style="font-size:.75rem;color:var(--text-muted);margin-top:0.75rem;text-align:center">
-                                RIS format works with Zotero, Mendeley, EndNote, and other reference managers
+                            <p
+                                style="
+                                    font-size: 0.75rem;
+                                    color: var(--text-muted);
+                                    margin-top: 0.75rem;
+                                    text-align: center;
+                                "
+                            >
+                                RIS format works with Zotero, Mendeley, EndNote,
+                                and other reference managers
                             </p>
                         </div>
                     </div>
@@ -1151,57 +1585,246 @@
             </main>
 
             {{-- Sidebar --}}
-            <aside style="width: 100%; max-width: 280px;">
+            <aside style="width: 100%; max-width: 280px">
                 {{-- Paper Details --}}
-                <div class="card" style="margin-bottom: 1.5rem;">
-                    <div class="card-header" style="padding: 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 6v6l4 2"/>
+                <div class="card" style="margin-bottom: 1.5rem">
+                    <div
+                        class="card-header"
+                        style="
+                            padding: 1rem;
+                            border-bottom: 1px solid var(--border);
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                            font-size: 0.75rem;
+                            font-weight: 700;
+                            color: var(--text-muted);
+                            text-transform: uppercase;
+                            letter-spacing: 0.05em;
+                        "
+                    >
+                        <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 6v6l4 2" />
                         </svg>
                         Paper Details
                     </div>
-                    <div class="card-body" style="padding: 1rem;">
-                        <div style="margin-bottom: 1.25rem;">
-                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Category</p>
-                            <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-body); margin: 0;">{{ $paper['category'] ?? 'Engineering' }}</p>
+                    <div
+                        class="card-body sidebar-detail-grid"
+                        style="padding: 1rem"
+                    >
+                        <div style="margin-bottom: 1.25rem">
+                            <p
+                                style="
+                                    font-size: 0.7rem;
+                                    font-weight: 700;
+                                    color: var(--text-muted);
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.05em;
+                                    margin-bottom: 0.35rem;
+                                "
+                            >
+                                Category
+                            </p>
+                            <p
+                                style="
+                                    font-size: 0.9rem;
+                                    font-weight: 600;
+                                    color: var(--text-body);
+                                    margin: 0;
+                                "
+                            >
+                                {{ $paper['category'] ?? 'Engineering' }}
+                            </p>
                         </div>
-                        <div style="margin-bottom: 1.25rem;">
-                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Journal</p>
-                            <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-body); margin: 0;">Open Journal System</p>
+                        <div style="margin-bottom: 1.25rem">
+                            <p
+                                style="
+                                    font-size: 0.7rem;
+                                    font-weight: 700;
+                                    color: var(--text-muted);
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.05em;
+                                    margin-bottom: 0.35rem;
+                                "
+                            >
+                                Journal
+                            </p>
+                            <p
+                                style="
+                                    font-size: 0.9rem;
+                                    font-weight: 600;
+                                    color: var(--text-body);
+                                    margin: 0;
+                                "
+                            >
+                                Open Journal System
+                            </p>
                         </div>
-                        <div style="margin-bottom: 1.25rem;">
-                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Volume / Issue</p>
-                            <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-body); margin: 0;">Vol. 8, No. 1</p>
+                        <div style="margin-bottom: 1.25rem">
+                            <p
+                                style="
+                                    font-size: 0.7rem;
+                                    font-weight: 700;
+                                    color: var(--text-muted);
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.05em;
+                                    margin-bottom: 0.35rem;
+                                "
+                            >
+                                Volume / Issue
+                            </p>
+                            <p
+                                style="
+                                    font-size: 0.9rem;
+                                    font-weight: 600;
+                                    color: var(--text-body);
+                                    margin: 0;
+                                "
+                            >
+                                Vol. 8, No. 1
+                            </p>
                         </div>
-                        <div style="margin-bottom: 1.25rem;">
-                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Pages</p>
-                            <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-body); margin: 0;">pp. 14–28</p>
+                        <div style="margin-bottom: 1.25rem">
+                            <p
+                                style="
+                                    font-size: 0.7rem;
+                                    font-weight: 700;
+                                    color: var(--text-muted);
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.05em;
+                                    margin-bottom: 0.35rem;
+                                "
+                            >
+                                Pages
+                            </p>
+                            <p
+                                style="
+                                    font-size: 0.9rem;
+                                    font-weight: 600;
+                                    color: var(--text-body);
+                                    margin: 0;
+                                "
+                            >
+                                pp. 14–28
+                            </p>
                         </div>
-                        <div style="margin-bottom: 1.25rem;">
-                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Language</p>
-                            <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-body); margin: 0;">English</p>
+                        <div style="margin-bottom: 1.25rem">
+                            <p
+                                style="
+                                    font-size: 0.7rem;
+                                    font-weight: 700;
+                                    color: var(--text-muted);
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.05em;
+                                    margin-bottom: 0.35rem;
+                                "
+                            >
+                                Language
+                            </p>
+                            <p
+                                style="
+                                    font-size: 0.9rem;
+                                    font-weight: 600;
+                                    color: var(--text-body);
+                                    margin: 0;
+                                "
+                            >
+                                English
+                            </p>
                         </div>
                     </div>
                 </div>
 
                 {{-- About the Author --}}
                 <div class="card">
-                    <div class="card-header" style="padding: 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
+                    <div
+                        class="card-header"
+                        style="
+                            padding: 1rem;
+                            border-bottom: 1px solid var(--border);
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                            font-size: 0.75rem;
+                            font-weight: 700;
+                            color: var(--text-muted);
+                            text-transform: uppercase;
+                            letter-spacing: 0.05em;
+                        "
+                    >
+                        <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+                            />
+                            <circle cx="12" cy="7" r="4" />
                         </svg>
                         About the Author
                     </div>
-                    <div class="card-body" style="padding: 1.5rem; text-align: center;">
-                        <div style="width: 60px; height: 60px; margin: 0 auto 1rem; background: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.4rem;">
+                    <div
+                        class="card-body"
+                        style="padding: 1.5rem; text-align: center"
+                    >
+                        <div
+                            style="
+                                width: 60px;
+                                height: 60px;
+                                margin: 0 auto 1rem;
+                                background: var(--teal);
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: white;
+                                font-weight: 700;
+                                font-size: 1.4rem;
+                            "
+                        >
                             {{ substr($paper['author'] ?? 'RA', 0, 2) }}
                         </div>
-                        <p style="font-size: 0.95rem; font-weight: 700; color: var(--text-body); margin: 0 0 0.25rem;">{{ $paper['author'] ?? 'Ralph Areta' }}</p>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 0.75rem;">Lead Researcher</p>
-                        <p style="font-size: 0.8rem; color: var(--text-body); line-height: 1.6; margin: 0;">
-                            Researcher and author contributing to the Open Journal System academic community.
+                        <p
+                            style="
+                                font-size: 0.95rem;
+                                font-weight: 700;
+                                color: var(--text-body);
+                                margin: 0 0 0.25rem;
+                            "
+                        >
+                            {{ $paper['author'] ?? 'Ralph Areta' }}
+                        </p>
+                        <p
+                            style="
+                                font-size: 0.8rem;
+                                color: var(--text-muted);
+                                margin: 0 0 0.75rem;
+                            "
+                        >
+                            Lead Researcher
+                        </p>
+                        <p
+                            style="
+                                font-size: 0.8rem;
+                                color: var(--text-body);
+                                line-height: 1.6;
+                                margin: 0;
+                            "
+                        >
+                            Researcher and author contributing to the Open
+                            Journal System academic community.
                         </p>
                     </div>
                 </div>
@@ -1294,16 +1917,40 @@
         <div id="citationModal" class="citation-modal">
             <div class="modal-box">
                 <div class="modal-top-bar"></div>
-                <button class="modal-close" onclick="closeCitationModal()">&times;</button>
+                <button class="modal-close" onclick="closeCitationModal()">
+                    &times;
+                </button>
                 <div class="modal-inner">
                     <h2 class="modal-title">Cite This Paper</h2>
-                    <p class="modal-subtitle">Select a format and copy the formatted reference.</p>
+                    <p class="modal-subtitle">
+                        Select a format and copy the formatted reference.
+                    </p>
 
                     <div class="citation-tabs">
-                        <button class="citation-tab-btn active" onclick="switchCitationStyle(this, 'apa')">APA</button>
-                        <button class="citation-tab-btn" onclick="switchCitationStyle(this, 'chicago')">Chicago</button>
-                        <button class="citation-tab-btn" onclick="switchCitationStyle(this, 'mla')">MLA</button>
-                        <button class="citation-tab-btn" onclick="switchCitationStyle(this, 'harvard')">Harvard</button>
+                        <button
+                            class="citation-tab-btn active"
+                            onclick="switchCitationStyle(this, 'apa')"
+                        >
+                            APA
+                        </button>
+                        <button
+                            class="citation-tab-btn"
+                            onclick="switchCitationStyle(this, 'chicago')"
+                        >
+                            Chicago
+                        </button>
+                        <button
+                            class="citation-tab-btn"
+                            onclick="switchCitationStyle(this, 'mla')"
+                        >
+                            MLA
+                        </button>
+                        <button
+                            class="citation-tab-btn"
+                            onclick="switchCitationStyle(this, 'harvard')"
+                        >
+                            Harvard
+                        </button>
                     </div>
 
                     <div id="apa" class="citation-content active"></div>
@@ -1312,7 +1959,19 @@
                     <div id="harvard" class="citation-content"></div>
 
                     <button class="copy-btn" onclick="copyCitation()">
-                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+                        <svg
+                            width="13"
+                            height="13"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                            />
+                            <rect x="8" y="2" width="8" height="4" rx="1" />
+                        </svg>
                         Copy Citation
                     </button>
                 </div>

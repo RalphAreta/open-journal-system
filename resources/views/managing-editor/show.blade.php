@@ -185,6 +185,7 @@
             font-size: 0.82rem;
             color: var(--ink-soft);
             margin-top: 2px;
+            word-break: break-all;
         }
 
         /* Meta grid */
@@ -378,6 +379,112 @@
             border: none;
             border-top: 1px solid var(--border);
             margin: 6px 0 20px;
+        }
+
+        /* ── MOBILE RESPONSIVE ── */
+        @media (max-width: 640px) {
+            .aw {
+                font-size: 15px;
+            }
+
+            /* Tighter outer padding on small screens */
+            .aw.max-w-5xl {
+                padding-left: 16px !important;
+                padding-right: 16px !important;
+                padding-top: 20px !important;
+            }
+
+            /* Shrink the big italic title */
+            .ms-title {
+                font-size: 1.35rem;
+            }
+
+            /* Page header meta row: stack vertically */
+            .page-header .flex.flex-wrap {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            /* Cards: tighter padding */
+            .card-header {
+                padding: 12px 16px;
+            }
+            .card-body {
+                padding: 16px;
+            }
+
+            /* Meta grid: 1 column on mobile */
+            .meta-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+            }
+
+            /* Abstract: slightly smaller */
+            .abstract-text {
+                font-size: 0.9rem;
+            }
+
+            /* File card: stack on very small screens */
+            .file-card {
+                flex-wrap: wrap;
+                padding: 14px 14px;
+                gap: 10px;
+            }
+            .file-card .flex-1 {
+                min-width: 0;
+                flex: 1 1 calc(100% - 60px);
+            }
+            .btn-download {
+                width: 100%;
+                justify-content: center;
+                padding: 10px 16px;
+            }
+
+            /* CTF upload form: stack input + button */
+            .card-body form > div {
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+            .card-body form input[type='file'] {
+                width: 100%;
+                min-width: unset !important;
+            }
+            .card-body form button[type='submit'] {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* Back link: a bit smaller */
+            .back-link {
+                font-size: 0.72rem;
+                margin-bottom: 20px;
+            }
+
+            /* Page header padding */
+            .page-header {
+                padding-bottom: 20px;
+                margin-bottom: 24px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .ms-title {
+                font-size: 1.18rem;
+            }
+
+            /* Single column meta on tiny phones */
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-body {
+                padding: 14px 12px;
+            }
+
+            .card-header {
+                padding: 10px 12px;
+            }
         }
     </style>
 @endpush

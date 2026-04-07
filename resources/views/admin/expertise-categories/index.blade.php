@@ -46,9 +46,15 @@
         /* ── Hero Header ── */
         .hero-header {
             position: relative;
-            padding: 44px 0 32px;
+            padding: 28px 0 24px;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 32px;
+            margin-bottom: 24px;
+        }
+        @media (min-width: 768px) {
+            .hero-header {
+                padding: 44px 0 32px;
+                margin-bottom: 32px;
+            }
         }
         .hero-header::after {
             content: '';
@@ -78,20 +84,30 @@
         }
         .hero-title {
             font-family: 'Libre Baskerville', serif;
-            font-size: 2.8rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--ink);
             letter-spacing: -0.01em;
             line-height: 1.15;
+        }
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
         }
         .hero-title em {
             font-style: italic;
             color: var(--teal);
         }
         .hero-sub {
-            font-size: 0.98rem;
+            font-size: 0.9rem;
             color: var(--ink-soft);
             margin-top: 8px;
+        }
+        @media (min-width: 768px) {
+            .hero-sub {
+                font-size: 0.98rem;
+            }
         }
         .date-pill {
             font-size: 0.78rem;
@@ -171,8 +187,24 @@
             background: var(--white);
             border: 1px solid var(--border-dk);
             border-radius: 14px;
-            padding: 24px;
+            padding: 18px 16px;
             box-shadow: 0 2px 12px rgba(26, 18, 9, 0.06);
+        }
+        @media (min-width: 480px) {
+            .card {
+                padding: 24px;
+            }
+        }
+
+        /* Sticky only on large screens */
+        .card-sticky {
+            position: static;
+        }
+        @media (min-width: 1024px) {
+            .card-sticky {
+                position: sticky;
+                top: 24px;
+            }
         }
 
         /* ── Field input ── */
@@ -240,15 +272,20 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 10px;
             background: var(--parchment);
             border: 1px solid var(--border);
             border-radius: 9px;
-            padding: 10px 16px;
+            padding: 10px 14px;
             font-size: 13px;
             color: var(--ink);
         }
         .cat-row-default + .cat-row-default {
             margin-top: 6px;
+        }
+        .cat-row-default span:first-child {
+            word-break: break-word;
+            min-width: 0;
         }
 
         .badge-default {
@@ -261,6 +298,7 @@
             border: 1px solid var(--border-dk);
             padding: 2px 9px;
             border-radius: 100px;
+            flex-shrink: 0;
         }
 
         /* ── Custom category row ── */
@@ -268,11 +306,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 8px;
             background: var(--white);
             border: 1px solid var(--border-dk);
             border-radius: 9px;
-            padding: 10px 14px;
+            padding: 10px 12px;
             transition: border-color 0.15s;
         }
         .cat-row-custom + .cat-row-custom {
@@ -288,6 +326,7 @@
 
         .cat-edit-input {
             flex: 1;
+            min-width: 0;
             padding: 5px 8px;
             border: 1.5px solid transparent;
             border-radius: 6px;
@@ -305,6 +344,7 @@
             border-color: var(--border-dk);
         }
 
+        /* Save button — always visible on mobile */
         .btn-save-inline {
             font-size: 10px;
             font-weight: 700;
@@ -314,14 +354,19 @@
             background: none;
             border: none;
             cursor: pointer;
-            padding: 4px 8px;
-            opacity: 0;
-            transition: opacity 0.15s;
+            padding: 4px 6px;
             white-space: nowrap;
+            flex-shrink: 0;
         }
-        .cat-row-custom:hover .btn-save-inline,
-        .cat-row-custom:focus-within .btn-save-inline {
-            opacity: 1;
+        @media (min-width: 768px) {
+            .btn-save-inline {
+                opacity: 0;
+                transition: opacity 0.15s;
+            }
+            .cat-row-custom:hover .btn-save-inline,
+            .cat-row-custom:focus-within .btn-save-inline {
+                opacity: 1;
+            }
         }
 
         .badge-custom {
@@ -335,6 +380,12 @@
             padding: 2px 9px;
             border-radius: 100px;
             flex-shrink: 0;
+        }
+        /* Hide badge on very small screens to save space */
+        @media (max-width: 400px) {
+            .badge-custom {
+                display: none;
+            }
         }
 
         .btn-delete {
@@ -364,11 +415,24 @@
             border-radius: 9px;
             margin-top: 8px;
         }
+
+        /* ── Two-col layout ── */
+        .two-col-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+        @media (min-width: 1024px) {
+            .two-col-layout {
+                grid-template-columns: 1fr 2fr;
+                gap: 32px;
+            }
+        }
     </style>
 @endpush
 
 @section('content')
-    <div class="aw aw-bg max-w-6xl mx-auto px-6 pb-16">
+    <div class="aw aw-bg max-w-6xl mx-auto px-4 sm:px-6 pb-16">
         {{-- ── Hero Header ── --}}
         <div class="hero-header fu">
             <a
@@ -412,10 +476,10 @@
         </div>
 
         {{-- ── Two-column layout ── --}}
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="two-col-layout">
             {{-- ── LEFT: Add form ── --}}
-            <div class="lg:col-span-1 fu1">
-                <div class="card" style="position: sticky; top: 24px">
+            <div class="fu1">
+                <div class="card card-sticky">
                     <div class="section-label">Add New Category</div>
                     <p
                         style="
@@ -467,7 +531,7 @@
             </div>
 
             {{-- ── RIGHT: Category list ── --}}
-            <div class="lg:col-span-2 fu2">
+            <div class="fu2">
                 {{-- Default categories --}}
                 <div class="section-label">
                     Default Categories
@@ -525,7 +589,7 @@
                                     style="
                                         display: flex;
                                         align-items: center;
-                                        gap: 8px;
+                                        gap: 6px;
                                         flex-shrink: 0;
                                     "
                                 >
@@ -554,8 +618,8 @@
                         @endforeach
                     @else
                         <div class="empty-note">
-                            No custom categories yet. Add one using the form on
-                            the left.
+                            No custom categories yet. Add one using the form
+                            above.
                         </div>
                     @endif
                 </div>

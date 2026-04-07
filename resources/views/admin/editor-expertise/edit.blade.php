@@ -45,9 +45,15 @@
         /* ── Hero Header ── */
         .hero-header {
             position: relative;
-            padding: 44px 0 32px;
+            padding: 28px 0 24px;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 32px;
+            margin-bottom: 24px;
+        }
+        @media (min-width: 768px) {
+            .hero-header {
+                padding: 44px 0 32px;
+                margin-bottom: 32px;
+            }
         }
         .hero-header::after {
             content: '';
@@ -77,20 +83,31 @@
         }
         .hero-title {
             font-family: 'Libre Baskerville', serif;
-            font-size: 2.8rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--ink);
             letter-spacing: -0.01em;
             line-height: 1.15;
+        }
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
         }
         .hero-title em {
             font-style: italic;
             color: var(--teal);
         }
         .hero-sub {
-            font-size: 0.98rem;
+            font-size: 0.88rem;
             color: var(--ink-soft);
             margin-top: 8px;
+            word-break: break-word;
+        }
+        @media (min-width: 768px) {
+            .hero-sub {
+                font-size: 0.98rem;
+            }
         }
         .date-pill {
             font-size: 0.78rem;
@@ -142,8 +159,13 @@
             background: var(--white);
             border: 1px solid var(--border-dk);
             border-radius: 14px;
-            padding: 28px;
+            padding: 18px 16px;
             box-shadow: 0 2px 12px rgba(26, 18, 9, 0.06);
+        }
+        @media (min-width: 480px) {
+            .card {
+                padding: 28px;
+            }
         }
 
         /* ── Section label ── */
@@ -170,8 +192,27 @@
             background: var(--parchment);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 18px 20px;
+            padding: 14px;
             position: relative;
+        }
+        @media (min-width: 480px) {
+            .expertise-field {
+                padding: 18px 20px;
+            }
+        }
+
+        /* ── Two-col grid → stacks on mobile ── */
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        @media (min-width: 480px) {
+            .field-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+            }
         }
 
         /* ── Field label ── */
@@ -221,7 +262,7 @@
             align-items: center;
             justify-content: center;
             gap: 7px;
-            padding: 10px 22px;
+            padding: 10px 18px;
             border: none;
             border-radius: 10px;
             font-family: 'Source Sans 3', sans-serif;
@@ -235,6 +276,11 @@
                 transform 0.14s,
                 box-shadow 0.14s,
                 filter 0.14s;
+        }
+        @media (min-width: 480px) {
+            .btn {
+                padding: 10px 22px;
+            }
         }
         .btn:hover {
             transform: translateY(-1px);
@@ -261,7 +307,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 18px;
+            padding: 8px 16px;
             background: var(--teal-light);
             color: var(--teal-dark);
             border: 1.5px solid rgba(45, 129, 118, 0.3);
@@ -278,6 +324,16 @@
         .btn-add:hover {
             background: rgba(45, 129, 118, 0.15);
             border-color: var(--teal);
+        }
+
+        /* ── Actions row ── */
+        .actions-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
         }
 
         /* ── Remove link ── */
@@ -303,7 +359,7 @@
 @endpush
 
 @section('content')
-   <div class="aw aw-bg max-w-screen-xl mx-auto px-6 pb-16">
+    <div class="aw aw-bg max-w-screen-xl mx-auto px-4 sm:px-6 pb-16">
         {{-- ── Hero Header ── --}}
         <div class="hero-header fu">
             <a
@@ -369,14 +425,7 @@
                     >
                         @forelse ($expertise as $expert)
                             <div class="expertise-field">
-                                <div
-                                    style="
-                                        display: grid;
-                                        grid-template-columns: 1fr 1fr;
-                                        gap: 14px;
-                                        margin-bottom: 12px;
-                                    "
-                                >
+                                <div class="field-grid">
                                     <div>
                                         <label class="field-label">
                                             Field Name
@@ -440,14 +489,7 @@
                             </div>
                         @empty
                             <div class="expertise-field">
-                                <div
-                                    style="
-                                        display: grid;
-                                        grid-template-columns: 1fr 1fr;
-                                        gap: 14px;
-                                        margin-bottom: 12px;
-                                    "
-                                >
+                                <div class="field-grid">
                                     <div>
                                         <label class="field-label">
                                             Field Name
@@ -527,15 +569,7 @@
                 </div>
 
                 {{-- Actions --}}
-                <div
-                    style="
-                        display: flex;
-                        align-items: center;
-                        gap: 10px;
-                        padding-top: 20px;
-                        border-top: 1px solid var(--border);
-                    "
-                >
+                <div class="actions-row">
                     <button type="submit" class="btn btn-teal">
                         <svg
                             width="13"
@@ -563,7 +597,6 @@
 
 @push('scripts')
     <script>
-        // Store the select options HTML once
         const fieldOptionsHTML = document.querySelector(
             '.expertise-field select',
         ).innerHTML;
@@ -574,7 +607,7 @@
                 const newField = document.createElement('div');
                 newField.className = 'expertise-field';
                 newField.innerHTML = `
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px">
+                <div class="field-grid">
                     <div>
                         <label class="field-label">Field Name</label>
                         <select name="expertise[]" class="field-input">
@@ -591,7 +624,6 @@
                     Remove
                 </button>
             `;
-                // Reset select to first option
                 newField.querySelector('select').value = '';
                 document
                     .getElementById('expertise-fields')

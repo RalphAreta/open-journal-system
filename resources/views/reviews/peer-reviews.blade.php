@@ -86,6 +86,7 @@
             letter-spacing: 0.05em;
             text-transform: uppercase;
             border: 1.5px solid;
+            white-space: nowrap;
         }
         .rec-accept {
             background: #f0fdf4;
@@ -254,6 +255,64 @@
             background: #f8fafc;
             cursor: default;
         }
+
+        /* ══ MOBILE RESPONSIVE ══ */
+        @media (max-width: 640px) {
+            /* Page header: smaller title */
+            .peer-page-title {
+                font-size: 1.4rem !important;
+            }
+
+            /* Reviewer pips: tighter wrap */
+            .reviewer-pips {
+                gap: 8px 12px !important;
+            }
+
+            /* Manuscript details grid: 1 column */
+            .ms-details-grid {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+
+            /* Two-col layout: already grid-cols-1 by default at lg, fine */
+
+            /* Review card header: wrap rec pill below name on tiny screens */
+            .review-card-header {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            /* Modal: full-screen feel on mobile */
+            .review-modal-backdrop {
+                padding: 0.75rem;
+                align-items: flex-end;
+            }
+            .review-modal {
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                max-height: 80vh;
+                border-radius: 20px 20px 0 0;
+            }
+            .review-modal-header {
+                padding: 0.875rem 1rem 0.75rem;
+            }
+            .review-modal-body {
+                padding: 1rem;
+            }
+
+            /* Your submitted review card */
+            .my-review-card .my-rec-header {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .peer-page-title {
+                font-size: 1.18rem !important;
+            }
+        }
     </style>
 @endpush
 
@@ -290,17 +349,21 @@
                 Peer Review Results
             </p>
             <h1
-                class="font-serif text-[1.8rem] font-normal text-slate-900 tracking-[-0.015em] leading-tight"
+                class="peer-page-title font-serif text-[1.8rem] font-normal text-slate-900 tracking-[-0.015em] leading-tight"
             >
                 {{ $submission->title }}
             </h1>
-            <p class="text-sm text-slate-500 mt-1.5">
+            <p
+                class="text-sm text-slate-500 mt-1.5 flex flex-wrap items-center gap-1"
+            >
                 by
                 <span class="font-semibold text-slate-700">
                     {{ $submission->author->name }}
                 </span>
                 @if ($submission->research_field)
-                    &nbsp;·&nbsp;
+                    <span class="text-slate-300 hidden sm:inline">
+                        &nbsp;·&nbsp;
+                    </span>
                     <span
                         class="inline-flex items-center gap-1 text-blue-600 font-semibold"
                     >
@@ -317,7 +380,7 @@
         <div
             class="bg-white border border-slate-200 rounded-2xl p-5 mb-5 shadow-sm fade-up-1"
         >
-            <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center justify-between mb-4 gap-3 flex-wrap">
                 <h2
                     class="text-[10px] font-bold uppercase tracking-[.09em] text-slate-400"
                 >
@@ -355,7 +418,7 @@
             </div>
 
             {{-- Reviewer pips --}}
-            <div class="flex items-center gap-3 flex-wrap">
+            <div class="reviewer-pips flex items-center gap-3 flex-wrap">
                 @php
                     $peerNum = 1;
                 @endphp
@@ -404,7 +467,9 @@
                         @endif
                     </div>
                     @if (! $loop->last)
-                        <span class="text-slate-200 text-xs select-none">
+                        <span
+                            class="text-slate-200 text-xs select-none hidden sm:inline"
+                        >
                             —
                         </span>
                     @endif
@@ -435,7 +500,9 @@
             >
                 Manuscript Details
             </h2>
-            <div class="grid grid-cols-2 gap-x-8 gap-y-3 text-sm mb-4">
+            <div
+                class="ms-details-grid grid grid-cols-2 gap-x-8 gap-y-3 text-sm mb-4"
+            >
                 <div>
                     <p
                         class="text-[10px] font-bold uppercase tracking-[.07em] text-slate-400 mb-0.5"
@@ -482,7 +549,7 @@
                 @endif
 
                 @if ($submission->file_name)
-                    <div>
+                    <div class="min-w-0">
                         <p
                             class="text-[10px] font-bold uppercase tracking-[.07em] text-slate-400 mb-0.5"
                         >
@@ -525,9 +592,11 @@
                     @endphp
 
                     <div
-                        class="bg-blue-50 border border-blue-200 rounded-2xl p-5"
+                        class="my-review-card bg-blue-50 border border-blue-200 rounded-2xl p-5"
                     >
-                        <div class="flex items-center justify-between mb-4">
+                        <div
+                            class="my-rec-header flex items-center justify-between mb-4"
+                        >
                             <div>
                                 <p
                                     class="text-[10px] font-bold uppercase tracking-[.08em] text-blue-600 mb-0.5"
@@ -655,12 +724,14 @@
                             >
                                 <div class="flex items-center gap-3">
                                     <div
-                                        class="w-8 h-8 rounded-full {{ $isYou ? 'avatar-ring-you' : 'avatar-ring-' . (($i % 6) + 1) }} flex items-center justify-center text-white text-xs font-bold"
+                                        class="w-8 h-8 rounded-full {{ $isYou ? 'avatar-ring-you' : 'avatar-ring-' . (($i % 6) + 1) }} flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                                     >
                                         {{ $isYou ? strtoupper(substr(auth()->user()->name, 0, 2)) : 'R' . ($peerNum2 - 1) }}
                                     </div>
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2">
+                                    <div class="flex-1 min-w-0">
+                                        <div
+                                            class="flex items-center gap-2 flex-wrap"
+                                        >
                                             <p
                                                 class="text-sm font-bold {{ $isYou ? 'text-blue-700' : 'text-slate-800' }}"
                                             >
@@ -706,13 +777,11 @@
                                     'reject' => ['label' => 'Reject', 'cls' => 'rec-reject'],
                                 ];
                                 $rec = $recMap[$r->recommendation] ?? ['label' => $r->recommendation ?? '—', 'cls' => 'rec-default'];
-
                                 $displayName = $isYou ? auth()->user()->name : 'Reviewer ' . $peerNum3;
                                 $avatarLabel = $isYou ? strtoupper(substr(auth()->user()->name, 0, 2)) : 'R' . $peerNum3;
                                 if (! $isYou) {
                                     $peerNum3++;
                                 }
-
                                 $modalId = 'modal-review-' . $i;
                                 $hasComments = $r->comments_for_author || ($isYou && $r->comments_for_editor);
                             @endphp
@@ -721,17 +790,19 @@
                                 class="bg-white border {{ $isYou ? 'border-blue-200' : 'border-slate-200' }} rounded-2xl p-4 shadow-sm {{ $isYou ? 'ring-1 ring-blue-100' : '' }}"
                             >
                                 <div
-                                    class="flex items-center justify-between mb-3"
+                                    class="review-card-header flex items-center justify-between mb-3 gap-2"
                                 >
-                                    <div class="flex items-center gap-3">
+                                    <div
+                                        class="flex items-center gap-3 min-w-0"
+                                    >
                                         <div
-                                            class="w-8 h-8 rounded-full {{ $isYou ? 'avatar-ring-you' : 'avatar-ring-' . $ringIdx }} flex items-center justify-center text-white text-xs font-bold"
+                                            class="w-8 h-8 rounded-full {{ $isYou ? 'avatar-ring-you' : 'avatar-ring-' . $ringIdx }} flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                                         >
                                             {{ $avatarLabel }}
                                         </div>
-                                        <div>
+                                        <div class="min-w-0">
                                             <div
-                                                class="flex items-center gap-2"
+                                                class="flex items-center gap-2 flex-wrap"
                                             >
                                                 <p
                                                     class="text-sm font-bold {{ $isYou ? 'text-blue-700' : 'text-slate-800' }}"
@@ -753,12 +824,12 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <span class="rec-pill {{ $rec['cls'] }}">
+                                    <span
+                                        class="rec-pill {{ $rec['cls'] }} flex-shrink-0"
+                                    >
                                         {{ $rec['label'] }}
                                     </span>
                                 </div>
-
-                                {{-- View Comments button --}}
 
                                 @if ($hasComments)
                                     <button
@@ -778,7 +849,7 @@
                                 @endif
                             </div>
 
-                            {{-- Comments Modal for this review --}}
+                            {{-- Comments Modal --}}
                             @if ($hasComments)
                                 <div
                                     id="{{ $modalId }}"
@@ -793,16 +864,16 @@
                                     <div class="review-modal">
                                         <div class="review-modal-header">
                                             <div
-                                                class="flex items-center gap-3"
+                                                class="flex items-center gap-3 min-w-0"
                                             >
                                                 <div
-                                                    class="w-8 h-8 rounded-full {{ $isYou ? 'avatar-ring-you' : 'avatar-ring-' . $ringIdx }} flex items-center justify-center text-white text-xs font-bold"
+                                                    class="w-8 h-8 rounded-full {{ $isYou ? 'avatar-ring-you' : 'avatar-ring-' . $ringIdx }} flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                                                 >
                                                     {{ $avatarLabel }}
                                                 </div>
-                                                <div>
+                                                <div class="min-w-0">
                                                     <p
-                                                        class="text-sm font-bold {{ $isYou ? 'text-blue-700' : 'text-slate-800' }}"
+                                                        class="text-sm font-bold {{ $isYou ? 'text-blue-700' : 'text-slate-800' }} truncate"
                                                     >
                                                         {{ $displayName }}
                                                         @if ($isYou)
@@ -826,7 +897,7 @@
                                                         '{{ $modalId }}',
                                                     )
                                                 "
-                                                class="w-8 h-8 rounded-full border border-slate-200 text-slate-400 hover:bg-red-50 hover:border-red-200 hover:text-red-500 flex items-center justify-center transition-all"
+                                                class="w-8 h-8 rounded-full border border-slate-200 text-slate-400 hover:bg-red-50 hover:border-red-200 hover:text-red-500 flex items-center justify-center transition-all flex-shrink-0 ml-2"
                                             >
                                                 <svg
                                                     class="w-4 h-4"

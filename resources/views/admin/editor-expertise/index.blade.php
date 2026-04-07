@@ -10,7 +10,7 @@
     <style>
         :root {
             --teal: #2d8176;
-            --teal-dark: #1a4d46;               
+            --teal-dark: #1a4d46;
             --teal-light: #e8f4f2;
             --ink: #1a1209;
             --ink-soft: #6b5740;
@@ -27,9 +27,9 @@
         }
 
         .aw {
-            font-family: 'Source Sans 3', sans-serif;       
-                                                                color: var(--ink);
-                                                            }
+            font-family: 'Source Sans 3', sans-serif;
+            color: var(--ink);
+        }
         .aw-bg {
             background-color: var(--cream);
             background-image:
@@ -44,9 +44,15 @@
         /* ── Hero Header ── */
         .hero-header {
             position: relative;
-            padding: 44px 0 32px;
+            padding: 28px 0 24px;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 32px;
+            margin-bottom: 24px;
+        }
+        @media (min-width: 768px) {
+            .hero-header {
+                padding: 44px 0 32px;
+                margin-bottom: 32px;
+            }
         }
         .hero-header::after {
             content: '';
@@ -76,20 +82,30 @@
         }
         .hero-title {
             font-family: 'Libre Baskerville', serif;
-            font-size: 2.8rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--ink);
             letter-spacing: -0.01em;
             line-height: 1.15;
+        }
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
         }
         .hero-title em {
             font-style: italic;
             color: var(--teal);
         }
         .hero-sub {
-            font-size: 0.98rem;
+            font-size: 0.9rem;
             color: var(--ink-soft);
             margin-top: 8px;
+        }
+        @media (min-width: 768px) {
+            .hero-sub {
+                font-size: 0.98rem;
+            }
         }
         .date-pill {
             font-size: 0.78rem;
@@ -108,12 +124,12 @@
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            padding: 9px 20px;
+            padding: 9px 14px;
             background: var(--parchment);
             color: var(--ink-soft);
             border: 1.5px solid var(--border-dk);
             border-radius: 8px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.05em;
             text-transform: uppercase;
@@ -123,6 +139,12 @@
                 border-color 0.15s,
                 color 0.15s;
             white-space: nowrap;
+        }
+        @media (min-width: 480px) {
+            .btn-secondary {
+                font-size: 12px;
+                padding: 9px 20px;
+            }
         }
         .btn-secondary:hover {
             background: var(--white);
@@ -155,12 +177,17 @@
             background: var(--white);
             border: 1px solid var(--border-dk);
             border-radius: 14px;
-            padding: 22px 24px;
+            padding: 16px;
             box-shadow: 0 2px 12px rgba(26, 18, 9, 0.06);
             transition:
                 border-color 0.18s,
                 box-shadow 0.18s,
                 transform 0.15s;
+        }
+        @media (min-width: 480px) {
+            .editor-card {
+                padding: 22px 24px;
+            }
         }
         .editor-card:hover {
             border-color: var(--teal);
@@ -168,16 +195,43 @@
             transform: translateY(-2px);
         }
 
+        /* ── Card header: name+email left, button right ── */
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .card-name {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--ink);
+            word-break: break-word;
+        }
+        @media (min-width: 480px) {
+            .card-name {
+                font-size: 1rem;
+            }
+        }
+        .card-email {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+            word-break: break-all;
+        }
+
         /* ── Manage button ── */
         .btn-manage {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 7px 16px;
+            gap: 5px;
+            padding: 6px 12px;
             background: var(--teal);
             color: #fff;
             border-radius: 8px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             letter-spacing: 0.05em;
             text-transform: uppercase;
@@ -190,6 +244,13 @@
             white-space: nowrap;
             flex-shrink: 0;
         }
+        @media (min-width: 480px) {
+            .btn-manage {
+                font-size: 11px;
+                padding: 7px 16px;
+                gap: 6px;
+            }
+        }
         .btn-manage:hover {
             transform: translateY(-1px);
             filter: brightness(1.08);
@@ -200,7 +261,7 @@
         .expertise-tag {
             display: inline-flex;
             align-items: center;
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 100px;
             font-size: 11px;
             font-weight: 600;
@@ -211,8 +272,13 @@
 
         /* ── Empty state ── */
         .empty-state {
-            padding: 80px 24px;
+            padding: 60px 24px;
             text-align: center;
+        }
+        @media (min-width: 768px) {
+            .empty-state {
+                padding: 80px 24px;
+            }
         }
         .empty-icon {
             width: 64px;
@@ -236,7 +302,7 @@
 @endpush
 
 @section('content')
-    <div class="aw aw-bg max-w-7xl mx-auto px-6 pb-16">
+    <div class="aw aw-bg max-w-7xl mx-auto px-4 sm:px-6 pb-16">
         {{-- ── Hero Header ── --}}
         <div class="hero-header fu">
             <div
@@ -289,35 +355,10 @@
             >
                 @foreach ($editors as $editor)
                     <div class="editor-card">
-                        <div
-                            style="
-                                display: flex;
-                                align-items: flex-start;
-                                justify-content: space-between;
-                                gap: 16px;
-                                margin-bottom: 14px;
-                            "
-                        >
-                            <div>
-                                <p
-                                    style="
-                                        font-family: 'Libre Baskerville', serif;
-                                        font-size: 1rem;
-                                        font-weight: 700;
-                                        color: var(--ink);
-                                    "
-                                >
-                                    {{ $editor->name }}
-                                </p>
-                                <p
-                                    style="
-                                        font-size: 11px;
-                                        color: var(--muted);
-                                        margin-top: 2px;
-                                    "
-                                >
-                                    {{ $editor->email }}
-                                </p>
+                        <div class="card-header">
+                            <div class="min-w-0">
+                                <p class="card-name">{{ $editor->name }}</p>
+                                <p class="card-email">{{ $editor->email }}</p>
                             </div>
                             <a
                                 href="{{ route('admin.editor-expertise.edit', $editor) }}"

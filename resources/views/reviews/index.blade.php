@@ -30,7 +30,6 @@
             color: var(--ink);
             font-size: 16px;
         }
-
         .aw-bg {
             background-color: var(--cream);
             background-image:
@@ -262,6 +261,7 @@
                 transform 0.12s,
                 box-shadow 0.15s;
             box-shadow: 0 3px 10px rgba(192, 57, 43, 0.2);
+            white-space: nowrap;
         }
         .btn-submit-review:hover {
             background: #a93226;
@@ -274,6 +274,7 @@
             font-size: 0.72rem;
             font-weight: 800;
             color: var(--teal-dk);
+            white-space: nowrap;
         }
 
         /* Table footer */
@@ -284,6 +285,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .table-footer-brand {
             font-size: 0.65rem;
@@ -335,6 +338,86 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        /* ══ MOBILE RESPONSIVE ══ */
+        @media (max-width: 640px) {
+            /* Hero */
+            .hero-header {
+                padding-top: 1.5rem;
+                padding-bottom: 1.25rem;
+                margin-bottom: 1.25rem;
+            }
+            .hero-title {
+                font-size: 1.75rem;
+            }
+            .hero-sub {
+                font-size: 0.88rem;
+                margin-top: 6px;
+            }
+
+            /* Table head: tighter */
+            .ms-table-head {
+                padding: 12px 16px 10px;
+            }
+            .ms-table-head-title {
+                font-size: 1rem;
+            }
+
+            /* Hide Author column — title already implies enough context */
+            table.mst th.col-author,
+            table.mst td.col-author {
+                display: none;
+            }
+
+            /* Tighter cell padding */
+            table.mst th {
+                padding: 10px 14px;
+            }
+            table.mst td {
+                padding: 12px 14px;
+            }
+
+            /* Title: allow wrap */
+            .ms-row-title {
+                font-size: 0.85rem;
+            }
+
+            /* Status badge: smaller */
+            .sbadge {
+                font-size: 0.62rem;
+                padding: 3px 9px;
+            }
+
+            /* Submit review button: icon only on very small, full on ≥360px */
+            .btn-submit-review .btn-label {
+                display: none;
+            }
+
+            /* Table footer: wrap */
+            .table-footer {
+                padding: 10px 16px;
+            }
+        }
+
+        @media (min-width: 360px) and (max-width: 640px) {
+            /* Show label again once we have a bit more room */
+            .btn-submit-review .btn-label {
+                display: inline;
+            }
+            .btn-submit-review {
+                padding: 7px 11px;
+                font-size: 0.68rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .hero-title {
+                font-size: 1.45rem;
+            }
+            table.mst td {
+                padding: 10px 12px;
             }
         }
     </style>
@@ -396,8 +479,8 @@
                 <table class="mst">
                     <thead>
                         <tr>
-                            <th style="width: 40%">Submission</th>
-                            <th>Author</th>
+                            <th style="width: 45%">Submission</th>
+                            <th class="col-author">Author</th>
                             <th>Status</th>
                             <th style="text-align: right">Action</th>
                         </tr>
@@ -409,10 +492,13 @@
                                     <p class="ms-row-title">
                                         {{ Str::limit($a->submission->title ?? '', 50) }}
                                     </p>
+                                    {{-- Author shown inline on mobile since column is hidden --}}
+                                    <p class="ms-author sm:hidden">
+                                        {{ $a->submission->author->name ?? '—' }}
+                                    </p>
                                 </td>
-                                <td>
+                                <td class="col-author">
                                     <p
-                                        class="ms-author"
                                         style="
                                             margin-top: 0;
                                             font-size: 0.84rem;
@@ -456,7 +542,9 @@
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                                                 />
                                             </svg>
-                                            Submit Review
+                                            <span class="btn-label">
+                                                Submit Review
+                                            </span>
                                         </a>
                                     @else
                                         <span class="btn-done">

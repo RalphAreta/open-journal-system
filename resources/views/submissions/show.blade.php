@@ -37,6 +37,138 @@
             left: 20px;
             pointer-events: none;
         }
+        @media (max-width: 640px) {
+            .abstract-block::before {
+                font-size: 5rem;
+                left: 12px;
+            }
+        }
+
+        /* ── Page outer padding on small screens ── */
+        @media (max-width: 640px) {
+            .page-wrap {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+        }
+
+        /* ── Page header ── */
+        .page-header-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        @media (max-width: 640px) {
+            .page-header-row {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+
+        /* ── Header action buttons ── */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+            align-self: flex-start;
+            margin-top: 4px;
+        }
+        @media (max-width: 640px) {
+            .header-actions {
+                align-self: stretch;
+                width: 100%;
+            }
+            .header-actions a {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+
+        /* ── Page title ── */
+        .page-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1209;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+        }
+        @media (max-width: 640px) {
+            .page-title {
+                font-size: 1.55rem;
+            }
+        }
+        @media (max-width: 400px) {
+            .page-title {
+                font-size: 1.35rem;
+            }
+        }
+
+        /* ── Pending revision banner ── */
+        .rev-banner-inner {
+            flex: 1;
+            padding: 16px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        @media (max-width: 500px) {
+            .rev-banner-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .rev-banner-inner a {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+        }
+
+        /* ── Feedback trigger buttons ── */
+        .feedback-btn-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        @media (max-width: 500px) {
+            .feedback-btn-grid {
+                flex-direction: column;
+            }
+            .feedback-btn-grid > button {
+                width: 100%;
+            }
+        }
+
+        /* ── Abstract block ── */
+        .abstract-text {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.08rem;
+            font-weight: 400;
+            color: #3d2f1a;
+            line-height: 1.8;
+            position: relative;
+            z-index: 10;
+            padding-top: 12px;
+            text-align: justify;
+        }
+        @media (max-width: 640px) {
+            .abstract-text {
+                font-size: 0.95rem;
+                line-height: 1.75;
+            }
+        }
+
+        /* ── Sidebar sticky ── */
+        @media (max-width: 1023px) {
+            .sidebar-sticky {
+                position: static !important;
+            }
+        }
 
         /* ── Modal ── */
         .feedback-modal-backdrop {
@@ -52,6 +184,12 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.25s ease;
+        }
+        @media (max-width: 640px) {
+            .feedback-modal-backdrop {
+                padding: 0;
+                align-items: flex-end;
+            }
         }
         .feedback-modal-backdrop.open {
             opacity: 1;
@@ -70,6 +208,17 @@
             transform: translateY(18px) scale(0.97);
             transition: transform 0.28s cubic-bezier(0.34, 1.3, 0.64, 1);
         }
+        @media (max-width: 640px) {
+            .feedback-modal {
+                max-width: 100%;
+                max-height: 92vh;
+                border-radius: 18px 18px 0 0;
+                transform: translateY(100%);
+            }
+            .feedback-modal-backdrop.open .feedback-modal {
+                transform: translateY(0) !important;
+            }
+        }
         .feedback-modal-backdrop.open .feedback-modal {
             transform: translateY(0) scale(1);
         }
@@ -83,10 +232,20 @@
             border-radius: 18px 18px 0 0;
             flex-shrink: 0;
         }
+        @media (max-width: 640px) {
+            .feedback-modal-header {
+                padding: 1rem 1rem 0.9rem;
+            }
+        }
         .feedback-modal-body {
             overflow-y: auto;
             padding: 1.25rem 1.4rem;
             flex: 1;
+        }
+        @media (max-width: 640px) {
+            .feedback-modal-body {
+                padding: 1rem 1rem;
+            }
         }
         .feedback-modal-body::-webkit-scrollbar {
             width: 5px;
@@ -103,12 +262,62 @@
         .open-modal-btn:hover {
             box-shadow: 0 4px 18px rgba(45, 129, 118, 0.22);
         }
+
+        /* ── Manuscript file card truncation ── */
+        .file-name-text {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #1a1209;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+            word-break: break-all;
+        }
+
+        /* ── Layout confirmation forms ── */
+        @media (max-width: 640px) {
+            .layout-confirm-form textarea {
+                font-size: 1rem; /* prevent iOS auto-zoom */
+            }
+        }
+
+        /* ── Keyword chips ── */
+        .kw-chip {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: #f3ece0;
+            border: 1px solid #e8dfd0;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: #6b5740;
+            text-transform: capitalize;
+        }
+
+        /* ── Review card header ── */
+        .review-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 14px 20px;
+            background: #f3ece0;
+            border-bottom: 1px solid #e8dfd0;
+        }
+        @media (max-width: 480px) {
+            .review-card-header {
+                padding: 12px 14px;
+            }
+        }
     </style>
 @endpush
 
 @section('content')
     <div
-        class="font-['Source_Sans_3',sans-serif] text-[#1a1209] max-w-7xl mx-auto px-1"
+        class="page-wrap font-['Source_Sans_3',sans-serif] text-[#1a1209] max-w-7xl mx-auto px-1"
         style="
             background-color: #faf6ef;
             background-image: radial-gradient(
@@ -124,9 +333,7 @@
                 class="absolute bottom-px left-0 w-20 h-0.5"
                 style="background: linear-gradient(90deg, #2d8176, transparent)"
             ></div>
-            <div
-                class="flex flex-col md:flex-row justify-between items-start gap-5"
-            >
+            <div class="page-header-row">
                 <div class="flex-1 min-w-0">
                     <nav
                         class="flex items-center gap-2 mb-3 text-[11px] font-bold tracking-[.18em] uppercase text-[#6b5740]"
@@ -156,9 +363,7 @@
                         <span class="inline-block w-6 h-px bg-[#2d8176]"></span>
                         Author Submissions
                     </p>
-                    <h1
-                        class="font-['Libre_Baskerville',serif] text-[2rem] font-bold text-[#1a1209] leading-snug tracking-tight"
-                    >
+                    <h1 class="page-title">
                         {{ $submission->title }}
                     </h1>
                     <div
@@ -172,11 +377,11 @@
                         "
                     ></div>
                 </div>
-                <div class="flex items-center gap-3 shrink-0 self-start mt-1">
+                <div class="header-actions">
                     @if ($submission->isEditableByAuthor() && auth()->user()->id === $submission->author_id && $submission->status === 'submitted')
                         <a
                             href="{{ route('submissions.edit', $submission) }}"
-                            class="inline-flex items-center gap-2 px-5 py-2.25 rounded-lg bg-white border border-[#c9b99a] text-[.72rem] font-bold tracking-[.08em] uppercase text-[#6b5740] shadow-[0_2px_8px_rgba(26,18,9,.06)] hover:border-[#2d8176] hover:text-[#2d8176] hover:bg-[#e8f4f2] transition-all"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white border border-[#c9b99a] text-[.72rem] font-bold tracking-[.08em] uppercase text-[#6b5740] shadow-[0_2px_8px_rgba(26,18,9,.06)] hover:border-[#2d8176] hover:text-[#2d8176] hover:bg-[#e8f4f2] transition-all"
                         >
                             <svg
                                 class="w-3.5 h-3.5"
@@ -196,7 +401,7 @@
 
                     <a
                         href="{{ route('submissions.index') }}"
-                        class="relative overflow-hidden inline-flex items-center gap-2 px-5 py-2.25 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.72rem] font-bold tracking-[.08em] uppercase transition-all shadow-[0_4px_14px_rgba(45,129,118,.28)] hover:-translate-y-0.5"
+                        class="relative overflow-hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.72rem] font-bold tracking-[.08em] uppercase transition-all shadow-[0_4px_14px_rgba(45,129,118,.28)] hover:-translate-y-0.5"
                     >
                         <span
                             class="absolute inset-0 pointer-events-none"
@@ -244,13 +449,11 @@
                         class="fu1 flex overflow-hidden border border-[#fed7aa] rounded-[14px] shadow-[0_4px_20px_rgba(26,18,9,.09)]"
                         style="background: #fffdf9"
                     >
-                        <div class="w-1.25 shrink-0 bg-[#f97316]"></div>
-                        <div
-                            class="flex-1 px-5 py-4 flex flex-wrap items-center justify-between gap-4"
-                        >
+                        <div class="w-1.5 shrink-0 bg-[#f97316]"></div>
+                        <div class="rev-banner-inner">
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="w-9.5 h-9.5 rounded-[10px] shrink-0 bg-[#fff7ed] text-[#ea580c] flex items-center justify-center"
+                                    class="w-10 h-10 rounded-[10px] shrink-0 bg-[#fff7ed] text-[#ea580c] flex items-center justify-center"
                                 >
                                     <svg
                                         class="w-5 h-5"
@@ -303,14 +506,14 @@
                         "
                     >
                         <div
-                            class="w-1.25 shrink-0 {{ $isAcc ? 'bg-[#2d8176]' : 'bg-[#dc2626]' }}"
+                            class="w-1.5 shrink-0 {{ $isAcc ? 'bg-[#2d8176]' : 'bg-[#dc2626]' }}"
                         ></div>
                         <div
                             class="flex-1 px-5 py-4 flex flex-wrap items-center justify-between gap-4"
                         >
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="w-9.5 h-9.5 rounded-[10px] shrink-0 flex items-center justify-center font-['Libre_Baskerville',serif] text-[1.1rem] font-bold {{ $isAcc ? 'bg-[#e8f4f2] text-[#2d8176]' : 'bg-[#fef2f2] text-[#dc2626]' }}"
+                                    class="w-10 h-10 rounded-[10px] shrink-0 flex items-center justify-center font-['Libre_Baskerville',serif] text-[1.1rem] font-bold {{ $isAcc ? 'bg-[#e8f4f2] text-[#2d8176]' : 'bg-[#fef2f2] text-[#dc2626]' }}"
                                 >
                                     {{ $isAcc ? '✓' : '✕' }}
                                 </div>
@@ -364,10 +567,12 @@
                     </div>
                     <div
                         class="abstract-block relative bg-white border border-[#c9b99a] rounded-[14px] px-9 pt-8 pb-7 shadow-[0_2px_12px_rgba(26,18,9,.06)]"
+                        style="
+                            padding-left: clamp(20px, 6vw, 36px);
+                            padding-right: clamp(16px, 4vw, 28px);
+                        "
                     >
-                        <p
-                            class="font-['Libre_Baskerville',serif] text-[1.08rem] font-normal text-[#3d2f1a] leading-[1.8] relative z-10 pt-3 text-justify"
-                        >
+                        <p class="abstract-text">
                             {{ $submission->abstract }}
                         </p>
                     </div>
@@ -432,7 +637,7 @@
                             ></div>
                         </div>
 
-                        <div class="flex flex-wrap gap-3">
+                        <div class="feedback-btn-grid">
                             @if ($showPeerReviews)
                                 <button
                                     onclick="openModal('modal-peer-reviews')"
@@ -592,7 +797,7 @@
             {{-- ════ RIGHT SIDEBAR ════ --}}
             <div class="lg:col-span-4">
                 <div
-                    class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden shadow-[0_2px_14px_rgba(26,18,9,.07)] sticky top-8 fu1"
+                    class="sidebar-sticky bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden shadow-[0_2px_14px_rgba(26,18,9,.07)] sticky top-8 fu1"
                 >
                     <div
                         class="flex items-center gap-2 px-5 py-4 bg-[#f3ece0] border-b border-[#e8dfd0] text-[.6rem] font-extrabold tracking-[.14em] uppercase text-[#8a6e28]"
@@ -639,7 +844,7 @@
                                 class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border text-[.72rem] font-bold tracking-[.06em] uppercase {{ $sCls }}"
                             >
                                 <span
-                                    class="w-1.75 h-1.75 rounded-full animate-pulse {{ $sDot }}"
+                                    class="w-1.5 h-1.5 rounded-full animate-pulse {{ $sDot }}"
                                 ></span>
                                 {{ $sLabel }}
                             </span>
@@ -697,9 +902,7 @@
                                 </p>
                                 <div class="flex flex-wrap gap-1.5">
                                     @foreach (explode(',', $submission->keywords) as $kw)
-                                        <span
-                                            class="inline-block px-2.5 py-1 rounded bg-[#f3ece0] border border-[#e8dfd0] text-[.68rem] font-semibold tracking-[.04em] text-[#6b5740] capitalize"
-                                        >
+                                        <span class="kw-chip">
                                             {{ trim($kw) }}
                                         </span>
                                     @endforeach
@@ -718,7 +921,7 @@
                                     class="flex items-center gap-3 px-4 py-3 bg-[#f3ece0] border border-[#e8dfd0] rounded-xl"
                                 >
                                     <div
-                                        class="w-9.5 h-9.5 rounded-lg shrink-0 bg-white border border-[#e8dfd0] flex items-center justify-center text-[#2d8176]"
+                                        class="w-10 h-10 rounded-lg shrink-0 bg-white border border-[#e8dfd0] flex items-center justify-center text-[#2d8176]"
                                     >
                                         <svg
                                             class="w-5 h-5"
@@ -734,10 +937,8 @@
                                             />
                                         </svg>
                                     </div>
-                                    <div class="overflow-hidden">
-                                        <p
-                                            class="text-[.78rem] font-semibold text-[#1a1209] truncate"
-                                        >
+                                    <div class="overflow-hidden min-w-0 flex-1">
+                                        <p class="file-name-text">
                                             {{ $submission->file_name }}
                                         </p>
                                         <p
@@ -775,7 +976,7 @@
                                                 class="flex items-center gap-3 px-4 py-3 bg-[#e8f4f2] border border-[rgba(45,129,118,.3)] rounded-xl mb-3"
                                             >
                                                 <div
-                                                    class="w-9.5 h-9.5 rounded-lg shrink-0 bg-white border border-[rgba(45,129,118,.2)] flex items-center justify-center text-[#2d8176]"
+                                                    class="w-10 h-10 rounded-lg shrink-0 bg-white border border-[rgba(45,129,118,.2)] flex items-center justify-center text-[#2d8176]"
                                                 >
                                                     <svg
                                                         class="w-5 h-5"
@@ -792,11 +993,9 @@
                                                     </svg>
                                                 </div>
                                                 <div
-                                                    class="overflow-hidden flex-1"
+                                                    class="overflow-hidden flex-1 min-w-0"
                                                 >
-                                                    <p
-                                                        class="text-[.78rem] font-semibold text-[#1a1209] truncate"
-                                                    >
+                                                    <p class="file-name-text">
                                                         {{ $latestLayout->layout_file_name ?? 'layout-file.pdf' }}
                                                     </p>
                                                     <p
@@ -903,6 +1102,7 @@
                                                         {{-- Request revision --}}
                                                         <div
                                                             x-data="{ open: false }"
+                                                            class="layout-confirm-form"
                                                         >
                                                             <button
                                                                 @click="open = !open"
@@ -944,6 +1144,9 @@
                                                                     rows="3"
                                                                     placeholder="Describe what needs to be revised in the layout…"
                                                                     class="w-full px-3 py-2.5 rounded-lg border border-[#e8dfd0] bg-white text-[.85rem] text-[#1a1209] outline-none focus:border-[#f97316] focus:ring-2 focus:ring-[#f97316]/10 resize-none mb-2"
+                                                                    style="
+                                                                        font-size: 1rem;
+                                                                    "
                                                                 ></textarea>
                                                                 <button
                                                                     type="submit"
@@ -985,7 +1188,7 @@
                                             class="flex items-center gap-3 px-4 py-3 bg-[#f3ece0] border border-[#e8dfd0] rounded-xl"
                                         >
                                             <div
-                                                class="w-9.5 h-9.5 rounded-lg shrink-0 bg-white border border-[#e8dfd0] flex items-center justify-center text-[#8a6e28]"
+                                                class="w-10 h-10 rounded-lg shrink-0 bg-white border border-[#e8dfd0] flex items-center justify-center text-[#8a6e28]"
                                             >
                                                 <svg
                                                     class="w-5 h-5"
@@ -1001,10 +1204,10 @@
                                                     />
                                                 </svg>
                                             </div>
-                                            <div class="overflow-hidden flex-1">
-                                                <p
-                                                    class="text-[.78rem] font-semibold text-[#1a1209] truncate"
-                                                >
+                                            <div
+                                                class="overflow-hidden flex-1 min-w-0"
+                                            >
+                                                <p class="file-name-text">
                                                     {{ $rev->revised_file_name ?? 'revision-' . ($i + 1) . '.pdf' }}
                                                 </p>
                                                 <p
@@ -1112,9 +1315,7 @@
                         <div
                             class="bg-white border border-[#e8dfd0] rounded-[14px] overflow-hidden shadow-[0_1px_6px_rgba(26,18,9,.05)]"
                         >
-                            <div
-                                class="flex items-center justify-between flex-wrap gap-3 px-5 py-3.5 bg-[#f3ece0] border-b border-[#e8dfd0]"
-                            >
+                            <div class="review-card-header">
                                 <div class="flex items-center gap-3">
                                     <div
                                         class="w-9 h-9 rounded-full shrink-0 bg-[#f3ece0] border-[1.5px] border-[#c9b99a] text-[#8a6e28] text-[.68rem] font-bold flex items-center justify-center"
@@ -1238,9 +1439,7 @@
                         <div
                             class="bg-white border border-[#e8dfd0] rounded-[14px] overflow-hidden shadow-[0_1px_6px_rgba(26,18,9,.05)]"
                         >
-                            <div
-                                class="flex items-center justify-between flex-wrap gap-3 px-5 py-3.5 bg-[#f3ece0] border-b border-[#e8dfd0]"
-                            >
+                            <div class="review-card-header">
                                 <div class="flex items-center gap-3">
                                     <div
                                         class="w-9 h-9 rounded-full shrink-0 bg-[#e8f4f2] border-[1.5px] border-[rgba(45,129,118,.3)] text-[#2d8176] text-[.68rem] font-bold flex items-center justify-center"
@@ -1434,7 +1633,7 @@
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.58rem] font-extrabold tracking-[.08em] uppercase bg-[#f0fdf4] border-[#86efac] text-[#1a4d46]"
                                     >
                                         <span
-                                            class="w-1.25 h-1.25 rounded-full bg-[#2d8176]"
+                                            class="w-1.5 h-1.5 rounded-full bg-[#2d8176]"
                                         ></span>
                                         Accepted
                                     </span>
@@ -1443,7 +1642,7 @@
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.58rem] font-extrabold tracking-[.08em] uppercase bg-[#fef2f2] border-[#fecaca] text-[#991b1b]"
                                     >
                                         <span
-                                            class="w-1.25 h-1.25 rounded-full bg-[#c0392b]"
+                                            class="w-1.5 h-1.5 rounded-full bg-[#c0392b]"
                                         ></span>
                                         Rejected
                                     </span>
@@ -1530,7 +1729,7 @@
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.58rem] font-extrabold tracking-[.08em] uppercase bg-[#f0fdf4] border-[#86efac] text-[#1a4d46]"
                                     >
                                         <span
-                                            class="w-1.25 h-1.25 rounded-full bg-[#2d8176]"
+                                            class="w-1.5 h-1.5 rounded-full bg-[#2d8176]"
                                         ></span>
                                         Approved
                                     </span>
@@ -1539,7 +1738,7 @@
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.58rem] font-extrabold tracking-[.08em] uppercase bg-[#fef2f2] border-[#fecaca] text-[#991b1b]"
                                     >
                                         <span
-                                            class="w-1.25 h-1.25 rounded-full bg-[#c0392b]"
+                                            class="w-1.5 h-1.5 rounded-full bg-[#c0392b]"
                                         ></span>
                                         Failed at Initial Screening
                                     </span>
@@ -1548,7 +1747,7 @@
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.58rem] font-extrabold tracking-[.08em] uppercase bg-[#fffbeb] border-[#fde68a] text-[#92400e]"
                                     >
                                         <span
-                                            class="w-1.25 h-1.25 rounded-full bg-[#f59e0b]"
+                                            class="w-1.5 h-1.5 rounded-full bg-[#f59e0b]"
                                         ></span>
                                         Pending
                                     </span>

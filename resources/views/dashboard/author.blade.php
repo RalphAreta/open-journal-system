@@ -46,6 +46,12 @@
             border-bottom: 1px solid var(--border);
             margin-bottom: 36px;
         }
+        @media (max-width: 640px) {
+            .hero-header {
+                padding: 28px 0 22px;
+                margin-bottom: 24px;
+            }
+        }
         .hero-header::after {
             content: '';
             position: absolute;
@@ -80,6 +86,11 @@
             letter-spacing: -0.01em;
             line-height: 1.15;
         }
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 1.9rem;
+            }
+        }
         .hero-title em {
             font-style: italic;
             color: var(--teal);
@@ -89,6 +100,11 @@
             font-weight: 400;
             color: var(--ink-soft);
             margin-top: 8px;
+        }
+        @media (max-width: 640px) {
+            .hero-sub {
+                font-size: 0.88rem;
+            }
         }
         .date-pill {
             font-size: 0.78rem;
@@ -121,6 +137,15 @@
             box-shadow: 0 4px 14px rgba(45, 129, 118, 0.3);
             position: relative;
             overflow: hidden;
+            white-space: nowrap;
+        }
+        @media (max-width: 400px) {
+            .btn-submit {
+                padding: 10px 18px;
+                font-size: 0.75rem;
+                width: 100%;
+                justify-content: center;
+            }
         }
         .btn-submit::before {
             content: '';
@@ -138,6 +163,7 @@
             box-shadow: 0 8px 22px rgba(45, 129, 118, 0.36);
         }
 
+        /* ── Stats Grid ── */
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -152,9 +178,10 @@
                 grid-template-columns: repeat(3, 1fr);
             }
         }
-        @media (max-width: 560px) {
+        @media (max-width: 480px) {
             .stat-grid {
                 grid-template-columns: repeat(2, 1fr);
+                border-radius: 10px;
             }
         }
         .stat-cell {
@@ -165,9 +192,15 @@
             transition: background 0.18s;
             cursor: default;
         }
+        @media (max-width: 480px) {
+            .stat-cell {
+                padding: 16px 14px 14px;
+            }
+        }
         .stat-cell:hover {
             background: #fff;
         }
+        /* Desktop: 7-col — last cell + 7th no right border, 4th+ no bottom border */
         .stat-cell:last-child,
         .stat-cell:nth-child(7) {
             border-right: none;
@@ -175,15 +208,46 @@
         .stat-cell:nth-child(n + 5) {
             border-bottom: none;
         }
+        /* Tablet: 3-col */
         @media (max-width: 900px) {
+            .stat-cell:nth-child(7) {
+                border-right: 1px solid var(--border); /* reset desktop override */
+            }
+            .stat-cell:nth-child(n + 5) {
+                border-bottom: 1px solid var(--border); /* reset */
+            }
             .stat-cell:nth-child(3n) {
                 border-right: none;
             }
-            .stat-cell:nth-child(n + 4) {
+            .stat-cell:nth-child(n + 6) {
                 border-bottom: none;
             }
-            .stat-cell:nth-child(-n + 3) {
+            .stat-cell:nth-child(-n + 5) {
                 border-bottom: 1px solid var(--border);
+            }
+        }
+        /* Mobile: 2-col */
+        @media (max-width: 480px) {
+            .stat-cell:nth-child(3n) {
+                border-right: 1px solid var(--border); /* reset tablet */
+            }
+            .stat-cell:nth-child(n + 6) {
+                border-bottom: 1px solid var(--border); /* reset tablet */
+            }
+            .stat-cell:nth-child(-n + 5) {
+                border-bottom: 1px solid var(--border);
+            }
+            .stat-cell:nth-child(2n) {
+                border-right: none;
+            }
+            .stat-cell:nth-child(n + 7) {
+                border-bottom: none;
+            }
+            /* 7th cell spans full width on mobile (odd one out) */
+            .stat-cell:nth-child(7) {
+                grid-column: 1 / -1;
+                border-right: none;
+                border-bottom: none;
             }
         }
         .stat-lbl {
@@ -194,11 +258,23 @@
             color: var(--ink-soft);
             margin-bottom: 10px;
         }
+        @media (max-width: 480px) {
+            .stat-lbl {
+                font-size: 0.6rem;
+                letter-spacing: 0.06em;
+                margin-bottom: 6px;
+            }
+        }
         .stat-val {
             font-family: 'Libre Baskerville', serif;
             font-size: 2.6rem;
             font-weight: 700;
             line-height: 1;
+        }
+        @media (max-width: 480px) {
+            .stat-val {
+                font-size: 1.9rem;
+            }
         }
         .stat-cell .accent-line {
             position: absolute;
@@ -249,6 +325,7 @@
             background: #c0392b;
         }
 
+        /* ── Search ── */
         .search-wrap {
             position: relative;
         }
@@ -284,7 +361,14 @@
         .search-inp::placeholder {
             color: #b5a595;
         }
+        @media (max-width: 480px) {
+            .search-inp {
+                font-size: 16px; /* prevent iOS auto-zoom */
+                padding: 11px 16px 11px 44px;
+            }
+        }
 
+        /* ── Alert strip ── */
         .alert-strip {
             border-radius: 10px;
             overflow: hidden;
@@ -304,6 +388,12 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
+            min-width: 0;
+        }
+        @media (max-width: 480px) {
+            .alert-strip-body {
+                padding: 14px 14px;
+            }
         }
         .alert-tag {
             font-size: 0.7rem;
@@ -315,6 +405,11 @@
         .alert-desc {
             font-size: 0.9rem;
             font-weight: 400;
+        }
+        @media (max-width: 480px) {
+            .alert-desc {
+                font-size: 0.82rem;
+            }
         }
         .btn-alert-action {
             font-size: 0.76rem;
@@ -329,7 +424,7 @@
             white-space: nowrap;
         }
 
-        /* CTF alert specific */
+        /* CTF list */
         .ctf-list {
             display: flex;
             flex-direction: column;
@@ -354,6 +449,7 @@
             color: var(--ink-mid);
             flex: 1;
             min-width: 0;
+            word-break: break-word;
         }
         .ctf-item-ref {
             font-size: 0.72rem;
@@ -389,7 +485,15 @@
             background: var(--gold-dk);
             transform: translateY(-1px);
         }
+        @media (max-width: 480px) {
+            .btn-ctf-download {
+                width: 100%;
+                justify-content: center;
+                padding: 9px 14px;
+            }
+        }
 
+        /* ── Manuscript table ── */
         .ms-table-wrap {
             background: #fff;
             border: 1px solid var(--border-dk);
@@ -404,6 +508,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+        }
+        @media (max-width: 480px) {
+            .ms-table-head {
+                padding: 14px 16px 12px;
+            }
         }
         .ms-table-head-title {
             font-family: 'Libre Baskerville', serif;
@@ -461,6 +570,25 @@
             color: var(--teal);
         }
 
+        /* Mobile table: hide Ref No. header, stack layout */
+        @media (max-width: 640px) {
+            table.mst th:first-child,
+            table.mst td:first-child {
+                display: none;
+            }
+            table.mst th {
+                padding: 10px 16px;
+            }
+            table.mst td {
+                padding: 14px 16px;
+            }
+            /* Updated column hidden */
+            table.mst th:last-child,
+            table.mst td:last-child {
+                display: none;
+            }
+        }
+
         .ms-ref {
             font-size: 0.76rem;
             font-weight: 700;
@@ -481,6 +609,46 @@
             line-height: 1.4;
             margin-top: 5px;
             transition: color 0.12s;
+            word-break: break-word;
+        }
+        @media (max-width: 640px) {
+            .ms-row-title {
+                font-size: 0.95rem;
+                margin-top: 0;
+            }
+            /* Show ref inline on mobile since we hid the ref column */
+            .ms-ref-inline {
+                display: inline-block;
+                margin-bottom: 4px;
+            }
+        }
+        /* Hide inline ref on desktop (the column handles it) */
+        .ms-ref-inline {
+            display: none;
+        }
+        @media (max-width: 640px) {
+            .ms-ref-inline {
+                display: inline-block;
+            }
+        }
+
+        /* Status + date row on mobile */
+        .ms-mobile-meta {
+            display: none;
+        }
+        @media (max-width: 640px) {
+            .ms-mobile-meta {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex-wrap: wrap;
+                margin-top: 8px;
+            }
+            .ms-mobile-date {
+                font-size: 0.72rem;
+                font-weight: 600;
+                color: var(--ink-soft);
+            }
         }
 
         /* CTF badge on row */
@@ -506,6 +674,7 @@
             flex-shrink: 0;
         }
 
+        /* ── Status badges ── */
         .sbadge {
             display: inline-flex;
             align-items: center;
@@ -518,6 +687,13 @@
             text-transform: uppercase;
             border: 1px solid;
             white-space: nowrap;
+        }
+        @media (max-width: 480px) {
+            .sbadge {
+                font-size: 0.62rem;
+                padding: 4px 9px;
+                letter-spacing: 0.04em;
+            }
         }
         .sbadge .dot {
             width: 6px;
@@ -582,6 +758,7 @@
             background: var(--gold);
         }
 
+        /* ── Note chips ── */
         .note-chip {
             display: flex;
             align-items: flex-start;
@@ -643,9 +820,16 @@
             letter-spacing: 0.04em;
             white-space: nowrap;
         }
+
+        /* ── Empty state ── */
         .empty-state {
             padding: 80px 24px;
             text-align: center;
+        }
+        @media (max-width: 480px) {
+            .empty-state {
+                padding: 48px 16px;
+            }
         }
         .empty-state-icon {
             width: 64px;
@@ -666,6 +850,7 @@
             color: #c9b99a;
         }
 
+        /* ── Animations ── */
         .fu {
             animation: fu 0.45s ease both;
         }
@@ -691,11 +876,18 @@
                 transform: translateY(0);
             }
         }
+
+        /* ── Pagination ── */
+        @media (max-width: 480px) {
+            nav[role='navigation'] {
+                font-size: 0.78rem;
+            }
+        }
     </style>
 @endpush
 
 @section('content')
-    <div class="aw aw-bg max-w-7xl mx-auto px-1">
+    <div class="aw aw-bg max-w-7xl mx-auto px-4 sm:px-4 lg:px-1">
         {{-- Hero --}}
         <div class="hero-header fu">
             <div
@@ -714,7 +906,7 @@
                     </p>
                 </div>
                 <div
-                    class="flex items-center gap-3 self-start md:self-auto shrink-0"
+                    class="flex items-center gap-3 self-start md:self-auto shrink-0 w-full sm:w-auto"
                 >
                     <span class="date-pill hidden sm:inline-block">
                         {{ now()->format('D, M j Y') }}
@@ -743,7 +935,7 @@
         </div>
 
         {{-- Stats --}}
-        <div class="stat-grid fu1 mb-10">
+        <div class="stat-grid fu1 mb-8 sm:mb-10">
             @foreach ([
                     ['Submitted', $stats['submitted'], 'sv-teal', 'al-teal'],
                     ['Under Review', $stats['under_review'], 'sv-gold', 'al-gold'],
@@ -774,35 +966,49 @@
             @endforeach
         </div>
 
-       {{-- Search --}}
-<div class="fu2 mb-6">
-    <form method="GET" action="{{ route('submissions.index') }}" class="search-wrap" id="searchForm">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                stroke-width="2.5"
-            />
-        </svg>
-        <input
-            type="text"
-            name="search"
-            id="dashboardSearch"
-            class="search-inp"
-            placeholder="Search by title or reference number…"
-            value="{{ $search ?? '' }}"
-            autocomplete="off"
-        />
-        @if (!empty($search))
-
-                href="{{ route('submissions.index') }}"
-                style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#b5a595;text-decoration:none;font-size:1.1rem;line-height:1;"
-                title="Clear search"
+        {{-- Search --}}
+        <div class="fu2 mb-5 sm:mb-6">
+            <form
+                method="GET"
+                action="{{ route('submissions.index') }}"
+                class="search-wrap"
+                id="searchForm"
             >
-                &times;
-            </a>
-        @endif
-    </form>
-</div>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        stroke-width="2.5"
+                    />
+                </svg>
+                <input
+                    type="text"
+                    name="search"
+                    id="dashboardSearch"
+                    class="search-inp"
+                    placeholder="Search by title or reference number…"
+                    value="{{ $search ?? '' }}"
+                    autocomplete="off"
+                />
+                @if (! empty($search))
+                    <a
+                        href="{{ route('submissions.index') }}"
+                        style="
+                            position: absolute;
+                            right: 14px;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            color: #b5a595;
+                            text-decoration: none;
+                            font-size: 1.1rem;
+                            line-height: 1;
+                        "
+                        title="Clear search"
+                    >
+                        &times;
+                    </a>
+                @endif
+            </form>
+        </div>
 
         {{-- ── CTF Alert ── --}}
         @php
@@ -831,7 +1037,15 @@
                         class="alert-strip-body"
                         style="flex-direction: column; align-items: flex-start"
                     >
-                        <div class="flex items-center gap-3 w-full">
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                                width: 100%;
+                                flex-wrap: wrap;
+                            "
+                        >
                             <div
                                 style="
                                     width: 38px;
@@ -859,7 +1073,7 @@
                                     />
                                 </svg>
                             </div>
-                            <div>
+                            <div style="flex: 1; min-width: 0">
                                 <p
                                     class="alert-tag"
                                     style="color: var(--gold-dk)"
@@ -876,6 +1090,7 @@
                                 </p>
                             </div>
                         </div>
+
                         <div class="ctf-list mt-2 w-full">
                             @foreach ($ctfPending as $cs)
                                 <div
@@ -892,6 +1107,7 @@
                                             align-items: center;
                                             gap: 10px;
                                             width: 100%;
+                                            flex-wrap: wrap;
                                         "
                                     >
                                         <span class="ctf-item-ref">
@@ -923,7 +1139,6 @@
                                         </a>
                                     </div>
 
-                                    {{-- Instructions --}}
                                     <div
                                         style="
                                             background: #fffbf0;
@@ -945,7 +1160,6 @@
                                         completed form below.
                                     </div>
 
-                                    {{-- Upload signed CTF --}}
                                     <form
                                         method="POST"
                                         action="{{ route('submissions.upload-signed-ctf', $cs) }}"
@@ -1022,7 +1236,13 @@
                         style="background: #f97316"
                     ></div>
                     <div class="alert-strip-body">
-                        <div class="flex items-center gap-3">
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                            "
+                        >
                             <div
                                 style="
                                     width: 38px;
@@ -1057,7 +1277,7 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="flex gap-2 flex-wrap">
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap">
                             @foreach ($revisionsNeeded->take(2) as $rev)
                                 <a
                                     href="{{ route('submissions.show', $rev) }}"
@@ -1077,7 +1297,7 @@
             </div>
         @endif
 
-        {{-- ── Table ── --}}
+        {{-- ── Manuscripts Table ── --}}
         <div class="ms-table-wrap fu3">
             <div class="ms-table-head">
                 <span class="ms-table-head-title">Manuscripts</span>
@@ -1107,12 +1327,20 @@
                                         '{{ route('submissions.show', $s) }}'
                                 "
                             >
+                                {{-- Ref No. column (hidden on mobile) --}}
                                 <td>
                                     <span class="ms-ref">
                                         #{{ str_pad($s->id, 5, '0', STR_PAD_LEFT) }}
                                     </span>
                                 </td>
+
+                                {{-- Title + notes column --}}
                                 <td>
+                                    {{-- Inline ref badge visible only on mobile --}}
+                                    <span class="ms-ref ms-ref-inline">
+                                        #{{ str_pad($s->id, 5, '0', STR_PAD_LEFT) }}
+                                    </span>
+
                                     <p class="ms-row-title title-cell">
                                         {{ $s->title }}
                                     </p>
@@ -1191,10 +1419,15 @@
                                                     ->latest()
                                                     ->first();
                                                 $submissionIsRejected = $s->status === 'rejected';
-                                                $allAppealsExhausted = $s->appeals()->count() >= 2 && $s->appeals()->where('status', 'rejected')->count() >= 2;
+                                                $allAppealsExhausted =
+                                                    $s->appeals()->count() >= 2 &&
+                                                    $s
+                                                        ->appeals()
+                                                        ->where('status', 'rejected')
+                                                        ->count() >= 2;
                                             @endphp
 
-                                            @if ($appeal && !$submissionIsRejected && !$allAppealsExhausted)
+                                            @if ($appeal && ! $submissionIsRejected && ! $allAppealsExhausted)
                                                 <div
                                                     class="note-chip {{ $appeal->status === 'approved' ? 'emerald' : 'red' }}"
                                                 >
@@ -1217,11 +1450,56 @@
                                             @endif
                                         </div>
                                     @endif
+
+                                    {{-- Mobile-only: status badge + date shown under title --}}
+                                    <div class="ms-mobile-meta">
+                                        @php
+                                            $screeningFailed = $s->initial_screening_status === 'failed';
+                                            $cls = $screeningFailed
+                                                ? 'rejected'
+                                                : match ($s->status) {
+                                                    'accepted' => 'accepted',
+                                                    'under_review' => 'under_review',
+                                                    'revision_under_review' => 'revision_review',
+                                                    'revisions_requested' => 'revisions_requested',
+                                                    'rejected' => 'rejected',
+                                                    default => 'submitted',
+                                                };
+                                            $lbl = $screeningFailed
+                                                ? 'Failed Initial Screening'
+                                                : match ($s->status) {
+                                                    'revision_under_review' => 'Revision Review',
+                                                    default => ucfirst(str_replace('_', ' ', $s->status)),
+                                                };
+                                        @endphp
+
+                                        <span class="sbadge {{ $cls }}">
+                                            <span class="dot"></span>
+                                            {{ $lbl }}
+                                        </span>
+                                        @if ($s->managing_editor_status === 'ctf_sent' && $s->ctf_file_path)
+                                            <span
+                                                class="sbadge ctf_pending"
+                                                style="
+                                                    font-size: 0.6rem;
+                                                    padding: 3px 8px;
+                                                "
+                                            >
+                                                <span class="dot"></span>
+                                                CTF Pending
+                                            </span>
+                                        @endif
+
+                                        <span class="ms-mobile-date">
+                                            {{ $s->updated_at->format('d M Y') }}
+                                        </span>
+                                    </div>
                                 </td>
+
+                                {{-- Status column (hidden on mobile — shown in ms-mobile-meta above) --}}
                                 <td>
                                     @php
                                         $screeningFailed = $s->initial_screening_status === 'failed';
-
                                         $cls = $screeningFailed
                                             ? 'rejected'
                                             : match ($s->status) {
@@ -1247,7 +1525,6 @@
                                         {{ $lbl }}
                                     </span>
 
-                                    {{-- CTF badge under status --}}
                                     @if ($s->managing_editor_status === 'ctf_sent' && $s->ctf_file_path)
                                         <div class="mt-2">
                                             <span
@@ -1263,6 +1540,8 @@
                                         </div>
                                     @endif
                                 </td>
+
+                                {{-- Date column (hidden on mobile) --}}
                                 <td style="text-align: right">
                                     <span class="ms-date">
                                         {{ $s->updated_at->format('d M Y') }}
@@ -1317,40 +1596,34 @@
 
 @push('scripts')
     <script>
-      // Submit form after user stops typing (400ms debounce)
-let searchTimer;
-document.getElementById('dashboardSearch')?.addEventListener('input', function () {
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => {
-        const form = document.getElementById('searchForm');
+        let searchTimer;
+        document.getElementById('dashboardSearch')?.addEventListener('input', function () {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                const form = document.getElementById('searchForm');
+                const existing = form.querySelector('input[name="page"]');
+                if (existing) existing.remove();
+                const currentPage = new URLSearchParams(window.location.search).get('page');
+                if (currentPage) {
+                    const pageInput = document.createElement('input');
+                    pageInput.type  = 'hidden';
+                    pageInput.name  = 'page';
+                    pageInput.value = currentPage;
+                    form.appendChild(pageInput);
+                }
+                form.submit();
+            }, 400);
+        });
 
-        // Preserve current page
-        const existing = form.querySelector('input[name="page"]');
-        if (existing) existing.remove();
-        const currentPage = new URLSearchParams(window.location.search).get('page');
-        if (currentPage) {
-            const pageInput = document.createElement('input');
-            pageInput.type  = 'hidden';
-            pageInput.name  = 'page';
-            pageInput.value = currentPage;
-            form.appendChild(pageInput);
-        }
-
-        form.submit();
-    }, 400);
-});
-
-// After load, if there's an active search just focus back on the search input — no scrolling
-window.addEventListener('load', function () {
-    const search = document.getElementById('dashboardSearch');
-    if (search && search.value.trim() !== '') {
-        search.focus();
-        // Move cursor to end
-        const val = search.value;
-        search.value = '';
-        search.value = val;
-    }
-});
+        window.addEventListener('load', function () {
+            const search = document.getElementById('dashboardSearch');
+            if (search && search.value.trim() !== '') {
+                search.focus();
+                const val = search.value;
+                search.value = '';
+                search.value = val;
+            }
+        });
 
         @if(session('success'))
         Swal.fire({

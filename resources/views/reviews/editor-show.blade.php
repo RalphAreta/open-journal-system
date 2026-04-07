@@ -54,11 +54,18 @@
         .font-mono {
             font-family: 'DM Mono', monospace;
         }
+
         .hero-header {
             position: relative;
-            padding: 44px 0 32px;
+            padding: 28px 0 22px;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 28px;
+            margin-bottom: 20px;
+        }
+        @media (min-width: 640px) {
+            .hero-header {
+                padding: 44px 0 32px;
+                margin-bottom: 28px;
+            }
         }
         .hero-header::after {
             content: '';
@@ -88,18 +95,23 @@
         }
         .hero-title {
             font-family: 'Libre Baskerville', serif;
-            font-size: 2rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: var(--ink);
             letter-spacing: -0.01em;
             line-height: 1.25;
+        }
+        @media (min-width: 640px) {
+            .hero-title {
+                font-size: 2rem;
+            }
         }
         .hero-title em {
             font-style: italic;
             color: var(--teal);
         }
         .hero-sub {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 400;
             color: var(--ink-soft);
             margin-top: 6px;
@@ -131,6 +143,7 @@
         .back-link:hover {
             color: var(--teal);
         }
+
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -156,6 +169,8 @@
         .fu4 {
             animation: fadeUp 0.35s 0.24s ease both;
         }
+
+        /* ── Layout shell ── */
         .page-shell {
             display: grid;
             grid-template-columns: 1fr 360px;
@@ -170,16 +185,24 @@
                 order: -1;
             }
         }
+
+        /* ── Cards ── */
         .card {
             background: var(--white);
             border: 1px solid var(--border-dk);
             border-radius: 14px;
-            padding: 24px;
+            padding: 16px;
             box-shadow: 0 2px 12px rgba(26, 18, 9, 0.06);
+        }
+        @media (min-width: 640px) {
+            .card {
+                padding: 24px;
+            }
         }
         .card + .card {
             margin-top: 16px;
         }
+
         .section-label {
             font-size: 9px;
             font-weight: 700;
@@ -197,11 +220,25 @@
             height: 1px;
             background: var(--border);
         }
+
+        /* ── Meta grid: 1-col mobile → 2-col sm → 3-col md ── */
         .meta-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px 24px;
+            grid-template-columns: 1fr;
+            gap: 12px 24px;
         }
+        @media (min-width: 480px) {
+            .meta-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 768px) {
+            .meta-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px 24px;
+            }
+        }
+
         .meta-label {
             font-size: 9px;
             font-weight: 700;
@@ -215,6 +252,7 @@
             font-weight: 600;
             color: var(--ink);
         }
+
         .pill {
             display: inline-flex;
             align-items: center;
@@ -257,14 +295,15 @@
             border-color: var(--border);
             color: var(--muted);
         }
+
         .abstract-block {
             background: var(--parchment);
             border-radius: 10px;
-            padding: 16px 18px;
+            padding: 14px 16px;
             font-size: 13px;
             color: var(--ink-soft);
             line-height: 1.75;
-            margin-top: 20px;
+            margin-top: 16px;
             border: 1px solid var(--border);
         }
         .dl-link {
@@ -280,22 +319,30 @@
         .dl-link:hover {
             color: var(--teal-dark);
         }
+
         .review-card {
             background: var(--parchment);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 16px;
+            padding: 14px;
         }
         .review-card + .review-card {
             margin-top: 10px;
         }
+
+        /* ── Reviewer grid: 1-col mobile → 2-col sm ── */
         .reviewer-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr;
             gap: 8px;
             max-height: 300px;
             overflow-y: auto;
             padding: 2px;
+        }
+        @media (min-width: 480px) {
+            .reviewer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         .reviewer-grid::-webkit-scrollbar {
             width: 4px;
@@ -307,6 +354,7 @@
             background: var(--border);
             border-radius: 4px;
         }
+
         .reviewer-card {
             border: 1.5px solid var(--border);
             border-radius: 10px;
@@ -374,11 +422,19 @@
         .reviewer-card.selected .reviewer-check svg {
             display: block;
         }
+
+        /* ── Decision grid: 1-col mobile → 3-col sm ── */
         .decision-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr;
             gap: 10px;
         }
+        @media (min-width: 480px) {
+            .decision-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
         .decision-option {
             position: relative;
         }
@@ -393,12 +449,17 @@
             display: block;
             border: 1.5px solid var(--border);
             border-radius: 10px;
-            padding: 14px 12px;
+            padding: 12px;
             cursor: pointer;
             transition:
                 border-color 0.16s,
                 background 0.16s,
                 box-shadow 0.16s;
+        }
+        @media (min-width: 640px) {
+            .decision-face {
+                padding: 14px 12px;
+            }
         }
         .decision-face:hover {
             border-color: var(--teal);
@@ -418,6 +479,7 @@
             border-color: var(--amber);
             background: var(--amber-light);
         }
+
         .decision-icon {
             width: 32px;
             height: 32px;
@@ -436,10 +498,17 @@
         .icon-amber {
             background: var(--amber-light);
         }
+
+        /* ── Revision type grid: 1-col mobile → 2-col sm ── */
         .revision-type-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 8px;
+        }
+        @media (min-width: 480px) {
+            .revision-type-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
         .revision-type-grid .decision-option input:checked + .decision-face {
             box-shadow: 0 2px 12px rgba(45, 129, 118, 0.15);
@@ -452,6 +521,20 @@
             border-color: var(--red);
             background: var(--red-light);
         }
+
+        /* ── Responsive 2-col helper ── */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        @media (min-width: 480px) {
+            .grid-2col {
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+            }
+        }
+
         .field-input {
             width: 100%;
             padding: 10px 14px;
@@ -482,9 +565,10 @@
             background-position: right 14px center;
             padding-right: 36px;
         }
+
         .state-block {
             border-radius: 10px;
-            padding: 18px 20px;
+            padding: 16px 18px;
         }
         .state-pending {
             background: var(--amber-light);
@@ -502,6 +586,7 @@
             background: var(--blue-light);
             border: 1px solid #bfdbfe;
         }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -571,6 +656,7 @@
         .btn-full {
             width: 100%;
         }
+
         .hint-box {
             display: flex;
             gap: 10px;
@@ -585,16 +671,23 @@
             color: #1d4ed8;
             line-height: 1.6;
         }
+
         .sidebar-card {
             background: var(--white);
             border: 1px solid var(--border-dk);
             border-radius: 14px;
-            padding: 20px;
+            padding: 16px;
             box-shadow: 0 2px 12px rgba(26, 18, 9, 0.06);
+        }
+        @media (min-width: 640px) {
+            .sidebar-card {
+                padding: 20px;
+            }
         }
         .sidebar-card + .sidebar-card {
             margin-top: 14px;
         }
+
         .match-badge {
             font-size: 9px;
             font-weight: 700;
@@ -606,6 +699,7 @@
             border: 1px solid #a7f3d0;
             border-radius: 100px;
         }
+
         .step-row {
             display: flex;
             align-items: center;
@@ -643,6 +737,7 @@
             color: var(--muted);
             margin-top: 1px;
         }
+
         .date-wrap {
             position: relative;
         }
@@ -656,6 +751,7 @@
         input[type='date'].field-input {
             padding-left: 38px;
         }
+
         .scrollbox {
             max-height: 260px;
             overflow-y: auto;
@@ -668,6 +764,7 @@
             background: var(--border);
             border-radius: 4px;
         }
+
         .hidden {
             display: none !important;
         }
@@ -675,7 +772,7 @@
 @endpush
 
 @section('content')
-    <div class="aw aw-bg max-w-7xl mx-auto px-6 pb-16">
+    <div class="aw aw-bg max-w-7xl mx-auto px-4 sm:px-6 pb-12 sm:pb-16">
         {{-- Hero Header --}}
         <div class="hero-header fu">
             <a href="{{ route('editor.submissions') }}" class="back-link">
@@ -790,32 +887,21 @@
                 {{-- Revision Re-Review --}}
                 @if ($submission->status === 'revision_under_review' && $submission->revisionRequests->isNotEmpty())
                     @php
-                        // Get all revisions with files, sorted by creation date
-                        $allRevisions = $submission->revisionRequests()
+                        $allRevisions = $submission
+                            ->revisionRequests()
                             ->whereNotNull('revised_file_path')
                             ->orderBy('created_at')
                             ->get();
-
                         $latestRevision = $allRevisions->last();
-                        $previousRevision = null;
-
-                        if ($allRevisions->count() > 1) {
-                            $previousRevision = $allRevisions->slice(-2, 1)->first();
-                        }
-
+                        $previousRevision = $allRevisions->count() > 1 ? $allRevisions->slice(-2, 1)->first() : null;
                         $hasMultipleRevisions = $allRevisions->count() > 1;
                     @endphp
 
                     <div class="card fu1" style="margin-top: 16px">
                         <div class="section-label">Revision Files</div>
-                        <div
-                            style="
-                                display: grid;
-                                grid-template-columns: 1fr 1fr;
-                                gap: 14px;
-                                margin-bottom: 20px;
-                            "
-                        >
+
+                        {{-- Responsive 2-col file comparison --}}
+                        <div class="grid-2col" style="margin-bottom: 20px">
                             {{-- Current/Latest Revision --}}
                             <div
                                 style="
@@ -827,17 +913,29 @@
                             >
                                 <div
                                     class="meta-label"
-                                    style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;"
+                                    style="
+                                        margin-bottom: 10px;
+                                        display: flex;
+                                        justify-content: space-between;
+                                        align-items: center;
+                                    "
                                 >
                                     <span>
-                                        @if($hasMultipleRevisions)
-                                            Current Revision
-                                        @else
-                                            Submitted Manuscript
-                                        @endif
+                                        {{ $hasMultipleRevisions ? 'Current Revision' : 'Submitted Manuscript' }}
                                     </span>
-                                    @if($allRevisions->count() > 1)
-                                        <span style="font-size: 11px; background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 4px; font-weight: normal;">v{{ $allRevisions->count() }}</span>
+                                    @if ($allRevisions->count() > 1)
+                                        <span
+                                            style="
+                                                font-size: 11px;
+                                                background: #dbeafe;
+                                                color: #1e40af;
+                                                padding: 2px 8px;
+                                                border-radius: 4px;
+                                                font-weight: normal;
+                                            "
+                                        >
+                                            v{{ $allRevisions->count() }}
+                                        </span>
                                     @endif
                                 </div>
 
@@ -894,22 +992,32 @@
                             >
                                 <div
                                     class="meta-label"
-                                    style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;"
+                                    style="
+                                        margin-bottom: 10px;
+                                        display: flex;
+                                        justify-content: space-between;
+                                        align-items: center;
+                                    "
                                 >
                                     <span>
-                                        @if($previousRevision)
-                                            Previous Revision
-                                        @else
-                                            Original Manuscript
-                                        @endif
+                                        {{ $previousRevision ? 'Previous Revision' : 'Original Manuscript' }}
                                     </span>
-                                    @if($previousRevision && $allRevisions->count() > 1)
-                                        <span style="font-size: 11px; background: #f3f4f6; color: #374151; padding: 2px 8px; border-radius: 4px; font-weight: normal;">v{{ $allRevisions->count() - 1 }}</span>
+                                    @if ($previousRevision && $allRevisions->count() > 1)
+                                        <span
+                                            style="
+                                                font-size: 11px;
+                                                background: #f3f4f6;
+                                                color: #374151;
+                                                padding: 2px 8px;
+                                                border-radius: 4px;
+                                                font-weight: normal;
+                                            "
+                                        >
+                                            v{{ $allRevisions->count() - 1 }}
+                                        </span>
                                     @endif
                                 </div>
-
-                                @if($previousRevision)
-                                    {{-- Show Previous Revision --}}
+                                @if ($previousRevision)
                                     @if ($previousRevision->revised_file_path)
                                         <p
                                             style="
@@ -951,8 +1059,7 @@
                                         </p>
                                     @endif
                                 @else
-                                    {{-- Show Original File (only if no previous revision) --}}
-                                    @if ($originalFileExists && !$hasMultipleRevisions)
+                                    @if ($originalFileExists && ! $hasMultipleRevisions)
                                         <p
                                             style="
                                                 font-size: 12px;
@@ -1031,7 +1138,7 @@
                             style="
                                 border: 1.5px solid #bfdbfe;
                                 border-radius: 12px;
-                                padding: 20px;
+                                padding: 16px;
                                 background: var(--blue-light);
                             "
                         >
@@ -1041,6 +1148,7 @@
                                     align-items: center;
                                     gap: 10px;
                                     margin-bottom: 16px;
+                                    flex-wrap: wrap;
                                 "
                             >
                                 <div
@@ -1052,6 +1160,7 @@
                                         display: flex;
                                         align-items: center;
                                         justify-content: center;
+                                        flex-shrink: 0;
                                     "
                                 >
                                     <svg
@@ -1294,6 +1403,8 @@
                                                     display: flex;
                                                     align-items: center;
                                                     justify-content: space-between;
+                                                    flex-wrap: wrap;
+                                                    gap: 6px;
                                                 "
                                             >
                                                 <span
@@ -1329,6 +1440,8 @@
                                                 display: flex;
                                                 align-items: center;
                                                 justify-content: space-between;
+                                                flex-wrap: wrap;
+                                                gap: 6px;
                                                 margin-bottom: 10px;
                                             "
                                         >
@@ -1452,6 +1565,8 @@
                                         display: flex;
                                         align-items: center;
                                         justify-content: space-between;
+                                        flex-wrap: wrap;
+                                        gap: 6px;
                                         margin-bottom: 10px;
                                     "
                                 >
@@ -1625,14 +1740,7 @@
                                     Passed Initial Screening
                                 </p>
                             </div>
-                            <div
-                                style="
-                                    display: grid;
-                                    grid-template-columns: 1fr 1fr;
-                                    gap: 12px;
-                                    margin-bottom: 12px;
-                                "
-                            >
+                            <div class="grid-2col" style="margin-bottom: 12px">
                                 <div>
                                     <div
                                         class="meta-label"
@@ -1712,14 +1820,7 @@
                                     Failed Initial Screening
                                 </p>
                             </div>
-                            <div
-                                style="
-                                    display: grid;
-                                    grid-template-columns: 1fr 1fr;
-                                    gap: 12px;
-                                    margin-bottom: 12px;
-                                "
-                            >
+                            <div class="grid-2col" style="margin-bottom: 12px">
                                 <div>
                                     <div
                                         class="meta-label"
@@ -1776,6 +1877,7 @@
                 @if ($submission->reviews->isNotEmpty())
                     <div class="card fu3" style="margin-top: 16px">
                         <div class="section-label">Editor Decision</div>
+
                         @if (in_array($submission->status, ['accepted', 'rejected', 'revisions_requested', 'with_managing_editor', 'layout_editing', 'layout_review', 'author_confirmation']))
                             <div class="state-block state-blue">
                                 <div
@@ -1807,12 +1909,8 @@
                                     </p>
                                 </div>
                                 <div
-                                    style="
-                                        display: grid;
-                                        grid-template-columns: 1fr 1fr;
-                                        gap: 12px;
-                                        margin-bottom: 12px;
-                                    "
+                                    class="grid-2col"
+                                    style="margin-bottom: 12px"
                                 >
                                     <div>
                                         <div
@@ -1957,6 +2055,7 @@
                                                     display: flex;
                                                     align-items: center;
                                                     gap: 8px;
+                                                    flex-wrap: wrap;
                                                 "
                                             >
                                                 <svg
@@ -2409,6 +2508,7 @@
                                     >
                                 </div>
 
+                                {{-- Actions: stack on mobile, row on sm --}}
                                 <div
                                     style="
                                         display: flex;
@@ -2417,6 +2517,7 @@
                                         gap: 10px;
                                         padding-top: 16px;
                                         border-top: 1px solid var(--border);
+                                        flex-wrap: wrap;
                                     "
                                 >
                                     <button
@@ -2463,8 +2564,7 @@
                     $declinedAssignments = $allAssignments->where('status', 'declined');
                     $hasActiveAssignments = $activeAssignments->count() > 0;
                     $allDeclined = $allAssignments->count() > 0 && $activeAssignments->count() === 0;
-                    $showAssignForm = ! $hasActiveAssignments; // show only when no active/pending assignments
-
+                    $showAssignForm = ! $hasActiveAssignments;
                     $hasCompletedReviews = $submission
                         ->reviews()
                         ->where('status', 'submitted')
@@ -2473,12 +2573,13 @@
 
                 @if (in_array($submission->status, ['submitted', 'under_review']) && ! $hasCompletedReviews)
                     <div class="card fu4" style="margin-top: 16px">
-                        {{-- Card header --}}
                         <div
                             style="
                                 display: flex;
                                 align-items: center;
                                 justify-content: space-between;
+                                flex-wrap: wrap;
+                                gap: 8px;
                                 margin-bottom: {{ $showAssignForm ? '20px' : '14px' }};
                             "
                         >
@@ -2514,7 +2615,6 @@
                             </span>
                         </div>
 
-                        {{-- Active assignments — form hidden while awaiting confirmation --}}
                         @if ($hasActiveAssignments)
                             <div
                                 style="
@@ -2549,6 +2649,8 @@
                                                 display: flex;
                                                 align-items: center;
                                                 justify-content: space-between;
+                                                flex-wrap: wrap;
+                                                gap: 4px;
                                             "
                                         >
                                             <span
@@ -2583,7 +2685,6 @@
                             </div>
                         @endif
 
-                        {{-- All-declined notice + re-assign prompt --}}
                         @if ($allDeclined)
                             <div
                                 style="
@@ -2620,6 +2721,8 @@
                                                 display: flex;
                                                 align-items: center;
                                                 justify-content: space-between;
+                                                flex-wrap: wrap;
+                                                gap: 4px;
                                             "
                                         >
                                             <span
@@ -2646,7 +2749,6 @@
                             </div>
                         @endif
 
-                        {{-- Assign form — only visible when no active assignments --}}
                         @if ($showAssignForm)
                             <form
                                 method="POST"
@@ -2681,15 +2783,8 @@
 
                                     @if ($matchedReviewers->count() > 0)
                                         <div
-                                            style="
-                                                display: grid;
-                                                grid-template-columns: repeat(
-                                                    2,
-                                                    1fr
-                                                );
-                                                gap: 8px;
-                                                margin-bottom: 14px;
-                                            "
+                                            class="reviewer-grid"
+                                            style="margin-bottom: 14px"
                                         >
                                             @foreach ($matchedReviewers as $u)
                                                 @php
@@ -2826,16 +2921,7 @@
                                             </p>
                                         @endif
 
-                                        <div
-                                            style="
-                                                display: grid;
-                                                grid-template-columns: repeat(
-                                                    2,
-                                                    1fr
-                                                );
-                                                gap: 8px;
-                                            "
-                                        >
+                                        <div class="reviewer-grid">
                                             @foreach ($otherReviewers as $u)
                                                 @php
                                                     $colors = ['bg-slate-500', 'bg-cyan-500', 'bg-teal-500', 'bg-indigo-500', 'bg-rose-500', 'bg-lime-500'];
@@ -3084,12 +3170,8 @@
                                 </div>
                             </form>
                         @endif
-
-                        {{-- end @if($showAssignForm) --}}
                     </div>
                 @endif
-
-                {{-- end assign reviewer card --}}
             </div>
             {{-- end main-col --}}
 
@@ -3228,60 +3310,60 @@
 @push('scripts')
     <script>
         function toggleReviewer(card) {
-                const cb = card.querySelector('.reviewer-checkbox');
-                if (!cb) return;
-                cb.checked = !cb.checked;
-                card.classList.toggle('selected', cb.checked);
-                const total = document.querySelectorAll('.reviewer-checkbox:checked').length;
-                const badge = document.getElementById('selected-count');
-                const num   = document.getElementById('selected-num');
-                if (badge && num) { num.textContent = total; badge.classList.toggle('hidden', total === 0); }
+            const cb = card.querySelector('.reviewer-checkbox');
+            if (!cb) return;
+            cb.checked = !cb.checked;
+            card.classList.toggle('selected', cb.checked);
+            const total = document.querySelectorAll('.reviewer-checkbox:checked').length;
+            const badge = document.getElementById('selected-count');
+            const num   = document.getElementById('selected-num');
+            if (badge && num) { num.textContent = total; badge.classList.toggle('hidden', total === 0); }
+        }
+
+        function updateDueDateHint(input) {
+            const hint   = document.getElementById('due-hint');
+            const daysEl = document.getElementById('due-days');
+            const dateEl = document.getElementById('due-date');
+            if (!input.value || !hint) { hint?.classList.add('hidden'); return; }
+            const diff = Math.ceil((new Date(input.value) - new Date()) / 86400000);
+            daysEl.textContent = diff;
+            daysEl.style.color = diff < 0 ? 'var(--red)' : diff <= 7 ? 'var(--amber)' : 'var(--emerald)';
+            const opts = { month:'short', day:'numeric', year:'numeric' };
+            dateEl.textContent = 'Due: ' + new Date(input.value).toLocaleDateString('en-US', opts) + ' · 11:59 PM';
+            hint.classList.remove('hidden');
+        }
+
+        const dForm     = document.getElementById('decision-form');
+        const revFields = document.getElementById('revision-fields');
+        const revReason = document.getElementById('revision_reason');
+
+        if (dForm && revFields) {
+            const statusRadios  = dForm.querySelectorAll('input[name="status"]');
+            const revTypeRadios = dForm.querySelectorAll('input[name="revision_type"]');
+
+            function toggleRevision() {
+                const sel   = dForm.querySelector('input[name="status"]:checked');
+                const isRev = sel?.value === 'revisions_requested';
+                revFields.style.display = isRev ? 'flex' : 'none';
+                revTypeRadios.forEach(r => isRev ? r.setAttribute('required','') : r.removeAttribute('required'));
+                if (revReason) isRev ? revReason.setAttribute('required','') : revReason.removeAttribute('required');
             }
 
-            function updateDueDateHint(input) {
-                const hint   = document.getElementById('due-hint');
-                const daysEl = document.getElementById('due-days');
-                const dateEl = document.getElementById('due-date');
-                if (!input.value || !hint) { hint?.classList.add('hidden'); return; }
-                const diff = Math.ceil((new Date(input.value) - new Date()) / 86400000);
-                daysEl.textContent = diff;
-                daysEl.style.color = diff < 0 ? 'var(--red)' : diff <= 7 ? 'var(--amber)' : 'var(--emerald)';
-                const opts = { month:'short', day:'numeric', year:'numeric' };
-                dateEl.textContent = 'Due: ' + new Date(input.value).toLocaleDateString('en-US', opts) + ' · 11:59 PM';
-                hint.classList.remove('hidden');
-            }
+            statusRadios.forEach(r => r.addEventListener('change', toggleRevision));
 
-            const dForm     = document.getElementById('decision-form');
-            const revFields = document.getElementById('revision-fields');
-            const revReason = document.getElementById('revision_reason');
-
-            if (dForm && revFields) {
-                const statusRadios  = dForm.querySelectorAll('input[name="status"]');
-                const revTypeRadios = dForm.querySelectorAll('input[name="revision_type"]');
-
-                function toggleRevision() {
-                    const sel   = dForm.querySelector('input[name="status"]:checked');
-                    const isRev = sel?.value === 'revisions_requested';
-                    revFields.style.display = isRev ? 'flex' : 'none';
-                    revTypeRadios.forEach(r => isRev ? r.setAttribute('required','') : r.removeAttribute('required'));
-                    if (revReason) isRev ? revReason.setAttribute('required','') : revReason.removeAttribute('required');
+            dForm.addEventListener('submit', () => {
+                const sel = dForm.querySelector('input[name="status"]:checked');
+                if (sel?.value !== 'revisions_requested') {
+                    revTypeRadios.forEach(r => r.disabled = true);
+                    if (revReason) revReason.disabled = true;
                 }
+            });
 
-                statusRadios.forEach(r => r.addEventListener('change', toggleRevision));
+            toggleRevision();
 
-                dForm.addEventListener('submit', () => {
-                    const sel = dForm.querySelector('input[name="status"]:checked');
-                    if (sel?.value !== 'revisions_requested') {
-                        revTypeRadios.forEach(r => r.disabled = true);
-                        if (revReason) revReason.disabled = true;
-                    }
-                });
-
-                toggleRevision();
-
-                @if(isset($selectedStatus) && $selectedStatus === 'revisions_requested')
-                    revFields.style.display = 'flex';
-                @endif
-            }
+            @if(isset($selectedStatus) && $selectedStatus === 'revisions_requested')
+                revFields.style.display = 'flex';
+            @endif
+        }
     </script>
 @endpush
