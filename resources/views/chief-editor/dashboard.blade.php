@@ -1580,19 +1580,6 @@
             </div>
         </div>
         {{-- /tabbed section --}}
-
-        <p
-            class="text-center fu3 mb-10"
-            style="
-                font-size: 0.65rem;
-                font-weight: 700;
-                letter-spacing: 0.16em;
-                text-transform: uppercase;
-                color: #c9b99a;
-            "
-        >
-            BatStateU · BIRJISE Journal System
-        </p>
     </div>
 @endsection
 

@@ -570,10 +570,21 @@
             color: var(--teal);
         }
 
-        /* Mobile table: hide Ref No. header, stack layout */
+        /* Mobile table: hide Ref No., Status, and Updated columns */
         @media (max-width: 640px) {
+            /* Hide Ref No. (col 1) */
             table.mst th:first-child,
             table.mst td:first-child {
+                display: none;
+            }
+            /* Hide Status (col 3) — shown in ms-mobile-meta instead */
+            table.mst th:nth-child(3),
+            table.mst td:nth-child(3) {
+                display: none;
+            }
+            /* Hide Updated (col 4) — shown in ms-mobile-meta instead */
+            table.mst th:last-child,
+            table.mst td:last-child {
                 display: none;
             }
             table.mst th {
@@ -581,11 +592,6 @@
             }
             table.mst td {
                 padding: 14px 16px;
-            }
-            /* Updated column hidden */
-            table.mst th:last-child,
-            table.mst td:last-child {
-                display: none;
             }
         }
 
