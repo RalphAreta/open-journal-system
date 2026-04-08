@@ -1994,8 +1994,8 @@
                 justify-content: center;
                 flex-shrink: 0;
                 position: relative;
-                background: rgba(255,255,255,0.08);
-                border-right: 1px solid rgba(255,255,255,0.12);
+                background: rgba(255, 255, 255, 0.08);
+                border-right: 1px solid rgba(255, 255, 255, 0.12);
             }
             @media (min-width: 640px) {
                 .faq-trigger-icon {
@@ -3174,39 +3174,554 @@
             </div>
         </section>
 
-        {{-- Trust bar --}}
-        <div class="trust-section">
-            <div class="trust-inner">
-                <p class="trust-label">Trusted by the Academic Community</p>
-                <div class="trust-items">
-                    @foreach (['Double-Blind Review', 'Open Access Policy', 'DOI Registered', 'Crossref Member', 'Google Scholar'] as $i => $t)
-                        @if ($i > 0)
-                            <div class="trust-divider"></div>
-                        @endif
+        {{-- About --}}
+        <section
+            id="about"
+            style="
+                background: linear-gradient(
+                    160deg,
+                    #f8f5ef 0%,
+                    #fffdf8 60%,
+                    #f0f7f4 100%
+                );
+                padding: 80px 32px;
+                position: relative;
+                overflow: hidden;
+                font-family: 'DM Sans', sans-serif;
+            "
+        >
+            {{-- Background glows --}}
+            <div
+                style="
+                    position: absolute;
+                    top: -60px;
+                    right: -60px;
+                    width: 320px;
+                    height: 320px;
+                    background: radial-gradient(
+                        circle,
+                        rgba(15, 110, 86, 0.07) 0%,
+                        transparent 70%
+                    );
+                    border-radius: 50%;
+                    pointer-events: none;
+                "
+            ></div>
+            <div
+                style="
+                    position: absolute;
+                    bottom: -80px;
+                    left: -40px;
+                    width: 260px;
+                    height: 260px;
+                    background: radial-gradient(
+                        circle,
+                        rgba(201, 168, 76, 0.1) 0%,
+                        transparent 70%
+                    );
+                    border-radius: 50%;
+                    pointer-events: none;
+                "
+            ></div>
 
-                        <div class="trust-item">
-                            <div class="trust-check">
-                                <svg
-                                    width="10"
-                                    height="10"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M5 13l4 4L19 7"
-                                    />
-                                </svg>
+            <div
+                style="
+                    max-width: 860px;
+                    margin: 0 auto;
+                    position: relative;
+                    z-index: 1;
+                "
+            >
+                {{-- Eyebrow --}}
+                <p
+                    style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 10px;
+                        font-size: 0.65rem;
+                        font-weight: 600;
+                        letter-spacing: 0.22em;
+                        text-transform: uppercase;
+                        color: #b08a2f;
+                        margin-bottom: 10px;
+                    "
+                >
+                    <span
+                        style="
+                            width: 28px;
+                            height: 1px;
+                            background: #c9a84c;
+                            opacity: 0.5;
+                            display: inline-block;
+                        "
+                    ></span>
+                    About the System
+                    <span
+                        style="
+                            width: 28px;
+                            height: 1px;
+                            background: #c9a84c;
+                            opacity: 0.5;
+                            display: inline-block;
+                        "
+                    ></span>
+                </p>
+
+                {{-- Title --}}
+                <h2
+                    style="
+                        font-family: 'Playfair Display', serif;
+                        font-size: 2.2rem;
+                        font-weight: 600;
+                        color: #1a3530;
+                        text-align: center;
+                        margin: 0 0 12px;
+                        line-height: 1.2;
+                    "
+                >
+                    About
+                    <em style="font-style: italic; color: #0f6e56">
+                        Journal System
+                    </em>
+                </h2>
+
+                {{-- Description --}}
+                <p
+                    style="
+                        font-size: 0.9rem;
+                        color: #6b7a75;
+                        line-height: 1.8;
+                        text-align: center;
+                        max-width: 540px;
+                        margin: 0 auto 44px;
+                        font-weight: 300;
+                    "
+                >
+                    An academic publishing portal built to streamline manuscript
+                    submission, double-blind peer review, and open-access
+                    publication — empowering researchers to share knowledge with
+                    the world.
+                </p>
+
+                {{-- Divider --}}
+                <div
+                    style="
+                        display: flex;
+                        align-items: center;
+                        gap: 16px;
+                        margin-bottom: 44px;
+                    "
+                >
+                    <div
+                        style="
+                            flex: 1;
+                            height: 1px;
+                            background: linear-gradient(
+                                to right,
+                                transparent,
+                                rgba(201, 168, 76, 0.4),
+                                transparent
+                            );
+                        "
+                    ></div>
+                    <div
+                        style="
+                            width: 6px;
+                            height: 6px;
+                            background: #c9a84c;
+                            transform: rotate(45deg);
+                            opacity: 0.5;
+                        "
+                    ></div>
+                    <div
+                        style="
+                            flex: 1;
+                            height: 1px;
+                            background: linear-gradient(
+                                to right,
+                                transparent,
+                                rgba(201, 168, 76, 0.4),
+                                transparent
+                            );
+                        "
+                    ></div>
+                </div>
+
+                {{-- Supervisor Section --}}
+                <p
+                    style="
+                        font-size: 0.6rem;
+                        font-weight: 700;
+                        letter-spacing: 0.2em;
+                        text-transform: uppercase;
+                        color: #b08a2f;
+                        text-align: center;
+                        margin-bottom: 8px;
+                    "
+                >
+                    Project Supervisor
+                </p>
+                <h3
+                    style="
+                        font-family: 'Playfair Display', serif;
+                        font-size: 1.4rem;
+                        font-weight: 600;
+                        color: #1a3530;
+                        text-align: center;
+                        margin: 0 0 20px;
+                    "
+                >
+                    Under the
+                    <em style="font-style: italic; color: #0f6e56">
+                        Guidance of
+                    </em>
+                </h3>
+
+                <div
+                    style="
+                        display: flex;
+                        justify-content: center;
+                        margin-bottom: 28px;
+                    "
+                >
+                    <div
+                        class="board-card"
+                        style="
+                            background: #fff;
+                            border-radius: 14px;
+                            border: 1px solid rgba(201, 168, 76, 0.3);
+                            overflow: hidden;
+                            box-shadow: 0 2px 20px rgba(15, 110, 86, 0.09);
+                            width: 180px;
+                            transition:
+                                transform 0.2s,
+                                box-shadow 0.2s;
+                        "
+                        onmouseenter="
+                            this.style.transform = 'translateY(-3px)';
+                            this.style.boxShadow =
+                                '0 8px 28px rgba(15,110,86,0.13)';
+                        "
+                        onmouseleave="
+                            this.style.transform = '';
+                            this.style.boxShadow =
+                                '0 2px 20px rgba(15,110,86,0.09)';
+                        "
+                    >
+                        <div
+                            style="
+                                background: linear-gradient(
+                                    135deg,
+                                    #d4ede5 0%,
+                                    #f5edd6 100%
+                                );
+                                padding: 22px 0 16px;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                gap: 8px;
+                            "
+                        >
+                            <div
+                                style="
+                                    width: 60px;
+                                    height: 60px;
+                                    border-radius: 50%;
+                                    background: linear-gradient(
+                                        135deg,
+                                        #0f6e56,
+                                        #2d8176
+                                    );
+                                    color: #fff;
+                                    font-size: 0.85rem;
+                                    font-weight: 600;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    letter-spacing: 0.05em;
+                                    box-shadow: 0 3px 12px
+                                        rgba(15, 110, 86, 0.25);
+                                "
+                            >
+                                ELV
                             </div>
-                            {{ $t }}
+                            <span
+                                style="
+                                    font-size: 0.6rem;
+                                    font-weight: 700;
+                                    letter-spacing: 0.12em;
+                                    text-transform: uppercase;
+                                    color: #b08a2f;
+                                    background: rgba(201, 168, 76, 0.15);
+                                    border: 1px solid rgba(201, 168, 76, 0.35);
+                                    border-radius: 20px;
+                                    padding: 2px 10px;
+                                "
+                            >
+                                Supervisor
+                            </span>
+                        </div>
+                        <div
+                            style="padding: 12px 10px 14px; text-align: center"
+                        >
+                            <div
+                                style="
+                                    font-size: 0.78rem;
+                                    font-weight: 500;
+                                    color: #1a3530;
+                                    line-height: 1.3;
+                                    margin-bottom: 3px;
+                                "
+                            >
+                                Dr. Eleazer L. Vivas
+                            </div>
+                            <div
+                                style="
+                                    font-size: 0.68rem;
+                                    color: #b08a2f;
+                                    font-weight: 500;
+                                    letter-spacing: 0.06em;
+                                    text-transform: uppercase;
+                                "
+                            >
+                                Project Supervisor
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Divider before team section --}}
+                <div
+                    style="
+                        display: flex;
+                        align-items: center;
+                        gap: 16px;
+                        margin-bottom: 44px;
+                    "
+                >
+                    <div
+                        style="
+                            flex: 1;
+                            height: 1px;
+                            background: linear-gradient(
+                                to right,
+                                transparent,
+                                rgba(201, 168, 76, 0.4),
+                                transparent
+                            );
+                        "
+                    ></div>
+                    <div
+                        style="
+                            width: 6px;
+                            height: 6px;
+                            background: #c9a84c;
+                            transform: rotate(45deg);
+                            opacity: 0.5;
+                        "
+                    ></div>
+                    <div
+                        style="
+                            flex: 1;
+                            height: 1px;
+                            background: linear-gradient(
+                                to right,
+                                transparent,
+                                rgba(201, 168, 76, 0.4),
+                                transparent
+                            );
+                        "
+                    ></div>
+                </div>
+
+                {{-- Team eyebrow --}}
+                <p
+                    style="
+                        font-size: 0.6rem;
+                        font-weight: 700;
+                        letter-spacing: 0.2em;
+                        text-transform: uppercase;
+                        color: #b08a2f;
+                        text-align: center;
+                        margin-bottom: 8px;
+                    "
+                >
+                    The Team
+                </p>
+
+                {{-- Team title --}}
+                <h3
+                    style="
+                        font-family: 'Playfair Display', serif;
+                        font-size: 1.4rem;
+                        font-weight: 600;
+                        color: #1a3530;
+                        text-align: center;
+                        margin: 0 0 32px;
+                    "
+                >
+                    Meet the
+                    <em style="font-style: italic; color: #0f6e56">
+                        Developers
+                    </em>
+                </h3>
+
+                {{-- Developer Cards --}}
+                <div
+                    style="
+                        display: grid;
+                        grid-template-columns: repeat(4, 1fr);
+                        gap: 16px;
+                    "
+                >
+                    @foreach ([
+                            ['name' => 'Mac Kenny G. Aleta', 'initials' => 'MKA'],
+                            ['name' => 'Nicko C. Ilag', 'initials' => 'NCI'],
+                            ['name' => 'Ralph Jan L. Areta', 'initials' => 'RJA'],
+                            ['name' => 'Carlos Ruben A. Gupit', 'initials' => 'CRG']
+                        ]
+                        as $i => $dev)
+                        <div
+                            class="board-card fade-up fade-up-{{ $i + 1 }}"
+                            style="
+                                background: #fff;
+                                border-radius: 14px;
+                                border: 1px solid rgba(201, 168, 76, 0.18);
+                                overflow: hidden;
+                                box-shadow: 0 2px 16px rgba(15, 110, 86, 0.06);
+                                transition:
+                                    transform 0.2s,
+                                    box-shadow 0.2s;
+                            "
+                            onmouseenter="
+                                this.style.transform = 'translateY(-3px)';
+                                this.style.boxShadow =
+                                    '0 8px 28px rgba(15,110,86,0.1)';
+                            "
+                            onmouseleave="
+                                this.style.transform = '';
+                                this.style.boxShadow =
+                                    '0 2px 16px rgba(15,110,86,0.06)';
+                            "
+                        >
+                            {{-- Card top --}}
+                            <div
+                                style="
+                                    background: linear-gradient(
+                                        135deg,
+                                        #e8f5f1 0%,
+                                        #f5edd6 100%
+                                    );
+                                    padding: 24px 0 18px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                "
+                            >
+                                <div
+                                    style="
+                                        width: 54px;
+                                        height: 54px;
+                                        border-radius: 50%;
+                                        background: linear-gradient(
+                                            135deg,
+                                            #0f6e56,
+                                            #2d8176
+                                        );
+                                        color: #fff;
+                                        font-size: 0.85rem;
+                                        font-weight: 600;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        letter-spacing: 0.05em;
+                                        box-shadow: 0 3px 12px
+                                            rgba(15, 110, 86, 0.25);
+                                    "
+                                >
+                                    {{ $dev['initials'] }}
+                                </div>
+                            </div>
+
+                            {{-- Card body --}}
+                            <div
+                                style="
+                                    padding: 14px 12px 16px;
+                                    text-align: center;
+                                "
+                            >
+                                <div
+                                    style="
+                                        font-size: 0.78rem;
+                                        font-weight: 500;
+                                        color: #1a3530;
+                                        line-height: 1.3;
+                                        margin-bottom: 4px;
+                                    "
+                                >
+                                    {{ $dev['name'] }}
+                                </div>
+                                <div
+                                    style="
+                                        font-size: 0.68rem;
+                                        color: #b08a2f;
+                                        font-weight: 500;
+                                        letter-spacing: 0.06em;
+                                        text-transform: uppercase;
+                                    "
+                                >
+                                    Developer
+                                </div>
+                            </div>
                         </div>
                     @endforeach
                 </div>
+
+                {{-- Quote --}}
+                <div
+                    style="
+                        margin-top: 44px;
+                        padding: 22px 28px;
+                        background: #fff;
+                        border: 1px solid rgba(201, 168, 76, 0.2);
+                        border-left: 3px solid #c9a84c;
+                        border-radius: 10px;
+                        box-shadow: 0 2px 12px rgba(201, 168, 76, 0.07);
+                        text-align: center;
+                    "
+                >
+                    <p
+                        style="
+                            font-size: 0.88rem;
+                            color: #5a6e68;
+                            line-height: 1.75;
+                            margin: 0;
+                            font-style: italic;
+                        "
+                    >
+                        Built with passion for the
+                        <strong
+                            style="
+                                color: #0f6e56;
+                                font-weight: 500;
+                                font-style: normal;
+                            "
+                        >
+                            academic community
+                        </strong>
+                        — making scholarly publishing accessible, transparent,
+                        and efficient for researchers everywhere.
+                    </p>
+                </div>
             </div>
-        </div>
+        </section>
+
+        {{-- Add to your <head> if not already included --}}
+        {{--
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+        --}}
 
         {{-- Footer --}}
         <footer>
@@ -3366,202 +3881,486 @@
                     Submissions
                 </div>
 
-                <div class="faq-item" data-q="How do I submit a manuscript to Journal System?">
+                <div
+                    class="faq-item"
+                    data-q="How do I submit a manuscript to Journal System?"
+                >
                     <button class="faq-q" aria-expanded="false">
                         <span class="faq-q-num">1</span>
-                        <span class="faq-q-text">How do I submit a manuscript?</span>
-                        <svg class="faq-q-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        <span class="faq-q-text">
+                            How do I submit a manuscript?
+                        </span>
+                        <svg
+                            class="faq-q-chevron"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19 9l-7 7-7-7"
+                            />
                         </svg>
                     </button>
                     <div class="faq-a">
                         <div class="faq-a-inner">
-                            <a href="/register">Register an account</a> or sign in, then click <strong>New Submission</strong> in your Author Dashboard. Upload your manuscript file (PDF, DOC, or DOCX), fill in the title, abstract, keywords, and co-author details, then click Submit. You'll receive a confirmation email with your reference number.
+                            <a href="/register">Register an account</a>
+                            or sign in, then click
+                            <strong>New Submission</strong>
+                            in your Author Dashboard. Upload your manuscript
+                            file (PDF, DOC, or DOCX), fill in the title,
+                            abstract, keywords, and co-author details, then
+                            click Submit. You'll receive a confirmation email
+                            with your reference number.
                         </div>
                     </div>
                 </div>
 
-                <div class="faq-item" data-q="What file formats are accepted for manuscript submission?">
+                <div
+                    class="faq-item"
+                    data-q="What file formats are accepted for manuscript submission?"
+                >
                     <button class="faq-q" aria-expanded="false">
                         <span class="faq-q-num">2</span>
-                        <span class="faq-q-text">What file formats are accepted?</span>
-                        <svg class="faq-q-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        <span class="faq-q-text">
+                            What file formats are accepted?
+                        </span>
+                        <svg
+                            class="faq-q-chevron"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19 9l-7 7-7-7"
+                            />
                         </svg>
                     </button>
                     <div class="faq-a">
                         <div class="faq-a-inner">
-                            We accept <strong>PDF</strong>, <strong>DOC</strong>, and <strong>DOCX</strong> files for the main manuscript. Figures should be embedded in the document or submitted separately as PNG or JPEG (minimum 300 DPI). Supplementary materials may be uploaded as ZIP archives.
+                            We accept
+                            <strong>PDF</strong>
+                            ,
+                            <strong>DOC</strong>
+                            , and
+                            <strong>DOCX</strong>
+                            files for the main manuscript. Figures should be
+                            embedded in the document or submitted separately as
+                            PNG or JPEG (minimum 300 DPI). Supplementary
+                            materials may be uploaded as ZIP archives.
                         </div>
                     </div>
                 </div>
 
-                <div class="faq-item" data-q="Is there a submission fee or article processing charge?">
+                <div
+                    class="faq-item"
+                    data-q="Is there a submission fee or article processing charge?"
+                >
                     <button class="faq-q" aria-expanded="false">
                         <span class="faq-q-num">3</span>
-                        <span class="faq-q-text">Is there a submission fee?</span>
-                        <svg class="faq-q-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        <span class="faq-q-text">
+                            Is there a submission fee?
+                        </span>
+                        <svg
+                            class="faq-q-chevron"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19 9l-7 7-7-7"
+                            />
                         </svg>
                     </button>
                     <div class="faq-a">
                         <div class="faq-a-inner">
-                            Submission and peer review are <strong>free of charge</strong>. An Article Processing Charge (APC) applies only upon acceptance to cover open-access publishing and DOI registration. Authors are notified of the exact fee at the acceptance stage.
+                            Submission and peer review are
+                            <strong>free of charge</strong>
+                            . An Article Processing Charge (APC) applies only
+                            upon acceptance to cover open-access publishing and
+                            DOI registration. Authors are notified of the exact
+                            fee at the acceptance stage.
                         </div>
                     </div>
                 </div>
 
-                <div class="faq-item" data-q="Can I submit a manuscript that is currently under review elsewhere?">
+                <div
+                    class="faq-item"
+                    data-q="Can I submit a manuscript that is currently under review elsewhere?"
+                >
                     <button class="faq-q" aria-expanded="false">
                         <span class="faq-q-num">4</span>
-                        <span class="faq-q-text">Can I submit to multiple journals simultaneously?</span>
-                        <svg class="faq-q-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        <span class="faq-q-text">
+                            Can I submit to multiple journals simultaneously?
+                        </span>
+                        <svg
+                            class="faq-q-chevron"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19 9l-7 7-7-7"
+                            />
                         </svg>
                     </button>
                     <div class="faq-a">
                         <div class="faq-a-inner">
-                            No. We follow strict <strong>single-submission policy</strong>. Submitting the same manuscript to another journal while it is under review here constitutes a violation of publication ethics and may result in immediate rejection and blacklisting.
+                            No. We follow strict
+                            <strong>single-submission policy</strong>
+                            . Submitting the same manuscript to another journal
+                            while it is under review here constitutes a
+                            violation of publication ethics and may result in
+                            immediate rejection and blacklisting.
                         </div>
                     </div>
                 </div>
 
-                <div class="faq-category" data-cat="Review Process">Review Process</div>
+                <div class="faq-category" data-cat="Review Process">
+                    Review Process
+                </div>
 
-                <div class="faq-item" data-q="How long does the peer review process take from submission to decision?">
+                <div
+                    class="faq-item"
+                    data-q="How long does the peer review process take from submission to decision?"
+                >
                     <button class="faq-q" aria-expanded="false">
                         <span class="faq-q-num">5</span>
-                        <span class="faq-q-text">How long does peer review take?</span>
-                        <svg class="faq-q-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        <span class="faq-q-text">
+                            How long does peer review take?
+                        </span>
+                        <svg
+                            class="faq-q-chevron"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19 9l-7 7-7-7"
+                            />
                         </svg>
                     </button>
                     <div class="faq-a">
                         <div class="faq-a-inner">
-                            Initial screening takes <strong>3–5 days</strong>. Full peer review typically takes <strong>10–14 days</strong>. The total time from submission to first decision is usually 2–3 weeks. Revision and final decision adds another 1–2 weeks depending on the scope of changes requested.
+                            Initial screening takes
+                            <strong>3–5 days</strong>
+                            . Full peer review typically takes
+                            <strong>10–14 days</strong>
+                            . The total time from submission to first decision
+                            is usually 2–3 weeks. Revision and final decision
+                            adds another 1–2 weeks depending on the scope of
+                            changes requested.
                         </div>
                     </div>
                 </div>
 
-                <div class="faq-item" data-q="What is double-blind peer review and how does it protect authors?">
+                <div
+                    class="faq-item"
+                    data-q="What is double-blind peer review and how does it protect authors?"
+                >
                     <button class="faq-q" aria-expanded="false">
                         <span class="faq-q-num">6</span>
-                        <span class="faq-q-text">What is double-blind peer review?</span>
-                        <svg class="faq-q-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        <span class="faq-q-text">
+                            What is double-blind peer review?
+                        </span>
+                        <svg
+                            class="faq-q-chevron"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19 9l-7 7-7-7"
+                            />
                         </svg>
                     </button>
                     <div class="faq-a">
                         <div class="faq-a-inner">
-                            In double-blind review, both the <strong>reviewers' identities are hidden from authors</strong> and the <strong>authors' identities are hidden from reviewers</strong>. This eliminates bias based on institutional affiliation, gender, nationality, or prior reputation, ensuring evaluation is based purely on scholarly merit.
+                            In double-blind review, both the
+                            <strong>
+                                reviewers' identities are hidden from authors
+                            </strong>
+                            and the
+                            <strong>
+                                authors' identities are hidden from reviewers
+                            </strong>
+                            . This eliminates bias based on institutional
+                            affiliation, gender, nationality, or prior
+                            reputation, ensuring evaluation is based purely on
+                            scholarly merit.
                         </div>
                     </div>
                 </div>
 
-                <div class="faq-item" data-q="What happens after I receive a revisions requested decision?">
+                <div
+                    class="faq-item"
+                    data-q="What happens after I receive a revisions requested decision?"
+                >
                     <button class="faq-q" aria-expanded="false">
                         <span class="faq-q-num">7</span>
-                        <span class="faq-q-text">What happens if revisions are requested?</span>
-                        <svg class="faq-q-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        <span class="faq-q-text">
+                            What happens if revisions are requested?
+                        </span>
+                        <svg
+                            class="faq-q-chevron"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19 9l-7 7-7-7"
+                            />
                         </svg>
                     </button>
                     <div class="faq-a">
                         <div class="faq-a-inner">
-                            You'll receive detailed reviewer comments in your dashboard. Address each point in a <strong>point-by-point response letter</strong> and upload the revised manuscript. Revisions are typically due within <strong>14–21 days</strong>. The revised manuscript goes back to the original reviewers for final assessment.
+                            You'll receive detailed reviewer comments in your
+                            dashboard. Address each point in a
+                            <strong>point-by-point response letter</strong>
+                            and upload the revised manuscript. Revisions are
+                            typically due within
+                            <strong>14–21 days</strong>
+                            . The revised manuscript goes back to the original
+                            reviewers for final assessment.
                         </div>
                     </div>
                 </div>
 
-                <div class="faq-item" data-q="Can I appeal a rejection decision from the editorial board?">
+                <div
+                    class="faq-item"
+                    data-q="Can I appeal a rejection decision from the editorial board?"
+                >
                     <button class="faq-q" aria-expanded="false">
                         <span class="faq-q-num">8</span>
-                        <span class="faq-q-text">Can I appeal a rejection?</span>
-                        <svg class="faq-q-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        <span class="faq-q-text">
+                            Can I appeal a rejection?
+                        </span>
+                        <svg
+                            class="faq-q-chevron"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19 9l-7 7-7-7"
+                            />
                         </svg>
                     </button>
                     <div class="faq-a">
                         <div class="faq-a-inner">
-                            Yes. You may submit a formal appeal through your Author Dashboard within <strong>30 days</strong> of the rejection decision. Appeals must include a detailed rebuttal addressing the reviewers' concerns. The Editor-in-Chief reviews all appeals. Each manuscript is limited to two appeal attempts.
+                            Yes. You may submit a formal appeal through your
+                            Author Dashboard within
+                            <strong>30 days</strong>
+                            of the rejection decision. Appeals must include a
+                            detailed rebuttal addressing the reviewers'
+                            concerns. The Editor-in-Chief reviews all appeals.
+                            Each manuscript is limited to two appeal attempts.
                         </div>
                     </div>
                 </div>
 
-                <div class="faq-category" data-cat="Publication">Publication & Copyright</div>
+                <div class="faq-category" data-cat="Publication">
+                    Publication & Copyright
+                </div>
 
-                <div class="faq-item" data-q="What is a copyright transfer form CTF and when do I need to sign it?">
+                <div
+                    class="faq-item"
+                    data-q="What is a copyright transfer form CTF and when do I need to sign it?"
+                >
                     <button class="faq-q" aria-expanded="false">
                         <span class="faq-q-num">9</span>
-                        <span class="faq-q-text">What is the Copyright Transfer Form (CTF)?</span>
-                        <svg class="faq-q-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        <span class="faq-q-text">
+                            What is the Copyright Transfer Form (CTF)?
+                        </span>
+                        <svg
+                            class="faq-q-chevron"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19 9l-7 7-7-7"
+                            />
                         </svg>
                     </button>
                     <div class="faq-a">
                         <div class="faq-a-inner">
-                            Upon acceptance, we issue a <strong>Copyright Transfer Form</strong> which assigns publication rights to the journal while allowing authors to retain the right to use their work for educational and research purposes. Download it from your dashboard, sign it, and upload the signed copy. Publication will not proceed until the CTF is received.
+                            Upon acceptance, we issue a
+                            <strong>Copyright Transfer Form</strong>
+                            which assigns publication rights to the journal
+                            while allowing authors to retain the right to use
+                            their work for educational and research purposes.
+                            Download it from your dashboard, sign it, and upload
+                            the signed copy. Publication will not proceed until
+                            the CTF is received.
                         </div>
                     </div>
                 </div>
 
-                <div class="faq-item" data-q="How will my article be distributed and can readers access it for free?">
+                <div
+                    class="faq-item"
+                    data-q="How will my article be distributed and can readers access it for free?"
+                >
                     <button class="faq-q" aria-expanded="false">
                         <span class="faq-q-num">10</span>
-                        <span class="faq-q-text">Is my article freely accessible after publication?</span>
-                        <svg class="faq-q-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        <span class="faq-q-text">
+                            Is my article freely accessible after publication?
+                        </span>
+                        <svg
+                            class="faq-q-chevron"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19 9l-7 7-7-7"
+                            />
                         </svg>
                     </button>
                     <div class="faq-a">
                         <div class="faq-a-inner">
-                            Yes. All published articles are <strong>open access</strong> — freely available to anyone worldwide, permanently. Each article receives a <strong>DOI</strong> (Digital Object Identifier) for permanent citation, and is indexed and distributed through academic databases and search engines.
+                            Yes. All published articles are
+                            <strong>open access</strong>
+                            — freely available to anyone worldwide, permanently.
+                            Each article receives a
+                            <strong>DOI</strong>
+                            (Digital Object Identifier) for permanent citation,
+                            and is indexed and distributed through academic
+                            databases and search engines.
                         </div>
                     </div>
                 </div>
 
-                <div class="faq-category" data-cat="Account">Account & Technical</div>
+                <div class="faq-category" data-cat="Account">
+                    Account & Technical
+                </div>
 
-                <div class="faq-item" data-q="How do I track the status of my submitted manuscript?">
+                <div
+                    class="faq-item"
+                    data-q="How do I track the status of my submitted manuscript?"
+                >
                     <button class="faq-q" aria-expanded="false">
                         <span class="faq-q-num">11</span>
-                        <span class="faq-q-text">How do I track my submission status?</span>
-                        <svg class="faq-q-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        <span class="faq-q-text">
+                            How do I track my submission status?
+                        </span>
+                        <svg
+                            class="faq-q-chevron"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19 9l-7 7-7-7"
+                            />
                         </svg>
                     </button>
                     <div class="faq-a">
                         <div class="faq-a-inner">
-                            Sign in to your account and visit the <strong>Author Dashboard</strong>. Each submission shows a real-time status badge: Submitted → Under Review → Revisions Requested → Accepted/Rejected. You'll also receive email notifications at every major status change.
+                            Sign in to your account and visit the
+                            <strong>Author Dashboard</strong>
+                            . Each submission shows a real-time status badge:
+                            Submitted → Under Review → Revisions Requested →
+                            Accepted/Rejected. You'll also receive email
+                            notifications at every major status change.
                         </div>
                     </div>
                 </div>
 
-                <div class="faq-item" data-q="I forgot my password how do I reset it and regain access?">
+                <div
+                    class="faq-item"
+                    data-q="I forgot my password how do I reset it and regain access?"
+                >
                     <button class="faq-q" aria-expanded="false">
                         <span class="faq-q-num">12</span>
-                        <span class="faq-q-text">I forgot my password. How do I reset it?</span>
-                        <svg class="faq-q-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        <span class="faq-q-text">
+                            I forgot my password. How do I reset it?
+                        </span>
+                        <svg
+                            class="faq-q-chevron"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19 9l-7 7-7-7"
+                            />
                         </svg>
                     </button>
                     <div class="faq-a">
                         <div class="faq-a-inner">
-                            On the <a href="/login">Sign In page</a>, click <strong>"Forgot password?"</strong>. Enter your registered email address and we'll send a password reset link within a few minutes. Check your spam folder if you don't see it. The link expires after 60 minutes.
+                            On the
+                            <a href="/login">Sign In page</a>
+                            , click
+                            <strong>"Forgot password?"</strong>
+                            . Enter your registered email address and we'll send
+                            a password reset link within a few minutes. Check
+                            your spam folder if you don't see it. The link
+                            expires after 60 minutes.
                         </div>
                     </div>
                 </div>
 
                 <div id="faq-no-results">
                     <p>🔍</p>
-                    <p>No questions match your search.<br />Try different keywords.</p>
+                    <p>
+                        No questions match your search.
+                        <br />
+                        Try different keywords.
+                    </p>
                 </div>
             </div>
 
             <div class="faq-panel-cta">
                 <a href="/register">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                    <svg
+                        width="14"
+                        height="14"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M12 4v16m8-8H4"
+                        />
                     </svg>
                     Ready to Submit Your Research?
                 </a>
@@ -3670,10 +4469,15 @@
                 btn.addEventListener('click', () => {
                     const item = btn.closest('.faq-item');
                     const isOpen = item.classList.contains('active');
-                    document.querySelectorAll('.faq-item.active').forEach((i) => {
-                        i.classList.remove('active');
-                        i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
-                    });
+                    document
+                        .querySelectorAll('.faq-item.active')
+                        .forEach((i) => {
+                            i.classList.remove('active');
+                            i.querySelector('.faq-q').setAttribute(
+                                'aria-expanded',
+                                'false',
+                            );
+                        });
                     if (!isOpen) {
                         item.classList.add('active');
                         btn.setAttribute('aria-expanded', 'true');
@@ -3691,8 +4495,12 @@
                 items.forEach((item) => {
                     const text =
                         (item.dataset.q || '').toLowerCase() +
-                        item.querySelector('.faq-q-text').textContent.toLowerCase() +
-                        item.querySelector('.faq-a-inner').textContent.toLowerCase();
+                        item
+                            .querySelector('.faq-q-text')
+                            .textContent.toLowerCase() +
+                        item
+                            .querySelector('.faq-a-inner')
+                            .textContent.toLowerCase();
                     const match = !q || text.includes(q);
                     item.classList.toggle('hidden', !match);
                     if (match) anyVisible = true;
@@ -3702,7 +4510,10 @@
                     let next = cat.nextElementSibling;
                     let hasVis = false;
                     while (next && !next.classList.contains('faq-category')) {
-                        if (next.classList.contains('faq-item') && !next.classList.contains('hidden'))
+                        if (
+                            next.classList.contains('faq-item') &&
+                            !next.classList.contains('hidden')
+                        )
                             hasVis = true;
                         next = next.nextElementSibling;
                     }
@@ -3712,17 +4523,27 @@
                 faqNoRes.style.display = anyVisible ? 'none' : 'block';
             }
 
-            faqSearch.addEventListener('input', (e) => filterFaq(e.target.value));
+            faqSearch.addEventListener('input', (e) =>
+                filterFaq(e.target.value),
+            );
 
             /* ── Mobile swipe-down to close ── */
             let touchStartY = 0;
-            faqPanel.addEventListener('touchstart', (e) => {
-                touchStartY = e.touches[0].clientY;
-            }, { passive: true });
-            faqPanel.addEventListener('touchend', (e) => {
-                const delta = e.changedTouches[0].clientY - touchStartY;
-                if (delta > 80) closeFaq();
-            }, { passive: true });
+            faqPanel.addEventListener(
+                'touchstart',
+                (e) => {
+                    touchStartY = e.touches[0].clientY;
+                },
+                { passive: true },
+            );
+            faqPanel.addEventListener(
+                'touchend',
+                (e) => {
+                    const delta = e.changedTouches[0].clientY - touchStartY;
+                    if (delta > 80) closeFaq();
+                },
+                { passive: true },
+            );
         </script>
     </body>
 </html>
