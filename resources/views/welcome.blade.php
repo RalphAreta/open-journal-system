@@ -3172,84 +3172,457 @@
                     @endforelse
                 </div>
             </div>
-        </section>{{-- About --}}
-<section id="about" class="section" style="background:linear-gradient(160deg,#f8f5ef 0%,#fffdf8 55%,#f0f7f4 100%);position:relative;overflow:hidden;">
+        </section>
+        {{-- About --}}
+        <section
+            id="about"
+            class="section"
+            style="
+                background: linear-gradient(
+                    160deg,
+                    #f8f5ef 0%,
+                    #fffdf8 55%,
+                    #f0f7f4 100%
+                );
+                position: relative;
+                overflow: hidden;
+            "
+        >
+            <div
+                style="
+                    position: absolute;
+                    top: -40px;
+                    right: -40px;
+                    width: 320px;
+                    height: 320px;
+                    background: radial-gradient(
+                        circle,
+                        rgba(15, 110, 86, 0.07) 0%,
+                        transparent 70%
+                    );
+                    border-radius: 50%;
+                    pointer-events: none;
+                "
+            ></div>
+            <div
+                style="
+                    position: absolute;
+                    bottom: -60px;
+                    left: -30px;
+                    width: 240px;
+                    height: 240px;
+                    background: radial-gradient(
+                        circle,
+                        rgba(201, 168, 76, 0.09) 0%,
+                        transparent 70%
+                    );
+                    border-radius: 50%;
+                    pointer-events: none;
+                "
+            ></div>
 
-    <div style="position:absolute;top:-40px;right:-40px;width:320px;height:320px;background:radial-gradient(circle,rgba(15,110,86,.07) 0%,transparent 70%);border-radius:50%;pointer-events:none;"></div>
-    <div style="position:absolute;bottom:-60px;left:-30px;width:240px;height:240px;background:radial-gradient(circle,rgba(201,168,76,.09) 0%,transparent 70%);border-radius:50%;pointer-events:none;"></div>
+            <div class="section-inner">
+                {{-- Header --}}
+                <div class="section-header fade-up">
+                    <p class="section-eyebrow">About</p>
+                    <h2 class="section-title">
+                        The Team Behind
+                        <em>Journal System</em>
+                    </h2>
+                    <p class="section-sub">
+                        An academic publishing portal built to streamline
+                        manuscript submission, double-blind peer review, and
+                        open-access publication.
+                    </p>
+                </div>
 
-    <div class="section-inner">
+                {{-- Team Layout --}}
+                <div
+                    class="fade-up"
+                    style="
+                        display: flex;
+                        gap: 20px;
+                        align-items: stretch;
+                        flex-wrap: wrap;
+                        justify-content: center;
+                    "
+                >
+                    {{-- LEFT: Supervisor --}}
+                    <div
+                        style="
+                            flex: 0 0 240px;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 12px;
+                        "
+                    >
+                        <p
+                            style="
+                                font-size: 0.55rem;
+                                font-weight: 700;
+                                letter-spacing: 0.22em;
+                                text-transform: uppercase;
+                                color: var(--teal);
+                                display: flex;
+                                align-items: center;
+                                gap: 8px;
+                                margin: 0;
+                            "
+                        >
+                            <span
+                                style="
+                                    flex: 1;
+                                    height: 1px;
+                                    background: linear-gradient(
+                                        to right,
+                                        transparent,
+                                        var(--teal)
+                                    );
+                                "
+                            ></span>
+                            Supervisor
+                            <span
+                                style="
+                                    flex: 1;
+                                    height: 1px;
+                                    background: linear-gradient(
+                                        to left,
+                                        transparent,
+                                        var(--teal)
+                                    );
+                                "
+                            ></span>
+                        </p>
+                        <div
+                            style="
+                                flex: 1;
+                                background: #fff;
+                                border: 1.5px solid var(--border);
+                                border-radius: 16px;
+                                padding: 36px 24px;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                                text-align: center;
+                                box-shadow: 0 8px 32px rgba(15, 110, 86, 0.08);
+                                position: relative;
+                                overflow: hidden;
+                            "
+                        >
+                            <div
+                                style="
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    width: 100%;
+                                    height: 4px;
+                                    background: linear-gradient(
+                                        to right,
+                                        var(--gold),
+                                        var(--teal)
+                                    );
+                                "
+                            ></div>
+                            <div
+                                style="
+                                    position: absolute;
+                                    bottom: -30px;
+                                    right: -30px;
+                                    width: 100px;
+                                    height: 100px;
+                                    background: radial-gradient(
+                                        circle,
+                                        rgba(201, 168, 76, 0.1) 0%,
+                                        transparent 70%
+                                    );
+                                    border-radius: 50%;
+                                "
+                            ></div>
 
-        {{-- Header --}}
-        <div class="section-header fade-up">
-            <p class="section-eyebrow">About</p>
-            <h2 class="section-title">The Team Behind <em>Journal System</em></h2>
-            <p class="section-sub">An academic publishing portal built to streamline manuscript submission, double-blind peer review, and open-access publication.</p>
-        </div>
+                            <div
+                                style="
+                                    width: 96px;
+                                    height: 96px;
+                                    border-radius: 50%;
+                                    background: linear-gradient(
+                                        135deg,
+                                        var(--teal),
+                                        #0a7a60
+                                    );
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-size: 1.5rem;
+                                    font-weight: 700;
+                                    color: #fff;
+                                    letter-spacing: 0.05em;
+                                    margin-bottom: 20px;
+                                    box-shadow: 0 6px 24px
+                                        rgba(15, 110, 86, 0.25);
+                                "
+                            >
+                                ELV
+                            </div>
 
-        {{-- Team Layout --}}
-        <div class="fade-up" style="display:flex;gap:20px;align-items:stretch;flex-wrap:wrap;justify-content:center;">
+                            <div
+                                style="
+                                    display: inline-flex;
+                                    align-items: center;
+                                    gap: 5px;
+                                    background: linear-gradient(
+                                        135deg,
+                                        #fdf6e3,
+                                        #fef9ed
+                                    );
+                                    border: 1px solid rgba(201, 168, 76, 0.4);
+                                    border-radius: 20px;
+                                    padding: 4px 12px;
+                                    margin-bottom: 14px;
+                                "
+                            >
+                                <svg
+                                    width="10"
+                                    height="10"
+                                    viewBox="0 0 24 24"
+                                    fill="var(--gold)"
+                                >
+                                    <path
+                                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                    />
+                                </svg>
+                                <span
+                                    style="
+                                        font-size: 0.55rem;
+                                        font-weight: 700;
+                                        letter-spacing: 0.15em;
+                                        text-transform: uppercase;
+                                        color: #a07820;
+                                    "
+                                >
+                                    Project Lead
+                                </span>
+                            </div>
 
-            {{-- LEFT: Supervisor --}}
-            <div style="flex:0 0 240px;display:flex;flex-direction:column;gap:12px;">
-                <p style="font-size:.55rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);display:flex;align-items:center;gap:8px;margin:0;">
-                    <span style="flex:1;height:1px;background:linear-gradient(to right,transparent,var(--teal));"></span>
-                    Supervisor
-                    <span style="flex:1;height:1px;background:linear-gradient(to left,transparent,var(--teal));"></span>
-                </p>
-                <div style="flex:1;background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:36px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 8px 32px rgba(15,110,86,.08);position:relative;overflow:hidden;">
-                    <div style="position:absolute;top:0;left:0;width:100%;height:4px;background:linear-gradient(to right,var(--gold),var(--teal));"></div>
-                    <div style="position:absolute;bottom:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(201,168,76,.10) 0%,transparent 70%);border-radius:50%;"></div>
+                            <div
+                                style="
+                                    font-size: 1rem;
+                                    font-weight: 700;
+                                    color: var(--ink);
+                                    line-height: 1.3;
+                                    margin-bottom: 6px;
+                                "
+                            >
+                                Dr. Eleazer L. Vivas
+                            </div>
+                            <div
+                                style="
+                                    font-size: 0.75rem;
+                                    font-weight: 600;
+                                    color: var(--teal);
+                                "
+                            >
+                                Project Supervisor
+                            </div>
 
-                    <div style="width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#0a7a60);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:#fff;letter-spacing:.05em;margin-bottom:20px;box-shadow:0 6px 24px rgba(15,110,86,.25);">ELV</div>
-
-                    <div style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#fdf6e3,#fef9ed);border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:4px 12px;margin-bottom:14px;">
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                        <span style="font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#a07820;">Project Lead</span>
+                            <div
+                                style="
+                                    width: 40px;
+                                    height: 1.5px;
+                                    background: linear-gradient(
+                                        to right,
+                                        var(--gold),
+                                        var(--teal)
+                                    );
+                                    border-radius: 2px;
+                                    margin-top: 20px;
+                                "
+                            ></div>
+                        </div>
                     </div>
 
-                    <div style="font-size:1rem;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:6px;">Dr. Eleazer L. Vivas</div>
-                    <div style="font-size:.75rem;font-weight:600;color:var(--teal);">Project Supervisor</div>
-
-                    <div style="width:40px;height:1.5px;background:linear-gradient(to right,var(--gold),var(--teal));border-radius:2px;margin-top:20px;"></div>
-                </div>
-            </div>
-
-            {{-- RIGHT: Developers --}}
-            <div style="flex:0 0 480px;display:flex;flex-direction:column;gap:12px;">
-                <p style="font-size:.55rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);display:flex;align-items:center;gap:8px;margin:0;">
-                    <span style="flex:1;height:1px;background:linear-gradient(to right,transparent,var(--teal));"></span>
-                    Developers
-                    <span style="flex:1;height:1px;background:linear-gradient(to left,transparent,var(--teal));"></span>
-                </p>
-                <div style="flex:1;display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
-                    @foreach([
-                        ['name'=>'Mac Kenny G. Aleta','initials'=>'MKA'],
-                        ['name'=>'Nicko C. Ilag','initials'=>'NCI'],
-                        ['name'=>'Ralph Jan L. Areta','initials'=>'RJA'],
-                        ['name'=>'Carlos Ruben A. Gupit','initials'=>'CRG'],
-                    ] as $i => $dev)
-                    <div class="fade-up fade-up-{{ $i+1 }}" style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:22px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 4px 14px rgba(15,110,86,.05);position:relative;overflow:hidden;">
-                        <div style="position:absolute;top:0;left:0;width:100%;height:2.5px;background:linear-gradient(to right,var(--teal),rgba(15,110,86,.2));"></div>
-                        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,rgba(15,110,86,.12),rgba(15,110,86,.04));border:1.5px solid rgba(15,110,86,.2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:var(--teal);letter-spacing:.04em;margin-bottom:10px;">{{ $dev['initials'] }}</div>
-                        <div style="font-size:.78rem;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:4px;">{{ $dev['name'] }}</div>
-                        <div style="font-size:.65rem;font-weight:600;color:var(--teal);">Developer</div>
+                    {{-- RIGHT: Developers --}}
+                    <div
+                        style="
+                            flex: 0 0 480px;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 12px;
+                        "
+                    >
+                        <p
+                            style="
+                                font-size: 0.55rem;
+                                font-weight: 700;
+                                letter-spacing: 0.22em;
+                                text-transform: uppercase;
+                                color: var(--teal);
+                                display: flex;
+                                align-items: center;
+                                gap: 8px;
+                                margin: 0;
+                            "
+                        >
+                            <span
+                                style="
+                                    flex: 1;
+                                    height: 1px;
+                                    background: linear-gradient(
+                                        to right,
+                                        transparent,
+                                        var(--teal)
+                                    );
+                                "
+                            ></span>
+                            Developers
+                            <span
+                                style="
+                                    flex: 1;
+                                    height: 1px;
+                                    background: linear-gradient(
+                                        to left,
+                                        transparent,
+                                        var(--teal)
+                                    );
+                                "
+                            ></span>
+                        </p>
+                        <div
+                            style="
+                                flex: 1;
+                                display: grid;
+                                grid-template-columns: repeat(2, 1fr);
+                                gap: 12px;
+                            "
+                        >
+                            @foreach ([
+                                    ['name' => 'Mac Kenny G. Aleta', 'initials' => 'MKA'],
+                                    ['name' => 'Nicko C. Ilag', 'initials' => 'NCI'],
+                                    ['name' => 'Ralph Jan L. Areta', 'initials' => 'RJA'],
+                                    ['name' => 'Carlos Ruben A. Gupit', 'initials' => 'CRG']
+                                ]
+                                as $i => $dev)
+                                <div
+                                    class="fade-up fade-up-{{ $i + 1 }}"
+                                    style="
+                                        background: #fff;
+                                        border: 1.5px solid var(--border);
+                                        border-radius: 12px;
+                                        padding: 22px 16px;
+                                        display: flex;
+                                        flex-direction: column;
+                                        align-items: center;
+                                        justify-content: center;
+                                        text-align: center;
+                                        box-shadow: 0 4px 14px
+                                            rgba(15, 110, 86, 0.05);
+                                        position: relative;
+                                        overflow: hidden;
+                                    "
+                                >
+                                    <div
+                                        style="
+                                            position: absolute;
+                                            top: 0;
+                                            left: 0;
+                                            width: 100%;
+                                            height: 2.5px;
+                                            background: linear-gradient(
+                                                to right,
+                                                var(--teal),
+                                                rgba(15, 110, 86, 0.2)
+                                            );
+                                        "
+                                    ></div>
+                                    <div
+                                        style="
+                                            width: 52px;
+                                            height: 52px;
+                                            border-radius: 50%;
+                                            background: linear-gradient(
+                                                135deg,
+                                                rgba(15, 110, 86, 0.12),
+                                                rgba(15, 110, 86, 0.04)
+                                            );
+                                            border: 1.5px solid
+                                                rgba(15, 110, 86, 0.2);
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            font-size: 0.7rem;
+                                            font-weight: 700;
+                                            color: var(--teal);
+                                            letter-spacing: 0.04em;
+                                            margin-bottom: 10px;
+                                        "
+                                    >
+                                        {{ $dev['initials'] }}
+                                    </div>
+                                    <div
+                                        style="
+                                            font-size: 0.78rem;
+                                            font-weight: 700;
+                                            color: var(--ink);
+                                            line-height: 1.3;
+                                            margin-bottom: 4px;
+                                        "
+                                    >
+                                        {{ $dev['name'] }}
+                                    </div>
+                                    <div
+                                        style="
+                                            font-size: 0.65rem;
+                                            font-weight: 600;
+                                            color: var(--teal);
+                                        "
+                                    >
+                                        Developer
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                    @endforeach
+                </div>
+
+                {{-- Quote --}}
+                <div
+                    class="fade-up fade-up-3"
+                    style="
+                        margin-top: 28px;
+                        padding: 18px 28px;
+                        background: #fff;
+                        border: 1.5px solid var(--border);
+                        border-left: 3px solid var(--gold);
+                        border-radius: 12px;
+                        text-align: center;
+                        box-shadow: 0 4px 16px rgba(45, 129, 118, 0.06);
+                    "
+                >
+                    <p
+                        style="
+                            font-size: 0.84rem;
+                            color: var(--ink-soft);
+                            line-height: 1.75;
+                            margin: 0;
+                            font-style: italic;
+                        "
+                    >
+                        Built with passion for the
+                        <strong
+                            style="
+                                color: var(--teal);
+                                font-weight: 600;
+                                font-style: normal;
+                            "
+                        >
+                            academic community
+                        </strong>
+                        — making scholarly publishing accessible, transparent,
+                        and efficient for researchers everywhere.
+                    </p>
                 </div>
             </div>
-
-        </div>
-
-        {{-- Quote --}}
-        <div class="fade-up fade-up-3" style="margin-top:28px;padding:18px 28px;background:#fff;border:1.5px solid var(--border);border-left:3px solid var(--gold);border-radius:12px;text-align:center;box-shadow:0 4px 16px rgba(45,129,118,.06);">
-            <p style="font-size:.84rem;color:var(--ink-soft);line-height:1.75;margin:0;font-style:italic;">
-                Built with passion for the <strong style="color:var(--teal);font-weight:600;font-style:normal;">academic community</strong> — making scholarly publishing accessible, transparent, and efficient for researchers everywhere.
-            </p>
-        </div>
-
-    </div>
-</section>
+        </section>
         {{-- Footer --}}
         <footer>
             <div class="footer-inner">
@@ -3362,7 +3735,7 @@
                     </svg>
                 </div>
                 <div class="faq-panel-titles">
-                    <p class="faq-panel-eyebrow">Help Centre</p>
+                    <p class="faq-panel-eyebrow">Help Center</p>
                     <p class="faq-panel-title">
                         Frequently Asked
                         <em style="font-style: italic; color: var(--teal)">
@@ -3438,9 +3811,9 @@
                             <strong>New Submission</strong>
                             in your Author Dashboard. Upload your manuscript
                             file (PDF, DOC, or DOCX), fill in the title,
-                            abstract and keywords, then
-                            click Submit. You'll receive a confirmation email
-                            with your reference number.
+                            abstract and keywords, then click Submit. You'll
+                            receive a confirmation email with your reference
+                            number.
                         </div>
                     </div>
                 </div>
@@ -3476,10 +3849,7 @@
                             <strong>DOC</strong>
                             , and
                             <strong>DOCX</strong>
-                            files for the main manuscript. Figures should be
-                            embedded in the document or submitted separately as
-                            PNG or JPEG (minimum 300 DPI). Supplementary
-                            materials may be uploaded as ZIP archives.
+                            files for the main manuscript.
                         </div>
                     </div>
                 </div>
