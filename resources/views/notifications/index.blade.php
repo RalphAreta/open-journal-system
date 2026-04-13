@@ -146,7 +146,7 @@
                             class="flex items-center justify-between mt-1 notif-right"
                         >
                             <p
-                                class="text-[10px] text-[#b0aaa0] whitespace-nowrap"
+                                class="text-[10px] text-[#b0aaa0] whitespace-nowrap"    
                             >
                                 {{ $notif->created_at->diffForHumans() }}
                             </p>
