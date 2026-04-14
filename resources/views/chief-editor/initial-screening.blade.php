@@ -849,7 +849,7 @@
             const cardFail = document.getElementById('card-fail');
 
             const autoComments = {
-                passed: 'Congratulations! Your submission has passed the initial screening and will proceed to the next stage of peer review.',
+                passed: 'Congratulations! Your submission has passed the initial screening and will be assigned for a specific editor to review.',
                 failed: 'Thank you for your submission. Unfortunately, your manuscript does not meet the minimum requirements for our journal at this time.',
             };
 
