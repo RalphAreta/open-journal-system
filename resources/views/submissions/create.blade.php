@@ -578,7 +578,7 @@
                                     <p
                                         class="text-[.82rem] sm:text-[.85rem] text-[#6b5740]"
                                     >
-                                        PDF, DOC, or DOCX — maximum 10 MB
+                                        PDF, DOC, or DOCX — maximum 50 MB
                                     </p>
                                     <div
                                         id="file-name-display"

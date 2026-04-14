@@ -172,7 +172,11 @@ class LayoutEditorController extends Controller
 
    // Update submission status
 $submission = $assignment->submission;
-$submission->update(['status' => Submission::STATUS_LAYOUT_REVIEW]);
+$submission->update([
+    'status'    => Submission::STATUS_LAYOUT_REVIEW,
+    'file_path' => $path,       // ← DAGDAG ITO
+    'file_name' => $file->getClientOriginalName(), // ← DAGDAG ITO
+]);
 
 $notes = $request->input('notes');
 $notesPart = $notes

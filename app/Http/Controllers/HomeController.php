@@ -261,16 +261,33 @@ class HomeController extends Controller
         );
     }
 
-    public function viewOnline(Submission $submission)
+  public function viewOnline(Submission $submission)
 {
-    $path = storage_path('app/' . $submission->file_path);
+    if (!in_array($submission->status, ['published'])) {
+        abort(403);
+    }
 
-    return response()->file($path, [
-        'Content-Type'        => 'application/pdf',
-        'Content-Disposition' => 'inline; filename="paper.pdf"',
-    ]);
+    $extension = strtolower(pathinfo($submission->file_path, PATHINFO_EXTENSION));
+
+    if ($extension === 'pdf') {
+        $disk = Storage::disk('local');
+
+        if (!$disk->exists($submission->file_path)) {
+            abort(404, 'File not found.');
+        }
+
+        $path = $disk->path($submission->file_path); // ← tama ang slashes
+
+        return response()->file($path, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="paper.pdf"',
+        ]);
+    }
+
+    $fileUrl = url(Storage::url($submission->file_path));
+    $googleViewerUrl = 'https://docs.google.com/viewer?url=' . urlencode($fileUrl) . '&embedded=true';
+    return redirect($googleViewerUrl);
 }
-
     /**
      * Download paper citation in RIS format
      *

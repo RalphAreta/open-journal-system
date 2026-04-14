@@ -402,7 +402,7 @@
                                     class="text-[.8rem] sm:text-[.85rem] text-[#6b5740]"
                                 >
                                     Leave blank to keep the current file — PDF,
-                                    DOC, DOCX, max 10 MB
+                                    DOC, DOCX, max 50 MB
                                 </p>
                                 <div
                                     id="file-name-display"
