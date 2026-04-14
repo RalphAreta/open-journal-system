@@ -1429,30 +1429,74 @@
                             <div class="download-text">
                                 <h3>Full Paper Available</h3>
                                 <p>
-                                    Download the complete PDF to access
-                                    methodology, results, and references.
+                                    Read online or download the complete PDF to
+                                    access methodology, results, and references.
                                 </p>
                             </div>
-                            <a
-                                href="{{ route('papers.download', ['submission' => $paper['id']]) }}"
-                                class="download-btn"
+                            <div
+                                style="
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 0.6rem;
+                                    min-width: 160px;
+                                "
                             >
-                                <svg
-                                    width="14"
-                                    height="14"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2.2"
-                                    viewBox="0 0 24 24"
+                                {{-- Read Online --}}
+                                <button
+                                    class="download-btn"
+                                    style="
+                                        background: var(--gold);
+                                        color: #fff;
+                                        border: none;
+                                        cursor: pointer;
+                                        justify-content: center;
+                                    "
+                                    onclick="
+                                        openPdfViewer(
+                                            '{{ route('papers.view', ['submission' => $paper['id']]) }}',
+                                        )
+                                    "
                                 >
-                                    <path
-                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    />
-                                </svg>
-                                Download PDF
-                            </a>
+                                    <svg
+                                        width="14"
+                                        height="14"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2.2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                    Read Online
+                                </button>
+                                {{-- Download PDF --}}
+                                <a
+                                    href="{{ route('papers.download', ['submission' => $paper['id']]) }}"
+                                    class="download-btn"
+                                    style="justify-content: center"
+                                >
+                                    <svg
+                                        width="14"
+                                        height="14"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2.2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                    Download PDF
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1911,6 +1955,342 @@
                 .addEventListener('click', function (e) {
                     if (e.target === this) closeCitationModal();
                 });
+        </script>
+
+        {{-- PDF Viewer Modal --}}
+        <div
+            id="pdfViewerModal"
+            style="
+                display: none;
+                position: fixed;
+                inset: 0;
+                z-index: 2000;
+                background: rgba(10, 20, 30, 0.7);
+                backdrop-filter: blur(6px);
+                align-items: center;
+                justify-content: center;
+                padding: 1rem;
+            "
+        >
+            <div
+                style="
+                    background: #fff;
+                    border-radius: 16px;
+                    width: 100%;
+                    max-width: 900px;
+                    height: 90vh;
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.3);
+                    animation: slideUp 0.3s cubic-bezier(0.22, 0.68, 0, 1.2);
+                "
+            >
+                {{-- Modal Header --}}
+                <div
+                    style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 0.875rem 1.25rem;
+                        border-bottom: 1px solid var(--border);
+                        background: var(--cream);
+                        flex-shrink: 0;
+                    "
+                >
+                    <div
+                        style="display: flex; align-items: center; gap: 0.6rem"
+                    >
+                        <div
+                            style="
+                                width: 1.75rem;
+                                height: 1.75rem;
+                                border-radius: 7px;
+                                background: var(--gold-dim);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: var(--gold);
+                            "
+                        >
+                            <svg
+                                width="14"
+                                height="14"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"
+                                />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p
+                                style="
+                                    font-size: 0.65rem;
+                                    font-weight: 700;
+                                    letter-spacing: 0.1em;
+                                    text-transform: uppercase;
+                                    color: var(--text-muted);
+                                    line-height: 1;
+                                "
+                            >
+                                Reading
+                            </p>
+                            <p
+                                style="
+                                    font-size: 0.88rem;
+                                    font-weight: 700;
+                                    color: var(--teal-dark);
+                                    line-height: 1.2;
+                                    max-width: 500px;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                "
+                                id="pdfViewerTitle"
+                            >
+                                {{ $paper['title'] }}
+                            </p>
+                        </div>
+                    </div>
+                    <div
+                        style="display: flex; align-items: center; gap: 0.5rem"
+                    >
+                        <a
+                            id="pdfDownloadBtn"
+                            href="#"
+                            class="download-btn"
+                            style="
+                                padding: 0.5rem 1rem;
+                                font-size: 0.72rem;
+                                background: var(--teal);
+                                color: #fff;
+                                text-decoration: none;
+                                border-radius: 8px;
+                                display: inline-flex;
+                                align-items: center;
+                                gap: 0.4rem;
+                            "
+                        >
+                            <svg
+                                width="12"
+                                height="12"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
+                            </svg>
+                            Download
+                        </a>
+                        <button
+                            onclick="closePdfViewer()"
+                            style="
+                                width: 2rem;
+                                height: 2rem;
+                                border-radius: 8px;
+                                background: var(--cream);
+                                border: 1px solid var(--border);
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: var(--text-muted);
+                                font-size: 1rem;
+                                transition: background 0.15s;
+                            "
+                            onmouseover="
+                                this.style.background = '#fee2e2';
+                                this.style.color = '#dc2626';
+                            "
+                            onmouseout="
+                                this.style.background = 'var(--cream)';
+                                this.style.color = 'var(--text-muted)';
+                            "
+                        >
+                            &times;
+                        </button>
+                    </div>
+                </div>
+
+                {{-- PDF iframe --}}
+                <div
+                    style="
+                        flex: 1;
+                        overflow: hidden;
+                        background: #525659;
+                        position: relative;
+                    "
+                >
+                    {{-- Loading state --}}
+                    <div
+                        id="pdfLoading"
+                        style="
+                            position: absolute;
+                            inset: 0;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            background: #525659;
+                            z-index: 1;
+                            gap: 1rem;
+                        "
+                    >
+                        <div
+                            style="
+                                width: 48px;
+                                height: 48px;
+                                border: 3px solid rgba(255, 255, 255, 0.2);
+                                border-top-color: var(--gold);
+                                border-radius: 50%;
+                                animation: spin 0.8s linear infinite;
+                            "
+                        ></div>
+                        <p
+                            style="
+                                color: rgba(255, 255, 255, 0.7);
+                                font-size: 0.82rem;
+                                font-weight: 500;
+                            "
+                        >
+                            Loading manuscript…
+                        </p>
+                    </div>
+                    <iframe
+                        id="pdfFrame"
+                        src=""
+                        style="
+                            width: 100%;
+                            height: 100%;
+                            border: none;
+                            display: block;
+                        "
+                        onload="
+                            document.getElementById(
+                                'pdfLoading',
+                            ).style.display = 'none'
+                        "
+                    ></iframe>
+                </div>
+
+                {{-- Mobile fallback notice --}}
+                <div
+                    id="pdfFallback"
+                    style="
+                        display: none;
+                        padding: 0.75rem 1.25rem;
+                        background: #fffbf0;
+                        border-top: 1px solid rgba(201, 168, 76, 0.3);
+                        font-size: 0.78rem;
+                        color: var(--gold-dk);
+                        text-align: center;
+                    "
+                >
+                    📱 If the PDF doesn't load on your device,
+                    <a
+                        id="pdfFallbackLink"
+                        href="#"
+                        style="
+                            color: var(--teal);
+                            font-weight: 600;
+                            text-decoration: underline;
+                        "
+                    >
+                        download it directly
+                    </a>
+                    .
+                </div>
+            </div>
+        </div>
+
+        <style>
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+
+        <script>
+            function openPdfViewer(url) {
+                const modal = document.getElementById('pdfViewerModal');
+                const frame = document.getElementById('pdfFrame');
+                const loading = document.getElementById('pdfLoading');
+                const dlBtn = document.getElementById('pdfDownloadBtn');
+                const fallbackLink = document.getElementById('pdfFallbackLink');
+                const fallback = document.getElementById('pdfFallback');
+
+                // Reset loading state
+                loading.style.display = 'flex';
+                frame.src = '';
+
+                // Set download links
+                dlBtn.href = url;
+                fallbackLink.href = url;
+
+                // Show modal
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+
+                // Load PDF — append #toolbar=1&view=FitH for better browser rendering
+                setTimeout(() => {
+                    frame.src = url + '#toolbar=1&view=FitH';
+                }, 100);
+
+                // Show mobile fallback after 4s if still loading
+                const fallbackTimer = setTimeout(() => {
+                    if (loading.style.display !== 'none') {
+                        fallback.style.display = 'block';
+                    }
+                }, 4000);
+
+                frame.addEventListener(
+                    'load',
+                    function onLoad() {
+                        clearTimeout(fallbackTimer);
+                        frame.removeEventListener('load', onLoad);
+
+                        // Check if iOS/mobile — show fallback hint
+                        const isMobile = /iPhone|iPad|iPod|Android/i.test(
+                            navigator.userAgent,
+                        );
+                        if (isMobile) fallback.style.display = 'block';
+                    },
+                    { once: true },
+                );
+            }
+
+            function closePdfViewer() {
+                const modal = document.getElementById('pdfViewerModal');
+                const frame = document.getElementById('pdfFrame');
+                modal.style.display = 'none';
+                frame.src = ''; // stop loading/playing
+                document.body.style.overflow = '';
+                document.getElementById('pdfFallback').style.display = 'none';
+                document.getElementById('pdfLoading').style.display = 'flex';
+            }
+
+            // Close on backdrop click
+            document
+                .getElementById('pdfViewerModal')
+                .addEventListener('click', function (e) {
+                    if (e.target === this) closePdfViewer();
+                });
+
+            // Close on Escape
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closePdfViewer();
+            });
         </script>
 
         {{-- Citation Modal --}}

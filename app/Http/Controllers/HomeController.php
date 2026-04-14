@@ -261,6 +261,16 @@ class HomeController extends Controller
         );
     }
 
+    public function viewOnline(Submission $submission)
+{
+    $path = storage_path('app/' . $submission->file_path);
+
+    return response()->file($path, [
+        'Content-Type'        => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="paper.pdf"',
+    ]);
+}
+
     /**
      * Download paper citation in RIS format
      *
