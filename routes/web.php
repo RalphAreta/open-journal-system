@@ -60,6 +60,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/submissions/{submission}/download-original', [ReviewController::class, 'downloadOriginalFile'])->name('submissions.download-original');
     Route::get('/submissions/{submission}/download-ctf', [ManagingEditorController::class, 'downloadCtf'])
     ->name('submissions.download-ctf');
+    Route::get('/ctf-template/download', [ManagingEditorController::class, 'downloadCtfTemplate'])
+    ->name('ctf-template.download');
 
     Route::middleware('role:author')->group(function (): void {
         Route::get('/dashboard/author', [DashboardController::class, 'author'])->name('dashboard.author');
@@ -201,6 +203,15 @@ Route::middleware('role:managing-editor')->group(function (): void {
         ->name('managing-editor.forward');
         Route::get('/managing-editor/submissions/{submission}/layout', [ManagingEditorController::class, 'showLayout'])
     ->name('managing-editor.layout.show');
+
+    Route::get('/managing-editor/ctf-template', [ManagingEditorController::class, 'ctfTemplate'])
+    ->name('managing-editor.ctf-template');
+
+Route::post('/managing-editor/ctf-template/upload', [ManagingEditorController::class, 'uploadCtfTemplate'])
+    ->name('managing-editor.ctf-template.upload');
+
+Route::post('/managing-editor/ctf-template/toggle-release', [ManagingEditorController::class, 'toggleCtfRelease'])
+    ->name('managing-editor.ctf-template.toggle-release');
 
 Route::post('/managing-editor/submissions/{submission}/layout/approve', [ManagingEditorController::class, 'approveLayout'])
     ->name('managing-editor.layout.approve');

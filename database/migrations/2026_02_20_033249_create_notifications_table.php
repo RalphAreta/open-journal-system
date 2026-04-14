@@ -18,6 +18,7 @@ return new class extends Migration
         $table->text('message');
         $table->string('type')->default('info'); // info, success, warning, danger
         $table->morphs('notifiable'); // links to submission or any model
+         $table->text('data');  
         $table->timestamp('read_at')->nullable();
         $table->timestamps();
     });

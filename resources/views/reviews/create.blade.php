@@ -178,7 +178,7 @@
                         for="comments_for_author"
                         class="block text-sm font-semibold text-slate-900 mb-3"
                     >
-                        Comments for Author
+                        Review Comments
                     </label>
                     <textarea
                         id="comments_for_author"
@@ -202,7 +202,7 @@
                         for="comments_for_editor"
                         class="block text-sm font-semibold text-slate-900 mb-3"
                     >
-                        Comments for Editor
+                        Confidential Comments for Editor
                         <span class="text-slate-500 font-normal text-xs">
                             (confidential)
                         </span>
@@ -315,8 +315,8 @@
                                             Competent work
                                         </td>
                                         <td class="p-2 text-slate-700">
-                                            Acceptable quality; minor to
-                                            moderate revisions
+                                            Acceptable quality; moderate
+                                            revisions recommended
                                         </td>
                                     </tr>
                                     <tr

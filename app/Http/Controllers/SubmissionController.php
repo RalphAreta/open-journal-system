@@ -106,7 +106,7 @@ class SubmissionController extends Controller
             'abstract'                => ['required', 'string'],
             'keywords'                => ['nullable', 'string', 'max:255'],
             'research_field'          => ['required', 'string', 'in:' . implode(',', array_keys(\App\Models\EditorExpertise::getFieldOptions()))],
-            'file'                    => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+            'file'                    => ['required', 'file', 'mimes:pdf,doc,docx', 'max:51200'],
             'similarity_acknowledged' => ['nullable', 'in:1'],
         ]);
 
@@ -239,7 +239,7 @@ class SubmissionController extends Controller
             'abstract'       => ['required', 'string'],
             'keywords'       => ['nullable', 'string', 'max:255'],
             'research_field' => ['required', 'string', 'in:' . implode(',', array_keys(\App\Models\EditorExpertise::getFieldOptions()))],
-            'file'           => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+            'file'           => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:51200'],
         ]);
 
         $data = [
@@ -288,7 +288,7 @@ class SubmissionController extends Controller
         }
 
         $validated = $request->validate([
-            'file'                => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+            'file'                => ['required', 'file', 'mimes:pdf,doc,docx', 'max:51200'],
             'revision_notes'      => ['required', 'string', 'max:1000'],
             'revision_request_id' => ['required', 'exists:revision_requests,id'],
         ]);
@@ -465,7 +465,7 @@ class SubmissionController extends Controller
         }
 
         $request->validate([
-            'signed_ctf_file' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+            'signed_ctf_file' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:51200'],
         ]);
 
         $file = $request->file('signed_ctf_file');

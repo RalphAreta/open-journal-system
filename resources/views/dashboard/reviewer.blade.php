@@ -944,6 +944,12 @@
                             $daysLeft = $dueDate ? (int) now()->diffInDays($dueDate, false) : null;
                             $dueCls = $daysLeft === null ? '' : ($daysLeft < 0 ? 'due-overdue' : ($daysLeft <= 7 ? 'due-soon' : 'due-ok'));
                             $barPct = $dueDate ? max(0, min(100, ($daysLeft / 30) * 100)) : 0;
+
+                            // Auto-decline countdown: 7 days from invitation sent
+                            $invitedAt = \Carbon\Carbon::parse($a->created_at);
+                            $expiresAt = $invitedAt->copy()->addDays(7);
+                            $expiresInDays = (int) now()->diffInDays($expiresAt, false);
+                            $expiresInHours = (int) now()->diffInHours($expiresAt, false);
                         @endphp
 
                         <div class="invite-card">
@@ -952,9 +958,124 @@
                                 class="flex flex-col sm:flex-row sm:items-start gap-5"
                             >
                                 <div class="flex-1 min-w-0">
-                                    <span class="invite-tag">
-                                        New Invitation
-                                    </span>
+                                    <div
+                                        style="
+                                            display: flex;
+                                            align-items: center;
+                                            gap: 8px;
+                                            flex-wrap: wrap;
+                                            margin-bottom: 10px;
+                                        "
+                                    >
+                                        <span
+                                            class="invite-tag"
+                                            style="margin-bottom: 0"
+                                        >
+                                            New Invitation
+                                        </span>
+                                        @if ($expiresInDays <= 0)
+                                            <span
+                                                style="
+                                                    font-size: 0.65rem;
+                                                    font-weight: 800;
+                                                    letter-spacing: 0.1em;
+                                                    text-transform: uppercase;
+                                                    background: #fef2f2;
+                                                    border: 1px solid #fecaca;
+                                                    color: #c0392b;
+                                                    padding: 3px 10px;
+                                                    border-radius: 20px;
+                                                    display: inline-flex;
+                                                    align-items: center;
+                                                    gap: 5px;
+                                                "
+                                            >
+                                                <svg
+                                                    width="10"
+                                                    height="10"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2.5"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                                                    />
+                                                </svg>
+                                                Auto-declining soon
+                                            </span>
+                                        @elseif ($expiresInDays <= 2)
+                                            <span
+                                                style="
+                                                    font-size: 0.65rem;
+                                                    font-weight: 800;
+                                                    letter-spacing: 0.1em;
+                                                    text-transform: uppercase;
+                                                    background: #fffbeb;
+                                                    border: 1px solid #fde68a;
+                                                    color: #92400e;
+                                                    padding: 3px 10px;
+                                                    border-radius: 20px;
+                                                    display: inline-flex;
+                                                    align-items: center;
+                                                    gap: 5px;
+                                                "
+                                            >
+                                                <svg
+                                                    width="10"
+                                                    height="10"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2.5"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                    />
+                                                </svg>
+                                                Expires in
+                                                {{ $expiresInDays === 0 ? $expiresInHours . 'h' : $expiresInDays . 'd' }}
+                                            </span>
+                                        @else
+                                            <span
+                                                style="
+                                                    font-size: 0.65rem;
+                                                    font-weight: 700;
+                                                    letter-spacing: 0.1em;
+                                                    text-transform: uppercase;
+                                                    background: #f0fdf4;
+                                                    border: 1px solid #86efac;
+                                                    color: #1a4d46;
+                                                    padding: 3px 10px;
+                                                    border-radius: 20px;
+                                                    display: inline-flex;
+                                                    align-items: center;
+                                                    gap: 5px;
+                                                "
+                                            >
+                                                <svg
+                                                    width="10"
+                                                    height="10"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2.5"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                    />
+                                                </svg>
+                                                {{ $expiresInDays }}d to
+                                                respond
+                                            </span>
+                                        @endif
+                                    </div>
                                     <p class="invite-title">
                                         {{ Str::limit($a->submission->title ?? 'Untitled', 70) }}
                                     </p>
@@ -1061,6 +1182,51 @@
                                             No deadline set
                                         </p>
                                     @endif
+                                </div>
+
+                                {{-- Auto-decline notice --}}
+                                <div
+                                    style="
+                                        margin-top: 12px;
+                                        padding: 10px 12px;
+                                        border-radius: 8px;
+                                        background: {{ $expiresInDays <= 2 ? '#fffbeb' : '#faf6ef' }};
+                                        border: 1px solid
+                                            {{ $expiresInDays <= 2 ? '#fde68a' : '#e8dfd0' }};
+                                    "
+                                >
+                                    <p
+                                        style="
+                                            font-size: 0.76rem;
+                                            color: {{ $expiresInDays <= 2 ? '#92400e' : '#6b5740' }};
+                                            line-height: 1.55;
+                                        "
+                                    >
+                                        <strong>⏳ Auto-decline policy:</strong>
+                                        Invitations not responded to within
+                                        <strong>7 days</strong>
+                                        are automatically declined.
+
+                                        @if ($expiresInDays > 0)
+                                            This invitation expires on
+                                            <strong>
+                                                {{ $expiresAt->format('M d, Y') }}
+                                            </strong>
+                                            ({{ $expiresInDays }}
+                                            {{ Str::plural('day', $expiresInDays) }}
+                                            left).
+                                        @else
+                                            <span
+                                                style="
+                                                    color: #c0392b;
+                                                    font-weight: 700;
+                                                "
+                                            >
+                                                This invitation is expiring very
+                                                soon!
+                                            </span>
+                                        @endif
+                                    </p>
                                 </div>
 
                                 {{-- Accept/Decline buttons: row on mobile, column on sm+ --}}

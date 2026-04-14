@@ -763,121 +763,166 @@
 @push('scripts')
     <script>
         const fileInput = document.getElementById('file');
-        if (fileInput) {
-            fileInput.addEventListener('change', function () {
-                const display = document.getElementById('file-name-display');
-                const text    = document.getElementById('file-name-text');
-                if (this.files.length > 0) {
-                    text.textContent = this.files[0].name;
-                    display.classList.remove('hidden');
-                    display.style.display = 'inline-flex';
-                }
-            });
-        }
-
-        const dz = document.getElementById('dropzone');
-        if (dz) {
-            dz.addEventListener('dragover',  (e) => { e.preventDefault(); dz.classList.add('dragover'); });
-            dz.addEventListener('dragleave', ()  => dz.classList.remove('dragover'));
-            dz.addEventListener('drop',      ()  => dz.classList.remove('dragover'));
-        }
-
-        (function () {
-            const titleEl   = document.getElementById('title');
-            const submitBtn = document.getElementById('submit-btn');
-            if (!titleEl) return;
-
-            let debounceTimer = null;
-            let liveWarning   = null;
-
-            titleEl.addEventListener('input', () => {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(runCheck, 800);
-            });
-
-            async function runCheck() {
-                const title    = titleEl.value.trim();
-                const abstract = document.getElementById('abstract')?.value?.trim() ?? '';
-                if (title.length < 10) { clearWarning(); return; }
-                try {
-                    const res  = await fetch(
-                        `{{ route('submissions.check-similarity') }}?title=${encodeURIComponent(title)}&abstract=${encodeURIComponent(abstract)}`,
-                        { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
-                    );
-                    const data = await res.json();
-                    if (data.similar && data.similar.length > 0) renderWarning(data.similar);
-                    else clearWarning();
-                } catch (e) {}
-            }
-
-            function renderWarning(similar) {
-                if (!liveWarning) {
-                    liveWarning = document.createElement('div');
-                    liveWarning.id = 'live-sim-warning';
-                    const leftCol = document.querySelector('.lg\\:col-span-8');
-                    if (leftCol) leftCol.prepend(liveWarning);
-                }
-                const items = similar.map(s => `
-                    <div class="sim-item">
-                        <p style="font-size:.85rem;font-weight:700;color:#1a1209;margin-bottom:4px">${s.title}</p>
-                        <span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#fffbeb;border:1px solid #fde68a;color:#b45309;padding:2px 8px;border-radius:999px">${s.status}</span>
-                        ${s.research_field ? `<span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;padding:2px 8px;border-radius:999px;margin-left:4px">${s.research_field}</span>` : ''}
-                        <span style="font-size:.72rem;color:#6b5740;margin-left:6px">${s.created_at}</span>
-                    </div>`).join('');
-                liveWarning.innerHTML = `
-                    <div class="sim-warning" style="margin-bottom:20px">
-                        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:8px">
-                            <svg style="width:18px;height:18px;color:#d97706;flex-shrink:0;margin-top:2px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                            </svg>
-                            <div>
-                                <p style="font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#b45309;margin-bottom:2px">Similar Articles Detected</p>
-                                <p style="font-size:.88rem;color:#92400e">${similar.length} submission(s) with a similar title found.</p>
-                            </div>
-                        </div>
-                        ${items}
-                        <label style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer">
-                            <input type="checkbox" id="live-sim-ack" name="similarity_acknowledged" value="1"
-                                   style="margin-top:3px;width:16px;height:16px;accent-color:#d97706;cursor:pointer;flex-shrink:0"/>
-                            <span style="font-size:.82rem;font-weight:600;color:#92400e;line-height:1.5">
-                                I confirm my manuscript is <strong>original and distinct</strong> from the listed submissions.
-                            </span>
-                        </label>
-                    </div>`;
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    document.getElementById('live-sim-ack')?.addEventListener('change', function () {
-                        submitBtn.disabled = !this.checked;
+                if (fileInput) {
+                    fileInput.addEventListener('change', function () {
+                        const display = document.getElementById('file-name-display');
+                        const text    = document.getElementById('file-name-text');
+                        if (this.files.length > 0) {
+                            text.textContent = this.files[0].name;
+                            display.classList.remove('hidden');
+                            display.style.display = 'inline-flex';
+                        }
                     });
                 }
-            }
 
-            function clearWarning() {
-                if (liveWarning) { liveWarning.remove(); liveWarning = null; }
-                if (submitBtn && !document.getElementById('sim-ack')) submitBtn.disabled = false;
-            }
-        })();
+                const dz = document.getElementById('dropzone');
+                if (dz) {
+                    dz.addEventListener('dragover',  (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+                    dz.addEventListener('dragleave', ()  => dz.classList.remove('dragover'));
+                    dz.addEventListener('drop',      ()  => dz.classList.remove('dragover'));
+                }
 
-        const simAck    = document.getElementById('sim-ack');
-        const submitBtn = document.getElementById('submit-btn');
-        if (simAck && submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.title = 'Please acknowledge the similar submissions above first.';
-            simAck.addEventListener('change', function () {
-                submitBtn.disabled = !this.checked;
-                submitBtn.title = '';
+                (function () {
+                    const titleEl   = document.getElementById('title');
+                    const submitBtn = document.getElementById('submit-btn');
+                    if (!titleEl) return;
+
+                    let debounceTimer = null;
+                    let liveWarning   = null;
+
+                    titleEl.addEventListener('input', () => {
+                        clearTimeout(debounceTimer);
+                        debounceTimer = setTimeout(runCheck, 800);
+                    });
+
+                    async function runCheck() {
+                        const title    = titleEl.value.trim();
+                        const abstract = document.getElementById('abstract')?.value?.trim() ?? '';
+                        if (title.length < 10) { clearWarning(); return; }
+                        try {
+                            const res  = await fetch(
+                                `{{ route('submissions.check-similarity') }}?title=${encodeURIComponent(title)}&abstract=${encodeURIComponent(abstract)}`,
+                                { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
+                            );
+                            const data = await res.json();
+                            if (data.similar && data.similar.length > 0) renderWarning(data.similar);
+                            else clearWarning();
+                        } catch (e) {}
+                    }
+
+                    function renderWarning(similar) {
+                        if (!liveWarning) {
+                            liveWarning = document.createElement('div');
+                            liveWarning.id = 'live-sim-warning';
+                            const leftCol = document.querySelector('.lg\\:col-span-8');
+                            if (leftCol) leftCol.prepend(liveWarning);
+                        }
+                        const items = similar.map(s => `
+                            <div class="sim-item">
+                                <p style="font-size:.85rem;font-weight:700;color:#1a1209;margin-bottom:4px">${s.title}</p>
+                                <span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#fffbeb;border:1px solid #fde68a;color:#b45309;padding:2px 8px;border-radius:999px">${s.status}</span>
+                                ${s.research_field ? `<span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;padding:2px 8px;border-radius:999px;margin-left:4px">${s.research_field}</span>` : ''}
+                                <span style="font-size:.72rem;color:#6b5740;margin-left:6px">${s.created_at}</span>
+                            </div>`).join('');
+                        liveWarning.innerHTML = `
+                            <div class="sim-warning" style="margin-bottom:20px">
+                                <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:8px">
+                                    <svg style="width:18px;height:18px;color:#d97706;flex-shrink:0;margin-top:2px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                                    </svg>
+                                    <div>
+                                        <p style="font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#b45309;margin-bottom:2px">Similar Articles Detected</p>
+                                        <p style="font-size:.88rem;color:#92400e">${similar.length} submission(s) with a similar title found.</p>
+                                    </div>
+                                </div>
+                                ${items}
+                                <label style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer">
+                                    <input type="checkbox" id="live-sim-ack" name="similarity_acknowledged" value="1"
+                                           style="margin-top:3px;width:16px;height:16px;accent-color:#d97706;cursor:pointer;flex-shrink:0"/>
+                                    <span style="font-size:.82rem;font-weight:600;color:#92400e;line-height:1.5">
+                                        I confirm my manuscript is <strong>original and distinct</strong> from the listed submissions.
+                                    </span>
+                                </label>
+                            </div>`;
+                        if (submitBtn) {
+                            submitBtn.disabled = true;
+                            document.getElementById('live-sim-ack')?.addEventListener('change', function () {
+                                submitBtn.disabled = !this.checked;
+                            });
+                        }
+                    }
+
+                    function clearWarning() {
+                        if (liveWarning) { liveWarning.remove(); liveWarning = null; }
+                        if (submitBtn && !document.getElementById('sim-ack')) submitBtn.disabled = false;
+                    }
+                })();
+
+                const simAck    = document.getElementById('sim-ack');
+                const submitBtn = document.getElementById('submit-btn');
+                if (simAck && submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.title = 'Please acknowledge the similar submissions above first.';
+                    simAck.addEventListener('change', function () {
+                        submitBtn.disabled = !this.checked;
+                        submitBtn.title = '';
+                    });
+                }
+
+                @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Submitted</span>',
+                    html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+                    confirmButtonText: 'Close', confirmButtonColor: '#2d8176',
+                    customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
+                    buttonsStyling: false,
+                });
+                @endif
+                // ── Submit Confirmation ──
+        const submitBtnConfirm = document.getElementById('submit-btn');
+        if (submitBtnConfirm) {
+            submitBtnConfirm.addEventListener('click', function (e) {
+                // Huwag mag-confirm kung disabled (similarity check)
+                if (this.disabled) return;
+
+                e.preventDefault();
+
+                const title    = document.getElementById('title')?.value?.trim() || 'Untitled';
+                const field    = document.getElementById('research_field');
+                const fieldTxt = field?.options[field.selectedIndex]?.text || 'Not specified';
+                const file     = document.getElementById('file')?.files[0];
+                const fileName = file ? file.name : 'No file selected';
+
+                Swal.fire({
+                    title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.2rem;font-weight:700;">Submit Manuscript?</span>',
+                    html: `
+                        <p style="font-size:.85rem;color:#6b5740;margin-bottom:14px;line-height:1.6">
+                            Are you sure you want to submit this manuscript? 
+                        </p>
+
+                        <p style="font-size:.76rem;color:#b5a595;margin-top:12px;line-height:1.5">
+                            Once submitted, your manuscript will go through initial screening before peer review.
+                        </p>`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Submit',
+                    cancelButtonText: 'Go Back',
+                    reverseButtons: true,
+                    customClass: {
+                        popup:         'rounded-2xl',
+                        confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest',
+                        cancelButton:  'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest',
+                    },
+                    confirmButtonColor: '#2d8176',
+                    cancelButtonColor:  '#f3ece0',
+                    buttonsStyling: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('submission-form').submit();
+                    }
+                });
             });
         }
-
-        @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Submitted</span>',
-            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
-            confirmButtonText: 'Close', confirmButtonColor: '#2d8176',
-            customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
-            buttonsStyling: false,
-        });
-        @endif
     </script>
 @endpush

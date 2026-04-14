@@ -32,6 +32,7 @@ class Review extends Model
 
     public const RECOMMEND_ACCEPT = 'accept';
     public const RECOMMEND_MINOR_REVISIONS = 'minor_revisions';
+    public const RECOMMEND_MODERATE_REVISIONS = 'moderate_revisions';
     public const RECOMMEND_MAJOR_REVISIONS = 'major_revisions';
     public const RECOMMEND_REJECT = 'reject';
 
@@ -40,6 +41,7 @@ class Review extends Model
         return [
             self::RECOMMEND_ACCEPT => 'Accept',
             self::RECOMMEND_MINOR_REVISIONS => 'Minor Revisions',
+            self::RECOMMEND_MODERATE_REVISIONS => 'Moderate Revisions',
             self::RECOMMEND_MAJOR_REVISIONS => 'Major Revisions',
             self::RECOMMEND_REJECT => 'Reject',
         ];

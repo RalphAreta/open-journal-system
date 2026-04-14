@@ -217,7 +217,7 @@
                                 @enderror
 
                                 <p class="text-xs text-[#6a7890] mt-1">
-                                    Accepted: PDF only (Max 10MB)
+                                    Accepted: PDF only (Max 50MB)
                                 </p>
                             </div>
 

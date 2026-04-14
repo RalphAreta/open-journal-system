@@ -94,9 +94,9 @@ class ReviewController extends Controller
 
         // Recommendation is required only when submitting
         if (!$isSaveDraft) {
-            $rules['recommendation'] = ['required', 'in:accept,minor_revisions,major_revisions,reject'];
+            $rules['recommendation'] = ['required', 'in:accept,minor_revisions,moderate_revisions,major_revisions,reject'];
         } else {
-            $rules['recommendation'] = ['nullable', 'in:accept,minor_revisions,major_revisions,reject'];
+            $rules['recommendation'] = ['nullable', 'in:accept,minor_revisions,moderate_revisions,major_revisions,reject'];
         }
 
         $validated = $request->validate($rules);
@@ -405,7 +405,7 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
                 \App\Models\Notification::create([
                     'user_id' => $reviewerId,
                     'role' => 'reviewer',
-                    'title' => '🔄 Revised Manuscript Ready for Re-Review',
+                    'title' => '🔄 Revised Manuscript Ready for Review',
                     'message' => "A revised manuscript for \"{$submission->title}\" is ready for your re-review. Please log in to view and submit your feedback.",
                     'type' => 'info',
                     'notifiable_id' => $submission->id,
@@ -738,9 +738,9 @@ return view('reviews.editor-show', compact('submission', 'matchedReviewers', 'ot
 
         // Recommendation is required only when submitting
         if (!$isSaveDraft) {
-            $rules['recommendation'] = ['required', 'in:accept,minor_revisions,major_revisions,reject'];
+            $rules['recommendation'] = ['required', 'in:accept,minor_revisions,moderate_revisions,major_revisions,reject'];
         } else {
-            $rules['recommendation'] = ['nullable', 'in:accept,minor_revisions,major_revisions,reject'];
+            $rules['recommendation'] = ['nullable', 'in:accept,minor_revisions,moderate_revisions,major_revisions,reject'];
         }
 
         $validated = $request->validate($rules);

@@ -2588,7 +2588,7 @@
                                     class="section-label"
                                     style="margin-bottom: 4px"
                                 >
-                                    Assign Reviewer
+                                    Assign Reviewers
                                 </div>
 
                                 @if ($matchedReviewers->count() > 0)
@@ -2751,6 +2751,7 @@
 
                         @if ($showAssignForm)
                             <form
+                                id="assign-reviewer-form"
                                 method="POST"
                                 action="{{ route('editor.assign-reviewer', $submission) }}"
                                 style="
@@ -3365,5 +3366,63 @@
                 revFields.style.display = 'flex';
             @endif
         }
+
+        // ── Reviewer Count Validation ──
+(function () {
+    const assignForm = document.getElementById('assign-reviewer-form');
+    if (!assignForm) return;
+
+    assignForm.addEventListener('submit', function (e) {
+        const checked = assignForm.querySelectorAll('.reviewer-checkbox:checked');
+        const count = checked.length;
+
+        if (count < 2) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'warning',
+                title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.15rem;font-weight:700;">Not Enough Reviewers</span>',
+                html: `
+                    <p style="font-size:.88rem;color:#6b5740;line-height:1.65">
+                        Please select <strong style="color:#1a1209">at least 2 reviewers</strong> before assigning.<br>
+                        <span style="font-size:.78rem;color:#94a3b8">
+                            You currently have <strong style="color:#d97706">${count}</strong> selected.
+                            Recommended: <strong>2–3 reviewers</strong>.
+                        </span>
+                    </p>`,
+                confirmButtonText: 'Select More Reviewers',
+                confirmButtonColor: '#2d8176',
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest'
+                },
+                buttonsStyling: false,
+            });
+            return;
+        }
+
+        if (count > 3) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'info',
+                title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.15rem;font-weight:700;">Too Many Reviewers</span>',
+                html: `
+                    <p style="font-size:.88rem;color:#6b5740;line-height:1.65">
+                        Maximum of <strong style="color:#1a1209">3 reviewers</strong> only.<br>
+                        <span style="font-size:.78rem;color:#94a3b8">
+                            You currently have <strong style="color:#dc2626">${count}</strong> selected.
+                        </span>
+                    </p>`,
+                confirmButtonText: 'Adjust Selection',
+                confirmButtonColor: '#2d8176',
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest'
+                },
+                buttonsStyling: false,
+            });
+            return;
+        }
+    });
+})();
     </script>
 @endpush

@@ -891,9 +891,8 @@
                 <div>
                     <p class="hero-eyebrow">Managing Editor Dashboard</p>
                     <h1 class="hero-title">
-                        Editorial
-                        <em>Production</em>
-                        Pipeline
+                        Manuscript
+                        <em>Processing</em>
                     </h1>
                     <p class="hero-sub">
                         Manage accepted manuscripts, upload copyright transfer
@@ -903,6 +902,231 @@
                 <span class="date-pill hidden sm:inline-block">
                     {{ now()->format('D, M j Y') }}
                 </span>
+            </div>
+        </div>
+
+        {{-- ── CTF Template Management ── --}}
+        @php
+            $ctfTemplate = \App\Models\CtfTemplate::latest()->first();
+        @endphp
+
+        <div class="fu1 mb-8">
+            <div
+                style="
+                    background: #fff;
+                    border: 1px solid var(--border-dk);
+                    border-radius: 14px;
+                    overflow: hidden;
+                    box-shadow: 0 2px 12px rgba(26, 18, 9, 0.07);
+                "
+            >
+                <div
+                    style="
+                        padding: 16px 24px 14px;
+                        background: var(--parchment);
+                        border-bottom: 1px solid var(--border);
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        flex-wrap: wrap;
+                        gap: 10px;
+                    "
+                >
+                    <div>
+                        <p
+                            style="
+                                font-size: 10px;
+                                font-weight: 700;
+                                letter-spacing: 0.18em;
+                                text-transform: uppercase;
+                                color: var(--teal);
+                                margin-bottom: 3px;
+                            "
+                        >
+                            System-wide
+                        </p>
+                        <p
+                            style="
+                                font-family: 'Libre Baskerville', serif;
+                                font-size: 1.05rem;
+                                font-weight: 700;
+                                color: var(--ink);
+                            "
+                        >
+                            Copyright Transfer Form Template
+                        </p>
+                    </div>
+                    @if ($ctfTemplate)
+                        <span
+                            style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid;
+                    {{
+                        $ctfTemplate->is_released
+                            ? 'background:#f0fdf4;border-color:#86efac;color:var(--teal-dk)'
+                            : 'background:#fef2f2;border-color:#fecaca;color:#991b1b'
+                    }}"
+                        >
+                            <span
+                                style="
+                                    width: 6px;
+                                    height: 6px;
+                                    border-radius: 50%;
+                                    background: {{ $ctfTemplate->is_released ? 'var(--teal)' : '#c0392b' }};
+                                    flex-shrink: 0;
+                                "
+                            ></span>
+                            {{ $ctfTemplate->is_released ? 'Released to Authors' : 'Not Released' }}
+                        </span>
+                    @endif
+                </div>
+
+                <div
+                    style="
+                        padding: 20px 24px;
+                        display: flex;
+                        align-items: center;
+                        gap: 16px;
+                        flex-wrap: wrap;
+                    "
+                >
+                    @if ($ctfTemplate)
+                        {{-- Current template info --}}
+                        <div
+                            style="
+                                flex: 1;
+                                min-width: 200px;
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                            "
+                        >
+                            <div
+                                style="
+                                    width: 40px;
+                                    height: 40px;
+                                    border-radius: 8px;
+                                    background: var(--teal-lt);
+                                    color: var(--teal);
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    flex-shrink: 0;
+                                "
+                            >
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                    />
+                                </svg>
+                            </div>
+                            <div>
+                                <p
+                                    style="
+                                        font-size: 0.85rem;
+                                        font-weight: 600;
+                                        color: var(--ink);
+                                    "
+                                >
+                                    {{ $ctfTemplate->file_name }}
+                                </p>
+                                <p
+                                    style="
+                                        font-size: 0.72rem;
+                                        color: var(--ink-soft);
+                                        margin-top: 2px;
+                                    "
+                                >
+                                    Uploaded
+                                    {{ $ctfTemplate->created_at->format('d M Y') }}
+                                    @if ($ctfTemplate->is_released && $ctfTemplate->released_at)
+                                        · Released
+                                        {{ $ctfTemplate->released_at->format('d M Y') }}
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+
+                        {{-- Release button — one-way only, hidden once released --}}
+                        @if (! $ctfTemplate->is_released)
+                            <form
+                                method="POST"
+                                action="{{ route('managing-editor.ctf-template.toggle-release') }}"
+                            >
+                                @csrf
+                                <button
+                                    type="submit"
+                                    class="btn-action gold"
+                                    onclick="
+                                        return confirm(
+                                            'Release CTF template to all authors with ctf_sent status?',
+                                        );
+                                    "
+                                >
+                                    <svg
+                                        width="12"
+                                        height="12"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                    </svg>
+                                    Release to Authors
+                                </button>
+                            </form>
+                        @endif
+                    @else
+                        <p
+                            style="
+                                font-size: 0.88rem;
+                                color: var(--ink-soft);
+                                flex: 1;
+                            "
+                        >
+                            No CTF template uploaded yet. Upload one below.
+                        </p>
+                    @endif
+
+                    {{-- Upload / Replace button --}}
+                    <button
+                        type="button"
+                        class="btn-action gold"
+                        onclick="
+                            document
+                                .getElementById('ctfTemplateModal')
+                                .classList.add('open')
+                        "
+                    >
+                        <svg
+                            width="12"
+                            height="12"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                            />
+                        </svg>
+                        {{ $ctfTemplate ? 'Replace Template' : 'Upload Template' }}
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -1164,7 +1388,7 @@
                                                         r="3"
                                                     />
                                                 </svg>
-                                                View
+                                                View Manuscript Details
                                             </a>
                                             @if ($meStatus === 'pending')
                                                 <button
@@ -1543,7 +1767,7 @@
         @endif
     </div>
 
-    {{-- CTF Upload Modal --}}
+    {{-- CTF Confirm Modal --}}
     <div
         class="modal-backdrop"
         id="ctfModal"
@@ -1552,7 +1776,7 @@
         <div class="modal-box">
             <div class="modal-head">
                 <span class="modal-head-title">
-                    Upload Copyright Transfer Form
+                    Send Copyright Transfer Form
                 </span>
                 <button class="modal-close" onclick="closeCtfModal()">
                     <svg
@@ -1571,83 +1795,126 @@
                     </svg>
                 </button>
             </div>
-            <form
-                method="POST"
-                id="ctfModalForm"
-                action=""
-                enctype="multipart/form-data"
-            >
+            <form method="POST" id="ctfModalForm" action="">
                 @csrf
                 <div class="modal-body">
                     <p class="modal-manuscript-title" id="ctfManuscriptTitle">
                         —
                     </p>
-                    <label class="modal-label">CTF Document</label>
-                    <div class="upload-zone" id="ctfDropZone">
-                        <input
-                            type="file"
-                            name="ctf_file"
-                            id="ctfFileInput"
-                            accept=".pdf,.doc,.docx"
-                            required
-                            onchange="onCtfFileSelected(this)"
-                        />
-                        <div class="upload-zone-icon">
-                            <svg
-                                width="20"
-                                height="20"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                                />
-                            </svg>
-                        </div>
-                        <p class="upload-zone-label">Click or drag file here</p>
-                        <p class="upload-zone-sub">
-                            PDF, DOC, DOCX · Max 10 MB
-                        </p>
-                    </div>
-                    <div class="upload-selected" id="ctfFileSelected">
-                        <svg
-                            width="16"
-                            height="16"
-                            fill="none"
-                            stroke="var(--gold-dk)"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
-                            style="flex-shrink: 0"
+
+                    @php
+                        $ctfTpl = \App\Models\CtfTemplate::latest()->first();
+                    @endphp
+
+                    @if ($ctfTpl)
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                                background: var(--teal-lt);
+                                border: 1px solid rgba(45, 129, 118, 0.25);
+                                border-radius: 8px;
+                                padding: 12px 14px;
+                                margin-bottom: 16px;
+                            "
                         >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                            />
-                        </svg>
-                        <span class="upload-selected-name" id="ctfFileName">
-                            —
-                        </span>
-                        <span class="upload-selected-size" id="ctfFileSize">
-                            —
-                        </span>
-                    </div>
+                            <div
+                                style="
+                                    width: 36px;
+                                    height: 36px;
+                                    border-radius: 7px;
+                                    background: #fff;
+                                    color: var(--teal);
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    flex-shrink: 0;
+                                "
+                            >
+                                <svg
+                                    width="17"
+                                    height="17"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                    />
+                                </svg>
+                            </div>
+                            <div>
+                                <p
+                                    style="
+                                        font-size: 0.72rem;
+                                        font-weight: 700;
+                                        letter-spacing: 0.07em;
+                                        text-transform: uppercase;
+                                        color: var(--teal-dk);
+                                        margin-bottom: 2px;
+                                    "
+                                >
+                                    Global CTF Template
+                                </p>
+                                <p
+                                    style="
+                                        font-size: 0.85rem;
+                                        font-weight: 600;
+                                        color: var(--ink);
+                                    "
+                                >
+                                    {{ $ctfTpl->file_name }}
+                                </p>
+                                <p
+                                    style="
+                                        font-size: 0.72rem;
+                                        color: var(--ink-soft);
+                                        margin-top: 1px;
+                                    "
+                                >
+                                    {{ $ctfTpl->is_released ? '✓ Currently released to authors' : '⚠ Not yet released — author will be notified once you release it' }}
+                                </p>
+                            </div>
+                        </div>
+                    @else
+                        <div
+                            style="
+                                background: #fef2f2;
+                                border: 1px solid #fecaca;
+                                border-radius: 8px;
+                                padding: 12px 14px;
+                                margin-bottom: 16px;
+                                font-size: 0.84rem;
+                                color: #991b1b;
+                            "
+                        >
+                            ⚠ No global CTF template uploaded yet. Please upload
+                            one first from the CTF Template section above.
+                        </div>
+                    @endif
+
                     <p
                         style="
-                            font-size: 0.75rem;
+                            font-size: 0.84rem;
                             color: var(--ink-soft);
-                            margin-top: 14px;
-                            line-height: 1.6;
+                            line-height: 1.65;
                         "
                     >
-                        The uploaded CTF will be made available to the
-                        <strong>author</strong>
-                        via their dashboard notification. The author must
-                        download, sign, and return the form.
+                        This will mark the manuscript as
+                        <strong style="color: var(--ink)">
+                            Awaiting Signed CTF
+                        </strong>
+                        .
+                        @if ($ctfTpl?->is_released)
+                            The author will be notified immediately and can download the CTF template from their dashboard.
+                        @else
+                                The author will be notified once you release the
+                                CTF template from the section above.
+                        @endif
                     </p>
                 </div>
                 <div class="modal-footer">
@@ -1658,7 +1925,11 @@
                     >
                         Cancel
                     </button>
-                    <button type="submit" class="btn-modal-submit gold-btn">
+                    <button
+                        type="submit"
+                        class="btn-modal-submit gold-btn"
+                        {{ ! $ctfTpl ? 'disabled style=opacity:.5;cursor:not-allowed' : '' }}
+                    >
                         <svg
                             width="14"
                             height="14"
@@ -1670,10 +1941,10 @@
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                         </svg>
-                        Upload &amp; Send to Author
+                        Confirm &amp; Notify Author
                     </button>
                 </div>
             </form>
@@ -1871,21 +2142,169 @@
             </form>
         </div>
     </div>
+
+    {{-- CTF Template Upload Modal --}}
+    <div
+        class="modal-backdrop"
+        id="ctfTemplateModal"
+        onclick="if (event.target === this) this.classList.remove('open');"
+    >
+        <div class="modal-box">
+            <div class="modal-head">
+                <span class="modal-head-title">Upload CTF Template</span>
+                <button
+                    class="modal-close"
+                    onclick="
+                        document
+                            .getElementById('ctfTemplateModal')
+                            .classList.remove('open')
+                    "
+                >
+                    <svg
+                        width="14"
+                        height="14"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6 18L18 6M6 6l12 12"
+                        />
+                    </svg>
+                </button>
+            </div>
+            <form
+                method="POST"
+                action="{{ route('managing-editor.ctf-template.upload') }}"
+                enctype="multipart/form-data"
+            >
+                @csrf
+                <div class="modal-body">
+                    <p
+                        style="
+                            font-size: 0.84rem;
+                            color: var(--ink-soft);
+                            margin-bottom: 16px;
+                            line-height: 1.6;
+                        "
+                    >
+                        This template will be used system-wide. Uploading a new
+                        file will
+                        <strong style="color: var(--ink)">
+                            replace the existing one.
+                        </strong>
+                    </p>
+                    <label class="modal-label">CTF Template File</label>
+                    <div class="upload-zone">
+                        <input
+                            type="file"
+                            name="ctf_template_file"
+                            accept=".pdf,.doc,.docx"
+                            required
+                            onchange="onTemplateFileSelected(this)"
+                        />
+                        <div class="upload-zone-icon">
+                            <svg
+                                width="20"
+                                height="20"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                />
+                            </svg>
+                        </div>
+                        <p class="upload-zone-label">Click or drag file here</p>
+                        <p class="upload-zone-sub">
+                            PDF, DOC, DOCX · Max 10 MB
+                        </p>
+                    </div>
+                    <div class="upload-selected" id="templateFileSelected">
+                        <svg
+                            width="16"
+                            height="16"
+                            fill="none"
+                            stroke="var(--gold-dk)"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            style="flex-shrink: 0"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                        </svg>
+                        <span
+                            class="upload-selected-name"
+                            id="templateFileName"
+                        >
+                            —
+                        </span>
+                        <span
+                            class="upload-selected-size"
+                            id="templateFileSize"
+                        >
+                            —
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn-modal-cancel"
+                        onclick="
+                            document
+                                .getElementById('ctfTemplateModal')
+                                .classList.remove('open')
+                        "
+                    >
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-modal-submit gold-btn">
+                        <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                            />
+                        </svg>
+                        Upload Template
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     <script>
         function filterTable() {
-            const f = document.getElementById('dashboardSearch').value.toUpperCase();
-            document.querySelectorAll('.submission-row').forEach(row => {
-                const title  = row.querySelector('.title-cell')?.innerText.toUpperCase() ?? '';
-                const ref    = row.cells?.[0]?.innerText.toUpperCase() ?? row.querySelector('.ms-ref')?.innerText.toUpperCase() ?? '';
-                const status = row.querySelector('.status-cell')?.innerText.toUpperCase() ?? '';
-                row.style.display = (title.includes(f) || ref.includes(f) || status.includes(f)) ? '' : 'none';
-            });
-        }
+                            const f = document.getElementById('dashboardSearch').value.toUpperCase();
+                            document.querySelectorAll('.submission-row').forEach(row => {
+                                const title  = row.querySelector('.title-cell')?.innerText.toUpperCase() ?? '';
+                                const ref    = row.cells?.[0]?.innerText.toUpperCase() ?? row.querySelector('.ms-ref')?.innerText.toUpperCase() ?? '';
+                                const status = row.querySelector('.status-cell')?.innerText.toUpperCase() ?? '';
+                                row.style.display = (title.includes(f) || ref.includes(f) || status.includes(f)) ? '' : 'none';
+                            });
+                        }
 
-        const ctfRoutes = @json(
+                  const ctfRoutes = @json(
             $submissions->filter(fn($s) => is_null($s->managing_editor_status) || $s->managing_editor_status === 'pending')
                 ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.ctf.generate', $s)])
         );
@@ -1893,111 +2312,97 @@
         function openCtfModal(id, title) {
             document.getElementById('ctfManuscriptTitle').textContent = title;
             document.getElementById('ctfModalForm').action = ctfRoutes[id] ?? '#';
-            document.getElementById('ctfFileInput').value = '';
-            document.getElementById('ctfFileSelected').classList.remove('show');
             document.getElementById('ctfModal').classList.add('open');
         }
-        function closeCtfModal() { document.getElementById('ctfModal').classList.remove('open'); }
-
-        function onCtfFileSelected(input) {
-            const file = input.files[0];
-            if (!file) return;
-            document.getElementById('ctfFileName').textContent = file.name;
-            document.getElementById('ctfFileSize').textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
-            document.getElementById('ctfFileSelected').classList.add('show');
+        function closeCtfModal() {
+            document.getElementById('ctfModal').classList.remove('open');
         }
 
-        const dropZone = document.getElementById('ctfDropZone');
-        if (dropZone) {
-            dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-            dropZone.addEventListener('drop', e => {
-                e.preventDefault(); dropZone.classList.remove('dragover');
-                const file = e.dataTransfer.files[0];
-                if (file) {
-                    const input = document.getElementById('ctfFileInput');
-                    const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files;
-                    onCtfFileSelected(input);
+
+
+                        const layoutRoutes = @json(
+                            $submissions->filter(fn($s) => $s->managing_editor_status === 'ctf_returned')
+                                ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.forward', $s)])
+                        );
+
+                        function openLayoutModal(id, title) {
+                            const route = layoutRoutes[id];
+                            if (!route) { alert('Route not found for id: ' + id); return; }
+                            document.getElementById('modalManuscriptTitle').textContent = title;
+                            document.getElementById('layoutModalForm').action = route;
+                            document.getElementById('layout_editor_id').value = '';
+                            document.getElementById('layoutModal').classList.add('open');
+                        }
+                        function closeLayoutModal() { document.getElementById('layoutModal').classList.remove('open'); }
+
+                        function closeOnBackdrop(e, id) {
+                            if (e.target === document.getElementById(id)) {
+                                if (id === 'ctfModal') closeCtfModal();
+                                else if (id === 'reassignModal') closeReassignModal();
+                                else closeLayoutModal();
+                            }
+                        }
+
+                        document.addEventListener('keydown', e => {
+                            if (e.key === 'Escape') { closeCtfModal(); closeLayoutModal(); closeReassignModal(); }
+                        });
+
+                        function openReassignModal(submissionId, title, assignmentId, authorFeedback) {
+                            document.getElementById('reassignManuscriptTitle').textContent = title;
+                            document.getElementById('reassignAssignmentId').value = assignmentId;
+                            document.getElementById('reassignAuthorFeedback').textContent = authorFeedback || '—';
+                            document.getElementById('reassignModalForm').action = `/managing-editor/submissions/${submissionId}/reassign-layout`;
+                            document.getElementById('reassign_layout_editor_id').value = '';
+                            document.getElementById('reassignModal').classList.add('open');
+                        }
+                        function closeReassignModal() { document.getElementById('reassignModal').classList.remove('open'); }
+
+                        @if(session('success'))
+                        Swal.fire({
+                            icon:'success',
+                            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
+                            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+                            confirmButtonText:'Close', confirmButtonColor:'#2d8176',
+                            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+                            buttonsStyling:false,
+                        });
+                        @endif
+                        @if(session('error'))
+                        Swal.fire({
+                            icon:'error',
+                            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Oops!</span>',
+                            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('error') }}</p>',
+                            confirmButtonText:'Close', confirmButtonColor:'#c9a84c',
+                            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+                            buttonsStyling:false,
+                        });
+                        @endif
+                        @if(session('info'))
+                        Swal.fire({
+                            icon:'info',
+                            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Note</span>',
+                            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('info') }}</p>',
+                            confirmButtonText:'Got it', confirmButtonColor:'#2d8176',
+                            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+                            buttonsStyling:false,
+                        });
+                        @endif
+                        @if(session('warning'))
+                        Swal.fire({
+                            icon:'warning',
+                            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Warning</span>',
+                            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('warning') }}</p>',
+                            confirmButtonText:'Understood', confirmButtonColor:'#c9a84c',
+                            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+                            buttonsStyling:false,
+                        });
+                        @endif
+                        function onTemplateFileSelected(input) {
+                    const file = input.files[0];
+                    if (!file) return;
+                    document.getElementById('templateFileName').textContent = file.name;
+                    document.getElementById('templateFileSize').textContent = (file.size/1024/1024).toFixed(2) + ' MB';
+                    document.getElementById('templateFileSelected').classList.add('show');
                 }
-            });
-        }
-
-        const layoutRoutes = @json(
-            $submissions->filter(fn($s) => $s->managing_editor_status === 'ctf_returned')
-                ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.forward', $s)])
-        );
-
-        function openLayoutModal(id, title) {
-            const route = layoutRoutes[id];
-            if (!route) { alert('Route not found for id: ' + id); return; }
-            document.getElementById('modalManuscriptTitle').textContent = title;
-            document.getElementById('layoutModalForm').action = route;
-            document.getElementById('layout_editor_id').value = '';
-            document.getElementById('layoutModal').classList.add('open');
-        }
-        function closeLayoutModal() { document.getElementById('layoutModal').classList.remove('open'); }
-
-        function closeOnBackdrop(e, id) {
-            if (e.target === document.getElementById(id)) {
-                if (id === 'ctfModal') closeCtfModal();
-                else if (id === 'reassignModal') closeReassignModal();
-                else closeLayoutModal();
-            }
-        }
-
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') { closeCtfModal(); closeLayoutModal(); closeReassignModal(); }
-        });
-
-        function openReassignModal(submissionId, title, assignmentId, authorFeedback) {
-            document.getElementById('reassignManuscriptTitle').textContent = title;
-            document.getElementById('reassignAssignmentId').value = assignmentId;
-            document.getElementById('reassignAuthorFeedback').textContent = authorFeedback || '—';
-            document.getElementById('reassignModalForm').action = `/managing-editor/submissions/${submissionId}/reassign-layout`;
-            document.getElementById('reassign_layout_editor_id').value = '';
-            document.getElementById('reassignModal').classList.add('open');
-        }
-        function closeReassignModal() { document.getElementById('reassignModal').classList.remove('open'); }
-
-        @if(session('success'))
-        Swal.fire({
-            icon:'success',
-            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
-            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
-            confirmButtonText:'Close', confirmButtonColor:'#2d8176',
-            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
-            buttonsStyling:false,
-        });
-        @endif
-        @if(session('error'))
-        Swal.fire({
-            icon:'error',
-            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Oops!</span>',
-            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('error') }}</p>',
-            confirmButtonText:'Close', confirmButtonColor:'#c9a84c',
-            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
-            buttonsStyling:false,
-        });
-        @endif
-        @if(session('info'))
-        Swal.fire({
-            icon:'info',
-            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Note</span>',
-            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('info') }}</p>',
-            confirmButtonText:'Got it', confirmButtonColor:'#2d8176',
-            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
-            buttonsStyling:false,
-        });
-        @endif
-        @if(session('warning'))
-        Swal.fire({
-            icon:'warning',
-            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Warning</span>',
-            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('warning') }}</p>',
-            confirmButtonText:'Understood', confirmButtonColor:'#c9a84c',
-            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
-            buttonsStyling:false,
-        });
-        @endif
     </script>
 @endpush

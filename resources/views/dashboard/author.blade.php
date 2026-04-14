@@ -889,6 +889,298 @@
                 font-size: 0.78rem;
             }
         }
+
+        /* ── File History Drawer ── */
+        .btn-history {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--parchment);
+            color: var(--ink-mid);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 12px 22px;
+            border-radius: 6px;
+            border: 1.5px solid var(--border-dk);
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .btn-history:hover {
+            background: var(--border);
+            border-color: #b0a08a;
+        }
+        @media (max-width: 400px) {
+            .btn-history {
+                padding: 10px 16px;
+                font-size: 0.75rem;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        .fh-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 18, 9, 0.45);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+            z-index: 50;
+        }
+        .fh-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .fh-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: min(520px, 100vw);
+            background: var(--cream);
+            border-left: 1px solid var(--border-dk);
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 51;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .fh-drawer.open {
+            transform: translateX(0);
+        }
+        .fh-hd {
+            padding: 20px 24px 16px;
+            background: var(--parchment);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .fh-eyebrow {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .fh-eyebrow::before {
+            content: '';
+            width: 18px;
+            height: 1px;
+            background: var(--teal);
+        }
+        .fh-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .fh-sub {
+            font-size: 0.82rem;
+            color: var(--ink-soft);
+            margin-top: 3px;
+        }
+        .fh-close {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: var(--border);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-soft);
+            transition: background 0.12s;
+            flex-shrink: 0;
+        }
+        .fh-close:hover {
+            background: var(--border-dk);
+        }
+        .fh-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px 28px;
+        }
+        .fh-body::-webkit-scrollbar {
+            width: 4px;
+        }
+        .fh-body::-webkit-scrollbar-thumb {
+            background: var(--border-dk);
+            border-radius: 4px;
+        }
+        .fh-note {
+            font-size: 0.76rem;
+            color: var(--ink-soft);
+            background: var(--parchment);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .fh-sub-block {
+            margin-bottom: 28px;
+        }
+        .fh-sub-hd {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        .fh-ref {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            background: rgba(45, 129, 118, 0.08);
+            border: 1px solid rgba(45, 129, 118, 0.22);
+            color: var(--teal);
+            padding: 3px 9px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .fh-sub-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 0.92rem;
+            font-style: italic;
+            color: var(--ink-mid);
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .fh-timeline {
+            position: relative;
+            padding-left: 28px;
+        }
+        .fh-timeline::before {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 8px;
+            bottom: 8px;
+            width: 1px;
+            background: var(--border-dk);
+        }
+        .fh-tl-item {
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .fh-dot {
+            position: absolute;
+            left: -28px;
+            top: 7px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid var(--cream);
+        }
+        .fh-dot-original {
+            background: var(--teal);
+        }
+        .fh-dot-revision {
+            background: var(--gold);
+        }
+        .fh-dot-ctf {
+            background: #a07830;
+        }
+        .fh-dot-signed {
+            background: var(--teal-dk);
+        }
+        .fh-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .fh-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .fh-icon-original {
+            background: var(--teal-lt);
+            color: var(--teal);
+        }
+        .fh-icon-revision {
+            background: #fdf8ec;
+            color: var(--gold-dk);
+        }
+        .fh-icon-ctf {
+            background: #fdf8ec;
+            color: #a07830;
+        }
+        .fh-icon-signed {
+            background: #f0fdf4;
+            color: var(--teal-dk);
+        }
+        .fh-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .fh-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 1px;
+        }
+        .fh-filename {
+            font-size: 0.82rem;
+            color: var(--ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .fh-date {
+            font-size: 0.7rem;
+            color: var(--ink-soft);
+            margin-top: 1px;
+        }
+        .fh-btn-dl {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            padding: 5px 11px;
+            border-radius: 5px;
+            border: 1.5px solid var(--border-dk);
+            background: var(--parchment);
+            color: var(--ink-mid);
+            transition: all 0.12s;
+            white-space: nowrap;
+            flex-shrink: 0;
+            text-decoration: none;
+        }
+        .fh-btn-dl:hover {
+            background: var(--border);
+        }
+        .fh-empty-tl {
+            font-size: 0.8rem;
+            color: #b5a595;
+            padding: 12px 0;
+        }
     </style>
 @endpush
 
@@ -917,6 +1209,33 @@
                     <span class="date-pill hidden sm:inline-block">
                         {{ now()->format('D, M j Y') }}
                     </span>
+                    <button
+                        type="button"
+                        class="btn-history"
+                        onclick="
+                            document
+                                .getElementById('fileHistoryDrawer')
+                                .classList.add('open');
+                            document
+                                .getElementById('fileHistoryOverlay')
+                                .classList.add('open');
+                        "
+                    >
+                        <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                        </svg>
+                        File History
+                    </button>
                     <a
                         href="{{ route('submissions.create') }}"
                         class="btn-submit"
@@ -1018,12 +1337,16 @@
 
         {{-- ── CTF Alert ── --}}
         @php
-            $ctfPending = auth()
-                ->user()
-                ->submissionsAsAuthor()
-                ->where('managing_editor_status', 'ctf_sent')
-                ->orderBy('ctf_sent_at', 'desc')
-                ->get();
+            $ctfTemplate = \App\Models\CtfTemplate::latest()->first();
+            $ctfPending =
+                $ctfTemplate && $ctfTemplate->is_released
+                    ? auth()
+                        ->user()
+                        ->submissionsAsAuthor()
+                        ->where('managing_editor_status', 'ctf_sent')
+                        ->orderBy('ctf_sent_at', 'desc')
+                        ->get()
+                    : collect();
         @endphp
 
         @if ($ctfPending->count() > 0)
@@ -1123,7 +1446,7 @@
                                             {{ Str::limit($cs->title, 60) }}
                                         </span>
                                         <a
-                                            href="{{ route('submissions.download-ctf', $cs) }}"
+                                            href="{{ route('ctf-template.download') }}"
                                             class="btn-ctf-download"
                                             style="margin-left: auto"
                                         >
@@ -1352,9 +1675,9 @@
                                     </p>
 
                                     {{-- CTF download badge inline --}}
-                                    @if ($s->managing_editor_status === 'ctf_sent' && $s->ctf_file_path)
+                                    @if ($s->managing_editor_status === 'ctf_sent' && $ctfTemplate?->is_released)
                                         <a
-                                            href="{{ route('submissions.download-ctf', $s) }}"
+                                            href="{{ route('ctf-template.download') }}"
                                             onclick="event.stopPropagation()"
                                             class="ctf-row-badge"
                                         >
@@ -1597,50 +1920,467 @@
         @if (method_exists($submissions, 'hasPages') && $submissions->hasPages())
             <div class="fu4 mt-5">{{ $submissions->links() }}</div>
         @endif
+
+        {{-- ── File History Drawer ── --}}
+        <div
+            id="fileHistoryOverlay"
+            class="fh-overlay"
+            onclick="
+                document
+                    .getElementById('fileHistoryDrawer')
+                    .classList.remove('open');
+                this.classList.remove('open');
+            "
+        ></div>
+
+        <div id="fileHistoryDrawer" class="fh-drawer">
+            <div class="fh-hd">
+                <div>
+                    <div class="fh-eyebrow">Submission Archive</div>
+                    <div class="fh-title">File History</div>
+                    <div class="fh-sub">
+                        All uploaded files across your submissions
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    class="fh-close"
+                    onclick="
+                        document
+                            .getElementById('fileHistoryDrawer')
+                            .classList.remove('open');
+                        document
+                            .getElementById('fileHistoryOverlay')
+                            .classList.remove('open');
+                    "
+                >
+                    <svg
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        class="w-4 h-4"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6 18L18 6M6 6l12 12"
+                        />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="fh-body">
+                <p class="fh-note">
+                    All files uploaded throughout the editorial journey of each
+                    submission — original manuscript, revisions, and copyright
+                    transfer forms.
+                </p>
+
+                @forelse (auth()->user()->submissionsAsAuthor()->with('revisionRequests')->orderBy('updated_at', 'desc')->get() as $hs)
+                    @php
+                        $originalFile = $hs->original_file_path;
+                        $originalName = $hs->original_file_name ?? basename($hs->original_file_path ?? '');
+                        $currentFile = $hs->file_path;
+                        $currentName = $hs->file_name ?? basename($hs->file_path ?? '');
+                        $isRevised = $hs->original_file_path && $hs->file_path !== $hs->original_file_path;
+                        $ctfFile = $hs->ctf_file_path;
+                        $signedCtfFile = $hs->ctf_signed_file_path;
+                    @endphp
+
+                    <div class="fh-sub-block">
+                        <div class="fh-sub-hd">
+                            <span class="fh-ref">
+                                #{{ str_pad($hs->id, 5, '0', STR_PAD_LEFT) }}
+                            </span>
+                            <span class="fh-sub-title">
+                                {{ Str::limit($hs->title, 55) }}
+                            </span>
+                        </div>
+
+                        <div class="fh-timeline">
+                            {{-- Original manuscript --}}
+
+                            @if ($originalFile)
+                                <div class="fh-tl-item">
+                                    <div class="fh-dot fh-dot-original"></div>
+                                    <div class="fh-card">
+                                        <div class="fh-icon fh-icon-original">
+                                            <svg
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                viewBox="0 0 24 24"
+                                                class="w-3.5 h-3.5"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                />
+                                            </svg>
+                                        </div>
+                                        <div class="fh-info">
+                                            <div class="fh-label">
+                                                Original Manuscript
+                                            </div>
+                                            <div class="fh-filename">
+                                                {{ $originalName }}
+                                            </div>
+                                            <div class="fh-date">
+                                                Submitted
+                                                {{ $hs->created_at->format('d M Y') }}
+                                            </div>
+                                        </div>
+                                        <a
+                                            href="{{ route('submissions.download-original', $hs) }}"
+                                            class="fh-btn-dl"
+                                            onclick="event.stopPropagation()"
+                                        >
+                                            <svg
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                viewBox="0 0 24 24"
+                                                style="
+                                                    width: 11px;
+                                                    height: 11px;
+                                                "
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                />
+                                            </svg>
+                                            Download
+                                        </a>
+                                    </div>
+                                </div>
+                            @else
+                                {{-- Fallback: no original, show current as the only file --}}
+                                <div class="fh-tl-item">
+                                    <div class="fh-dot fh-dot-original"></div>
+                                    <div class="fh-card">
+                                        <div class="fh-icon fh-icon-original">
+                                            <svg
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                viewBox="0 0 24 24"
+                                                class="w-3.5 h-3.5"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                />
+                                            </svg>
+                                        </div>
+                                        <div class="fh-info">
+                                            <div class="fh-label">
+                                                Manuscript
+                                            </div>
+                                            <div class="fh-filename">
+                                                {{ $currentName }}
+                                            </div>
+                                            <div class="fh-date">
+                                                Submitted
+                                                {{ $hs->created_at->format('d M Y') }}
+                                            </div>
+                                        </div>
+                                        <a
+                                            href="{{ route('submissions.download', $hs) }}"
+                                            class="fh-btn-dl"
+                                            onclick="event.stopPropagation()"
+                                        >
+                                            <svg
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                viewBox="0 0 24 24"
+                                                style="
+                                                    width: 11px;
+                                                    height: 11px;
+                                                "
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                />
+                                            </svg>
+                                            Download
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
+
+                            {{-- Revision files --}}
+                            @foreach ($hs->revisionRequests->whereNotNull('file_path')->sortBy('created_at') as $ri => $rv)
+                                <div class="fh-tl-item">
+                                    <div class="fh-dot fh-dot-revision"></div>
+                                    <div class="fh-card">
+                                        <div class="fh-icon fh-icon-revision">
+                                            <svg
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                viewBox="0 0 24 24"
+                                                class="w-3.5 h-3.5"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                                />
+                                            </svg>
+                                        </div>
+                                        <div class="fh-info">
+                                            <div class="fh-label">
+                                                Revision {{ $ri + 1 }}
+                                            </div>
+                                            <div class="fh-filename">
+                                                {{ $rv->file_name ?? basename($rv->file_path) }}
+                                            </div>
+                                            <div class="fh-date">
+                                                Uploaded
+                                                {{ $rv->updated_at->format('d M Y') }}
+                                            </div>
+                                        </div>
+                                        <a
+                                            href="{{ route('submissions.revision-file.download', [$hs, $rv]) }}"
+                                            class="fh-btn-dl"
+                                            onclick="event.stopPropagation()"
+                                        >
+                                            <svg
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                viewBox="0 0 24 24"
+                                                style="
+                                                    width: 11px;
+                                                    height: 11px;
+                                                "
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                />
+                                            </svg>
+                                            Download
+                                        </a>
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            {{-- CTF --}}
+
+                            @if ($hs->ctf_sent_at && $ctfTemplate?->is_released)
+                                <div class="fh-tl-item">
+                                    <div class="fh-dot fh-dot-ctf"></div>
+                                    <div class="fh-card">
+                                        <div class="fh-icon fh-icon-ctf">
+                                            ...
+                                        </div>
+                                        <div class="fh-info">
+                                            <div class="fh-label">
+                                                Copyright Transfer Form
+                                            </div>
+                                            <div class="fh-filename">
+                                                {{ $ctfTemplate->file_name }}
+                                            </div>
+                                            <div class="fh-date">
+                                                Sent
+                                                {{ $hs->ctf_sent_at->format('d M Y') }}
+                                            </div>
+                                        </div>
+                                        <a
+                                            href="{{ route('ctf-template.download') }}"
+                                            class="fh-btn-dl"
+                                            onclick="event.stopPropagation()"
+                                        >
+                                            <svg
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                viewBox="0 0 24 24"
+                                                style="
+                                                    width: 11px;
+                                                    height: 11px;
+                                                "
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                />
+                                            </svg>
+                                            Download
+                                        </a>
+                                    </div>
+                                </div>
+                            @elseif ($hs->ctf_sent_at && ! $ctfTemplate?->is_released)
+                                <div class="fh-tl-item">
+                                    <div class="fh-dot fh-dot-ctf"></div>
+                                    <div class="fh-card">
+                                        <div class="fh-icon fh-icon-ctf">
+                                            ...
+                                        </div>
+                                        <div class="fh-info">
+                                            <div class="fh-label">
+                                                Copyright Transfer Form
+                                            </div>
+                                            <div
+                                                class="fh-filename"
+                                                style="
+                                                    color: var(--ink-soft);
+                                                    font-style: italic;
+                                                "
+                                            >
+                                                Awaiting release by managing
+                                                editor
+                                            </div>
+                                            <div class="fh-date">
+                                                Sent
+                                                {{ $hs->ctf_sent_at->format('d M Y') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            {{-- Signed CTF --}}
+                            @if ($signedCtfFile)
+                                <div class="fh-tl-item">
+                                    <div class="fh-dot fh-dot-signed"></div>
+                                    <div class="fh-card">
+                                        <div class="fh-icon fh-icon-signed">
+                                            <svg
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                viewBox="0 0 24 24"
+                                                class="w-3.5 h-3.5"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                                                />
+                                            </svg>
+                                        </div>
+                                        <div class="fh-info">
+                                            <div class="fh-label">
+                                                Signed CTF (Returned)
+                                            </div>
+                                            <div class="fh-filename">
+                                                {{ $hs->ctf_signed_file_name }}
+                                            </div>
+                                            <div class="fh-date">
+                                                Uploaded
+                                                {{ $hs->ctf_returned_at?->format('d M Y') }}
+                                            </div>
+                                        </div>
+                                        <span
+                                            class="fh-btn-dl"
+                                            style="
+                                                opacity: 0.5;
+                                                cursor: default;
+                                            "
+                                            title="Download coming soon"
+                                        >
+                                            <svg
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                viewBox="0 0 24 24"
+                                                style="
+                                                    width: 11px;
+                                                    height: 11px;
+                                                "
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                />
+                                            </svg>
+                                            Download
+                                        </span>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if (! $currentFile && ! $ctfFile)
+                                <div class="fh-empty-tl">
+                                    No files uploaded yet
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <div
+                        class="fh-empty-tl"
+                        style="text-align: center; padding: 48px 16px"
+                    >
+                        No submissions found
+                    </div>
+                @endforelse
+            </div>
+        </div>
     </div>
 @endsection
 
 @push('scripts')
     <script>
         let searchTimer;
-        document.getElementById('dashboardSearch')?.addEventListener('input', function () {
-            clearTimeout(searchTimer);
-            searchTimer = setTimeout(() => {
-                const form = document.getElementById('searchForm');
-                const existing = form.querySelector('input[name="page"]');
-                if (existing) existing.remove();
-                const currentPage = new URLSearchParams(window.location.search).get('page');
-                if (currentPage) {
-                    const pageInput = document.createElement('input');
-                    pageInput.type  = 'hidden';
-                    pageInput.name  = 'page';
-                    pageInput.value = currentPage;
-                    form.appendChild(pageInput);
-                }
-                form.submit();
-            }, 400);
-        });
+                document.getElementById('dashboardSearch')?.addEventListener('input', function () {
+                    clearTimeout(searchTimer);
+                    searchTimer = setTimeout(() => {
+                        const form = document.getElementById('searchForm');
+                        const existing = form.querySelector('input[name="page"]');
+                        if (existing) existing.remove();
+                        const currentPage = new URLSearchParams(window.location.search).get('page');
+                        if (currentPage) {
+                            const pageInput = document.createElement('input');
+                            pageInput.type  = 'hidden';
+                            pageInput.name  = 'page';
+                            pageInput.value = currentPage;
+                            form.appendChild(pageInput);
+                        }
+                        form.submit();
+                    }, 400);
+                });
 
-        window.addEventListener('load', function () {
-            const search = document.getElementById('dashboardSearch');
-            if (search && search.value.trim() !== '') {
-                search.focus();
-                const val = search.value;
-                search.value = '';
-                search.value = val;
+                window.addEventListener('load', function () {
+                    const search = document.getElementById('dashboardSearch');
+                    if (search && search.value.trim() !== '') {
+                        search.focus();
+                        const val = search.value;
+                        search.value = '';
+                        search.value = val;
+                    }
+                });
+
+                @if(session('success'))
+                Swal.fire({
+                    icon:'success',
+                    title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Confirmed</span>',
+                    html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+                    confirmButtonText:'Close',
+                    confirmButtonColor:'#2d8176',
+                    customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+                    buttonsStyling:false,
+                });
+                @endif
+
+                document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('fileHistoryDrawer').classList.remove('open');
+                document.getElementById('fileHistoryOverlay').classList.remove('open');
             }
         });
-
-        @if(session('success'))
-        Swal.fire({
-            icon:'success',
-            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Confirmed</span>',
-            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
-            confirmButtonText:'Close',
-            confirmButtonColor:'#2d8176',
-            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
-            buttonsStyling:false,
-        });
-        @endif
     </script>
 @endpush

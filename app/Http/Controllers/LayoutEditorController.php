@@ -152,7 +152,7 @@ class LayoutEditorController extends Controller
     }
 
     $request->validate([
-        'file'  => 'required|mimes:pdf|max:10240',
+        'file'  => 'required|mimes:pdf|max:51200', // Max 50MB
         'notes' => 'nullable|string|max:1000',
     ]);
 

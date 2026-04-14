@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Models\CtfTemplate;
+use Illuminate\Support\Facades\Storage;
 
 class ManagingEditorController extends Controller
 {
@@ -34,44 +36,41 @@ class ManagingEditorController extends Controller
     /**
      * Generate / mark Copyright Transfer Form as sent.
      */
-   public function generateCtf(Request $request, Submission $submission): RedirectResponse
+  public function generateCtf(Request $request, Submission $submission): RedirectResponse
 {
     if ($submission->managing_editor_id !== Auth::id()) {
         abort(403);
     }
 
-    $request->validate([
-        'ctf_file' => 'required|mimes:pdf,doc,docx|max:10240',
-    ]);
+    $template = CtfTemplate::latest()->first();
+    if (!$template) {
+        return back()->with('error', 'No CTF template uploaded yet. Please upload one first.');
+    }
 
-    $file     = $request->file('ctf_file');
-    $filename = 'ctf-' . $submission->id . '-' . time() . '.' . $file->getClientOriginalExtension();
-   $path     = $file->storeAs('ctf-forms', $filename, 'local');
-
-if (!$path) {
-    return back()->with('error', 'File upload failed. Please try again.');
-}
-
-$submission->update([
+    $submission->update([
         'managing_editor_status' => 'ctf_sent',
         'ctf_sent_at'            => now(),
-        'ctf_file_path'          => $path,
-        'ctf_file_name'          => $file->getClientOriginalName(),
     ]);
 
-    \App\Models\Notification::create([
-        'user_id'         => $submission->author_id,
-        'role'            => 'author',
-        'title'           => '📄 Copyright Transfer Form',
-        'message'         => "A Copyright Transfer Form has been uploaded for your manuscript \"{$submission->title}\". Please download and sign it.",
-        'type'            => 'info',
-        'notifiable_id'   => $submission->id,
-        'notifiable_type' => Submission::class,
-    ]);
+    // Only notify immediately if template is already released
+    if ($template->is_released) {
+        \App\Models\Notification::create([
+            'user_id'         => $submission->author_id,
+            'role'            => 'author',
+            'title'           => '📄 Copyright Transfer Form Available',
+            'message'         => "The Copyright Transfer Form for your manuscript \"{$submission->title}\" is now available for download. Please download, sign, and return it.",
+            'type'            => 'info',
+            'notifiable_id'   => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
 
     return redirect()
         ->route('managing-editor.dashboard')
-        ->with('success', 'CTF uploaded and sent to the author.');
+        ->with('success', $template->is_released
+            ? 'CTF sent — author has been notified.'
+            : 'Manuscript marked for CTF. Author will be notified once you release the template.'
+        );
 }
     /**
      * Assign a Layout Editor and forward the manuscript.
@@ -369,6 +368,98 @@ public function reassignLayout(Request $request, Submission $submission)
     ]);
 
     return back()->with('success', 'Revision forwarded to layout editor with author\'s comments.');
+}
+
+public function ctfTemplate(): View
+{
+    $template = CtfTemplate::latest()->first();
+    return view('managing-editor.dashboard', array_merge(
+        $this->getDashboardData(),
+        compact('template')
+    ));
+}
+
+public function uploadCtfTemplate(Request $request): RedirectResponse
+{
+    $request->validate([
+        'ctf_template_file' => 'required|mimes:pdf,doc,docx|max:51200',
+    ]);
+
+    // Delete old file if exists
+    $old = CtfTemplate::latest()->first();
+    if ($old) {
+        Storage::disk('local')->delete($old->file_path);
+        $old->delete();
+    }
+
+    $file     = $request->file('ctf_template_file');
+    $filename = 'ctf-template-' . time() . '.' . $file->getClientOriginalExtension();
+    $path     = $file->storeAs('ctf-templates', $filename, 'local');
+
+    CtfTemplate::create([
+        'file_path'   => $path,
+        'file_name'   => $file->getClientOriginalName(),
+        'is_released' => false,
+        'uploaded_by' => Auth::id(),
+    ]);
+
+    return redirect()
+        ->route('managing-editor.dashboard')
+        ->with('success', 'CTF template uploaded successfully.');
+}
+
+public function toggleCtfRelease(Request $request): RedirectResponse
+{
+    $template = CtfTemplate::latest()->first();
+
+    if (!$template) {
+        return back()->with('error', 'No CTF template uploaded yet.');
+    }
+
+    // One-way only — ignore if already released
+    if ($template->is_released) {
+        return back()->with('info', 'CTF template is already released.');
+    }
+
+    $template->update([
+        'is_released' => true,
+        'released_at' => now(),
+    ]);
+
+    // Notify all authors with ctf_sent status
+    $submissions = Submission::where('managing_editor_status', 'ctf_sent')
+        ->whereNotNull('author_id')
+        ->get();
+
+    foreach ($submissions as $sub) {
+        \App\Models\Notification::create([
+            'user_id'         => $sub->author_id,
+            'role'            => 'author',
+            'title'           => '📄 Copyright Transfer Form Available',
+            'message'         => "The Copyright Transfer Form for your manuscript \"{$sub->title}\" is now available for download. Please download, sign, and return it.",
+            'type'            => 'info',
+            'notifiable_id'   => $sub->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    return redirect()
+        ->route('managing-editor.dashboard')
+        ->with('success', 'CTF released to authors. All pending authors have been notified.');
+}
+
+public function downloadCtfTemplate(): mixed
+{
+    $template = CtfTemplate::latest()->first();
+
+    if (!$template) {
+        abort(404, 'No CTF template found.');
+    }
+
+    return response()->download(
+        Storage::disk('local')->path($template->file_path),
+        $template->file_name
+    );
 }
 
 }
