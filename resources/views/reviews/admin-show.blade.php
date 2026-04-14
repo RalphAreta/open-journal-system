@@ -357,12 +357,12 @@
                                             />
                                         </svg>
                                     </div>
-                                   <div class="overflow-hidden min-w-0">
-    <p
-        class="text-[0.88rem] font-bold text-[#1a1209] break-all leading-snug"
-    >
-        {{ basename($submission->file_name) }}
-    </p>
+                     <div class="overflow-hidden">
+                                        <p
+                                            class="text-[0.88rem] font-bold text-[#1a1209] truncate"
+                                        >
+                                            {{ $submission->file_name }}
+                                        </p>
                                         <p
                                             class="text-[0.68rem] font-bold tracking-[0.08em] uppercase text-[#6b5740] mt-0.5"
                                         >
