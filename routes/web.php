@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ManagingEditorController;
 use App\Http\Controllers\Admin\DeclineReasonController;
 use App\Http\Controllers\Admin\EditorialBoardController;
-
+use App\Http\Controllers\Admin\FaqController;
 Route::get('/', function () {
     return Auth::check() ? redirect()->route('dashboard') : app(HomeController::class)->index();
 });
@@ -180,6 +180,12 @@ Route::post('/admin/decline-reasons', [DeclineReasonController::class, 'store'])
 Route::patch('/admin/decline-reasons/{declineReason}', [DeclineReasonController::class, 'update'])->name('admin.decline-reasons.update');
 Route::patch('/admin/decline-reasons/{declineReason}/toggle', [DeclineReasonController::class, 'toggleActive'])->name('admin.decline-reasons.toggle');
 Route::delete('/admin/decline-reasons/{declineReason}', [DeclineReasonController::class, 'destroy'])->name('admin.decline-reasons.destroy');
+// FAQ Management
+Route::get('faqs', [FaqController::class, 'index'])->name('admin.faqs.index');
+Route::post('faqs', [FaqController::class, 'store'])->name('admin.faqs.store');
+Route::put('faqs/{faq}', [FaqController::class, 'update'])->name('admin.faqs.update');
+Route::delete('faqs/{faq}', [FaqController::class, 'destroy'])->name('admin.faqs.destroy');
+Route::patch('faqs/{faq}/toggle', [FaqController::class, 'toggle'])->name('admin.faqs.toggle');
  // Editorial Board Management
         Route::resource('admin/editorial-board', \App\Http\Controllers\Admin\EditorialBoardController::class)
              ->except(['show'])

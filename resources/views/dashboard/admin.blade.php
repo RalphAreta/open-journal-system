@@ -778,6 +778,59 @@
                             Manage Editorial Board
                         </a>
                     </div>
+                    {{-- FAQ Management --}}
+                    <div class="feature-card">
+                        <div class="flex items-start gap-4 mb-5">
+                            <div
+                                class="feature-icon"
+                                style="background: #e8f0fe"
+                            >
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    fill="none"
+                                    stroke="#2b5fa5"
+                                    stroke-width="1.7"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="feature-title">FAQ Management</p>
+                                <p class="feature-desc">
+                                    Add, edit, reorder, or hide FAQ items shown
+                                    on the public landing page. Grouped by
+                                    category.
+                                </p>
+                            </div>
+                        </div>
+                        <a
+                            href="{{ route('admin.faqs.index') }}"
+                            class="btn-manage"
+                            style="background: var(--blue)"
+                        >
+                            <svg
+                                width="14"
+                                height="14"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                            Manage FAQs
+                        </a>
+                    </div>
                 </div>
             </div>
             {{-- END Management Tools --}}
@@ -814,6 +867,13 @@
                                 'sub' => 'Manage public board members',
                                 'route' => 'admin.editorial-board.index',
                                 'dot' => 'var(--gold-dk)',
+                                'badge' => 'Manage',
+                            ],
+                            [
+                                'label' => 'FAQ Management',
+                                'sub' => 'Edit public FAQ content',
+                                'route' => 'admin.faqs.index',
+                                'dot' => 'var(--blue)',
                                 'badge' => 'Manage',
                             ],
                             [
