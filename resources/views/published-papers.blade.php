@@ -1090,7 +1090,7 @@
                                         Issue {{ $volumeGroup['issue'] }} • {{ $volumeGroup['category'] }} • {{ $volumeGroup['papers']->count() }} @if ($volumeGroup['papers']->count() === 1) paper @else papers @endif
                                     </p>
                                 </div>
-                                
+
                                 <!-- Papers Grid for this Volume -->
                                 <div class="papers-grid">
                                 @foreach ($volumeGroup['papers'] as $paper)
@@ -1584,7 +1584,7 @@
                         @endforeach
                         </div>
                     @endif
-                
+
                 <!-- PAGINATION -->
                 <div class="mt-20 flex justify-center">
                     {{ $pagination->links('pagination::tailwind') }}
