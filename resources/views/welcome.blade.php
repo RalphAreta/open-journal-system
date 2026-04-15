@@ -3012,7 +3012,7 @@
                                         </div>
                                     </div>
                                 @empty
-
+                                    
                                 @endforelse
                             </div>
                         </div>
@@ -3035,6 +3035,7 @@
                         scholarly excellence
                     </p>
                 </div>
+
                 @php
                     function boardInitials(string $name): string
                     {
@@ -3048,137 +3049,243 @@
                         }
                         return mb_strtoupper(mb_substr($words[0], 0, 1) . mb_substr(end($words), 0, 1));
                     }
-                @endphp
 
-                @php
                     $roleOrder = [
                         'editor_in_chief' => 'Editor-in-Chief',
+                        'managing_editor' => 'Managing Editor',
                         'guest_editor' => 'Guest Editors',
                         'editor' => 'Editors',
-                        'managing_editor' => 'Managing Editor',
                         'layout_editor' => 'Layout Editor',
                         'editorial_advisor' => 'Editorial Advisors',
                     ];
-
                     $grouped = collect($editorialBoard)->groupBy('role');
                 @endphp
 
                 @foreach ($roleOrder as $roleKey => $roleLabel)
                     @if ($grouped->has($roleKey))
-                        <div
-                            style="
-                                grid-column: 1 / -1;
-                                margin-top: 32px;
-                                margin-bottom: 4px;
-                                display: flex;
-                                align-items: center;
-                                gap: 14px;
-                            "
-                        >
-                            <span
-                                style="
-                                    font-size: 0.62rem;
-                                    font-weight: 800;
-                                    letter-spacing: 0.2em;
-                                    text-transform: uppercase;
-                                    color: var(--teal);
-                                    white-space: nowrap;
-                                "
-                            >
-                                {{ $roleLabel }}
-                            </span>
-                            <span
-                                style="
-                                    flex: 1;
-                                    height: 1px;
-                                    background: linear-gradient(
-                                        to right,
-                                        rgba(45, 129, 118, 0.3),
-                                        transparent
-                                    );
-                                "
-                            ></span>
-                        </div>
+                        <div class="board-role-block">
+                            {{-- Role divider label --}}
+                            <div class="board-role-divider fade-up">
+                                <span>{{ $roleLabel }}</span>
+                            </div>
 
-                        {{-- Editor-in-Chief: centered single card --}}
-                        @if ($roleKey === 'editor_in_chief')
-                            <div
-                                style="
-                                    grid-column: 1 / -1;
-                                    display: flex;
-                                    justify-content: center;
-                                "
-                            >
+                            {{-- Editor-in-Chief: compact horizontal card --}}
+                            @if ($roleKey === 'editor_in_chief')
                                 @foreach ($grouped[$roleKey] as $member)
-                                    <div
-                                        class="board-card"
-                                        style="width: 260px"
-                                    >
-                                        <div
-                                            class="board-card-top"
-                                            style="height: 140px"
-                                        >
-                                            <div
-                                                class="board-avatar"
-                                                style="
-                                                    width: 80px;
-                                                    height: 80px;
-                                                    font-size: 1.4rem;
-                                                "
-                                            >
+                                    <div class="board-eic-card fade-up">
+                                        <div class="board-eic-banner">
+                                            <div class="board-eic-avatar">
                                                 {{ boardInitials($member['name']) }}
                                             </div>
                                         </div>
-                                        <div
-                                            class="board-card-body"
-                                            style="text-align: center"
-                                        >
-                                            <div
-                                                class="board-name"
-                                                style="font-size: 1rem"
-                                            >
+                                        <div class="board-eic-body">
+                                            <div class="board-eic-badge">
+                                                <svg
+                                                    width="9"
+                                                    height="9"
+                                                    viewBox="0 0 24 24"
+                                                    fill="var(--gold-dk)"
+                                                >
+                                                    <path
+                                                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                                    />
+                                                </svg>
+                                                Editor-in-Chief
+                                            </div>
+                                            <div class="board-eic-name">
                                                 {{ $member['name'] }}
                                             </div>
-                                            <div class="board-role">
-                                                {{ $roleLabel }}
-                                            </div>
-                                            <div class="board-expertise">
+                                            <div class="board-eic-expertise">
                                                 {{ $member['expertise'] }}
                                             </div>
                                         </div>
                                     </div>
                                 @endforeach
-                            </div>
 
-                            {{-- All other roles: normal grid --}}
-                        @else
-                            @foreach ($grouped[$roleKey] as $i => $member)
-                                <div
-                                    class="board-card fade-up fade-up-{{ ($i % 3) + 1 }}"
-                                >
-                                    <div class="board-card-top">
-                                        <div class="board-avatar">
-                                            {{ boardInitials($member['name']) }}
+                                {{-- All other roles: standard card grid --}}
+                            @else
+                                <div class="board-grid">
+                                    @foreach ($grouped[$roleKey] as $i => $member)
+                                        <div
+                                            class="board-card fade-up fade-up-{{ ($i % 3) + 1 }}"
+                                        >
+                                            <div class="board-card-top">
+                                                <div class="board-avatar">
+                                                    {{ boardInitials($member['name']) }}
+                                                </div>
+                                            </div>
+                                            <div class="board-card-body">
+                                                <div class="board-name">
+                                                    {{ $member['name'] }}
+                                                </div>
+                                                <div class="board-role">
+                                                    {{ $roleLabel }}
+                                                </div>
+                                                <div class="board-expertise">
+                                                    {{ $member['expertise'] }}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="board-card-body">
-                                        <div class="board-name">
-                                            {{ $member['name'] }}
-                                        </div>
-                                        <div class="board-role">
-                                            {{ $roleLabel }}
-                                        </div>
-                                        <div class="board-expertise">
-                                            {{ $member['expertise'] }}
-                                        </div>
-                                    </div>
+                                    @endforeach
                                 </div>
-                            @endforeach
-                        @endif
+                            @endif
+                        </div>
                     @endif
                 @endforeach
             </div>
         </section>
+
+        {{-- ── NEW CSS (ilagay sa loob ng existing <style> block mo) ── --}}
+        <style>
+            /* Role block spacing */
+            .board-role-block {
+                margin-bottom: 28px;
+            }
+
+            /* Role divider — same feel as section-eyebrow */
+            .board-role-divider {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 14px;
+            }
+            .board-role-divider span {
+                font-size: 0.6rem;
+                font-weight: 800;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--teal);
+                white-space: nowrap;
+            }
+            .board-role-divider::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: linear-gradient(
+                    to right,
+                    rgba(45, 129, 118, 0.3),
+                    transparent
+                );
+            }
+
+            /* ── EIC horizontal card ── */
+            .board-eic-card {
+                display: flex;
+                align-items: stretch;
+                background: #fff;
+                border: 1.5px solid var(--border);
+                border-radius: 18px;
+                overflow: hidden;
+                max-width: 480px;
+                box-shadow: 0 6px 20px rgba(45, 129, 118, 0.08);
+                transition: all 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+            .board-eic-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 20px 48px rgba(45, 129, 118, 0.16);
+                border-color: rgba(45, 129, 118, 0.35);
+            }
+            .board-eic-banner {
+                width: 110px;
+                flex-shrink: 0;
+                background: linear-gradient(
+                    160deg,
+                    var(--teal-lt),
+                    rgba(201, 168, 76, 0.12)
+                );
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-right: 1.5px solid var(--border);
+                position: relative;
+            }
+            .board-eic-banner::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(
+                    circle at 30% 70%,
+                    rgba(201, 168, 76, 0.15),
+                    transparent 55%
+                );
+            }
+            .board-eic-avatar {
+                width: 64px;
+                height: 64px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--teal), #1f6550);
+                border: 3px solid #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Libre Baskerville', serif;
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #fff;
+                box-shadow: 0 6px 20px rgba(45, 129, 118, 0.28);
+                position: relative;
+                z-index: 1;
+                transition: transform 0.3s;
+            }
+            .board-eic-card:hover .board-eic-avatar {
+                transform: scale(1.1);
+            }
+            .board-eic-body {
+                padding: 20px 20px 20px 18px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 5px;
+            }
+            .board-eic-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                background: linear-gradient(135deg, var(--gold-lt), #fef9ed);
+                border: 1px solid rgba(201, 168, 76, 0.4);
+                border-radius: 20px;
+                padding: 3px 10px;
+                font-size: 0.55rem;
+                font-weight: 800;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--gold-dk);
+                width: fit-content;
+            }
+            .board-eic-name {
+                font-family: 'Libre Baskerville', serif;
+                font-size: 0.98rem;
+                font-weight: 700;
+                color: var(--ink);
+                transition: color 0.25s;
+            }
+            .board-eic-card:hover .board-eic-name {
+                color: var(--teal);
+            }
+            .board-eic-expertise {
+                font-size: 0.78rem;
+                color: var(--ink-soft);
+                line-height: 1.5;
+            }
+
+            /* ── Standard card grid (existing .board-grid + .board-card already defined) ── */
+            /* Just adjust card-top height to be more compact */
+            .board-card-top {
+                height: 80px !important;
+            }
+            .board-avatar {
+                width: 52px !important;
+                height: 52px !important;
+                font-size: 0.9rem !important;
+                border-width: 2.5px !important;
+            }
+            .board-card-body {
+                padding: 12px 14px 16px !important;
+            }
+            .board-name {
+                font-size: 0.88rem !important;
+            }
+        </style>
 
         {{-- Research Fields --}}
         <section class="section" id="fields" style="background: #fff">
@@ -3863,465 +3970,65 @@
             </div>
 
             <div class="faq-body" id="faq-body">
-                <div class="faq-category" data-cat="Submissions">
-                    Submissions
-                </div>
+                @forelse ($faqs as $category => $items)
+                    <div class="faq-category" data-cat="{{ $category }}">
+                        {{ $category }}
+                    </div>
+
+                    @foreach ($items as $i => $faq)
+                        <div
+                            class="faq-item"
+                            data-q="{{ strtolower($faq->question) }} {{ strtolower(strip_tags($faq->answer)) }}"
+                        >
+                            <button class="faq-q" aria-expanded="false">
+                                <span class="faq-q-num">{{ $i + 1 }}</span>
+                                <span class="faq-q-text">
+                                    {{ $faq->question }}
+                                </span>
+                                <svg
+                                    class="faq-q-chevron"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M19 9l-7 7-7-7"
+                                    />
+                                </svg>
+                            </button>
+                            <div class="faq-a">
+                                <div class="faq-a-inner">
+                                    {!! $faq->answer !!}
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @empty
+                    <div
+                        style="
+                            text-align: center;
+                            padding: 40px 16px;
+                            color: var(--ink-soft);
+                        "
+                    >
+                        <p style="font-size: 2rem; margin-bottom: 10px">❓</p>
+                        <p style="font-size: 0.84rem">No FAQs available yet.</p>
+                    </div>
+                @endforelse
 
                 <div
-                    class="faq-item"
-                    data-q="How do I submit a manuscript to Journal System?"
+                    id="faq-no-results"
+                    style="
+                        display: none;
+                        text-align: center;
+                        padding: 40px 16px;
+                    "
                 >
-                    <button class="faq-q" aria-expanded="false">
-                        <span class="faq-q-num">1</span>
-                        <span class="faq-q-text">
-                            How do I submit a manuscript?
-                        </span>
-                        <svg
-                            class="faq-q-chevron"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                    <div class="faq-a">
-                        <div class="faq-a-inner">
-                            <a href="/register">Register an account</a>
-                            or sign in, then click
-                            <strong>New Submission</strong>
-                            in your Author Dashboard. Upload your manuscript
-                            file (PDF, DOC, or DOCX), fill in the title,
-                            abstract and keywords, then click Submit. You'll
-                            receive a confirmation email with your reference
-                            number.
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="faq-item"
-                    data-q="What file formats are accepted for manuscript submission?"
-                >
-                    <button class="faq-q" aria-expanded="false">
-                        <span class="faq-q-num">2</span>
-                        <span class="faq-q-text">
-                            What file formats are accepted?
-                        </span>
-                        <svg
-                            class="faq-q-chevron"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                    <div class="faq-a">
-                        <div class="faq-a-inner">
-                            We accept
-                            <strong>PDF</strong>
-                            ,
-                            <strong>DOC</strong>
-                            , and
-                            <strong>DOCX</strong>
-                            files for the main manuscript.
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="faq-item"
-                    data-q="Is there a submission fee or article processing charge?"
-                >
-                    <button class="faq-q" aria-expanded="false">
-                        <span class="faq-q-num">3</span>
-                        <span class="faq-q-text">
-                            Is there a submission fee?
-                        </span>
-                        <svg
-                            class="faq-q-chevron"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                    <div class="faq-a">
-                        <div class="faq-a-inner">
-                            Submission and peer review are
-                            <strong>free of charge</strong>
-                            . An Article Processing Charge (APC) applies only
-                            upon acceptance to cover open-access publishing and
-                            DOI registration. Authors are notified of the exact
-                            fee at the acceptance stage.
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="faq-item"
-                    data-q="Can I submit a manuscript that is currently under review elsewhere?"
-                >
-                    <button class="faq-q" aria-expanded="false">
-                        <span class="faq-q-num">4</span>
-                        <span class="faq-q-text">
-                            Can I submit to multiple journals simultaneously?
-                        </span>
-                        <svg
-                            class="faq-q-chevron"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                    <div class="faq-a">
-                        <div class="faq-a-inner">
-                            No. We follow strict
-                            <strong>single-submission policy</strong>
-                            . Submitting the same manuscript to another journal
-                            while it is under review here constitutes a
-                            violation of publication ethics and may result in
-                            immediate rejection and blacklisting.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-category" data-cat="Review Process">
-                    Review Process
-                </div>
-
-                <div
-                    class="faq-item"
-                    data-q="How long does the peer review process take from submission to decision?"
-                >
-                    <button class="faq-q" aria-expanded="false">
-                        <span class="faq-q-num">5</span>
-                        <span class="faq-q-text">
-                            How long does peer review take?
-                        </span>
-                        <svg
-                            class="faq-q-chevron"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                    <div class="faq-a">
-                        <div class="faq-a-inner">
-                            Initial screening takes
-                            <strong>3–5 days</strong>
-                            . Full peer review typically takes
-                            <strong>10–14 days</strong>
-                            . The total time from submission to first decision
-                            is usually 2–3 weeks. Revision and final decision
-                            adds another 1–2 weeks depending on the scope of
-                            changes requested.
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="faq-item"
-                    data-q="What is double-blind peer review and how does it protect authors?"
-                >
-                    <button class="faq-q" aria-expanded="false">
-                        <span class="faq-q-num">6</span>
-                        <span class="faq-q-text">
-                            What is double-blind peer review?
-                        </span>
-                        <svg
-                            class="faq-q-chevron"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                    <div class="faq-a">
-                        <div class="faq-a-inner">
-                            In double-blind review, both the
-                            <strong>
-                                reviewers' identities are hidden from authors
-                            </strong>
-                            and the
-                            <strong>
-                                authors' identities are hidden from reviewers
-                            </strong>
-                            . This eliminates bias based on institutional
-                            affiliation, gender, nationality, or prior
-                            reputation, ensuring evaluation is based purely on
-                            scholarly merit.
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="faq-item"
-                    data-q="What happens after I receive a revisions requested decision?"
-                >
-                    <button class="faq-q" aria-expanded="false">
-                        <span class="faq-q-num">7</span>
-                        <span class="faq-q-text">
-                            What happens if revisions are requested?
-                        </span>
-                        <svg
-                            class="faq-q-chevron"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                    <div class="faq-a">
-                        <div class="faq-a-inner">
-                            You'll receive detailed reviewer comments in your
-                            dashboard. Address each point in a
-                            <strong>point-by-point response letter</strong>
-                            and upload the revised manuscript. Revisions are
-                            typically due within
-                            <strong>14–21 days</strong>
-                            . The revised manuscript goes back to the original
-                            reviewers for final assessment.
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="faq-item"
-                    data-q="Can I appeal a rejection decision from the editorial board?"
-                >
-                    <button class="faq-q" aria-expanded="false">
-                        <span class="faq-q-num">8</span>
-                        <span class="faq-q-text">
-                            Can I appeal a rejection?
-                        </span>
-                        <svg
-                            class="faq-q-chevron"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                    <div class="faq-a">
-                        <div class="faq-a-inner">
-                            Yes. You may submit a formal appeal through your
-                            Author Dashboard within
-                            <strong>30 days</strong>
-                            of the rejection decision. Appeals must include a
-                            detailed rebuttal addressing the reviewers'
-                            concerns. The Editor-in-Chief reviews all appeals.
-                            Each manuscript is limited to two appeal attempts.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-category" data-cat="Publication">
-                    Publication & Copyright
-                </div>
-
-                <div
-                    class="faq-item"
-                    data-q="What is a copyright transfer form CTF and when do I need to sign it?"
-                >
-                    <button class="faq-q" aria-expanded="false">
-                        <span class="faq-q-num">9</span>
-                        <span class="faq-q-text">
-                            What is the Copyright Transfer Form (CTF)?
-                        </span>
-                        <svg
-                            class="faq-q-chevron"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                    <div class="faq-a">
-                        <div class="faq-a-inner">
-                            Upon acceptance, we issue a
-                            <strong>Copyright Transfer Form</strong>
-                            which assigns publication rights to the journal
-                            while allowing authors to retain the right to use
-                            their work for educational and research purposes.
-                            Download it from your dashboard, sign it, and upload
-                            the signed copy. Publication will not proceed until
-                            the CTF is received.
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="faq-item"
-                    data-q="How will my article be distributed and can readers access it for free?"
-                >
-                    <button class="faq-q" aria-expanded="false">
-                        <span class="faq-q-num">10</span>
-                        <span class="faq-q-text">
-                            Is my article freely accessible after publication?
-                        </span>
-                        <svg
-                            class="faq-q-chevron"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                    <div class="faq-a">
-                        <div class="faq-a-inner">
-                            Yes. All published articles are
-                            <strong>open access</strong>
-                            — freely available to anyone worldwide, permanently.
-                            Each article receives a
-                            <strong>DOI</strong>
-                            (Digital Object Identifier) for permanent citation,
-                            and is indexed and distributed through academic
-                            databases and search engines.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-category" data-cat="Account">
-                    Account & Technical
-                </div>
-
-                <div
-                    class="faq-item"
-                    data-q="How do I track the status of my submitted manuscript?"
-                >
-                    <button class="faq-q" aria-expanded="false">
-                        <span class="faq-q-num">11</span>
-                        <span class="faq-q-text">
-                            How do I track my submission status?
-                        </span>
-                        <svg
-                            class="faq-q-chevron"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                    <div class="faq-a">
-                        <div class="faq-a-inner">
-                            Sign in to your account and visit the
-                            <strong>Author Dashboard</strong>
-                            . Each submission shows a real-time status badge:
-                            Submitted → Under Review → Revisions Requested →
-                            Accepted/Rejected. You'll also receive email
-                            notifications at every major status change.
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="faq-item"
-                    data-q="I forgot my password how do I reset it and regain access?"
-                >
-                    <button class="faq-q" aria-expanded="false">
-                        <span class="faq-q-num">12</span>
-                        <span class="faq-q-text">
-                            I forgot my password. How do I reset it?
-                        </span>
-                        <svg
-                            class="faq-q-chevron"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                    <div class="faq-a">
-                        <div class="faq-a-inner">
-                            On the
-                            <a href="/login">Sign In page</a>
-                            , click
-                            <strong>"Forgot password?"</strong>
-                            . Enter your registered email address and we'll send
-                            a password reset link within a few minutes. Check
-                            your spam folder if you don't see it. The link
-                            expires after 60 minutes.
-                        </div>
-                    </div>
-                </div>
-
-                <div id="faq-no-results">
-                    <p>🔍</p>
-                    <p>
+                    <p style="font-size: 2rem; margin-bottom: 10px">🔍</p>
+                    <p style="font-size: 0.84rem; color: var(--ink-soft)">
                         No questions match your search.
                         <br />
                         Try different keywords.

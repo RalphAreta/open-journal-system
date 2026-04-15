@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Models\EditorialBoardMember;
+use App\Models\Faq;
 
 class HomeController extends Controller
 {
@@ -190,6 +191,8 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
                 ];
             });
 
+            $faqs = Faq::active()->ordered()->get()->groupBy('category');
+
         // Research fields - only show real database records
 
         return view('welcome', [
@@ -202,6 +205,7 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
             'featuredResearch' => $featuredResearch,
             'manuscriptTracking' => $manuscriptTracking,
             'researchFields' => $researchFields,
+            'faqs' => $faqs,
         ]);
     }
 
