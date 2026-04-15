@@ -452,8 +452,25 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
             ];
         });
 
+        // Group papers by volume and issue for archive
+        $groupedPapers = null;
+        if ($isArchivePage) {
+            $groupedPapers = $publishedPapers->groupBy(function ($paper) {
+                return $paper['archiveVolume'] . '|' . $paper['archiveIssue'];
+            })->map(function ($volumeGroup) {
+                $firstPaper = $volumeGroup->first();
+                return [
+                    'volume' => $firstPaper['archiveVolume'],
+                    'issue' => $firstPaper['archiveIssue'],
+                    'category' => $firstPaper['category'],
+                    'papers' => $volumeGroup->values(),
+                ];
+            })->sortByDesc('volume')->values();
+        }
+
         return view('published-papers', [
             'papers' => $publishedPapers,
+            'groupedPapers' => $groupedPapers,
             'pagination' => $papers,
             'search' => $search,
             'category' => $category,

@@ -16,9 +16,5 @@ export default defineConfig({
         hmr: {
             host: '172.21.123.35', // ← palitan ng totoong IP mo (ipconfig)
         },
-
-        watch: {
-            ignored: ['**/storage/framework/views/**'],
-        },
     },
 });
