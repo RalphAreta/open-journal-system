@@ -459,12 +459,10 @@
             .health-cell:last-child {
                 border-right: none;
             }
-            /* Remove bottom border on last row for 4-col layout */
             .health-cell:nth-child(n + 3) {
                 border-bottom: none;
             }
         }
-        /* For 2-col mobile: remove right border on even cells, remove bottom on last row */
         .health-cell:nth-child(2n) {
             border-right: none;
         }
@@ -727,9 +725,62 @@
                         </a>
                     </div>
 
-                    {{-- Placeholder --}}
+                    {{-- Editorial Board --}}
+                    <div class="feature-card">
+                        <div class="flex items-start gap-4 mb-5">
+                            <div
+                                class="feature-icon"
+                                style="background: var(--gold-lt)"
+                            >
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    fill="none"
+                                    stroke="var(--gold-dk)"
+                                    stroke-width="1.7"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="feature-title">Editorial Board</p>
+                                <p class="feature-desc">
+                                    Add, edit, or hide board members shown on
+                                    the public journal landing page. Supports
+                                    role grouping and display ordering.
+                                </p>
+                            </div>
+                        </div>
+                        <a
+                            href="{{ route('admin.editorial-board.index') }}"
+                            class="btn-manage"
+                            style="background: var(--gold-dk)"
+                        >
+                            <svg
+                                width="14"
+                                height="14"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                            </svg>
+                            Manage Editorial Board
+                        </a>
+                    </div>
                 </div>
             </div>
+            {{-- END Management Tools --}}
 
             {{-- Quick Actions --}}
             <div>
@@ -757,6 +808,13 @@
                                 'route' => 'admin.submissions',
                                 'dot' => 'var(--blue)',
                                 'badge' => $submissionCount . ' total',
+                            ],
+                            [
+                                'label' => 'Editorial Board',
+                                'sub' => 'Manage public board members',
+                                'route' => 'admin.editorial-board.index',
+                                'dot' => 'var(--gold-dk)',
+                                'badge' => 'Manage',
                             ],
                             [
                                 'label' => 'Expertise Setup',
@@ -801,7 +859,9 @@
                     @endforeach
                 </div>
             </div>
+            {{-- END Quick Actions --}}
         </div>
+        {{-- END two-col-grid --}}
 
         {{-- ── System Health ── --}}
         <div class="fu3 mb-10 md:mb-12">

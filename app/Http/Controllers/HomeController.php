@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use App\Models\EditorialBoardMember;
 
 class HomeController extends Controller
 {
@@ -107,23 +108,15 @@ class HomeController extends Controller
             ->take(4)
             ->values();
 
-        // EDITORIAL BOARD - Users with editor roles
-        $editorialBoard = User::whereHas('roles', function ($query) {
-            $query->whereIn('name', ['chief_editor', 'editor']);
-        })
-            ->with('editorExpertise')
-            ->limit(4)
-            ->get()
-            ->map(function ($user) {
-                $expertise = $user->editorExpertise->pluck('expertise')->first() ?? 'Academic Excellence';
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'expertise' => $expertise,
-                    'role' => $user->roles->first()?->name ?? 'editor',
-                ];
-            });
+      // EDITORIAL BOARD - From database
+$editorialBoard = EditorialBoardMember::where('is_active', true)
+    ->orderBy('sort_order')
+    ->get()
+    ->map(fn($m) => [
+        'name'      => trim($m->title . ' ' . $m->name),
+        'role'      => $m->role,        // ← kailangan ito para sa grouping
+        'expertise' => $m->affiliation,
+    ]);
 
         // Editorial board - only show real database records
 
