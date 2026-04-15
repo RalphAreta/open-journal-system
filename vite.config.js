@@ -14,7 +14,7 @@ export default defineConfig({
         host: '0.0.0.0',
         port: 5173,
         hmr: {
-            host: '172.21.123.35', // ← palitan ng totoong IP mo (ipconfig)
+            host: '172.21.121.151', // ← palitan ng totoong IP mo (ipconfig)
         },
     },
 });

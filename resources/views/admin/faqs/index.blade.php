@@ -309,7 +309,7 @@
                     landing page.
                 </p>
             </div>
-            <a href="{{ route('admin.faqs.create') }}" class="btn-add">
+            <button type="button" class="btn-add" onclick="openAddModal()">
                 <svg
                     width="14"
                     height="14"
@@ -325,7 +325,7 @@
                     />
                 </svg>
                 Add Question
-            </a>
+            </button>
         </div>
 
         @if (session('success'))
@@ -456,10 +456,19 @@
                                     </button>
                                 </form>
                                 {{-- Edit --}}
-                                <a
-                                    href="{{ route('admin.faqs.edit', $faq) }}"
+                                <button
+                                    type="button"
                                     class="btn-icon"
                                     title="Edit"
+                                    onclick="
+                                        openEditModal(
+                                            {{ $faq->id }},
+                                            '{{ addslashes($faq->category) }}',
+                                            '{{ addslashes($faq->question) }}',
+                                            '{{ addslashes(strip_tags($faq->answer)) }}',
+                                            {{ $faq->sort_order }},
+                                        )
+                                    "
                                 >
                                     <svg
                                         width="14"
@@ -475,7 +484,7 @@
                                             d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
                                         />
                                     </svg>
-                                </a>
+                                </button>
                                 {{-- Delete --}}
                                 <form
                                     method="POST"
@@ -514,4 +523,399 @@
             @endforeach
         @endif
     </div>
+    {{-- ── ADD MODAL ── --}}
+    <div
+        id="add-modal"
+        style="
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 900;
+            padding: 24px;
+            overflow-y: auto;
+        "
+    >
+        <div
+            style="
+                background: #fff;
+                border-radius: 16px;
+                max-width: 580px;
+                margin: 40px auto;
+                padding: 32px;
+            "
+        >
+            <h2
+                style="
+                    font-family: 'Libre Baskerville', serif;
+                    font-size: 1.2rem;
+                    margin-bottom: 20px;
+                "
+            >
+                Add FAQ
+            </h2>
+            <form method="POST" action="{{ route('admin.faqs.store') }}">
+                @csrf
+                <div style="display: flex; flex-direction: column; gap: 14px">
+                    <div>
+                        <label
+                            style="
+                                font-size: 0.75rem;
+                                font-weight: 700;
+                                letter-spacing: 0.08em;
+                                text-transform: uppercase;
+                                color: var(--ink-soft);
+                            "
+                        >
+                            Category
+                        </label>
+                        <input
+                            name="category"
+                            required
+                            style="
+                                width: 100%;
+                                margin-top: 6px;
+                                padding: 10px 12px;
+                                border: 1.5px solid var(--border);
+                                border-radius: 8px;
+                                font-size: 0.9rem;
+                            "
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style="
+                                font-size: 0.75rem;
+                                font-weight: 700;
+                                letter-spacing: 0.08em;
+                                text-transform: uppercase;
+                                color: var(--ink-soft);
+                            "
+                        >
+                            Question
+                        </label>
+                        <input
+                            name="question"
+                            required
+                            style="
+                                width: 100%;
+                                margin-top: 6px;
+                                padding: 10px 12px;
+                                border: 1.5px solid var(--border);
+                                border-radius: 8px;
+                                font-size: 0.9rem;
+                            "
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style="
+                                font-size: 0.75rem;
+                                font-weight: 700;
+                                letter-spacing: 0.08em;
+                                text-transform: uppercase;
+                                color: var(--ink-soft);
+                            "
+                        >
+                            Answer (HTML allowed)
+                        </label>
+                        <textarea
+                            name="answer"
+                            rows="5"
+                            required
+                            style="
+                                width: 100%;
+                                margin-top: 6px;
+                                padding: 10px 12px;
+                                border: 1.5px solid var(--border);
+                                border-radius: 8px;
+                                font-size: 0.9rem;
+                                resize: vertical;
+                            "
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label
+                            style="
+                                font-size: 0.75rem;
+                                font-weight: 700;
+                                letter-spacing: 0.08em;
+                                text-transform: uppercase;
+                                color: var(--ink-soft);
+                            "
+                        >
+                            Sort Order
+                        </label>
+                        <input
+                            name="sort_order"
+                            type="number"
+                            value="0"
+                            style="
+                                width: 100%;
+                                margin-top: 6px;
+                                padding: 10px 12px;
+                                border: 1.5px solid var(--border);
+                                border-radius: 8px;
+                                font-size: 0.9rem;
+                            "
+                        />
+                    </div>
+                    <div
+                        style="
+                            display: flex;
+                            gap: 10px;
+                            justify-content: flex-end;
+                            margin-top: 6px;
+                        "
+                    >
+                        <button
+                            type="button"
+                            onclick="closeAddModal()"
+                            style="
+                                padding: 10px 20px;
+                                border: 1.5px solid var(--border);
+                                border-radius: 8px;
+                                background: #fff;
+                                cursor: pointer;
+                                font-size: 0.85rem;
+                            "
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            style="
+                                padding: 10px 22px;
+                                background: var(--teal);
+                                color: #fff;
+                                border: none;
+                                border-radius: 8px;
+                                font-weight: 700;
+                                cursor: pointer;
+                                font-size: 0.85rem;
+                            "
+                        >
+                            Save FAQ
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- ── EDIT MODAL ── --}}
+    <div
+        id="edit-modal"
+        style="
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 900;
+            padding: 24px;
+            overflow-y: auto;
+        "
+    >
+        <div
+            style="
+                background: #fff;
+                border-radius: 16px;
+                max-width: 580px;
+                margin: 40px auto;
+                padding: 32px;
+            "
+        >
+            <h2
+                style="
+                    font-family: 'Libre Baskerville', serif;
+                    font-size: 1.2rem;
+                    margin-bottom: 20px;
+                "
+            >
+                Edit FAQ
+            </h2>
+            <form id="edit-faq-form" method="POST">
+                @csrf
+                @method('PUT')
+                <div style="display: flex; flex-direction: column; gap: 14px">
+                    <div>
+                        <label
+                            style="
+                                font-size: 0.75rem;
+                                font-weight: 700;
+                                letter-spacing: 0.08em;
+                                text-transform: uppercase;
+                                color: var(--ink-soft);
+                            "
+                        >
+                            Category
+                        </label>
+                        <input
+                            id="edit-category"
+                            name="category"
+                            required
+                            style="
+                                width: 100%;
+                                margin-top: 6px;
+                                padding: 10px 12px;
+                                border: 1.5px solid var(--border);
+                                border-radius: 8px;
+                                font-size: 0.9rem;
+                            "
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style="
+                                font-size: 0.75rem;
+                                font-weight: 700;
+                                letter-spacing: 0.08em;
+                                text-transform: uppercase;
+                                color: var(--ink-soft);
+                            "
+                        >
+                            Question
+                        </label>
+                        <input
+                            id="edit-question"
+                            name="question"
+                            required
+                            style="
+                                width: 100%;
+                                margin-top: 6px;
+                                padding: 10px 12px;
+                                border: 1.5px solid var(--border);
+                                border-radius: 8px;
+                                font-size: 0.9rem;
+                            "
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style="
+                                font-size: 0.75rem;
+                                font-weight: 700;
+                                letter-spacing: 0.08em;
+                                text-transform: uppercase;
+                                color: var(--ink-soft);
+                            "
+                        >
+                            Answer (HTML allowed)
+                        </label>
+                        <textarea
+                            id="edit-answer"
+                            name="answer"
+                            rows="5"
+                            required
+                            style="
+                                width: 100%;
+                                margin-top: 6px;
+                                padding: 10px 12px;
+                                border: 1.5px solid var(--border);
+                                border-radius: 8px;
+                                font-size: 0.9rem;
+                                resize: vertical;
+                            "
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label
+                            style="
+                                font-size: 0.75rem;
+                                font-weight: 700;
+                                letter-spacing: 0.08em;
+                                text-transform: uppercase;
+                                color: var(--ink-soft);
+                            "
+                        >
+                            Sort Order
+                        </label>
+                        <input
+                            id="edit-sort-order"
+                            name="sort_order"
+                            type="number"
+                            style="
+                                width: 100%;
+                                margin-top: 6px;
+                                padding: 10px 12px;
+                                border: 1.5px solid var(--border);
+                                border-radius: 8px;
+                                font-size: 0.9rem;
+                            "
+                        />
+                    </div>
+                    <div
+                        style="
+                            display: flex;
+                            gap: 10px;
+                            justify-content: flex-end;
+                            margin-top: 6px;
+                        "
+                    >
+                        <button
+                            type="button"
+                            onclick="closeEditModal()"
+                            style="
+                                padding: 10px 20px;
+                                border: 1.5px solid var(--border);
+                                border-radius: 8px;
+                                background: #fff;
+                                cursor: pointer;
+                                font-size: 0.85rem;
+                            "
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            style="
+                                padding: 10px 22px;
+                                background: var(--teal);
+                                color: #fff;
+                                border: none;
+                                border-radius: 8px;
+                                font-weight: 700;
+                                cursor: pointer;
+                                font-size: 0.85rem;
+                            "
+                        >
+                            Update FAQ
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @push('scripts')
+        <script>
+            function openAddModal() {
+                document.getElementById('add-modal').style.display = 'block';
+            }
+            function closeAddModal() {
+                document.getElementById('add-modal').style.display = 'none';
+            }
+
+            function openEditModal(id, category, question, answer, sortOrder) {
+                document.getElementById('edit-category').value = category;
+                document.getElementById('edit-question').value = question;
+                document.getElementById('edit-answer').value = answer;
+                document.getElementById('edit-sort-order').value = sortOrder;
+                document.getElementById('edit-faq-form').action = '/faqs/' + id;
+                document.getElementById('edit-modal').style.display = 'block';
+            }
+            function closeEditModal() {
+                document.getElementById('edit-modal').style.display = 'none';
+            }
+
+            // Close on backdrop click
+            ['add-modal', 'edit-modal'].forEach((id) => {
+                document
+                    .getElementById(id)
+                    .addEventListener('click', function (e) {
+                        if (e.target === this) this.style.display = 'none';
+                    });
+            });
+        </script>
+    @endpush
 @endsection
