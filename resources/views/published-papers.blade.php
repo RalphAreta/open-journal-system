@@ -1028,17 +1028,25 @@
                 <div id="search" class="archive-panel archive-filters anchor-target">
                     <div class="section-header-row mb-6">
                         <div>
-                            <h2 class="section-title">All Published Research</h2>
+                            <h2 class="section-title">
+                                {{ $isArchivePage ? 'Archive Directory' : 'All Published Research' }}
+                            </h2>
                             <p class="text-[#6a7890] font-medium text-base md:text-lg max-w-2xl">
-                                Discover {{ $pagination->total() }} peer-reviewed papers from leading researchers.
+                                @if ($isArchivePage)
+                                    Discover {{ $pagination->total() }} archived papers organized with dynamic volume and issue placeholders.
+                                @else
+                                    Discover {{ $pagination->total() }} peer-reviewed papers from leading researchers.
+                                @endif
                             </p>
                         </div>
 
                         <div class="section-count">
                             <div class="section-count-number">{{ $pagination->total() }}</div>
-                            <div class="section-count-label">Papers Published</div>
-                            <a href="{{ route('archive') }}" class="archive-reset text-center mt-3 inline-block">
-                                Open Archive
+                            <div class="section-count-label">
+                                {{ $isArchivePage ? 'Papers Archived' : 'Papers Published' }}
+                            </div>
+                            <a href="{{ route($switchRouteName) }}" class="archive-reset text-center mt-3 inline-block">
+                                {{ $switchLabel }}
                             </a>
                         </div>
                     </div>
@@ -1162,6 +1170,12 @@
                                 >
                                     {{ $paper['title'] }}
                                 </h3>
+
+                                @if ($isArchivePage)
+                                    <p class="text-[11px] text-[#a07830] font-bold uppercase tracking-[0.16em] -mt-1 mb-1">
+                                        Vol. {{ $paper['archiveVolume'] }} • Issue {{ $paper['archiveIssue'] }} • {{ $paper['category'] }}
+                                    </p>
+                                @endif
 
                                 <div
                                     class="flex items-center gap-2 mb-4 pb-4 border-b border-[#e0d8cc]"
@@ -1323,14 +1337,18 @@
                         @if ($search !== '' || $category !== '')
                             No Papers Match Your Filters
                         @else
-                            No Published Papers Yet
+                            {{ $isArchivePage ? 'No Archived Papers Yet' : 'No Published Papers Yet' }}
                         @endif
                     </h3>
                     <p class="text-[#6a7890] mb-10 text-lg max-w-xl mx-auto leading-relaxed">
                         @if ($search !== '' || $category !== '')
                             Try a broader search or clear the category filter to browse more of the archive.
                         @else
-                            The archive will appear here once papers are officially published.
+                            @if ($isArchivePage)
+                                Archived papers will appear here when the managing editor archives them.
+                            @else
+                                Published papers will appear here once manuscripts are officially published.
+                            @endif
                         @endif
                     </p>
                     <div class="flex justify-center gap-3 flex-wrap">

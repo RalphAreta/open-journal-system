@@ -374,6 +374,7 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
     {
         $search = trim((string) $request->query('q', ''));
         $category = trim((string) $request->query('category', ''));
+        $isArchivePage = $status === Submission::STATUS_ARCHIVED;
 
         $baseArchiveQuery = Submission::where('status', $status)
             ->with('author');
@@ -409,11 +410,28 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
             ->filter()
             ->values();
 
+        $categoryIssueMap = [];
+        if ($isArchivePage) {
+            $categoryIssueMap = $availableCategories
+                ->values()
+                ->mapWithKeys(fn ($categoryName, $index) => [$categoryName => $index + 1])
+                ->all();
+        }
+
         // Map the papers to include additional data
-        $publishedPapers = $papers->map(function ($submission) {
+        $publishedPapers = $papers->map(function ($submission) use ($isArchivePage, $categoryIssueMap) {
             $reviewCount = Review::where('submission_id', $submission->id)
                 ->where('status', Review::STATUS_SUBMITTED)
                 ->count();
+
+            $publishedAt = $submission->published_at;
+            $archiveVolume = null;
+            $archiveIssue = null;
+
+            if ($isArchivePage) {
+                $archiveVolume = $publishedAt ? (int) $publishedAt->format('Y') : (int) now()->format('Y');
+                $archiveIssue = $categoryIssueMap[$submission->research_field] ?? 1;
+            }
 
             return [
                 'id' => $submission->id,
@@ -422,9 +440,11 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
                 'keywords' => $submission->keywords,
                 'category' => $submission->research_field,
                 'author' => $submission->author->name ?? 'Anonymous',
-                'publishedAt' => $submission->published_at,
+                'publishedAt' => $publishedAt,
                 'downloads' => $submission->download_count ?? 0,
                 'reviews' => $reviewCount,
+                'archiveVolume' => $archiveVolume,
+                'archiveIssue' => $archiveIssue,
             ];
         });
 
@@ -439,6 +459,7 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
             'formRouteName' => $formRouteName,
             'switchLabel' => $switchLabel,
             'switchRouteName' => $switchRouteName,
+            'isArchivePage' => $isArchivePage,
         ]);
     }
 }
