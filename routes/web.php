@@ -237,6 +237,8 @@ Route::post('/managing-editor/submissions/{submission}/publish', [ManagingEditor
     ->name('managing-editor.publish');
 Route::post('/managing-editor/submissions/{submission}/archive', [ManagingEditorController::class, 'archivePaper'])
     ->name('managing-editor.archive');
+Route::post('/managing-editor/submissions/{submission}/unarchive', [ManagingEditorController::class, 'unarchivePaper'])
+    ->name('managing-editor.unarchive');
 Route::get('/managing-editor/submissions/{submission}/download-signed-ctf', [ManagingEditorController::class, 'downloadSignedCtf'])
     ->name('managing-editor.download-signed-ctf'); // ← dagdag
 Route::post('/managing-editor/submissions/{submission}/reassign-layout', [ManagingEditorController::class, 'reassignLayout'])

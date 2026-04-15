@@ -331,6 +331,40 @@ public function archivePaper(Submission $submission): RedirectResponse
         ->route('managing-editor.dashboard')
         ->with('success', 'Paper archived successfully.');
 }
+
+public function unarchivePaper(Submission $submission): RedirectResponse
+{
+    if ($submission->managing_editor_id !== Auth::id()) {
+        abort(403, 'Unauthorized');
+    }
+
+    if ($submission->status !== Submission::STATUS_ARCHIVED) {
+        return back()->with('error', 'Only archived papers can be unarchived.');
+    }
+
+    $submission->update([
+        'status' => Submission::STATUS_PUBLISHED,
+        'managing_editor_status' => 'published',
+        'published_at' => $submission->published_at ?? now(),
+    ]);
+
+    $author = $submission->author;
+    if ($author) {
+        \App\Models\Notification::create([
+            'user_id' => $author->id,
+            'role' => 'author',
+            'title' => '📤 Paper Unarchived',
+            'message' => "Your manuscript \"{$submission->title}\" has been restored from archive and is publicly listed under Published Papers.",
+            'type' => 'info',
+            'notifiable_id' => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    return redirect()
+        ->route('managing-editor.dashboard')
+        ->with('success', 'Paper restored to Published Papers.');
+}
 // Dagdag na method:
 public function downloadSignedCtf(Submission $submission)
 {

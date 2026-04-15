@@ -1519,6 +1519,35 @@
                                                 </form>
                                             @endif
 
+                                            @if ($meStatus === 'archived' && $s->status === \App\Models\Submission::STATUS_ARCHIVED)
+                                                <form
+                                                    method="POST"
+                                                    action="{{ route('managing-editor.unarchive', $s) }}"
+                                                >
+                                                    @csrf
+                                                    <button
+                                                        type="submit"
+                                                        class="btn-action teal"
+                                                    >
+                                                        <svg
+                                                            width="12"
+                                                            height="12"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            stroke-width="2"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path
+                                                                stroke-linecap="round"
+                                                                stroke-linejoin="round"
+                                                                d="M4 17l6-6-6-6m8 12h8"
+                                                            />
+                                                        </svg>
+                                                        Unarchive Paper
+                                                    </button>
+                                                </form>
+                                            @endif
+
                                             @if ($s->status === \App\Models\Submission::STATUS_LAYOUT_REVIEW)
                                                 <a
                                                     href="{{ route('managing-editor.layout.show', $s) }}"
@@ -1760,6 +1789,32 @@
                                                 />
                                             </svg>
                                             Archive
+                                        </button>
+                                    </form>
+                                @endif
+
+                                @if ($meStatus === 'archived' && $s->status === \App\Models\Submission::STATUS_ARCHIVED)
+                                    <form
+                                        method="POST"
+                                        action="{{ route('managing-editor.unarchive', $s) }}"
+                                    >
+                                        @csrf
+                                        <button type="submit" class="btn-action teal">
+                                            <svg
+                                                width="12"
+                                                height="12"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M4 17l6-6-6-6m8 12h8"
+                                                />
+                                            </svg>
+                                            Unarchive
                                         </button>
                                     </form>
                                 @endif
