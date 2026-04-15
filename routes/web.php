@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ManagingEditorController;
 use App\Http\Controllers\Admin\DeclineReasonController;
+use App\Http\Controllers\Admin\EditorialBoardController;
 
 Route::get('/', function () {
     return Auth::check() ? redirect()->route('dashboard') : app(HomeController::class)->index();
@@ -178,6 +179,16 @@ Route::post('/admin/decline-reasons', [DeclineReasonController::class, 'store'])
 Route::patch('/admin/decline-reasons/{declineReason}', [DeclineReasonController::class, 'update'])->name('admin.decline-reasons.update');
 Route::patch('/admin/decline-reasons/{declineReason}/toggle', [DeclineReasonController::class, 'toggleActive'])->name('admin.decline-reasons.toggle');
 Route::delete('/admin/decline-reasons/{declineReason}', [DeclineReasonController::class, 'destroy'])->name('admin.decline-reasons.destroy');
+ // Editorial Board Management
+        Route::resource('admin/editorial-board', \App\Http\Controllers\Admin\EditorialBoardController::class)
+             ->except(['show'])
+             ->names('admin.editorial-board')
+             ->parameters(['editorial-board' => 'editorialBoard']);
+
+        Route::patch(
+            '/admin/editorial-board/{editorialBoard}/toggle',
+            [\App\Http\Controllers\Admin\EditorialBoardController::class, 'toggleActive']
+        )->name('admin.editorial-board.toggle');
     });
 
   Route::middleware('auth')->group(function () {

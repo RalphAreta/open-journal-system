@@ -1307,9 +1307,15 @@
                 grid-template-columns: repeat(2, 1fr);
                 gap: 14px;
             }
+            @media (min-width: 640px) {
+                .board-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 16px;
+                }
+            }
             @media (min-width: 900px) {
                 .board-grid {
-                    grid-template-columns: repeat(4, 1fr);
+                    grid-template-columns: repeat(3, 1fr);
                     gap: 18px;
                 }
             }
@@ -3044,53 +3050,133 @@
                     }
                 @endphp
 
-                <div class="board-grid">
-                    @forelse ($editorialBoard as $i => $member)
+                @php
+                    $roleOrder = [
+                        'editor_in_chief' => 'Editor-in-Chief',
+                        'guest_editor' => 'Guest Editors',
+                        'editor' => 'Editors',
+                        'managing_editor' => 'Managing Editor',
+                        'layout_editor' => 'Layout Editor',
+                        'editorial_advisor' => 'Editorial Advisors',
+                    ];
+
+                    $grouped = collect($editorialBoard)->groupBy('role');
+                @endphp
+
+                @foreach ($roleOrder as $roleKey => $roleLabel)
+                    @if ($grouped->has($roleKey))
                         <div
-                            class="board-card fade-up fade-up-{{ ($i % 4) + 1 }}"
+                            style="
+                                grid-column: 1 / -1;
+                                margin-top: 32px;
+                                margin-bottom: 4px;
+                                display: flex;
+                                align-items: center;
+                                gap: 14px;
+                            "
                         >
-                            <div class="board-card-top">
-                                <div class="board-avatar">
-                                    {{ boardInitials($member['name']) }}
-                                </div>
-                            </div>
-                            <div class="board-card-body">
-                                <div class="board-name">
-                                    {{ $member['name'] }}
-                                </div>
-                                <div class="board-role">
-                                    {{ ucfirst(str_replace('_', ' ', $member['role'])) }}
-                                </div>
-                                <div class="board-expertise">
-                                    {{ $member['expertise'] }}
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        @foreach ([['name' => 'Dr. Rafael Santos', 'role' => 'Editor in Chief', 'expertise' => 'Computer Science'], ['name' => 'Dr. Maria Reyes', 'role' => 'Managing Editor', 'expertise' => 'Information Technology'], ['name' => 'Prof. Jose Lim', 'role' => 'Senior Editor', 'expertise' => 'Electrical Engineering'], ['name' => 'Dr. Ana Cruz', 'role' => 'Associate Editor', 'expertise' => 'Data Science & AI']] as $i => $m)
-                            <div
-                                class="board-card fade-up fade-up-{{ $i + 1 }}"
+                            <span
+                                style="
+                                    font-size: 0.62rem;
+                                    font-weight: 800;
+                                    letter-spacing: 0.2em;
+                                    text-transform: uppercase;
+                                    color: var(--teal);
+                                    white-space: nowrap;
+                                "
                             >
-                                <div class="board-card-top">
-                                    <div class="board-avatar">
-                                        {{ boardInitials($m['name']) }}
+                                {{ $roleLabel }}
+                            </span>
+                            <span
+                                style="
+                                    flex: 1;
+                                    height: 1px;
+                                    background: linear-gradient(
+                                        to right,
+                                        rgba(45, 129, 118, 0.3),
+                                        transparent
+                                    );
+                                "
+                            ></span>
+                        </div>
+
+                        {{-- Editor-in-Chief: centered single card --}}
+                        @if ($roleKey === 'editor_in_chief')
+                            <div
+                                style="
+                                    grid-column: 1 / -1;
+                                    display: flex;
+                                    justify-content: center;
+                                "
+                            >
+                                @foreach ($grouped[$roleKey] as $member)
+                                    <div
+                                        class="board-card"
+                                        style="width: 260px"
+                                    >
+                                        <div
+                                            class="board-card-top"
+                                            style="height: 140px"
+                                        >
+                                            <div
+                                                class="board-avatar"
+                                                style="
+                                                    width: 80px;
+                                                    height: 80px;
+                                                    font-size: 1.4rem;
+                                                "
+                                            >
+                                                {{ boardInitials($member['name']) }}
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="board-card-body"
+                                            style="text-align: center"
+                                        >
+                                            <div
+                                                class="board-name"
+                                                style="font-size: 1rem"
+                                            >
+                                                {{ $member['name'] }}
+                                            </div>
+                                            <div class="board-role">
+                                                {{ $roleLabel }}
+                                            </div>
+                                            <div class="board-expertise">
+                                                {{ $member['expertise'] }}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="board-card-body">
-                                    <div class="board-name">
-                                        {{ $m['name'] }}
-                                    </div>
-                                    <div class="board-role">
-                                        {{ $m['role'] }}
-                                    </div>
-                                    <div class="board-expertise">
-                                        {{ $m['expertise'] }}
-                                    </div>
-                                </div>
+                                @endforeach
                             </div>
-                        @endforeach
-                    @endforelse
-                </div>
+
+                            {{-- All other roles: normal grid --}}
+                        @else
+                            @foreach ($grouped[$roleKey] as $i => $member)
+                                <div
+                                    class="board-card fade-up fade-up-{{ ($i % 3) + 1 }}"
+                                >
+                                    <div class="board-card-top">
+                                        <div class="board-avatar">
+                                            {{ boardInitials($member['name']) }}
+                                        </div>
+                                    </div>
+                                    <div class="board-card-body">
+                                        <div class="board-name">
+                                            {{ $member['name'] }}
+                                        </div>
+                                        <div class="board-role">
+                                            {{ $roleLabel }}
+                                        </div>
+                                        <div class="board-expertise">
+                                            {{ $member['expertise'] }}
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    @endif
+                @endforeach
             </div>
         </section>
 
