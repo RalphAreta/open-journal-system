@@ -1076,8 +1076,272 @@
                 </div>
 
                 @if ($papers->count() > 0)
-                    <div id="papers" class="papers-grid anchor-target mt-10">
-                    @foreach ($papers as $paper)
+                    @if ($isArchivePage && $groupedPapers)
+                        <!-- ARCHIVE GROUPED VIEW -->
+                        <div id="papers" class="anchor-target mt-10">
+                        @foreach ($groupedPapers as $volumeGroup)
+                            <div class="mb-16">
+                                <!-- Volume Header -->
+                                <div class="mb-8 pb-6 border-b-2 border-[#c9a84c]/30">
+                                    <h2 class="text-3xl font-libre font-bold text-[#2D8176] mb-2">
+                                        Volume {{ $volumeGroup['volume'] }}
+                                    </h2>
+                                    <p class="text-[#6a7890] font-semibold">
+                                        Issue {{ $volumeGroup['issue'] }} • {{ $volumeGroup['category'] }} • {{ $volumeGroup['papers']->count() }} @if ($volumeGroup['papers']->count() === 1) paper @else papers @endif
+                                    </p>
+                                </div>
+                                
+                                <!-- Papers Grid for this Volume -->
+                                <div class="papers-grid">
+                                @foreach ($volumeGroup['papers'] as $paper)
+                                    <div
+                                        class="card-hover-depth group bg-white rounded-2xl overflow-hidden border border-[#e0d8cc] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
+                                        data-paper-title="{{ $paper['title'] }}"
+                                        data-paper-author="{{ $paper['author'] }}"
+                                        data-paper-abstract="{{ $paper['abstract'] }}"
+                                        data-paper-category="{{ $paper['category'] }}"
+                                    >
+                                        <!-- Card header gradient bar -->
+                                        <div class="card-header-bar">
+                                            <div
+                                                class="absolute inset-0 opacity-20 pointer-events-none"
+                                            >
+                                                <svg
+                                                    class="w-full h-full"
+                                                    viewBox="0 0 200 160"
+                                                    preserveAspectRatio="xMidYMid slice"
+                                                >
+                                                    <defs>
+                                                        <linearGradient
+                                                            id="linePattern{{ $paper['id'] }}"
+                                                            x1="0%"
+                                                            y1="0%"
+                                                            x2="100%"
+                                                            y2="100%"
+                                                        >
+                                                            <stop
+                                                                offset="0%"
+                                                                style="
+                                                                    stop-color: white;
+                                                                    stop-opacity: 0.1;
+                                                                "
+                                                            />
+                                                            <stop
+                                                                offset="100%"
+                                                                style="
+                                                                    stop-color: white;
+                                                                    stop-opacity: 0;
+                                                                "
+                                                            />
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <circle
+                                                        cx="180"
+                                                        cy="-20"
+                                                        r="80"
+                                                        fill="url(#linePattern{{ $paper['id'] }})"
+                                                    />
+                                                    <circle
+                                                        cx="20"
+                                                        cy="180"
+                                                        r="60"
+                                                        fill="url(#linePattern{{ $paper['id'] }})"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <div class="relative z-10 text-center">
+                                                <svg
+                                                    class="w-14 h-14 text-white mx-auto mb-1 group-hover:scale-110 transition-transform duration-300"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="1.5"
+                                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                    />
+                                                </svg>
+                                                <p
+                                                    class="text-white/90 text-xs font-semibold tracking-wider"
+                                                >
+                                                    RESEARCH PAPER
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card content -->
+                                        <div class="p-6 md:p-8 flex flex-col flex-1">
+                                            <div class="mb-3">
+                                                <span
+                                                    class="inline-block px-3 py-1.5 bg-[#c9a84c]/15 text-[#c9a84c] text-[10px] font-bold uppercase rounded-lg border border-[#c9a84c]/30"
+                                                >
+                                                    {{ $paper['category'] }}
+                                                </span>
+                                            </div>
+
+                                            <h3
+                                                class="font-libre text-lg font-bold text-[#2D8176] mb-3 leading-snug line-clamp-3 group-hover:text-[#c9a84c] transition-colors"
+                                            >
+                                                {{ $paper['title'] }}
+                                            </h3>
+
+                                            <div
+                                                class="flex items-center gap-2 mb-4 pb-4 border-b border-[#e0d8cc]"
+                                            >
+                                                <svg
+                                                    class="w-4 h-4 text-[#c9a84c] shrink-0"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                                    />
+                                                </svg>
+                                                <p
+                                                    class="text-sm text-[#6a7890] font-semibold truncate"
+                                                >
+                                                    {{ $paper['author'] }}
+                                                </p>
+                                            </div>
+
+                                            <p
+                                                class="text-[#6a7890] text-sm mb-6 leading-relaxed line-clamp-3"
+                                            >
+                                                {{ $paper['abstract'] }}
+                                            </p>
+
+                                            <div
+                                                class="grid grid-cols-2 gap-3 mb-6 p-4 bg-[#f9f7f2] rounded-lg"
+                                            >
+                                                <div class="text-center">
+                                                    <div
+                                                        class="text-lg font-libre font-bold text-[#2D8176]"
+                                                    >
+                                                        {{ number_format($paper['downloads']) }}
+                                                    </div>
+                                                    <div
+                                                        class="text-[10px] font-bold text-[#c9a84c] uppercase tracking-wider"
+                                                    >
+                                                        Downloads
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="text-center border-l border-[#e0d8cc]"
+                                                >
+                                                    <div
+                                                        class="text-lg font-libre font-bold text-[#2D8176]"
+                                                    >
+                                                        {{ date('M', strtotime($paper['publishedAt'])) }}
+                                                    </div>
+                                                    <div
+                                                        class="text-[10px] font-bold text-[#c9a84c] uppercase tracking-wider"
+                                                    >
+                                                        {{ date('Y', strtotime($paper['publishedAt'])) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div
+                                                class="text-[11px] text-[#a7b1c7] mb-5 font-medium flex items-center gap-2"
+                                            >
+                                                <svg
+                                                    class="w-3.5 h-3.5 shrink-0"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                                    />
+                                                </svg>
+                                                Published
+                                                {{ $paper['publishedAt']?->format('M d, Y') ?? 'N/A' }}
+                                            </div>
+
+                                            <!-- Action buttons — pushed to bottom -->
+                                            <div class="card-actions mt-auto">
+                                                <a
+                                                    href="{{ route('papers.show', ['submission' => $paper['id']]) }}"
+                                                    class="flex items-center justify-center gap-2 w-full px-5 py-3.5 bg-linear-to-r from-[#2D8176] to-[#1a4d46] text-white rounded-xl font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group-hover:from-[#c9a84c] group-hover:to-[#a07830]"
+                                                >
+                                                    <span>Read Full Article</span>
+                                                    <svg
+                                                        class="w-4 h-4 group-hover:translate-x-1 transition-transform shrink-0"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                                                        />
+                                                    </svg>
+                                                </a>
+
+                                                <a
+                                                    href="{{ route('papers.download-ris', ['submission' => $paper['id']]) }}"
+                                                    class="flex items-center justify-center gap-2 w-full px-5 py-2.5 bg-white border-2 border-[#c9a84c] text-[#c9a84c] rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#c9a84c] hover:text-white transition-all duration-200"
+                                                    title="Download citation in RIS format for Zotero, Mendeley, EndNote"
+                                                >
+                                                    <svg
+                                                        class="w-4 h-4 shrink-0"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm8-5.5V5a2 2 0 00-2-2H6a2 2 0 00-2 2v6.5"
+                                                        />
+                                                    </svg>
+                                                    <span>Export Citation</span>
+                                                </a>
+
+                                                <a
+                                                    href="{{ route('papers.download', ['submission' => $paper['id']]) }}"
+                                                    class="flex items-center justify-center gap-2 w-full px-5 py-2.5 bg-white border-2 border-[#2D8176] text-[#2D8176] rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#2D8176] hover:text-white transition-all duration-200"
+                                                    title="Download the full paper as PDF"
+                                                >
+                                                    <svg
+                                                        class="w-4 h-4 shrink-0"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                        />
+                                                    </svg>
+                                                    <span>Download PDF</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                        </div>
+                    @else
+                        <!-- PUBLISHED FLAT VIEW -->
+                        <div id="papers" class="papers-grid anchor-target mt-10">
+                        @foreach ($papers as $paper)
                         <div
                             class="card-hover-depth group bg-white rounded-2xl overflow-hidden border border-[#e0d8cc] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
                             data-paper-title="{{ $paper['title'] }}"
@@ -1170,12 +1434,6 @@
                                 >
                                     {{ $paper['title'] }}
                                 </h3>
-
-                                @if ($isArchivePage)
-                                    <p class="text-[11px] text-[#a07830] font-bold uppercase tracking-[0.16em] -mt-1 mb-1">
-                                        Vol. {{ $paper['archiveVolume'] }} • Issue {{ $paper['archiveIssue'] }} • {{ $paper['category'] }}
-                                    </p>
-                                @endif
 
                                 <div
                                     class="flex items-center gap-2 mb-4 pb-4 border-b border-[#e0d8cc]"
@@ -1323,9 +1581,10 @@
                                 </div>
                             </div>
                         </div>
-                    @endforeach
-                    </div>
-
+                        @endforeach
+                        </div>
+                    @endif
+                
                 <!-- PAGINATION -->
                 <div class="mt-20 flex justify-center">
                     {{ $pagination->links('pagination::tailwind') }}

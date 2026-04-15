@@ -1226,7 +1226,8 @@
                 ->whereHas('submission', function ($query) {
                     $query
                         ->where('managing_editor_id', auth()->id())
-                        ->where('status', '!=', \App\Models\Submission::STATUS_PUBLISHED);
+                        ->where('status', '!=', \App\Models\Submission::STATUS_PUBLISHED)
+                        ->where('status', '!=', \App\Models\Submission::STATUS_ARCHIVED);
                 })
                 ->latest('author_feedback_at')
                 ->get();

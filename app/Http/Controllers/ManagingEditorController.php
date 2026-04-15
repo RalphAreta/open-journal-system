@@ -314,19 +314,6 @@ public function archivePaper(Submission $submission): RedirectResponse
         'managing_editor_status' => 'archived',
     ]);
 
-    $author = $submission->author;
-    if ($author) {
-        \App\Models\Notification::create([
-            'user_id' => $author->id,
-            'role' => 'author',
-            'title' => '📦 Paper Archived',
-            'message' => "Your manuscript \"{$submission->title}\" has been moved to the archive by the managing editor.",
-            'type' => 'info',
-            'notifiable_id' => $submission->id,
-            'notifiable_type' => Submission::class,
-        ]);
-    }
-
     return redirect()
         ->route('managing-editor.dashboard')
         ->with('success', 'Paper archived successfully.');
