@@ -42,6 +42,8 @@ class Submission extends Model
         'ctf_signed_file_name',   // ← dagdag
         'ctf_returned_at',
         'published_at',
+        'archive_volume',
+        'archive_issue',
         'layout_editor_assignment_id',
         'author_feedback',
         'author_feedback_at',

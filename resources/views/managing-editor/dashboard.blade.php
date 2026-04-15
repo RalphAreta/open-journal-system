@@ -1495,11 +1495,14 @@
                                                 <form
                                                     method="POST"
                                                     action="{{ route('managing-editor.archive', $s) }}"
+                                                    class="flex flex-col gap-2"
                                                 >
                                                     @csrf
                                                     <button
-                                                        type="submit"
+                                                        type="button"
                                                         class="btn-action gold"
+                                                        onclick="toggleArchiveFields('archiveFields{{ $s->id }}', this)"
+                                                        aria-expanded="false"
                                                     >
                                                         <svg
                                                             width="12"
@@ -1517,6 +1520,38 @@
                                                         </svg>
                                                         Archive Paper
                                                     </button>
+
+                                                    <div id="archiveFields{{ $s->id }}" class="items-center gap-2" style="display: none;">
+                                                        <input
+                                                            type="text"
+                                                            name="archive_volume"
+                                                            class="w-24 px-2 py-1 rounded-md border border-[rgba(0,0,0,.18)] text-[.68rem]"
+                                                            placeholder="Volume"
+                                                            value="{{ old('archive_volume') }}"
+                                                            required
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            name="archive_issue"
+                                                            class="w-24 px-2 py-1 rounded-md border border-[rgba(0,0,0,.18)] text-[.68rem]"
+                                                            placeholder="Issue"
+                                                            value="{{ old('archive_issue') }}"
+                                                            required
+                                                        />
+                                                        <button
+                                                            type="submit"
+                                                            class="btn-action gold"
+                                                        >
+                                                            Confirm Archive
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            class="btn-action teal"
+                                                            onclick="toggleArchiveFields('archiveFields{{ $s->id }}')"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                    </div>
                                                 </form>
                                             @endif
 
@@ -2437,6 +2472,25 @@
         }
         function closeCtfModal() {
             document.getElementById('ctfModal').classList.remove('open');
+        }
+
+        function toggleArchiveFields(targetId, triggerButton = null) {
+            const panel = document.getElementById(targetId);
+            if (!panel) {
+                return;
+            }
+
+            const isClosed = panel.style.display === 'none' || panel.style.display === '';
+            panel.style.display = isClosed ? 'flex' : 'none';
+
+            if (panel.style.display === 'flex') {
+                const firstInput = panel.querySelector('input[name="archive_volume"]');
+                firstInput?.focus();
+            }
+
+            if (triggerButton) {
+                triggerButton.setAttribute('aria-expanded', String(panel.style.display === 'flex'));
+            }
         }
 
 

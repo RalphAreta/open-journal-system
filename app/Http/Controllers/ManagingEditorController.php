@@ -299,7 +299,7 @@ public function publishPaper(Submission $submission): RedirectResponse
         ->with('success', 'Paper published successfully!');
 }
 
-public function archivePaper(Submission $submission): RedirectResponse
+public function archivePaper(Request $request, Submission $submission): RedirectResponse
 {
     if ($submission->managing_editor_id !== Auth::id()) {
         abort(403, 'Unauthorized');
@@ -309,9 +309,16 @@ public function archivePaper(Submission $submission): RedirectResponse
         return back()->with('error', 'Only published papers can be archived.');
     }
 
+    $validated = $request->validate([
+        'archive_volume' => ['required', 'string', 'max:50'],
+        'archive_issue' => ['required', 'string', 'max:50'],
+    ]);
+
     $submission->update([
         'status' => Submission::STATUS_ARCHIVED,
         'managing_editor_status' => 'archived',
+        'archive_volume' => trim($validated['archive_volume']),
+        'archive_issue' => trim($validated['archive_issue']),
     ]);
 
     return redirect()

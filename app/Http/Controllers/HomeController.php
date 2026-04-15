@@ -393,7 +393,7 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
                         });
                 });
             })
-            ->when($category !== '', function ($query) use ($category) {
+            ->when(!$isArchivePage && $category !== '', function ($query) use ($category) {
                 $query->where('research_field', $category);
             });
 
@@ -410,16 +410,8 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
             ->filter()
             ->values();
 
-        $categoryIssueMap = [];
-        if ($isArchivePage) {
-            $categoryIssueMap = $availableCategories
-                ->values()
-                ->mapWithKeys(fn ($categoryName, $index) => [$categoryName => $index + 1])
-                ->all();
-        }
-
         // Map the papers to include additional data
-        $publishedPapers = $papers->map(function ($submission) use ($isArchivePage, $categoryIssueMap) {
+        $publishedPapers = $papers->map(function ($submission) use ($isArchivePage) {
             $reviewCount = Review::where('submission_id', $submission->id)
                 ->where('status', Review::STATUS_SUBMITTED)
                 ->count();
@@ -429,8 +421,8 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
             $archiveIssue = null;
 
             if ($isArchivePage) {
-                $archiveVolume = $publishedAt ? (int) $publishedAt->format('Y') : (int) now()->format('Y');
-                $archiveIssue = $categoryIssueMap[$submission->research_field] ?? 1;
+                $archiveVolume = $submission->archive_volume ?: ($publishedAt ? $publishedAt->format('Y') : now()->format('Y'));
+                $archiveIssue = $submission->archive_issue ?: '1';
             }
 
             return [
@@ -448,20 +440,26 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
             ];
         });
 
-        // Group papers by volume and issue for archive
+        // Group papers by volume for archive
         $groupedPapers = null;
         if ($isArchivePage) {
             $groupedPapers = $publishedPapers->groupBy(function ($paper) {
-                return $paper['archiveVolume'] . '|' . $paper['archiveIssue'];
+                return (string) $paper['archiveVolume'];
             })->map(function ($volumeGroup) {
                 $firstPaper = $volumeGroup->first();
+
+                $sortedPapers = $volumeGroup->sortBy(function ($paper) {
+                    return strtolower((string) $paper['archiveIssue']);
+                })->values();
+
                 return [
                     'volume' => $firstPaper['archiveVolume'],
-                    'issue' => $firstPaper['archiveIssue'],
-                    'category' => $firstPaper['category'],
-                    'papers' => $volumeGroup->values(),
+                    'issuesCount' => $volumeGroup->pluck('archiveIssue')->filter()->unique()->count(),
+                    'papers' => $sortedPapers,
                 ];
-            })->sortByDesc('volume')->values();
+            })->sortBy(function ($group) {
+                return strtolower((string) $group['volume']);
+            })->values()->reverse()->values();
         }
 
         return view('published-papers', [

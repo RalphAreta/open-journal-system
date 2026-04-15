@@ -1060,18 +1060,20 @@
                             class="archive-input"
                         />
 
-                        <select name="category" class="archive-select">
-                            <option value="">All Categories</option>
+                        @if (! $isArchivePage)
+                            <select name="category" class="archive-select">
+                                <option value="">All Categories</option>
 
-                            @foreach ($availableCategories as $optionCategory)
-                                <option
-                                    value="{{ $optionCategory }}"
-                                    @selected($category === $optionCategory)
-                                >
-                                    {{ $optionCategory }}
-                                </option>
-                            @endforeach
-                        </select>
+                                @foreach ($availableCategories as $optionCategory)
+                                    <option
+                                        value="{{ $optionCategory }}"
+                                        @selected($category === $optionCategory)
+                                    >
+                                        {{ $optionCategory }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endif
                     </form>
                 </div>
 
@@ -1087,7 +1089,7 @@
                                         Volume {{ $volumeGroup['volume'] }}
                                     </h2>
                                     <p class="text-[#6a7890] font-semibold">
-                                        Issue {{ $volumeGroup['issue'] }} • {{ $volumeGroup['category'] }} • {{ $volumeGroup['papers']->count() }} @if ($volumeGroup['papers']->count() === 1) paper @else papers @endif
+                                        {{ $volumeGroup['papers']->count() }} @if ($volumeGroup['papers']->count() === 1) paper @else papers @endif • {{ $volumeGroup['issuesCount'] }} @if ($volumeGroup['issuesCount'] === 1) issue @else issues @endif
                                     </p>
                                 </div>
 
@@ -1177,7 +1179,7 @@
                                                 <span
                                                     class="inline-block px-3 py-1.5 bg-[#c9a84c]/15 text-[#c9a84c] text-[10px] font-bold uppercase rounded-lg border border-[#c9a84c]/30"
                                                 >
-                                                    {{ $paper['category'] }}
+                                                    Issue {{ $paper['archiveIssue'] }}
                                                 </span>
                                             </div>
 
