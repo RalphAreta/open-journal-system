@@ -3051,12 +3051,12 @@
                     }
 
                     $roleOrder = [
-                        'editor_in_chief' => 'Editor-in-Chief',
-                        'managing_editor' => 'Managing Editor',
-                        'guest_editor' => 'Guest Editors',
-                        'editor' => 'Editors',
-                        'layout_editor' => 'Layout Editor',
-                        'editorial_advisor' => 'Editorial Advisors',
+                        'editor-in-chief' => 'Editor-in-Chief',
+                        'guest-editors' => 'Guest Editors',
+                        'editors' => 'Editors',
+                        'managing-editor' => 'Managing Editor',
+                        'layout-editor' => 'Layout Editor',
+                        'editorial-advisors' => 'Editorial Advisors',
                     ];
                     $grouped = collect($editorialBoard)->groupBy('role');
                 @endphp
