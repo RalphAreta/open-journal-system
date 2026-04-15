@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Published Papers | Journal System</title>
+        <title>{{ $heroTitle }} | Journal System</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net" />
         <link
@@ -119,67 +119,77 @@
                 align-items: center;
                 justify-content: center;
                 text-align: center;
-                padding: 64px 20px;
+                padding: 32px 20px;
                 overflow: hidden;
                 background: linear-gradient(135deg, #2d8176, #2a8f84, #1a4d46);
-                min-height: 28rem;
+                min-height: 16rem;
             }
             @media (max-width: 640px) {
                 .hero-section {
                     min-height: auto;
-                    padding: 48px 20px 52px;
+                    padding: 24px 20px 28px;
                 }
             }
 
             .hero-title {
                 font-family: 'Libre Baskerville', serif;
-                font-size: clamp(2.8rem, 8vw, 5.5rem);
+                font-size: clamp(2rem, 6vw, 4rem);
                 font-weight: 700;
                 color: white;
                 letter-spacing: -0.02em;
                 line-height: 1;
-                margin-bottom: 24px;
+                margin-bottom: 16px;
                 text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
             }
 
             .hero-desc {
                 color: rgba(255, 255, 255, 0.9);
-                font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+                font-size: clamp(0.9rem, 2vw, 1rem);
                 max-width: 42rem;
                 margin: 0 auto;
-                line-height: 1.7;
+                line-height: 1.6;
                 font-weight: 300;
             }
 
             .hero-stats {
-                margin-top: 40px;
+                margin-top: 20px;
                 display: flex;
                 justify-content: center;
-                gap: 32px;
-                font-size: 0.85rem;
+                gap: 24px;
+                font-size: 0.8rem;
                 color: rgba(255, 255, 255, 0.7);
                 flex-wrap: wrap;
             }
             @media (max-width: 480px) {
                 .hero-stats {
-                    gap: 16px;
-                    margin-top: 28px;
+                    gap: 12px;
+                    margin-top: 16px;
                 }
                 .hero-stats span {
-                    font-size: 0.8rem;
+                    font-size: 0.75rem;
                 }
             }
 
             /* ── Listing section ── */
             .listing-section {
-                padding: 80px 24px;
-                max-width: 80rem;
+                padding: 60px 24px;
+                max-width: 88rem;
                 margin: 0 auto;
+                display: block;
+            }
+            @media (max-width: 1024px) {
+                .listing-section {
+                    display: block;
+                }
             }
             @media (max-width: 640px) {
                 .listing-section {
-                    padding: 48px 16px;
+                    padding: 36px 16px;
                 }
+            }
+
+            .anchor-target {
+                scroll-margin-top: 110px;
             }
 
             /* ── Section header row ── */
@@ -201,10 +211,191 @@
 
             .section-title {
                 font-family: 'Libre Baskerville', serif;
-                font-size: clamp(1.8rem, 5vw, 3rem);
+                font-size: clamp(2rem, 4vw, 3.15rem);
                 font-weight: 700;
                 color: #2d8176;
                 margin-bottom: 8px;
+            }
+
+            .section-count {
+                text-align: center;
+                min-width: 120px;
+                padding-bottom: 2px;
+            }
+
+            .section-count-number {
+                font-family: 'Libre Baskerville', serif;
+                font-size: 2.5rem;
+                line-height: 1;
+                color: #c9a84c;
+            }
+
+            .section-count-label {
+                font-size: 0.68rem;
+                font-weight: 800;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: #6a7890;
+                margin-top: 4px;
+            }
+
+            .archive-shell {
+                display: grid;
+                grid-template-columns: minmax(0, 1.6fr) 320px;
+                gap: 24px;
+                align-items: start;
+                margin-bottom: 32px;
+            }
+            @media (max-width: 1024px) {
+                .archive-shell {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .archive-panel {
+                background: rgba(255, 255, 255, 0.82);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(224, 216, 204, 0.9);
+                border-radius: 28px;
+                box-shadow: 0 18px 40px rgba(13, 22, 40, 0.06);
+            }
+
+            .archive-filters {
+                padding: 18px;
+            }
+
+            .archive-form {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) 220px;
+                gap: 12px;
+                align-items: center;
+            }
+            @media (max-width: 1024px) {
+                .archive-form {
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+            @media (max-width: 640px) {
+                .archive-form {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .archive-input,
+            .archive-select {
+                width: 100%;
+                border: 1px solid #e0d8cc;
+                background: #fff;
+                color: #0d1628;
+                border-radius: 16px;
+                padding: 0.95rem 1rem;
+                transition: border-color 0.2s ease, box-shadow 0.2s ease,
+                    transform 0.2s ease;
+                outline: none;
+            }
+
+            .archive-input:focus,
+            .archive-select:focus {
+                border-color: #2d8176;
+                box-shadow: 0 0 0 4px rgba(45, 129, 118, 0.12);
+            }
+
+            .archive-btn,
+            .archive-reset {
+                border-radius: 16px;
+                font-size: 0.72rem;
+                font-weight: 800;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                padding: 0.95rem 1.1rem;
+                transition: transform 0.2s ease, box-shadow 0.2s ease,
+                    background-color 0.2s ease, color 0.2s ease;
+                white-space: nowrap;
+            }
+
+            .archive-btn {
+                color: white;
+                background: linear-gradient(135deg, #2d8176, #1a4d46);
+                box-shadow: 0 14px 24px rgba(45, 129, 118, 0.2);
+            }
+
+            .archive-reset {
+                border: 1px solid #2d8176;
+                color: #2d8176;
+                background: rgba(255, 255, 255, 0.9);
+            }
+
+            @media (hover: hover) {
+                .archive-btn:hover,
+                .archive-reset:hover {
+                    transform: translateY(-1px);
+                }
+                .archive-btn:hover {
+                    box-shadow: 0 18px 30px rgba(45, 129, 118, 0.26);
+                }
+                .archive-reset:hover {
+                    background: #f3faf8;
+                }
+            }
+
+            .archive-summary {
+                padding: 18px;
+            }
+
+            @media (min-width: 1025px) {
+                .archive-summary {
+                    position: sticky;
+                    top: 96px;
+                }
+            }
+
+            .archive-summary-label {
+                color: #a07830;
+                text-transform: uppercase;
+                letter-spacing: 0.2em;
+                font-size: 0.68rem;
+                font-weight: 800;
+            }
+
+            .archive-summary-number {
+                font-family: 'Libre Baskerville', serif;
+                font-size: clamp(2rem, 4vw, 2.9rem);
+                color: #2d8176;
+                line-height: 1;
+                margin-top: 4px;
+            }
+
+            .archive-summary-copy {
+                margin-top: 10px;
+                color: #6a7890;
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .archive-chip-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 16px;
+            }
+
+            .archive-chip {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 0.65rem 0.9rem;
+                border-radius: 999px;
+                border: 1px solid rgba(201, 168, 76, 0.25);
+                background: rgba(249, 247, 242, 0.82);
+                color: #6a7890;
+                font-size: 0.78rem;
+                font-weight: 700;
+            }
+
+            .archive-chip svg {
+                width: 0.95rem;
+                height: 0.95rem;
+                color: #2d8176;
             }
 
             /* ── Search bar ── */
@@ -223,19 +414,20 @@
             /* ── Paper card grid ── */
             .papers-grid {
                 display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 32px;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 28px;
+                align-items: stretch;
             }
             @media (max-width: 1024px) {
                 .papers-grid {
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 24px;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 22px;
                 }
             }
             @media (max-width: 640px) {
                 .papers-grid {
+                    gap: 18px;
                     grid-template-columns: 1fr;
-                    gap: 20px;
                 }
             }
 
@@ -257,6 +449,231 @@
                 display: flex;
                 flex-direction: column;
                 gap: 8px;
+            }
+
+            .card-hover-depth {
+                display: flex;
+                flex-direction: column;
+                min-height: 100%;
+                overflow: hidden;
+                background: #ffffff;
+                border: 1px solid #e0d8cc;
+                border-radius: 28px;
+                box-shadow: 0 18px 38px rgba(13, 22, 40, 0.08);
+            }
+
+            @media (hover: hover) {
+                .card-hover-depth:hover {
+                    transform: translateY(-8px);
+                    box-shadow: 0 26px 52px rgba(13, 22, 40, 0.14);
+                }
+            }
+
+            .card-hover-depth .card-header-bar {
+                min-height: 160px;
+                padding: 20px;
+            }
+
+            .card-hover-depth .card-header-bar > div:last-child {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                text-align: center;
+            }
+
+            .card-hover-depth .card-header-bar svg {
+                width: 76px;
+                height: 76px;
+            }
+
+            .card-hover-depth .card-header-bar p {
+                color: rgba(255, 255, 255, 0.92);
+                font-size: 0.72rem;
+                font-weight: 800;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+            }
+
+            .card-hover-depth > div:nth-child(2) {
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+                flex: 1;
+            }
+
+            .card-hover-depth > div:nth-child(2) > div:first-child span {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.45rem 0.7rem;
+                border-radius: 999px;
+                border: 1px solid rgba(201, 168, 76, 0.25);
+                background: rgba(201, 168, 76, 0.12);
+                color: #a07830;
+                font-size: 0.68rem;
+                font-weight: 800;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+            }
+
+            .card-hover-depth h3 {
+                margin: 0;
+                font-family: 'Libre Baskerville', serif;
+                font-size: 1.15rem;
+                line-height: 1.45;
+                color: #2d8176;
+            }
+
+            .card-hover-depth > div:nth-child(2) > div:nth-child(3) {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding-bottom: 14px;
+                border-bottom: 1px solid #e0d8cc;
+            }
+
+            .card-hover-depth > div:nth-child(2) > div:nth-child(3) svg {
+                width: 18px;
+                height: 18px;
+                color: #c9a84c;
+                flex-shrink: 0;
+            }
+
+            .card-hover-depth > div:nth-child(2) > div:nth-child(3) p {
+                margin: 0;
+                color: #6a7890;
+                font-size: 0.95rem;
+                font-weight: 700;
+                line-height: 1.4;
+            }
+
+            .card-hover-depth > div:nth-child(2) > p {
+                color: #6a7890;
+                font-size: 0.96rem;
+                line-height: 1.8;
+                margin: 0;
+            }
+
+            .card-hover-depth > div:nth-child(2) > div:nth-child(5) {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0;
+                margin-top: 2px;
+                padding: 16px;
+                background: #f9f7f2;
+                border-radius: 20px;
+                overflow: hidden;
+            }
+
+            .card-hover-depth > div:nth-child(2) > div:nth-child(5) > div {
+                text-align: center;
+                padding: 6px 10px;
+            }
+
+            .card-hover-depth > div:nth-child(2) > div:nth-child(5) > div + div {
+                border-left: 1px solid #e0d8cc;
+            }
+
+            .card-hover-depth > div:nth-child(2) > div:nth-child(5) > div > div:first-child {
+                font-family: 'Libre Baskerville', serif;
+                font-size: 1.35rem;
+                font-weight: 700;
+                color: #2d8176;
+                line-height: 1.1;
+            }
+
+            .card-hover-depth > div:nth-child(2) > div:nth-child(5) > div > div:last-child {
+                margin-top: 4px;
+                color: #c9a84c;
+                font-size: 0.68rem;
+                font-weight: 800;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+            }
+
+            .card-hover-depth > div:nth-child(2) > div:nth-child(6) {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #8b95a8;
+                font-size: 0.78rem;
+                font-weight: 700;
+                line-height: 1.4;
+            }
+
+            .card-hover-depth > div:nth-child(2) > div:nth-child(6) svg {
+                width: 14px;
+                height: 14px;
+                color: #a7b1c7;
+                flex-shrink: 0;
+            }
+
+            .card-hover-depth .card-actions {
+                margin-top: auto;
+                padding-top: 4px;
+            }
+
+            .card-hover-depth .card-actions a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                width: 100%;
+                padding: 14px 18px;
+                border-radius: 16px;
+                text-decoration: none;
+                text-align: center;
+                font-size: 0.72rem;
+                font-weight: 800;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                transition: transform 0.2s ease, box-shadow 0.2s ease,
+                    background-color 0.2s ease, color 0.2s ease,
+                    border-color 0.2s ease;
+            }
+
+            .card-hover-depth .card-actions a svg {
+                width: 18px;
+                height: 18px;
+                flex-shrink: 0;
+            }
+
+            .card-hover-depth .card-actions a:first-child {
+                color: #ffffff;
+                background: linear-gradient(135deg, #2d8176, #1a4d46);
+                box-shadow: 0 14px 24px rgba(45, 129, 118, 0.2);
+            }
+
+            .card-hover-depth .card-actions a:nth-child(2) {
+                color: #c9a84c;
+                border: 2px solid #c9a84c;
+                background: #ffffff;
+            }
+
+            .card-hover-depth .card-actions a:nth-child(3) {
+                color: #2d8176;
+                border: 2px solid #2d8176;
+                background: #ffffff;
+            }
+
+            @media (hover: hover) {
+                .card-hover-depth .card-actions a:hover {
+                    transform: translateY(-1px);
+                }
+                .card-hover-depth .card-actions a:first-child:hover {
+                    box-shadow: 0 18px 30px rgba(45, 129, 118, 0.26);
+                }
+                .card-hover-depth .card-actions a:nth-child(2):hover {
+                    background: #c9a84c;
+                    color: #ffffff;
+                }
+                .card-hover-depth .card-actions a:nth-child(3):hover {
+                    background: #2d8176;
+                    color: #ffffff;
+                }
             }
 
             /* ── CTA section ── */
@@ -298,6 +715,129 @@
                     text-align: center;
                     justify-content: center;
                 }
+            }
+
+            .cta-section > div:nth-child(3) {
+                max-width: 56rem;
+                margin: 0 auto;
+                text-align: center;
+                position: relative;
+                z-index: 10;
+            }
+
+            .cta-section > div:nth-child(3) > p {
+                color: #6a7890;
+                font-size: 1rem;
+                line-height: 1.8;
+                margin-bottom: 28px;
+            }
+
+            .cta-btns a {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                min-width: 220px;
+                padding: 16px 28px;
+                border-radius: 18px;
+                text-decoration: none;
+                font-size: 0.75rem;
+                font-weight: 800;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                transition: transform 0.2s ease, box-shadow 0.2s ease,
+                    background-color 0.2s ease, color 0.2s ease,
+                    border-color 0.2s ease;
+            }
+
+            .cta-btns a svg {
+                width: 20px;
+                height: 20px;
+                flex-shrink: 0;
+            }
+
+            .cta-btns a:first-child {
+                color: #ffffff;
+                background: linear-gradient(135deg, #2d8176, #1a5451);
+                box-shadow: 0 16px 28px rgba(45, 129, 118, 0.22);
+            }
+
+            .cta-btns a:last-child {
+                color: #2d8176;
+                border: 2px solid #2d8176;
+                background: #ffffff;
+            }
+
+            @media (hover: hover) {
+                .cta-btns a:hover {
+                    transform: translateY(-2px);
+                }
+                .cta-btns a:first-child:hover {
+                    box-shadow: 0 20px 34px rgba(45, 129, 118, 0.28);
+                }
+                .cta-btns a:last-child:hover {
+                    background: #2d8176;
+                    color: #ffffff;
+                }
+            }
+
+            footer {
+                background: linear-gradient(90deg, #1a4d46, #0d2a25);
+                color: rgba(237, 229, 213, 0.7);
+                padding: 3.5rem 1.5rem;
+                border-top: 2px solid rgba(201, 168, 76, 0.2);
+            }
+
+            footer > div {
+                max-width: 80rem;
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            footer h3 {
+                color: #ffffff;
+                font-family: 'Libre Baskerville', serif;
+                font-size: 1.5rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+            }
+
+            footer > div > div {
+                width: 5rem;
+                height: 0.25rem;
+                margin: 0 auto 1.25rem;
+                background: linear-gradient(90deg, #c9a84c, transparent);
+            }
+
+            #scroll-top-btn {
+                position: fixed;
+                right: 2.5rem;
+                bottom: 2.5rem;
+                width: 4rem;
+                height: 4rem;
+                border: 0;
+                border-radius: 999px;
+                background: #ffffff;
+                box-shadow: 0 22px 40px rgba(13, 22, 40, 0.18);
+                z-index: 50;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                overflow: hidden;
+            }
+
+            #scroll-top-btn svg:first-child {
+                width: 1.35rem;
+                height: 1.35rem;
+            }
+
+            #scroll-top-btn svg:nth-child(2) {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                transform: rotate(-90deg);
             }
 
             /* ── Scroll-to-top btn ── */
@@ -352,7 +892,7 @@
                     </a>
                     <a
                         href="/register"
-                        class="bg-gradient-to-br from-[#c9a84c] to-[#a07830] text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-[#a07830]/20 hover:-translate-y-0.5 transition-all whitespace-nowrap"
+                        class="bg-linear-to-br from-[#c9a84c] to-[#a07830] text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-[#a07830]/20 hover:-translate-y-0.5 transition-all whitespace-nowrap"
                     >
                         Register
                     </a>
@@ -398,7 +938,7 @@
             </div>
 
             <div
-                class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[rgba(13,22,40,0.3)] pointer-events-none"
+                class="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-[rgba(13,22,40,0.3)] pointer-events-none"
             ></div>
 
             <div class="relative z-10 w-full max-w-5xl mx-auto">
@@ -421,17 +961,13 @@
                     </p>
                 </div>
 
-                <h1 class="hero-title">Published Papers</h1>
+                <h1 class="hero-title">{{ $heroTitle }}</h1>
 
                 <div
-                    class="mx-auto mb-8 w-24 h-1 bg-gradient-to-r from-transparent via-[#f0d678] to-transparent rounded-full"
+                    class="mx-auto mb-8 w-24 h-1 bg-linear-to-r from-transparent via-[#f0d678] to-transparent rounded-full"
                 ></div>
 
-                <p class="hero-desc">
-                    Explore cutting-edge research published in our peer-reviewed
-                    journal. All papers have been rigorously reviewed and
-                    validated by leading academics in their fields.
-                </p>
+                <p class="hero-desc">{{ $heroDescription }}</p>
 
                 <div class="hero-stats">
                     <div class="flex items-center gap-2">
@@ -489,60 +1025,50 @@
         <!-- PAPERS LISTING SECTION -->
         <section class="listing-section">
             <div class="mb-16">
-                <div class="section-header-row">
-                    <div>
-                        <h2 class="section-title">All Published Research</h2>
-                        <p
-                            class="text-[#6a7890] font-medium text-base md:text-lg"
-                        >
-                            Discover {{ count($papers) }} peer-reviewed papers
-                            from leading researchers
-                        </p>
-                    </div>
-                    <div class="flex items-center gap-6 shrink-0">
-                        <div class="text-center">
-                            <div
-                                class="text-3xl font-libre font-bold text-[#c9a84c]"
-                            >
-                                {{ count($papers) }}
-                            </div>
-                            <div
-                                class="text-xs uppercase font-bold text-[#6a7890] tracking-wider"
-                            >
-                                Papers Published
-                            </div>
+                <div id="search" class="archive-panel archive-filters anchor-target">
+                    <div class="section-header-row mb-6">
+                        <div>
+                            <h2 class="section-title">All Published Research</h2>
+                            <p class="text-[#6a7890] font-medium text-base md:text-lg max-w-2xl">
+                                Discover {{ $pagination->total() }} peer-reviewed papers from leading researchers.
+                            </p>
+                        </div>
+
+                        <div class="section-count">
+                            <div class="section-count-number">{{ $pagination->total() }}</div>
+                            <div class="section-count-label">Papers Published</div>
+                            <a href="{{ route('archive') }}" class="archive-reset text-center mt-3 inline-block">
+                                Open Archive
+                            </a>
                         </div>
                     </div>
+
+                    <form method="GET" action="{{ route($formRouteName) }}" class="archive-form">
+                        <input
+                            type="text"
+                            name="q"
+                            value="{{ $search }}"
+                            placeholder="Search title, author, keyword, or abstract"
+                            class="archive-input"
+                        />
+
+                        <select name="category" class="archive-select">
+                            <option value="">All Categories</option>
+
+                            @foreach ($availableCategories as $optionCategory)
+                                <option
+                                    value="{{ $optionCategory }}"
+                                    @selected($category === $optionCategory)
+                                >
+                                    {{ $optionCategory }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
                 </div>
 
-                <div class="search-row">
-                    <input
-                        type="text"
-                        placeholder="Search papers by title or author..."
-                        id="paperSearch"
-                        class="flex-1 px-4 py-3 border border-[#e0d8cc] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2D8176]/30 focus:border-[#2D8176]"
-                        style="font-size: 1rem"
-                    />
-                    <select
-                        class="px-4 py-3 border border-[#e0d8cc] rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#2D8176]/30"
-                        style="font-size: 1rem"
-                    >
-                        <option value="">All Categories</option>
-                        @php
-                            $categories = array_unique(array_column($papers->all(), 'category'));
-                        @endphp
-
-                        @foreach ($categories as $category)
-                            <option value="{{ $category }}">
-                                {{ $category }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            @if ($papers->count() > 0)
-                <div class="papers-grid">
+                @if ($papers->count() > 0)
+                    <div id="papers" class="papers-grid anchor-target mt-10">
                     @foreach ($papers as $paper)
                         <div
                             class="card-hover-depth group bg-white rounded-2xl overflow-hidden border border-[#e0d8cc] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
@@ -721,7 +1247,7 @@
                                 <div class="card-actions mt-auto">
                                     <a
                                         href="{{ route('papers.show', ['submission' => $paper['id']]) }}"
-                                        class="flex items-center justify-center gap-2 w-full px-5 py-3.5 bg-gradient-to-r from-[#2D8176] to-[#1a4d46] text-white rounded-xl font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group-hover:from-[#c9a84c] group-hover:to-[#a07830]"
+                                        class="flex items-center justify-center gap-2 w-full px-5 py-3.5 bg-linear-to-r from-[#2D8176] to-[#1a4d46] text-white rounded-xl font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group-hover:from-[#c9a84c] group-hover:to-[#a07830]"
                                     >
                                         <span>Read Full Article</span>
                                         <svg
@@ -784,36 +1310,49 @@
                             </div>
                         </div>
                     @endforeach
-                </div>
+                    </div>
 
                 <!-- PAGINATION -->
                 <div class="mt-20 flex justify-center">
                     {{ $pagination->links('pagination::tailwind') }}
                 </div>
             @else
-                <div class="text-center py-24 px-4">
+                <div class="archive-panel text-center py-24 px-6 md:px-10">
                     <div class="text-7xl mb-6 animate-bounce">📚</div>
-                    <h3
-                        class="font-libre text-2xl md:text-3xl font-bold text-[#2D8176] mb-3"
-                    >
-                        No Published Papers Yet
+                    <h3 class="font-libre text-2xl md:text-3xl font-bold text-[#2D8176] mb-3">
+                        @if ($search !== '' || $category !== '')
+                            No Papers Match Your Filters
+                        @else
+                            No Published Papers Yet
+                        @endif
                     </h3>
-                    <p class="text-[#6a7890] mb-10 text-lg max-w-md mx-auto">
-                        Be the first to contribute to our collection of
-                        peer-reviewed research.
+                    <p class="text-[#6a7890] mb-10 text-lg max-w-xl mx-auto leading-relaxed">
+                        @if ($search !== '' || $category !== '')
+                            Try a broader search or clear the category filter to browse more of the archive.
+                        @else
+                            The archive will appear here once papers are officially published.
+                        @endif
                     </p>
-                    <a
-                        href="/"
-                        class="inline-block px-10 py-4 bg-[#2D8176] text-white rounded-xl font-bold text-sm uppercase tracking-wider hover:-translate-y-1 transition-all shadow-lg hover:shadow-xl"
-                    >
-                        Back to Home
-                    </a>
+                    <div class="flex justify-center gap-3 flex-wrap">
+                        <a
+                            href="{{ route($formRouteName) }}"
+                            class="inline-block px-8 py-3 bg-[#2D8176] text-white rounded-xl font-bold text-sm uppercase tracking-wider hover:-translate-y-1 transition-all shadow-lg hover:shadow-xl"
+                        >
+                            View {{ $heroTitle }}
+                        </a>
+                        <a
+                            href="/"
+                            class="inline-block px-8 py-3 bg-white border border-[#2D8176] text-[#2D8176] rounded-xl font-bold text-sm uppercase tracking-wider hover:bg-[#f3faf8] transition-all"
+                        >
+                            Back to Home
+                        </a>
+                    </div>
                 </div>
             @endif
         </section>
 
         <!-- CALL TO ACTION SECTION -->
-        <section class="cta-section">
+        <section id="about" class="cta-section anchor-target">
             <div
                 class="absolute top-0 right-0 w-96 h-96 bg-[#2D8176]/5 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none"
             ></div>
@@ -834,7 +1373,7 @@
                 <div class="cta-btns">
                     <a
                         href="/register"
-                        class="inline-flex items-center justify-center gap-2 px-10 py-4 bg-gradient-to-r from-[#2D8176] to-[#1a5451] text-white rounded-2xl font-bold text-sm uppercase tracking-wider shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group"
+                        class="inline-flex items-center justify-center gap-2 px-10 py-4 bg-linear-to-r from-[#2D8176] to-[#1a5451] text-white rounded-2xl font-bold text-sm uppercase tracking-wider shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group"
                     >
                         <svg
                             class="w-5 h-5 group-hover:rotate-12 transition-transform shrink-0"
@@ -875,7 +1414,7 @@
         </section>
 
         <footer
-            class="bg-gradient-to-r from-[#1a4d46] to-[#0d2a25] text-[#ede5d5]/70 py-14 px-6 border-t-2 border-[#c9a84c]/20"
+            class="bg-linear-to-r from-[#1a4d46] to-[#0d2a25] text-[#ede5d5]/70 py-14 px-6 border-t-2 border-[#c9a84c]/20"
         >
             <div class="max-w-7xl mx-auto text-center">
                 <h3 class="font-libre text-2xl font-bold text-white mb-2">
@@ -887,7 +1426,7 @@
                     Advancing Knowledge • Inspiring Innovation
                 </p>
                 <div
-                    class="h-1 w-20 bg-gradient-to-r from-[#c9a84c] to-transparent mx-auto mb-6"
+                    class="h-1 w-20 bg-linear-to-r from-[#c9a84c] to-transparent mx-auto mb-6"
                 ></div>
                 <p class="text-[10px] font-semibold uppercase tracking-wider">
                     © 2026 Academic Publishing Portal • All Rights Reserved
@@ -953,66 +1492,6 @@
                 progressCircle.style.strokeDashoffset = dashoffset;
             };
 
-            const searchInput = document.getElementById('paperSearch');
-            const filterSelect = document.querySelector('select');
-            const paperCards = document.querySelectorAll('[data-paper-title]');
-
-            function filterPapers() {
-                const searchQuery = searchInput.value.toLowerCase();
-                const selectedCategory = filterSelect.value;
-                let visibleCount = 0;
-
-                paperCards.forEach((card) => {
-                    const title = card
-                        .getAttribute('data-paper-title')
-                        .toLowerCase();
-                    const author = card
-                        .getAttribute('data-paper-author')
-                        .toLowerCase();
-                    const abstract = card
-                        .getAttribute('data-paper-abstract')
-                        .toLowerCase();
-                    const category = card.getAttribute('data-paper-category');
-
-                    const matchesSearch =
-                        title.includes(searchQuery) ||
-                        author.includes(searchQuery) ||
-                        abstract.includes(searchQuery);
-
-                    const matchesCategory =
-                        !selectedCategory || category === selectedCategory;
-
-                    if (matchesSearch && matchesCategory) {
-                        card.style.display = '';
-                        visibleCount++;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-
-                const gridContainer = document.querySelector('.papers-grid');
-                let noResultsMsg = document.getElementById('noResultsMsg');
-
-                if (visibleCount === 0) {
-                    if (!noResultsMsg) {
-                        noResultsMsg = document.createElement('div');
-                        noResultsMsg.id = 'noResultsMsg';
-                        noResultsMsg.style.gridColumn = '1 / -1';
-                        noResultsMsg.className = 'text-center py-16';
-                        noResultsMsg.innerHTML = `
-                            <div class="text-4xl mb-4">🔍</div>
-                            <h3 class="font-libre text-2xl font-bold text-[#2D8176] mb-2">No papers found</h3>
-                            <p class="text-[#6a7890]">Try adjusting your search or filter criteria</p>
-                        `;
-                        gridContainer.appendChild(noResultsMsg);
-                    }
-                } else {
-                    if (noResultsMsg) noResultsMsg.remove();
-                }
-            }
-
-            searchInput?.addEventListener('input', filterPapers);
-            filterSelect?.addEventListener('change', filterPapers);
         </script>
     </body>
 </html>

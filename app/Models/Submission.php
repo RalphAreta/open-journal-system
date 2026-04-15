@@ -76,6 +76,7 @@ class Submission extends Model
     public const STATUS_LAYOUT_REVIEW = 'layout_review';
     public const STATUS_AUTHOR_CONFIRMATION = 'author_confirmation';
     public const STATUS_PUBLISHED = 'published';
+    public const STATUS_ARCHIVED = 'archived';
     public const STATUS_REJECTED = 'rejected';
 
     public const SCREENING_STATUS_PENDING = 'pending';
@@ -97,6 +98,7 @@ public const AUTHOR_STATUS_REVISION = 'revision_requested';
             self::STATUS_LAYOUT_REVIEW => 'Layout Review',
             self::STATUS_AUTHOR_CONFIRMATION => 'Author Confirmation',
             self::STATUS_PUBLISHED => 'Published',
+            self::STATUS_ARCHIVED => 'Archived',
             self::STATUS_WITH_MANAGING_EDITOR => 'With Managing Editor',
             self::STATUS_REJECTED => 'Rejected',
         ];

@@ -468,6 +468,14 @@
         .sbadge.published .dot {
             background: #22c55e;
         }
+        .sbadge.archived {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            color: #475569;
+        }
+        .sbadge.archived .dot {
+            background: #64748b;
+        }
 
         /* Action buttons */
         .btn-action {
@@ -1338,6 +1346,7 @@
                                         'ctf_returned' => ['forwarded', 'Signed CTF Received'],
                                         'forwarded' => ['forwarded', 'Sent to Layout'],
                                         'published' => ['published', 'Published'],
+                                        'archived' => ['archived', 'Archived'],
                                         default => ['pending-me', 'Awaiting CTF'],
                                     };
                                 @endphp
@@ -1481,6 +1490,35 @@
                                                 </span>
                                             @endif
 
+                                            @if ($meStatus === 'published' && $s->status === \App\Models\Submission::STATUS_PUBLISHED)
+                                                <form
+                                                    method="POST"
+                                                    action="{{ route('managing-editor.archive', $s) }}"
+                                                >
+                                                    @csrf
+                                                    <button
+                                                        type="submit"
+                                                        class="btn-action gold"
+                                                    >
+                                                        <svg
+                                                            width="12"
+                                                            height="12"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            stroke-width="2"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path
+                                                                stroke-linecap="round"
+                                                                stroke-linejoin="round"
+                                                                d="M20 7l-8 4-8-4m16 0l-8-4-8 4m16 0v10l-8 4m-8-14v10l8 4"
+                                                            />
+                                                        </svg>
+                                                        Archive Paper
+                                                    </button>
+                                                </form>
+                                            @endif
+
                                             @if ($s->status === \App\Models\Submission::STATUS_LAYOUT_REVIEW)
                                                 <a
                                                     href="{{ route('managing-editor.layout.show', $s) }}"
@@ -1568,6 +1606,7 @@
                                 'ctf_returned' => ['forwarded', 'Signed CTF Received'],
                                 'forwarded' => ['forwarded', 'Sent to Layout'],
                                 'published' => ['published', 'Published'],
+                                'archived' => ['archived', 'Archived'],
                                 default => ['pending-me', 'Awaiting CTF'],
                             };
                         @endphp
@@ -1697,6 +1736,32 @@
                                     >
                                         ✓ Forwarded
                                     </span>
+                                @endif
+
+                                @if ($meStatus === 'published' && $s->status === \App\Models\Submission::STATUS_PUBLISHED)
+                                    <form
+                                        method="POST"
+                                        action="{{ route('managing-editor.archive', $s) }}"
+                                    >
+                                        @csrf
+                                        <button type="submit" class="btn-action gold">
+                                            <svg
+                                                width="12"
+                                                height="12"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M20 7l-8 4-8-4m16 0l-8-4-8 4m16 0v10l-8 4m-8-14v10l8 4"
+                                                />
+                                            </svg>
+                                            Archive
+                                        </button>
+                                    </form>
                                 @endif
 
                                 @if ($s->status === \App\Models\Submission::STATUS_LAYOUT_REVIEW)

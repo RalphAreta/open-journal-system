@@ -16,23 +16,8 @@ class ManagingEditorController extends Controller
 {
     public function dashboard(): View
 {
-    $submissions = Submission::with('author')
-        ->where('managing_editor_id', Auth::id())
-        ->orderBy('updated_at', 'desc')
-        ->limit(1)
-        ->get();
-
-    $stats = [
-        'pending'   => $submissions->filter(fn($s) => is_null($s->managing_editor_status) || $s->managing_editor_status === 'pending')->count(),
-        'ctf_sent'  => $submissions->where('managing_editor_status', 'ctf_sent')->count(),
-        'forwarded' => $submissions->where('managing_editor_status', 'forwarded')->count(),
-        'total'     => $submissions->count(),
-    ];
-
-    $layoutEditors = User::whereHas('roles', fn($q) => $q->where('name', 'layout-editor'))->get();
-
-    return view('managing-editor.dashboard', compact('submissions', 'stats', 'layoutEditors'));
-}
+        return view('managing-editor.dashboard', $this->getDashboardData());
+    }
     /**
      * Generate / mark Copyright Transfer Form as sent.
      */
@@ -313,6 +298,39 @@ public function publishPaper(Submission $submission): RedirectResponse
         ->route('managing-editor.dashboard')
         ->with('success', 'Paper published successfully!');
 }
+
+public function archivePaper(Submission $submission): RedirectResponse
+{
+    if ($submission->managing_editor_id !== Auth::id()) {
+        abort(403, 'Unauthorized');
+    }
+
+    if ($submission->status !== Submission::STATUS_PUBLISHED) {
+        return back()->with('error', 'Only published papers can be archived.');
+    }
+
+    $submission->update([
+        'status' => Submission::STATUS_ARCHIVED,
+        'managing_editor_status' => 'archived',
+    ]);
+
+    $author = $submission->author;
+    if ($author) {
+        \App\Models\Notification::create([
+            'user_id' => $author->id,
+            'role' => 'author',
+            'title' => '📦 Paper Archived',
+            'message' => "Your manuscript \"{$submission->title}\" has been moved to the archive by the managing editor.",
+            'type' => 'info',
+            'notifiable_id' => $submission->id,
+            'notifiable_type' => Submission::class,
+        ]);
+    }
+
+    return redirect()
+        ->route('managing-editor.dashboard')
+        ->with('success', 'Paper archived successfully.');
+}
 // Dagdag na method:
 public function downloadSignedCtf(Submission $submission)
 {
@@ -377,6 +395,25 @@ public function ctfTemplate(): View
         $this->getDashboardData(),
         compact('template')
     ));
+}
+
+private function getDashboardData(): array
+{
+    $submissions = Submission::with('author')
+        ->where('managing_editor_id', Auth::id())
+        ->orderBy('updated_at', 'desc')
+        ->get();
+
+    $stats = [
+        'pending' => $submissions->filter(fn($s) => is_null($s->managing_editor_status) || $s->managing_editor_status === 'pending')->count(),
+        'ctf_sent' => $submissions->where('managing_editor_status', 'ctf_sent')->count(),
+        'forwarded' => $submissions->where('managing_editor_status', 'forwarded')->count(),
+        'total' => $submissions->count(),
+    ];
+
+    $layoutEditors = User::whereHas('roles', fn($q) => $q->where('name', 'layout-editor'))->get();
+
+    return compact('submissions', 'stats', 'layoutEditors');
 }
 
 public function uploadCtfTemplate(Request $request): RedirectResponse

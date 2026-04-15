@@ -11,11 +11,9 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
-        host: '0.0.0.0',
+        host: true,
         port: 5173,
-        hmr: {
-            host: '172.21.123.35', // ← palitan ng totoong IP mo (ipconfig)
-        },
+        strictPort: true,
 
         watch: {
             ignored: ['**/storage/framework/views/**'],

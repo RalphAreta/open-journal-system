@@ -2494,7 +2494,7 @@
 
                 <div class="nav-links">
                     <a href="/published-papers" class="nav-link">
-                        Published Papers
+                        Published Journals
                     </a>
                     <a href="#fields" class="nav-link">Research Fields</a>
                     <a href="/login" class="nav-link">Sign In</a>
@@ -3006,7 +3006,7 @@
                                         </div>
                                     </div>
                                 @empty
-                                    
+
                                 @endforelse
                             </div>
                         </div>

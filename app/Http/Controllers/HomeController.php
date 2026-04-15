@@ -6,6 +6,7 @@ use App\Models\Submission;
 use App\Models\Review;
 use App\Models\User;
 use App\Models\ExpertiseCategory;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -213,9 +214,9 @@ class HomeController extends Controller
 
     public function showPublicPaper(Submission $submission)
     {
-        // Only allow viewing published papers publicly
-        if ($submission->status !== Submission::STATUS_PUBLISHED) {
-            abort(403, 'This paper is not published yet.');
+        // Public pages can show published and archived papers
+        if (!in_array($submission->status, [Submission::STATUS_PUBLISHED, Submission::STATUS_ARCHIVED], true)) {
+            abort(403, 'This paper is not publicly available.');
         }
 
         $reviewCount = Review::where('submission_id', $submission->id)
@@ -243,8 +244,8 @@ class HomeController extends Controller
 
     public function downloadPublicPaper(Submission $submission)
     {
-        // Only allow downloading published papers publicly
-        if ($submission->status !== Submission::STATUS_PUBLISHED) {
+        // Allow downloads for published and archived papers
+        if (!in_array($submission->status, [Submission::STATUS_PUBLISHED, Submission::STATUS_ARCHIVED], true)) {
             abort(403, 'This paper is not available for download.');
         }
 
@@ -263,7 +264,7 @@ class HomeController extends Controller
 
   public function viewOnline(Submission $submission)
 {
-    if (!in_array($submission->status, ['published'])) {
+        if (!in_array($submission->status, [Submission::STATUS_PUBLISHED, Submission::STATUS_ARCHIVED], true)) {
         abort(403);
     }
 
@@ -299,8 +300,8 @@ class HomeController extends Controller
      */
     public function downloadPublicPaperRis(Submission $submission)
     {
-        // Only allow downloading RIS for published papers
-        if ($submission->status !== Submission::STATUS_PUBLISHED) {
+        // Allow citation export for published and archived papers
+        if (!in_array($submission->status, [Submission::STATUS_PUBLISHED, Submission::STATUS_ARCHIVED], true)) {
             abort(403, 'This paper is not available for citation export.');
         }
 
@@ -342,13 +343,78 @@ class HomeController extends Controller
         return substr($filename, 0, 100);
     }
 
-    public function publishedPapers()
+    public function publishedPapers(Request $request)
     {
-        // Get all published papers with pagination
-        $papers = Submission::where('status', Submission::STATUS_PUBLISHED)
-            ->with('author')
+        return $this->renderPaperListing(
+            $request,
+            Submission::STATUS_PUBLISHED,
+            'Published Papers',
+            'Explore peer-reviewed papers currently published in our journal.',
+            'published-papers',
+            'Open Archive',
+            'archive'
+        );
+    }
+
+    public function archivePapers(Request $request)
+    {
+        return $this->renderPaperListing(
+            $request,
+            Submission::STATUS_ARCHIVED,
+            'Archive',
+            'Browse retained papers kept for long-term reference and record keeping.',
+            'archive',
+            'Back to Published Papers',
+            'published-papers'
+        );
+    }
+
+    private function renderPaperListing(
+        Request $request,
+        string $status,
+        string $heroTitle,
+        string $heroDescription,
+        string $formRouteName,
+        string $switchLabel,
+        string $switchRouteName
+    )
+    {
+        $search = trim((string) $request->query('q', ''));
+        $category = trim((string) $request->query('category', ''));
+
+        $baseArchiveQuery = Submission::where('status', $status)
+            ->with('author');
+
+        $filteredArchiveQuery = (clone $baseArchiveQuery)
+            ->when($search !== '', function ($query) use ($search) {
+                $term = '%' . mb_strtolower($search) . '%';
+
+                $query->where(function ($nestedQuery) use ($term) {
+                    $nestedQuery->whereRaw('LOWER(title) LIKE ?', [$term])
+                        ->orWhereRaw('LOWER(abstract) LIKE ?', [$term])
+                        ->orWhereRaw('LOWER(keywords) LIKE ?', [$term])
+                        ->orWhereRaw('LOWER(research_field) LIKE ?', [$term])
+                        ->orWhereHas('author', function ($authorQuery) use ($term) {
+                            $authorQuery->whereRaw('LOWER(name) LIKE ?', [$term]);
+                        });
+                });
+            })
+            ->when($category !== '', function ($query) use ($category) {
+                $query->where('research_field', $category);
+            });
+
+        $papers = (clone $filteredArchiveQuery)
             ->latest('published_at')
-            ->paginate(12);
+            ->paginate(12)
+            ->withQueryString();
+
+        $availableCategories = (clone $baseArchiveQuery)
+            ->whereNotNull('research_field')
+            ->distinct()
+            ->orderBy('research_field')
+            ->pluck('research_field')
+            ->filter()
+            ->values();
 
         // Map the papers to include additional data
         $publishedPapers = $papers->map(function ($submission) {
@@ -372,6 +438,14 @@ class HomeController extends Controller
         return view('published-papers', [
             'papers' => $publishedPapers,
             'pagination' => $papers,
+            'search' => $search,
+            'category' => $category,
+            'availableCategories' => $availableCategories,
+            'heroTitle' => $heroTitle,
+            'heroDescription' => $heroDescription,
+            'formRouteName' => $formRouteName,
+            'switchLabel' => $switchLabel,
+            'switchRouteName' => $switchRouteName,
         ]);
     }
 }

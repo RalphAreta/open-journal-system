@@ -25,6 +25,7 @@ Route::get('/', function () {
 });
 
 // Public routes for viewing published papers
+Route::get('/archive', [HomeController::class, 'archivePapers'])->name('archive');
 Route::get('/published-papers', [HomeController::class, 'publishedPapers'])->name('published-papers');
 Route::get('/papers/{submission}', [HomeController::class, 'showPublicPaper'])->name('papers.show');
 Route::get('/papers/{submission}/download', [HomeController::class, 'downloadPublicPaper'])->name('papers.download');
@@ -223,6 +224,8 @@ Route::get('/managing-editor/submissions/{submission}/layout/download', [Managin
 
 Route::post('/managing-editor/submissions/{submission}/publish', [ManagingEditorController::class, 'publishPaper'])
     ->name('managing-editor.publish');
+Route::post('/managing-editor/submissions/{submission}/archive', [ManagingEditorController::class, 'archivePaper'])
+    ->name('managing-editor.archive');
 Route::get('/managing-editor/submissions/{submission}/download-signed-ctf', [ManagingEditorController::class, 'downloadSignedCtf'])
     ->name('managing-editor.download-signed-ctf'); // ← dagdag
 Route::post('/managing-editor/submissions/{submission}/reassign-layout', [ManagingEditorController::class, 'reassignLayout'])
