@@ -765,9 +765,9 @@
             border-radius: 4px;
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .aw-hidden {
+    display: none !important;
+}
     </style>
 @endpush
 
