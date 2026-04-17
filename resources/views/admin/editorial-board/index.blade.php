@@ -464,7 +464,7 @@
 
                                 @if ($member->location)
                                     <div class="member-loc">
-                                        📍 {{ $member->location }}
+                                        {{ $member->location }}
                                     </div>
                                 @endif
 

@@ -857,6 +857,36 @@
                                     </div>
                                 </div>
                             </div>
+                            <div>
+                                <label
+                                    class="block text-[.68rem] font-semibold tracking-[.12em] uppercase text-[#6a7890] mb-1.5"
+                                >
+                                    Email Address
+                                </label>
+                                <div class="relative">
+                                    <svg
+                                        class="field-icon"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                                        />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value="{{ old('email') }}"
+                                        class="lp-input"
+                                        placeholder="juan@example.com"
+                                        autocomplete="email"
+                                        required
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         {{-- ── Section: Role ── --}}
