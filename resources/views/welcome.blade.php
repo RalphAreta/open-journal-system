@@ -2550,9 +2550,7 @@
             </div>
             <div class="hero-inner">
                 <div>
-                    <p class="hero-eyebrow">
-                        Peer-Reviewed · Open Access · ISSN Registered
-                    </p>
+                    <p class="hero-eyebrow">Peer-Reviewed · Open Access</p>
                     <h1 class="hero-h1">
                         Advancing Research.
                         <br />
