@@ -2625,53 +2625,6 @@
             </div>
         </div>
 
-        {{-- Metrics --}}
-        @if ($publishedPapersCount > 0 || $activeReviewersCount > 0 || $avgReviewDays > 0 || $acceptanceRate > 0)
-            <div class="metrics-section">
-                <div class="metrics-grid">
-                    <div class="metric-cell">
-                        <div class="metric-val">
-                            {{ $publishedPapersCount }}
-                        </div>
-                        <div class="metric-lbl">Published Articles</div>
-                    </div>
-                    <div class="metric-cell">
-                        <div class="metric-val">
-                            {{ $activeReviewersCount }}
-                        </div>
-                        <div class="metric-lbl">Active Reviewers</div>
-                    </div>
-                    <div class="metric-cell">
-                        <div class="metric-val">{{ $avgReviewDays }}d</div>
-                        <div class="metric-lbl">Avg. Review Time</div>
-                    </div>
-                    <div class="metric-cell">
-                        <div class="metric-val">{{ $acceptanceRate }}%</div>
-                        <div class="metric-lbl">Acceptance Rate</div>
-                    </div>
-                    <div class="metric-cell">
-                        <div class="metric-val">
-                            <svg
-                                width="28"
-                                height="28"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="var(--gold)"
-                                stroke-width="2"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                            </svg>
-                        </div>
-                        <div class="metric-lbl">DOI Registered</div>
-                    </div>
-                </div>
-            </div>
-        @endif
-
         {{-- Why Publish --}}
         <section class="section" style="background: #fff">
             <div class="section-inner">
