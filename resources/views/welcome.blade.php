@@ -2604,12 +2604,25 @@
         {{-- Index bar --}}
         <div class="index-bar">
             <div class="index-bar-inner">
-                <span class="index-bar-label">Indexed In</span>
+                <span class="index-bar-label">Platform Features</span>
                 <div class="index-bar-divider"></div>
                 <div class="index-marquee-wrap">
                     <div class="index-marquee">
                         @php
-                            $indexItems = ['Analie', 'Macky', 'Nicko', 'Ralph', 'Carlos', 'Analie', 'Macky', 'Nicko', 'Ralph', 'Carlos', 'Analie', 'Macky', 'Nicko', 'Ralph', 'Carlos', 'Analie', 'Macky', 'Nicko', 'Ralph', 'Carlos'];
+                            $baseItems = [
+                                'Open Access',
+                                'Digital Library',
+                                'Research Database',
+                                'Submission Portal',
+                                'Publication System',
+                                'Academic Records',
+                            ];
+
+                            $indexItems = [];
+
+                            for ($i = 0; $i < 3; $i++) {
+                                $indexItems = array_merge($indexItems, $baseItems);
+                            }
                         @endphp
 
                         @foreach ($indexItems as $item)
