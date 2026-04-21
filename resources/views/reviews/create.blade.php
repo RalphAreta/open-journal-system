@@ -178,12 +178,46 @@
                         for="comments_for_author"
                         class="block text-sm font-semibold text-slate-900 mb-3"
                     >
-                        Review Comments
+                        <span class="flex items-center gap-2">
+                            Review Comments
+                            <span class="text-red-600">*</span>
+                            <span
+                                class="relative group inline-flex items-center"
+                            >
+                                <span
+                                    class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-900 text-slate-500 hover:text-white text-[10px] font-black cursor-help transition-colors duration-150 select-none leading-none"
+                                >
+                                    ?
+                                </span>
+                                <span
+                                    class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2.5 w-72 bg-slate-900 text-white text-xs rounded-lg px-3.5 py-3 shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 font-normal leading-relaxed"
+                                >
+                                    <span
+                                        class="font-bold text-amber-400 block mb-1.5"
+                                    >
+                                        ⚠ Reminder
+                                    </span>
+                                    Do
+                                    <span class="font-bold text-amber-300">
+                                        not
+                                    </span>
+                                    state your final recommendation (e.g. "Minor
+                                    Revisions" or "Reject") directly in the
+                                    review comments. Focus on providing
+                                    constructive feedback and informing the
+                                    author on what needs to be improved.
+                                    <span
+                                        class="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-slate-900"
+                                    ></span>
+                                </span>
+                            </span>
+                        </span>
                     </label>
                     <textarea
                         id="comments_for_author"
                         name="comments_for_author"
                         rows="5"
+                        required
                         class="w-full px-4 py-3 border border-slate-300 rounded-lg text-slate-900 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all resize-none text-sm sm:text-base"
                         placeholder="Provide constructive feedback for the author..."
                     >
@@ -202,17 +236,44 @@
                         for="comments_for_editor"
                         class="block text-sm font-semibold text-slate-900 mb-3"
                     >
-                        Confidential Comments for Editor
-                        <span class="text-slate-500 font-normal text-xs">
-                            (confidential)
+                        <span class="flex items-center gap-2">
+                            Comments for Editor
+                            <span class="text-red-600">*</span>
+                            <span
+                                class="relative group inline-flex items-center"
+                            >
+                                <span
+                                    class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-900 text-slate-500 hover:text-white text-[10px] font-black cursor-help transition-colors duration-150 select-none leading-none"
+                                >
+                                    ?
+                                </span>
+                                <span
+                                    class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2.5 w-72 bg-slate-900 text-white text-xs rounded-lg px-3.5 py-3 shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 font-normal leading-relaxed"
+                                >
+                                    <span
+                                        class="font-bold text-blue-400 block mb-1.5"
+                                    >
+                                        🔒 Ethics &amp; Confidentiality
+                                    </span>
+                                    This section is visible to the editor only.
+                                    Include any ethical concerns, conflicts of
+                                    interest, or observations about research
+                                    integrity that should not be shared with the
+                                    author.
+                                    <span
+                                        class="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-slate-900"
+                                    ></span>
+                                </span>
+                            </span>
                         </span>
                     </label>
                     <textarea
                         id="comments_for_editor"
                         name="comments_for_editor"
                         rows="5"
+                        required
                         class="w-full px-4 py-3 border border-slate-300 rounded-lg text-slate-900 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all resize-none text-sm sm:text-base"
-                        placeholder="Share any confidential notes with the editor..."
+                        placeholder="Share ethical concerns or confidential notes with the editor..."
                     >
 {{ old('comments_for_editor', $existingReview?->comments_for_editor) }}</textarea
                     >

@@ -3080,7 +3080,7 @@
                                             </div>
                                         </div>
                                         <div class="board-eic-body">
-                                            <div class="board-eic-badge">
+                                            <div class="board-eic-badge"> 
                                                 <svg
                                                     width="9"
                                                     height="9"
