@@ -765,7 +765,7 @@
             border-radius: 4px;
         }
 
-        .hidden {
+        .aw-hidden {
             display: none !important;
         }
     </style>
@@ -1636,242 +1636,6 @@
                         @endforeach
                     </div>
                 @endif
-
-                {{-- Initial Screening --}}
-                <div class="card fu2" style="margin-top: 16px">
-                    <div class="section-label">Initial Screening</div>
-
-                    @if ($submission->isPendingInitialScreening())
-                        <div
-                            class="state-block state-pending"
-                            style="text-align: center"
-                        >
-                            <div
-                                style="
-                                    width: 44px;
-                                    height: 44px;
-                                    background: rgba(217, 119, 6, 0.12);
-                                    border-radius: 12px;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    margin: 0 auto 12px;
-                                "
-                            >
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="var(--amber)"
-                                    stroke-width="1.8"
-                                >
-                                    <path
-                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                                    />
-                                </svg>
-                            </div>
-                            <p
-                                style="
-                                    font-size: 14px;
-                                    font-weight: 700;
-                                    color: #92400e;
-                                    margin-bottom: 4px;
-                                "
-                            >
-                                Pending Initial Screening
-                            </p>
-                            <p
-                                style="
-                                    font-size: 12px;
-                                    color: #b45309;
-                                    margin-bottom: 16px;
-                                "
-                            >
-                                Review scope, quality and format before
-                                assigning reviewers.
-                            </p>
-                            <a
-                                href="{{ route('editor.initial-screening', $submission) }}"
-                                class="btn btn-amber"
-                            >
-                                <svg
-                                    width="14"
-                                    height="14"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                >
-                                    <path
-                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                                    />
-                                </svg>
-                                Perform Screening
-                            </a>
-                        </div>
-                    @elseif ($submission->hasPassedInitialScreening())
-                        <div class="state-block state-pass">
-                            <div
-                                style="
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 8px;
-                                    margin-bottom: 14px;
-                                "
-                            >
-                                <svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="var(--emerald)"
-                                    stroke-width="2.5"
-                                >
-                                    <path d="M5 13l4 4L19 7" />
-                                </svg>
-                                <p
-                                    style="
-                                        font-size: 13px;
-                                        font-weight: 700;
-                                        color: #065f46;
-                                    "
-                                >
-                                    Passed Initial Screening
-                                </p>
-                            </div>
-                            <div class="grid-2col" style="margin-bottom: 12px">
-                                <div>
-                                    <div
-                                        class="meta-label"
-                                        style="color: #059669"
-                                    >
-                                        Screened By
-                                    </div>
-                                    <div
-                                        style="font-size: 13px; color: #064e3b"
-                                    >
-                                        {{ $submission->initialScreeningBy?->name ?? 'Unknown' }}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div
-                                        class="meta-label"
-                                        style="color: #059669"
-                                    >
-                                        Date
-                                    </div>
-                                    <div
-                                        style="font-size: 13px; color: #064e3b"
-                                    >
-                                        {{ $submission->initial_screening_at?->format('M d, Y') }}
-                                    </div>
-                                </div>
-                            </div>
-                            <p
-                                style="
-                                    font-size: 12px;
-                                    color: #065f46;
-                                    line-height: 1.65;
-                                "
-                            >
-                                {{ $submission->initial_screening_comments }}
-                            </p>
-                            <a
-                                href="{{ route('editor.initial-screening', $submission) }}"
-                                style="
-                                    font-size: 11px;
-                                    font-weight: 700;
-                                    color: var(--emerald);
-                                    margin-top: 12px;
-                                    display: inline-block;
-                                "
-                            >
-                                Edit Decision →
-                            </a>
-                        </div>
-                    @else
-                        <div class="state-block state-fail">
-                            <div
-                                style="
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 8px;
-                                    margin-bottom: 14px;
-                                "
-                            >
-                                <svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="var(--red)"
-                                    stroke-width="2.5"
-                                >
-                                    <path d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                                <p
-                                    style="
-                                        font-size: 13px;
-                                        font-weight: 700;
-                                        color: #991b1b;
-                                    "
-                                >
-                                    Failed Initial Screening
-                                </p>
-                            </div>
-                            <div class="grid-2col" style="margin-bottom: 12px">
-                                <div>
-                                    <div
-                                        class="meta-label"
-                                        style="color: var(--red)"
-                                    >
-                                        Screened By
-                                    </div>
-                                    <div
-                                        style="font-size: 13px; color: #7f1d1d"
-                                    >
-                                        {{ $submission->initialScreeningBy?->name ?? 'Unknown' }}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div
-                                        class="meta-label"
-                                        style="color: var(--red)"
-                                    >
-                                        Date
-                                    </div>
-                                    <div
-                                        style="font-size: 13px; color: #7f1d1d"
-                                    >
-                                        {{ $submission->initial_screening_at?->format('M d, Y') }}
-                                    </div>
-                                </div>
-                            </div>
-                            <p
-                                style="
-                                    font-size: 12px;
-                                    color: #991b1b;
-                                    line-height: 1.65;
-                                "
-                            >
-                                {{ $submission->initial_screening_comments }}
-                            </p>
-                            <a
-                                href="{{ route('editor.initial-screening', $submission) }}"
-                                style="
-                                    font-size: 11px;
-                                    font-weight: 700;
-                                    color: var(--red);
-                                    margin-top: 12px;
-                                    display: inline-block;
-                                "
-                            >
-                                Override Decision →
-                            </a>
-                        </div>
-                    @endif
-                </div>
 
                 {{-- Editor Decision --}}
                 @if ($submission->reviews->isNotEmpty())
@@ -3311,118 +3075,118 @@
 @push('scripts')
     <script>
         function toggleReviewer(card) {
-            const cb = card.querySelector('.reviewer-checkbox');
-            if (!cb) return;
-            cb.checked = !cb.checked;
-            card.classList.toggle('selected', cb.checked);
-            const total = document.querySelectorAll('.reviewer-checkbox:checked').length;
-            const badge = document.getElementById('selected-count');
-            const num   = document.getElementById('selected-num');
-            if (badge && num) { num.textContent = total; badge.classList.toggle('hidden', total === 0); }
-        }
+                    const cb = card.querySelector('.reviewer-checkbox');
+                    if (!cb) return;
+                    cb.checked = !cb.checked;
+                    card.classList.toggle('selected', cb.checked);
+                    const total = document.querySelectorAll('.reviewer-checkbox:checked').length;
+                    const badge = document.getElementById('selected-count');
+                    const num   = document.getElementById('selected-num');
+                    if (badge && num) { num.textContent = total; badge.classList.toggle('hidden', total === 0); }
+                }
 
-        function updateDueDateHint(input) {
-            const hint   = document.getElementById('due-hint');
-            const daysEl = document.getElementById('due-days');
-            const dateEl = document.getElementById('due-date');
-            if (!input.value || !hint) { hint?.classList.add('hidden'); return; }
-            const diff = Math.ceil((new Date(input.value) - new Date()) / 86400000);
-            daysEl.textContent = diff;
-            daysEl.style.color = diff < 0 ? 'var(--red)' : diff <= 7 ? 'var(--amber)' : 'var(--emerald)';
-            const opts = { month:'short', day:'numeric', year:'numeric' };
-            dateEl.textContent = 'Due: ' + new Date(input.value).toLocaleDateString('en-US', opts) + ' · 11:59 PM';
-            hint.classList.remove('hidden');
-        }
+                function updateDueDateHint(input) {
+                    const hint   = document.getElementById('due-hint');
+                    const daysEl = document.getElementById('due-days');
+                    const dateEl = document.getElementById('due-date');
+                    if (!input.value || !hint) { hint?.classList.add('hidden'); return; }
+                    const diff = Math.ceil((new Date(input.value) - new Date()) / 86400000);
+                    daysEl.textContent = diff;
+                    daysEl.style.color = diff < 0 ? 'var(--red)' : diff <= 7 ? 'var(--amber)' : 'var(--emerald)';
+                    const opts = { month:'short', day:'numeric', year:'numeric' };
+                    dateEl.textContent = 'Due: ' + new Date(input.value).toLocaleDateString('en-US', opts) + ' · 11:59 PM';
+                    hint.classList.remove('hidden');
+                }
 
-        const dForm     = document.getElementById('decision-form');
-        const revFields = document.getElementById('revision-fields');
-        const revReason = document.getElementById('revision_reason');
+                const dForm     = document.getElementById('decision-form');
+                const revFields = document.getElementById('revision-fields');
+                const revReason = document.getElementById('revision_reason');
 
-        if (dForm && revFields) {
-            const statusRadios  = dForm.querySelectorAll('input[name="status"]');
-            const revTypeRadios = dForm.querySelectorAll('input[name="revision_type"]');
+                if (dForm && revFields) {
+                    const statusRadios  = dForm.querySelectorAll('input[name="status"]');
+                    const revTypeRadios = dForm.querySelectorAll('input[name="revision_type"]');
 
-            function toggleRevision() {
-                const sel   = dForm.querySelector('input[name="status"]:checked');
-                const isRev = sel?.value === 'revisions_requested';
-                revFields.style.display = isRev ? 'flex' : 'none';
-                revTypeRadios.forEach(r => isRev ? r.setAttribute('required','') : r.removeAttribute('required'));
-                if (revReason) isRev ? revReason.setAttribute('required','') : revReason.removeAttribute('required');
-            }
+                    function toggleRevision() {
+                        const sel   = dForm.querySelector('input[name="status"]:checked');
+                        const isRev = sel?.value === 'revisions_requested';
+                        revFields.style.display = isRev ? 'flex' : 'none';
+                        revTypeRadios.forEach(r => isRev ? r.setAttribute('required','') : r.removeAttribute('required'));
+                        if (revReason) isRev ? revReason.setAttribute('required','') : revReason.removeAttribute('required');
+                    }
 
-            statusRadios.forEach(r => r.addEventListener('change', toggleRevision));
+                    statusRadios.forEach(r => r.addEventListener('change', toggleRevision));
 
-            dForm.addEventListener('submit', () => {
-                const sel = dForm.querySelector('input[name="status"]:checked');
-                if (sel?.value !== 'revisions_requested') {
-                    revTypeRadios.forEach(r => r.disabled = true);
-                    if (revReason) revReason.disabled = true;
+                    dForm.addEventListener('submit', () => {
+                        const sel = dForm.querySelector('input[name="status"]:checked');
+                        if (sel?.value !== 'revisions_requested') {
+                            revTypeRadios.forEach(r => r.disabled = true);
+                            if (revReason) revReason.disabled = true;
+                        }
+                    });
+
+                    toggleRevision();
+
+                    @if(isset($selectedStatus) && $selectedStatus === 'revisions_requested')
+                        revFields.style.display = 'flex';
+                    @endif
+                }
+
+                // ── Reviewer Count Validation ──
+        (function () {
+            const assignForm = document.getElementById('assign-reviewer-form');
+            if (!assignForm) return;
+
+            assignForm.addEventListener('submit', function (e) {
+                const checked = assignForm.querySelectorAll('.reviewer-checkbox:checked');
+                const count = checked.length;
+
+                if (count < 2) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.15rem;font-weight:700;">Not Enough Reviewers</span>',
+                        html: `
+                            <p style="font-size:.88rem;color:#6b5740;line-height:1.65">
+                                Please select <strong style="color:#1a1209">at least 2 reviewers</strong> before assigning.<br>
+                                <span style="font-size:.78rem;color:#94a3b8">
+                                    You currently have <strong style="color:#d97706">${count}</strong> selected.
+                                    Recommended: <strong>2–3 reviewers</strong>.
+                                </span>
+                            </p>`,
+                        confirmButtonText: 'Select More Reviewers',
+                        confirmButtonColor: '#2d8176',
+                        customClass: {
+                            popup: 'rounded-2xl',
+                            confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest'
+                        },
+                        buttonsStyling: false,
+                    });
+                    return;
+                }
+
+                if (count > 3) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'info',
+                        title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.15rem;font-weight:700;">Too Many Reviewers</span>',
+                        html: `
+                            <p style="font-size:.88rem;color:#6b5740;line-height:1.65">
+                                Maximum of <strong style="color:#1a1209">3 reviewers</strong> only.<br>
+                                <span style="font-size:.78rem;color:#94a3b8">
+                                    You currently have <strong style="color:#dc2626">${count}</strong> selected.
+                                </span>
+                            </p>`,
+                        confirmButtonText: 'Adjust Selection',
+                        confirmButtonColor: '#2d8176',
+                        customClass: {
+                            popup: 'rounded-2xl',
+                            confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest'
+                        },
+                        buttonsStyling: false,
+                    });
+                    return;
                 }
             });
-
-            toggleRevision();
-
-            @if(isset($selectedStatus) && $selectedStatus === 'revisions_requested')
-                revFields.style.display = 'flex';
-            @endif
-        }
-
-        // ── Reviewer Count Validation ──
-(function () {
-    const assignForm = document.getElementById('assign-reviewer-form');
-    if (!assignForm) return;
-
-    assignForm.addEventListener('submit', function (e) {
-        const checked = assignForm.querySelectorAll('.reviewer-checkbox:checked');
-        const count = checked.length;
-
-        if (count < 2) {
-            e.preventDefault();
-            Swal.fire({
-                icon: 'warning',
-                title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.15rem;font-weight:700;">Not Enough Reviewers</span>',
-                html: `
-                    <p style="font-size:.88rem;color:#6b5740;line-height:1.65">
-                        Please select <strong style="color:#1a1209">at least 2 reviewers</strong> before assigning.<br>
-                        <span style="font-size:.78rem;color:#94a3b8">
-                            You currently have <strong style="color:#d97706">${count}</strong> selected.
-                            Recommended: <strong>2–3 reviewers</strong>.
-                        </span>
-                    </p>`,
-                confirmButtonText: 'Select More Reviewers',
-                confirmButtonColor: '#2d8176',
-                customClass: {
-                    popup: 'rounded-2xl',
-                    confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest'
-                },
-                buttonsStyling: false,
-            });
-            return;
-        }
-
-        if (count > 3) {
-            e.preventDefault();
-            Swal.fire({
-                icon: 'info',
-                title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.15rem;font-weight:700;">Too Many Reviewers</span>',
-                html: `
-                    <p style="font-size:.88rem;color:#6b5740;line-height:1.65">
-                        Maximum of <strong style="color:#1a1209">3 reviewers</strong> only.<br>
-                        <span style="font-size:.78rem;color:#94a3b8">
-                            You currently have <strong style="color:#dc2626">${count}</strong> selected.
-                        </span>
-                    </p>`,
-                confirmButtonText: 'Adjust Selection',
-                confirmButtonColor: '#2d8176',
-                customClass: {
-                    popup: 'rounded-2xl',
-                    confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest'
-                },
-                buttonsStyling: false,
-            });
-            return;
-        }
-    });
-})();
+        })();
     </script>
 @endpush

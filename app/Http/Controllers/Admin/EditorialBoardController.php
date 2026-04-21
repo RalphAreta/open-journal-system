@@ -9,13 +9,13 @@ use Illuminate\Http\Request;
 class EditorialBoardController extends Controller
 {
     protected array $roles = [
-        'editor_in_chief'  => 'Editor-in-Chief',
-        'associate_editor' => 'Associate Editor',
-        'section_editor'   => 'Section Editor',
-        'reviewer'         => 'Reviewer',
-        'advisor'          => 'Advisory Board',
-        // add any other roles your system uses
-    ];
+    'editor-in-chief'  => 'Editor-in-Chief',
+    'guest-editors'    => 'Guest Editors',
+    'editors'          => 'Editors',
+    'managing-editor'  => 'Managing Editor',
+    'layout-editor'    => 'Layout Editor',
+    'editorial-advisors' => 'Editorial Advisors',
+];
 
     public function index()
     {

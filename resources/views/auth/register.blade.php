@@ -857,6 +857,36 @@
                                     </div>
                                 </div>
                             </div>
+                            <div>
+                                <label
+                                    class="block text-[.68rem] font-semibold tracking-[.12em] uppercase text-[#6a7890] mb-1.5"
+                                >
+                                    Email Address
+                                </label>
+                                <div class="relative">
+                                    <svg
+                                        class="field-icon"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                                        />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value="{{ old('email') }}"
+                                        class="lp-input"
+                                        placeholder="juan@example.com"
+                                        autocomplete="email"
+                                        required
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         {{-- ── Section: Role ── --}}
@@ -1050,25 +1080,43 @@
                                             "
                                             aria-label="Toggle password visibility"
                                         >
-                                            <span
+                                            <svg
                                                 class="eye-open"
-                                                style="
-                                                    font-size: 18px;
-                                                    line-height: 1;
-                                                "
+                                                width="16"
+                                                height="16"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                viewBox="0 0 24 24"
                                             >
-                                                🐱
-                                            </span>
-                                            <span
+                                                <path
+                                                    d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                                                />
+                                                <circle cx="12" cy="12" r="3" />
+                                            </svg>
+                                            <svg
                                                 class="eye-closed"
-                                                style="
-                                                    font-size: 18px;
-                                                    line-height: 1;
-                                                    display: none;
-                                                "
+                                                width="16"
+                                                height="16"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                viewBox="0 0 24 24"
+                                                style="display: none"
                                             >
-                                                🙀
-                                            </span>
+                                                <path
+                                                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                                                />
+                                                <path
+                                                    d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
+                                                />
+                                                <line
+                                                    x1="1"
+                                                    y1="1"
+                                                    x2="23"
+                                                    y2="23"
+                                                />
+                                            </svg>
                                         </button>
                                     </div>
                                     {{-- Strength bar --}}
@@ -1126,25 +1174,43 @@
                                             "
                                             aria-label="Toggle confirm password visibility"
                                         >
-                                            <span
+                                            <svg
                                                 class="eye-open"
-                                                style="
-                                                    font-size: 18px;
-                                                    line-height: 1;
-                                                "
+                                                width="16"
+                                                height="16"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                viewBox="0 0 24 24"
                                             >
-                                                🐱
-                                            </span>
-                                            <span
+                                                <path
+                                                    d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                                                />
+                                                <circle cx="12" cy="12" r="3" />
+                                            </svg>
+                                            <svg
                                                 class="eye-closed"
-                                                style="
-                                                    font-size: 18px;
-                                                    line-height: 1;
-                                                    display: none;
-                                                "
+                                                width="16"
+                                                height="16"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                viewBox="0 0 24 24"
+                                                style="display: none"
                                             >
-                                                🙀
-                                            </span>
+                                                <path
+                                                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                                                />
+                                                <path
+                                                    d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
+                                                />
+                                                <line
+                                                    x1="1"
+                                                    y1="1"
+                                                    x2="23"
+                                                    y2="23"
+                                                />
+                                            </svg>
                                         </button>
                                     </div>
                                 </div>
@@ -1261,13 +1327,8 @@
 
             const open = btn.querySelector('.eye-open');
             const closed = btn.querySelector('.eye-closed');
-            if (isHide) {
-                open.style.display = 'none';
-                closed.style.display = 'inline';
-            } else {
-                open.style.display = 'inline';
-                closed.style.display = 'none';
-            }
+            open.style.display = isHide ? 'none' : '';
+            closed.style.display = isHide ? '' : 'none';
         }
 
         /* ── Password strength ── */

@@ -6,1493 +6,807 @@
         <title>{{ $paper['title'] }} - Published Paper</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <link
-            href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
             rel="stylesheet"
         />
         <style>
-            /* ── Reset & Base ── */
-            *,
-            *::before,
-            *::after {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
-            html {
-                scroll-behavior: smooth;
-            }
-            body {
-                font-family: 'DM Sans', system-ui, sans-serif;
-                background: #f7f3ec;
-                color: #1a202c;
-                min-height: 100vh;
-            }
+            *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+            html { scroll-behavior: smooth; font-size: 15px; }
 
-            /* ── CSS Variables ── */
             :root {
-                --teal: #2d8176;
-                --teal-dark: #1a5e56;
-                --teal-light: #3a9e91;
-                --gold: #c9a84c;
-                --gold-light: #f0d678;
-                --gold-dim: rgba(201, 168, 76, 0.12);
-                --cream: #f7f3ec;
-                --cream-mid: #ede8df;
-                --border: #e2ddd4;
-                --text-muted: #6a7890;
-                --text-body: #374151;
+                --teal:       #1d6e65;
+                --teal-dark:  #134e47;
+                --teal-mid:   #25857a;
+                --teal-light: rgba(29,110,101,0.08);
+                --gold:       #b8922a;
+                --gold-pale:  rgba(184,146,42,0.1);
+                --cream:      #f6f2eb;
+                --cream-mid:  #eee9df;
+                --white:      #ffffff;
+                --border:     #ddd8ce;
+                --border-mid: #e8e3d8;
+                --muted:      #7a7264;
+                --body:       #2c2a26;
+                --heading:    #1a1714;
+                --shadow-sm:  0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+                --shadow-md:  0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05);
+                --shadow-lg:  0 12px 32px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.06);
+                --r-sm:       6px;
+                --r-md:       10px;
+                --r-lg:       14px;
             }
 
-            .font-playfair {
-                font-family: 'Playfair Display', Georgia, serif;
+            body {
+                font-family: 'IBM Plex Sans', system-ui, sans-serif;
+                background: var(--cream);
+                color: var(--body);
+                min-height: 100vh;
+                -webkit-font-smoothing: antialiased;
             }
 
-            /* ── Keyframes ── */
-            @keyframes shimmer {
-                0% {
-                    background-position: -200% 0;
-                }
-                100% {
-                    background-position: 200% 0;
-                }
-            }
+            /* ── Animations ── */
             @keyframes fadeUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(16px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+                from { opacity: 0; transform: translateY(12px); }
+                to   { opacity: 1; transform: translateY(0); }
             }
             @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                }
-                to {
-                    opacity: 1;
-                }
+                from { opacity: 0; } to { opacity: 1; }
             }
             @keyframes slideUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(24px) scale(0.98);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0) scale(1);
-                }
+                from { opacity: 0; transform: translateY(20px) scale(0.98); }
+                to   { opacity: 1; transform: translateY(0) scale(1); }
             }
-            @keyframes pulse-dot {
-                0%,
-                100% {
-                    box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.6);
-                }
-                50% {
-                    box-shadow: 0 0 0 5px rgba(201, 168, 76, 0);
-                }
-            }
-            .fade-up {
-                animation: fadeUp 0.65s cubic-bezier(0.22, 0.68, 0, 1.2) both;
+            @keyframes spin { to { transform: rotate(360deg); } }
+            @keyframes shimmer {
+                0%   { background-position: -200% 0; }
+                100% { background-position:  200% 0; }
             }
 
-            /* ── Shimmer bar ── */
-            .shimmer-bar {
-                background: linear-gradient(
-                    90deg,
-                    transparent 0%,
-                    rgba(201, 168, 76, 0.2) 30%,
-                    rgba(240, 214, 120, 0.8) 50%,
-                    rgba(201, 168, 76, 0.2) 70%,
-                    transparent 100%
-                );
-                background-size: 200% 100%;
-                animation: shimmer 3.5s linear infinite;
+            .reveal {
+                opacity: 0; transform: translateY(10px);
+                transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.22,.68,0,1.2);
+            }
+            .reveal.visible { opacity: 1; transform: none; }
+
+            /* ══ TOP ACCENT BAR ══ */
+            .accent-bar {
+                height: 3px;
+                background: linear-gradient(90deg, var(--teal-dark) 0%, var(--teal-mid) 55%, #3aaba0 100%);
             }
 
             /* ══ HEADER ══ */
             .site-header {
-                position: sticky;
-                top: 0;
-                z-index: 50;
-                background: rgba(255, 255, 255, 0.92);
-                backdrop-filter: blur(16px);
+                position: sticky; top: 0; z-index: 50;
+                background: rgba(246,242,235,0.95);
+                backdrop-filter: blur(12px);
                 border-bottom: 1px solid var(--border);
             }
             .header-inner {
-                max-width: 68rem;
-                margin: 0 auto;
-                padding: 0.875rem 1.5rem;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+                max-width: 76rem; margin: 0 auto;
+                padding: 0 1.5rem;
+                height: 3.5rem;
+                display: flex; align-items: center; justify-content: space-between; gap: 1rem;
             }
-            .header-logo {
-                display: flex;
-                align-items: center;
-                gap: 0.6rem;
-                text-decoration: none;
+            .header-brand {
+                display: flex; align-items: center; gap: 0.6rem;
+                text-decoration: none; flex-shrink: 0;
             }
-            .logo-icon {
-                width: 2rem;
-                height: 2rem;
-                border-radius: 8px;
-                background: linear-gradient(
-                    135deg,
-                    var(--teal),
-                    var(--teal-dark)
-                );
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 2px 8px rgba(45, 129, 118, 0.3);
+            .brand-icon {
+                width: 1.9rem; height: 1.9rem;
+                background: var(--teal-dark); border-radius: 6px;
+                display: flex; align-items: center; justify-content: center;
+                color: #f0d678;
+                box-shadow: var(--shadow-sm);
             }
-            .logo-text {
-                font-family: 'Playfair Display', serif;
-                font-size: 1.1rem;
-                font-weight: 700;
-                color: var(--teal);
+            .brand-name {
+                font-family: 'Lora', serif;
+                font-size: 1rem; font-weight: 700;
+                color: var(--teal-dark);
+                line-height: 1;
             }
-            .back-link {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.4rem;
-                font-size: 0.8rem;
-                font-weight: 500;
-                color: var(--text-muted);
-                text-decoration: none;
-                padding: 0.4rem 0.875rem;
+            .brand-sub {
+                font-size: 0.48rem; font-weight: 600;
+                text-transform: uppercase; letter-spacing: 0.12em;
+                color: var(--gold);
+            }
+            .back-btn {
+                display: inline-flex; align-items: center; gap: 0.3rem;
+                font-size: 0.72rem; font-weight: 500;
+                color: var(--muted); text-decoration: none;
+                padding: 0.3rem 0.75rem;
                 border: 1px solid var(--border);
                 border-radius: 999px;
-                transition:
-                    color 0.2s,
-                    border-color 0.2s,
-                    background 0.2s;
+                transition: color .2s, border-color .2s, background .2s;
             }
-            .back-link:hover {
-                color: var(--teal);
-                border-color: var(--teal);
-                background: rgba(45, 129, 118, 0.04);
-            }
+            .back-btn:hover { color: var(--teal); border-color: var(--teal); background: var(--teal-light); }
 
             /* ══ HERO ══ */
             .paper-hero {
-                background: linear-gradient(
-                    160deg,
-                    var(--teal-dark) 0%,
-                    var(--teal) 50%,
-                    #246059 100%
-                );
-                position: relative;
-                overflow: hidden;
-                padding: 4rem 1.5rem 3.5rem;
+                background: linear-gradient(155deg, var(--teal-dark) 0%, var(--teal-mid) 60%, #2a9088 100%);
+                position: relative; overflow: hidden;
+                padding: 2.5rem 1.5rem 2rem;
             }
             .paper-hero::before {
                 content: '';
-                position: absolute;
-                inset: 0;
-                background-image: radial-gradient(
-                    circle,
-                    rgba(255, 255, 255, 0.06) 1px,
-                    transparent 1px
-                );
-                background-size: 26px 26px;
+                position: absolute; inset: 0;
+                background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+                background-size: 22px 22px;
                 pointer-events: none;
             }
             .paper-hero::after {
                 content: '';
-                position: absolute;
-                inset: 0;
+                position: absolute; inset: 0;
                 background:
-                    radial-gradient(
-                        ellipse 70% 60% at 90% 10%,
-                        rgba(201, 168, 76, 0.2) 0%,
-                        transparent 55%
-                    ),
-                    radial-gradient(
-                        ellipse 50% 70% at 0% 100%,
-                        rgba(0, 0, 0, 0.3) 0%,
-                        transparent 50%
-                    );
+                    radial-gradient(ellipse 60% 55% at 95% 5%,  rgba(184,146,42,0.18) 0%, transparent 55%),
+                    radial-gradient(ellipse 40% 60% at 0% 95%, rgba(0,0,0,0.25) 0%, transparent 50%);
                 pointer-events: none;
             }
             .hero-shimmer {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 2px;
-                z-index: 10;
+                position: absolute; top: 0; left: 0; right: 0; height: 2px;
+                background: linear-gradient(90deg, transparent, rgba(240,214,120,0.8) 50%, transparent);
+                background-size: 200% 100%;
+                animation: shimmer 3.5s linear infinite;
+                z-index: 5;
             }
             .hero-inner {
-                position: relative;
-                z-index: 5;
-                max-width: 52rem;
-                margin: 0 auto;
+                position: relative; z-index: 5;
+                max-width: 76rem; margin: 0 auto;
+                display: grid; grid-template-columns: 1fr auto; gap: 1.5rem 2rem;
+                align-items: end;
             }
+            .hero-main { min-width: 0; }
 
-            .category-badge {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 0.3rem 0.875rem;
-                border: 1px solid rgba(255, 255, 255, 0.25);
-                background: rgba(0, 0, 0, 0.2);
+            .status-badge {
+                display: inline-flex; align-items: center; gap: 0.4rem;
+                padding: 0.22rem 0.65rem;
+                border: 1px solid rgba(255,255,255,0.22);
+                background: rgba(0,0,0,0.18);
                 border-radius: 999px;
-                font-size: 0.65rem;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                color: var(--gold-light);
-                font-weight: 600;
-                margin-bottom: 1.5rem;
+                font-size: 0.58rem; font-weight: 700;
+                letter-spacing: 0.14em; text-transform: uppercase;
+                color: #f0d678;
+                margin-bottom: 0.9rem;
             }
             .pulse-dot {
-                width: 0.45rem;
-                height: 0.45rem;
-                border-radius: 50%;
+                width: 5px; height: 5px; border-radius: 50%;
                 background: var(--gold);
-                animation: pulse-dot 2s ease-in-out infinite;
+                box-shadow: 0 0 0 0 rgba(184,146,42,0.5);
+                animation: pulse 2s ease-in-out infinite;
             }
+            @keyframes pulse {
+                0%,100% { box-shadow: 0 0 0 0 rgba(184,146,42,0.5); }
+                50%      { box-shadow: 0 0 0 4px rgba(184,146,42,0); }
+            }
+
             .paper-title {
-                font-family: 'Playfair Display', serif;
-                font-size: clamp(1.4rem, 4vw, 2.75rem);
+                font-family: 'Lora', serif;
+                font-size: clamp(1.2rem, 3.2vw, 2.1rem);
                 font-weight: 700;
-                line-height: 1.25;
+                line-height: 1.3;
                 color: #fff;
-                text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-                margin-bottom: 2rem;
-            }
-            .paper-meta-row {
-                display: flex;
-                flex-wrap: wrap;
-                align-items: center;
-                gap: 1rem 1.5rem;
-                padding-top: 1.5rem;
-                border-top: 1px solid rgba(255, 255, 255, 0.15);
-            }
-            .meta-item {
-                display: flex;
-                flex-direction: column;
-                gap: 0.2rem;
-            }
-            .meta-label {
-                font-size: 0.6rem;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                color: rgba(255, 255, 255, 0.55);
-                font-weight: 600;
-            }
-            .meta-value {
-                font-size: 0.9rem;
-                font-weight: 600;
-                color: #fff;
-            }
-            .meta-divider {
-                width: 1px;
-                height: 2.5rem;
-                background: rgba(255, 255, 255, 0.2);
+                text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                margin-bottom: 0;
             }
 
-            /* ══ LAYOUT ══ */
-            .main-wrap {
-                max-width: 68rem;
-                margin: 0 auto;
-                padding: 2.5rem 1.5rem 5rem;
-                display: grid;
-                grid-template-columns: 1fr 280px;
-                gap: 2rem;
-                align-items: start;
-                position: relative;
-                z-index: 1;
-            }
-
-            .main-wrap > aside {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .section-heading {
-                font-family: 'Playfair Display', serif;
-                font-size: 1.2rem;
-                font-weight: 700;
-                color: var(--teal-dark);
-                display: flex;
-                align-items: center;
-                gap: 0.6rem;
-                margin-bottom: 1rem;
-            }
-            .section-heading::after {
-                content: '';
-                flex: 1;
-                height: 1px;
-                background: linear-gradient(90deg, var(--border), transparent);
-            }
-            .section-icon {
-                width: 1.6rem;
-                height: 1.6rem;
-                border-radius: 7px;
-                background: var(--gold-dim);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: var(--gold);
+            /* Hero Stats Panel */
+            .hero-stats {
+                display: flex; flex-direction: column; gap: 0.6rem;
+                padding: 1rem 1.1rem;
+                background: rgba(0,0,0,0.18);
+                border: 1px solid rgba(255,255,255,0.14);
+                border-radius: var(--r-md);
+                min-width: 160px;
+                backdrop-filter: blur(6px);
                 flex-shrink: 0;
+                align-self: start;
+            }
+            .hero-stat {
+                display: flex; flex-direction: column; gap: 0.1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            .hero-stat:last-child { border-bottom: none; padding-bottom: 0; }
+            .hs-label {
+                font-size: 0.5rem; font-weight: 700;
+                letter-spacing: 0.12em; text-transform: uppercase;
+                color: rgba(255,255,255,0.5);
+            }
+            .hs-value {
+                font-size: 0.8rem; font-weight: 600; color: #fff;
+                line-height: 1.2;
             }
 
-            .card {
-                background: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(8px);
-                border: 1px solid var(--border);
-                border-radius: 16px;
-                overflow: hidden;
+            /* Hero meta strip */
+            .hero-meta {
+                grid-column: 1 / -1;
+                display: flex; flex-wrap: wrap; align-items: center;
+                gap: 0.5rem 1rem;
+                padding-top: 0.9rem;
+                border-top: 1px solid rgba(255,255,255,0.14);
+                margin-top: 0.75rem;
             }
-            .card-body {
-                padding: 1.75rem;
+            .hm-item {
+                display: flex; align-items: center; gap: 0.35rem;
+                font-size: 0.72rem; color: rgba(255,255,255,0.75);
             }
+            .hm-item svg { color: rgba(255,255,255,0.4); flex-shrink: 0; }
+            .hm-item strong { color: #fff; font-weight: 600; }
+            .hm-sep { width: 1px; height: 14px; background: rgba(255,255,255,0.18); }
 
-            /* Stats */
-            .stats-card {
-                background: rgba(255, 255, 255, 0.9);
-                border: 1px solid var(--border);
-                border-radius: 16px;
-                overflow: hidden;
-                margin-bottom: 2rem;
-            }
-            .stats-inner {
+            /* ══ BODY LAYOUT ══ */
+            .body-wrap {
+                max-width: 76rem; margin: 0 auto;
+                padding: 1.5rem 1.5rem 3.5rem;
                 display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                padding: 1.25rem 1.75rem;
+                grid-template-columns: 1fr 256px;
+                gap: 1.25rem;
+                align-items: start;
             }
-            .stat-cell {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                padding: 0.75rem;
+
+            /* ── MAIN ── */
+            .main-col { min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+
+            /* Section heading */
+            .sec-head {
+                display: flex; align-items: center; gap: 0.5rem;
+                font-family: 'Lora', serif;
+                font-size: 1.05rem; font-weight: 700;
+                color: var(--teal-dark);
+                margin-bottom: 0.65rem;
+                padding-bottom: 0.45rem;
+                border-bottom: 1px solid var(--border-mid);
             }
-            .stat-cell + .stat-cell {
-                border-left: 1px solid var(--border);
+            .sec-icon {
+                width: 1.4rem; height: 1.4rem;
+                background: var(--gold-pale);
+                border-radius: 5px;
+                display: flex; align-items: center; justify-content: center;
+                color: var(--gold); flex-shrink: 0;
             }
-            .stat-val {
-                font-family: 'Playfair Display', serif;
-                font-size: 2rem;
-                font-weight: 700;
-                color: var(--teal);
-                line-height: 1;
-                margin-bottom: 0.3rem;
+
+            /* Cards */
+            .card {
+                background: var(--white);
+                border: 1px solid var(--border);
+                border-radius: var(--r-lg);
+                overflow: hidden;
+                box-shadow: var(--shadow-sm);
             }
-            .stat-lbl {
-                font-size: 0.6rem;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                color: var(--text-muted);
-                font-weight: 600;
-            }
+            .card-body { padding: 1.1rem 1.25rem; }
 
             /* Abstract */
             .abstract-text {
-                font-size: 0.9rem;
+                font-size: 1rem;
                 line-height: 1.85;
-                color: var(--text-body);
+                color: var(--body);
                 border-left: 3px solid var(--gold);
-                padding-left: 1.25rem;
+                padding-left: 1rem;
+                margin: 0;
             }
 
             /* Keywords */
-            .keyword-list {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.6rem;
-            }
-            .keyword-tag {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.35rem;
-                padding: 0.35rem 0.875rem;
-                background: rgba(45, 129, 118, 0.06);
-                border: 1px solid rgba(45, 129, 118, 0.18);
+            .kw-list { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+            .kw-tag {
+                display: inline-flex; align-items: center;
+                padding: 0.4rem 1rem;
+                background: var(--teal-light);
+                border: 1px solid rgba(29,110,101,0.18);
                 border-radius: 999px;
-                font-size: 0.75rem;
-                font-weight: 500;
+                font-size: 0.88rem; font-weight: 500;
                 color: var(--teal);
-                transition:
-                    background 0.2s,
-                    border-color 0.2s;
+                transition: background .2s, border-color .2s;
+                font-family: 'IBM Plex Mono', monospace;
             }
-            .keyword-tag:hover {
-                background: rgba(45, 129, 118, 0.12);
-                border-color: rgba(45, 129, 118, 0.35);
-            }
+            .kw-tag:hover { background: rgba(29,110,101,0.14); border-color: rgba(29,110,101,0.3); }
 
-            /* Download */
-            .download-card {
-                background: linear-gradient(
-                    135deg,
-                    var(--teal-dark) 0%,
-                    var(--teal) 60%,
-                    #3aaba0 100%
-                );
-                border-radius: 16px;
-                overflow: hidden;
-                position: relative;
+            /* Access / Download */
+            .access-card {
+                background: linear-gradient(130deg, var(--teal-dark) 0%, var(--teal-mid) 65%, #2da89c 100%);
+                border-radius: var(--r-lg);
+                position: relative; overflow: hidden;
+                box-shadow: var(--shadow-md);
             }
-            .download-card::before {
+            .access-card::before {
                 content: '';
-                position: absolute;
-                inset: 0;
-                background-image: radial-gradient(
-                    circle,
-                    rgba(255, 255, 255, 0.05) 1px,
-                    transparent 1px
-                );
-                background-size: 20px 20px;
-                pointer-events: none;
+                position: absolute; inset: 0;
+                background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+                background-size: 18px 18px;
             }
-            .download-card::after {
+            .access-card::after {
                 content: '';
-                position: absolute;
-                inset: 0;
-                background: radial-gradient(
-                    ellipse 80% 60% at 90% 0%,
-                    rgba(201, 168, 76, 0.18) 0%,
-                    transparent 55%
-                );
-                pointer-events: none;
+                position: absolute; inset: 0;
+                background: radial-gradient(ellipse 70% 50% at 100% 0%, rgba(184,146,42,0.16) 0%, transparent 55%);
             }
-            .download-inner {
-                position: relative;
-                z-index: 2;
-                padding: 1.75rem;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 1.25rem;
-                flex-wrap: wrap;
+            .access-inner {
+                position: relative; z-index: 2;
+                padding: 1.1rem 1.25rem;
+                display: flex; align-items: center; justify-content: space-between;
+                gap: 1rem; flex-wrap: wrap;
             }
-            .download-text h3 {
-                font-family: 'Playfair Display', serif;
-                font-size: 1.1rem;
-                font-weight: 700;
-                color: #fff;
-                margin-bottom: 0.35rem;
+            .access-text h3 {
+                font-family: 'Lora', serif;
+                font-size: 0.95rem; font-weight: 700;
+                color: #fff; margin-bottom: 0.2rem;
             }
-            .download-text p {
-                font-size: 0.8rem;
-                color: rgba(255, 255, 255, 0.7);
-            }
-            .download-btn {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 0.7rem 1.5rem;
-                background: rgba(255, 255, 255, 0.95);
-                color: var(--teal-dark);
-                font-size: 0.8rem;
-                font-weight: 700;
-                letter-spacing: 0.04em;
-                text-transform: uppercase;
-                border-radius: 10px;
-                text-decoration: none;
+            .access-text p { font-size: 0.72rem; color: rgba(255,255,255,0.65); }
+            .access-btns { display: flex; gap: 0.5rem; flex-shrink: 0; }
+            .btn-read {
+                display: inline-flex; align-items: center; gap: 0.4rem;
+                padding: 0.45rem 1rem;
+                background: linear-gradient(135deg, var(--gold) 0%, #9a7520 100%);
                 border: none;
+                border-radius: var(--r-sm);
+                color: #fff;
+                font-size: 0.7rem; font-weight: 700;
+                letter-spacing: 0.04em; text-transform: uppercase;
                 cursor: pointer;
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-                transition:
-                    transform 0.2s,
-                    box-shadow 0.2s,
-                    background 0.2s;
+                box-shadow: 0 3px 10px rgba(184,146,42,0.35);
+                transition: transform .2s, box-shadow .2s;
                 white-space: nowrap;
             }
-            .download-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-                background: #fff;
-            }
-
-            /* Cite button */
-            .cite-btn {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 0.7rem 1.5rem;
-                background: linear-gradient(
-                    135deg,
-                    var(--gold) 0%,
-                    #a07830 100%
-                );
-                color: #fff;
-                font-size: 0.8rem;
-                font-weight: 700;
-                letter-spacing: 0.04em;
-                text-transform: uppercase;
-                border: none;
-                border-radius: 10px;
-                cursor: pointer;
-                box-shadow: 0 4px 16px rgba(160, 120, 48, 0.35);
-                transition:
-                    transform 0.2s,
-                    box-shadow 0.2s;
-            }
-            .cite-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 24px rgba(160, 120, 48, 0.5);
-            }
-
-            /* Related */
-            .related-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 1rem;
-            }
-            .related-card {
-                background: rgba(255, 255, 255, 0.9);
-                border: 1.5px solid var(--border);
-                border-radius: 14px;
-                padding: 1.25rem;
-                text-decoration: none;
-                display: block;
-                transition:
-                    border-color 0.2s,
-                    transform 0.2s,
-                    box-shadow 0.2s;
-            }
-            .related-card:hover {
-                border-color: var(--teal);
-                transform: translateY(-2px);
-                box-shadow: 0 8px 24px rgba(45, 129, 118, 0.1);
-            }
-            .related-tag {
-                font-size: 0.6rem;
-                font-weight: 700;
-                letter-spacing: 0.12em;
-                text-transform: uppercase;
-                color: var(--gold);
-            }
-            .related-title {
-                font-family: 'Playfair Display', serif;
-                font-size: 0.95rem;
-                font-weight: 700;
+            .btn-read:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(184,146,42,0.5); }
+            .btn-dl {
+                display: inline-flex; align-items: center; gap: 0.4rem;
+                padding: 0.45rem 1rem;
+                background: rgba(255,255,255,0.95);
+                border: none; border-radius: var(--r-sm);
                 color: var(--teal-dark);
-                margin: 0.5rem 0 0.4rem;
-                line-height: 1.35;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
+                font-size: 0.7rem; font-weight: 700;
+                letter-spacing: 0.04em; text-transform: uppercase;
+                text-decoration: none; cursor: pointer;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.14);
+                transition: transform .2s, box-shadow .2s;
+                white-space: nowrap;
             }
-            .related-excerpt {
-                font-size: 0.75rem;
-                color: var(--text-muted);
-                line-height: 1.55;
-                margin-bottom: 0.75rem;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-            .related-stats {
-                display: flex;
-                align-items: center;
-                gap: 0.4rem;
-                font-size: 0.7rem;
-                color: #a7b1c7;
-            }
+            .btn-dl:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.18); }
 
-            /* ══ SIDEBAR ══ */
-            .sidebar {
-                display: flex;
-                flex-direction: column;
-                gap: 1.25rem;
-            }
-            .sidebar-card {
-                background: rgba(255, 255, 255, 0.9);
-                border: 1px solid var(--border);
-                border-radius: 14px;
-                overflow: hidden;
-            }
-            .sidebar-card-head {
-                padding: 0.875rem 1.1rem;
-                border-bottom: 1px solid var(--border);
-                font-size: 0.65rem;
-                font-weight: 700;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                color: var(--text-muted);
-                background: rgba(247, 243, 236, 0.6);
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
-            .sidebar-card-head svg {
-                color: var(--gold);
-            }
-            .sidebar-card-body {
-                padding: 1rem 1.1rem;
-            }
-
-            .info-row {
-                display: flex;
-                flex-direction: column;
-                gap: 0.15rem;
-                padding: 0.5rem 0;
-                border-bottom: 1px solid var(--border);
-            }
-            .info-row:last-child {
-                border-bottom: none;
-            }
-            .info-row-label {
-                font-size: 0.6rem;
-                font-weight: 600;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                color: var(--text-muted);
-            }
-            .info-row-value {
-                font-size: 0.825rem;
-                font-weight: 500;
-                color: #1a202c;
-            }
-
-            .quick-action {
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-                padding: 0.6rem 0.75rem;
-                border-radius: 10px;
+            /* Citation section */
+            .cite-section-inner { display: flex; flex-direction: column; gap: 0.6rem; }
+            .cite-desc { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.2rem; }
+            .btn-cite {
+                display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+                padding: 0.5rem 1rem;
+                background: linear-gradient(135deg, var(--gold) 0%, #9a7520 100%);
+                color: #fff;
+                font-size: 0.7rem; font-weight: 700;
+                letter-spacing: 0.06em; text-transform: uppercase;
+                border: none; border-radius: var(--r-sm);
                 cursor: pointer;
-                border: none;
-                width: 100%;
-                text-align: left;
-                background: none;
-                transition: background 0.15s;
+                box-shadow: 0 3px 10px rgba(184,146,42,0.3);
+                transition: transform .2s, box-shadow .2s;
                 text-decoration: none;
             }
-            .quick-action:hover {
-                background: rgba(45, 129, 118, 0.06);
+            .btn-cite:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(184,146,42,0.4); }
+            .btn-ris {
+                display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+                padding: 0.5rem 1rem;
+                background: var(--white);
+                color: var(--teal);
+                font-size: 0.7rem; font-weight: 700;
+                letter-spacing: 0.06em; text-transform: uppercase;
+                border: 1.5px solid rgba(29,110,101,0.25);
+                border-radius: var(--r-sm);
+                cursor: pointer;
+                transition: background .2s, border-color .2s;
+                text-decoration: none;
             }
-            .qa-icon {
-                width: 2rem;
-                height: 2rem;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+            .btn-ris:hover { background: var(--teal-light); border-color: rgba(29,110,101,0.4); }
+            .cite-note { font-size: 0.66rem; color: var(--muted); text-align: center; }
+
+            /* ── SIDEBAR ── */
+            .side-col { display: flex; flex-direction: column; gap: 0.9rem; }
+
+            .side-card {
+                background: var(--white);
+                border: 1px solid var(--border);
+                border-radius: var(--r-lg);
+                overflow: hidden;
+                box-shadow: var(--shadow-sm);
+            }
+            .sc-head {
+                padding: 0.55rem 0.9rem;
+                border-bottom: 1px solid var(--border-mid);
+                background: var(--cream);
+                display: flex; align-items: center; gap: 0.4rem;
+                font-size: 0.58rem; font-weight: 700;
+                letter-spacing: 0.12em; text-transform: uppercase;
+                color: var(--muted);
+            }
+            .sc-head svg { color: var(--gold); }
+            .sc-body { padding: 0.75rem 0.9rem; }
+
+            /* info rows */
+            .info-list { display: flex; flex-direction: column; gap: 0; }
+            .info-row {
+                padding: 0.5rem 0;
+                border-bottom: 1px solid var(--border-mid);
+                display: flex; flex-direction: column; gap: 0.1rem;
+            }
+            .info-row:last-child { border-bottom: none; }
+            .ir-label {
+                font-size: 0.55rem; font-weight: 700;
+                letter-spacing: 0.1em; text-transform: uppercase;
+                color: var(--muted);
+            }
+            .ir-value { font-size: 0.78rem; font-weight: 500; color: var(--heading); }
+
+            /* Stats strip */
+            .stats-strip {
+                display: grid; grid-template-columns: repeat(3,1fr);
+                border-bottom: 1px solid var(--border-mid);
+            }
+            .stat-cell {
+                display: flex; flex-direction: column; align-items: center;
+                padding: 0.75rem 0.5rem;
+                text-align: center;
+            }
+            .stat-cell + .stat-cell { border-left: 1px solid var(--border-mid); }
+            .stat-val {
+                font-family: 'Lora', serif;
+                font-size: 1.5rem; font-weight: 700;
+                color: var(--teal); line-height: 1;
+                margin-bottom: 0.15rem;
+            }
+            .stat-lbl {
+                font-size: 0.52rem; font-weight: 700;
+                letter-spacing: 0.1em; text-transform: uppercase;
+                color: var(--muted);
+            }
+
+            /* Author card */
+            .author-avatar {
+                width: 44px; height: 44px; border-radius: 50%;
+                background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+                display: flex; align-items: center; justify-content: center;
+                color: #fff; font-weight: 700; font-size: 1rem;
+                margin-bottom: 0.6rem;
+                box-shadow: 0 2px 8px rgba(29,110,101,0.25);
+            }
+            .author-name { font-size: 0.85rem; font-weight: 700; color: var(--heading); margin-bottom: 0.15rem; }
+            .author-role { font-size: 0.68rem; color: var(--gold); font-weight: 600; margin-bottom: 0.5rem; }
+            .author-bio { font-size: 0.73rem; color: var(--muted); line-height: 1.6; }
+
+            /* Quick actions */
+            .qa-list { display: flex; flex-direction: column; gap: 0; }
+            .qa-item {
+                display: flex; align-items: center; gap: 0.6rem;
+                padding: 0.55rem 0.6rem;
+                border-radius: var(--r-sm);
+                cursor: pointer; border: none;
+                width: 100%; text-align: left;
+                background: none; text-decoration: none;
+                transition: background .15s;
+                color: inherit;
+            }
+            .qa-item:hover { background: var(--teal-light); }
+            .qa-ic {
+                width: 1.75rem; height: 1.75rem;
+                border-radius: 6px;
+                display: flex; align-items: center; justify-content: center;
                 flex-shrink: 0;
             }
-            .qa-label {
-                font-size: 0.8rem;
-                font-weight: 500;
-                color: #374151;
-            }
-            .qa-sub {
-                font-size: 0.65rem;
-                color: var(--text-muted);
-            }
+            .qa-lbl { font-size: 0.75rem; font-weight: 500; color: var(--body); }
+            .qa-sub { font-size: 0.6rem; color: var(--muted); }
 
             /* ══ CITATION MODAL ══ */
             .citation-modal {
-                display: none;
-                position: fixed;
-                inset: 0;
-                z-index: 1000;
-                background: rgba(10, 20, 30, 0.55);
-                backdrop-filter: blur(6px);
-                align-items: center;
-                justify-content: center;
+                display: none; position: fixed; inset: 0; z-index: 1000;
+                background: rgba(10,18,26,0.5);
+                backdrop-filter: blur(5px);
+                align-items: center; justify-content: center;
                 padding: 1rem;
             }
-            .citation-modal.show {
-                display: flex;
-                animation: fadeIn 0.25s ease;
-            }
+            .citation-modal.show { display: flex; animation: fadeIn .2s ease; }
             .modal-box {
-                background: #fff;
-                border-radius: 20px;
-                width: 100%;
-                max-width: 38rem;
-                max-height: 90vh;
-                overflow-y: auto;
-                box-shadow: 0 32px 80px rgba(0, 0, 0, 0.25);
-                animation: slideUp 0.3s cubic-bezier(0.22, 0.68, 0, 1.2);
-                position: relative;
+                background: var(--white); border-radius: var(--r-lg);
+                width: 100%; max-width: 36rem; max-height: 90vh;
                 overflow: hidden;
+                box-shadow: var(--shadow-lg);
+                animation: slideUp .28s cubic-bezier(.22,.68,0,1.2);
+                display: flex; flex-direction: column;
             }
-            .modal-top-bar {
-                height: 3px;
-                background: linear-gradient(
-                    90deg,
-                    var(--teal-dark) 0%,
-                    var(--teal) 100%
-                );
+            .modal-header {
+                padding: 0.9rem 1.1rem;
+                border-bottom: 1px solid var(--border);
+                display: flex; align-items: center; justify-content: space-between;
+                background: var(--cream);
+                flex-shrink: 0;
             }
-            .modal-inner {
-                padding: 2rem;
-            }
+            .modal-title { font-family: 'Lora', serif; font-size: 1rem; font-weight: 700; color: var(--teal-dark); }
+            .modal-sub { font-size: 0.68rem; color: var(--muted); margin-top: 0.1rem; }
             .modal-close {
-                position: absolute;
-                right: 1.25rem;
-                top: 1.25rem;
-                width: 2rem;
-                height: 2rem;
-                border-radius: 50%;
-                background: var(--cream);
-                border: 1px solid var(--border);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                color: var(--text-muted);
-                font-size: 1rem;
-                transition:
-                    background 0.2s,
-                    color 0.2s;
-                z-index: 5;
+                width: 1.75rem; height: 1.75rem; border-radius: 50%;
+                background: var(--cream-mid); border: 1px solid var(--border);
+                display: flex; align-items: center; justify-content: center;
+                cursor: pointer; color: var(--muted); font-size: 0.9rem;
+                transition: background .2s, color .2s; flex-shrink: 0;
             }
-            .modal-close:hover {
-                background: #fee2e2;
-                color: #dc2626;
-                border-color: #fecaca;
-            }
-            .modal-title {
-                font-family: 'Playfair Display', serif;
-                font-size: 1.4rem;
-                font-weight: 700;
-                color: var(--teal-dark);
-                margin-bottom: 0.35rem;
-            }
-            .modal-subtitle {
-                font-size: 0.8rem;
-                color: var(--text-muted);
-                margin-bottom: 1.5rem;
-            }
+            .modal-close:hover { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+            .modal-body { padding: 1rem 1.1rem; overflow-y: auto; }
 
-            .citation-tabs {
-                display: flex;
-                gap: 0.4rem;
-                flex-wrap: wrap;
-                margin-bottom: 1.25rem;
-            }
-            .citation-tab-btn {
-                padding: 0.4rem 0.875rem;
-                border: 1.5px solid var(--border);
-                background: var(--cream);
-                color: var(--text-muted);
-                border-radius: 999px;
-                font-size: 0.72rem;
-                font-weight: 600;
-                letter-spacing: 0.04em;
+            .cite-tabs { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+            .ct-btn {
+                padding: 0.28rem 0.7rem;
+                border: 1.5px solid var(--border); background: var(--cream);
+                color: var(--muted); border-radius: 999px;
+                font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em;
                 cursor: pointer;
-                transition:
-                    border-color 0.2s,
-                    background 0.2s,
-                    color 0.2s;
+                transition: border-color .2s, background .2s, color .2s;
             }
-            .citation-tab-btn:hover {
-                border-color: var(--teal);
-                color: var(--teal);
-            }
-            .citation-tab-btn.active {
-                background: var(--teal);
-                color: #fff;
-                border-color: var(--teal);
-            }
+            .ct-btn:hover { border-color: var(--teal); color: var(--teal); }
+            .ct-btn.active { background: var(--teal); color: #fff; border-color: var(--teal); }
 
-            .citation-content {
-                display: none;
-                padding: 1rem 1.1rem;
+            .cite-content {
+                display: none; padding: 0.85rem 1rem;
                 background: var(--cream);
                 border: 1px solid var(--border);
                 border-left: 3px solid var(--gold);
-                border-radius: 10px;
-                font-size: 0.8rem;
-                line-height: 1.75;
-                color: var(--text-body);
-                word-break: break-word;
+                border-radius: var(--r-sm);
+                font-size: 0.76rem; line-height: 1.75;
+                color: var(--body); word-break: break-word;
+                font-family: 'IBM Plex Mono', monospace;
             }
-            .citation-content.active {
-                display: block;
-            }
+            .cite-content.active { display: block; }
 
             .copy-btn {
-                margin-top: 1rem;
-                display: inline-flex;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 0.6rem 1.25rem;
-                background: linear-gradient(
-                    135deg,
-                    var(--teal) 0%,
-                    var(--teal-dark) 100%
-                );
-                color: #fff;
-                font-size: 0.78rem;
-                font-weight: 600;
-                border: none;
-                border-radius: 10px;
+                margin-top: 0.75rem;
+                display: inline-flex; align-items: center; gap: 0.4rem;
+                padding: 0.45rem 1rem;
+                background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+                color: #fff; font-size: 0.7rem; font-weight: 600;
+                border: none; border-radius: var(--r-sm);
                 cursor: pointer;
-                box-shadow: 0 4px 14px rgba(45, 129, 118, 0.35);
-                transition:
-                    transform 0.2s,
-                    box-shadow 0.2s;
+                box-shadow: 0 3px 10px rgba(29,110,101,0.3);
+                transition: transform .2s, box-shadow .2s;
             }
-            .copy-btn:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 6px 20px rgba(45, 129, 118, 0.45);
+            .copy-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(29,110,101,0.4); }
+
+            /* ══ PDF VIEWER ══ */
+            .pdf-modal {
+                display: none; position: fixed; inset: 0; z-index: 2000;
+                background: rgba(10,18,26,0.65);
+                backdrop-filter: blur(5px);
+                align-items: center; justify-content: center; padding: 1rem;
             }
+            .pdf-modal.open { display: flex; }
+            .pdf-box {
+                background: #fff; border-radius: var(--r-lg);
+                width: 100%; max-width: 880px; height: 90vh;
+                display: flex; flex-direction: column; overflow: hidden;
+                box-shadow: var(--shadow-lg);
+                animation: slideUp .28s cubic-bezier(.22,.68,0,1.2);
+            }
+            .pdf-head {
+                display: flex; align-items: center; justify-content: space-between;
+                padding: 0.65rem 1rem;
+                border-bottom: 1px solid var(--border);
+                background: var(--cream);
+                flex-shrink: 0; gap: 0.75rem;
+            }
+            .pdf-head-left { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+            .pdf-icon {
+                width: 1.6rem; height: 1.6rem;
+                background: var(--gold-pale); border-radius: 5px;
+                display: flex; align-items: center; justify-content: center;
+                color: var(--gold); flex-shrink: 0;
+            }
+            .pdf-label { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+            .pdf-title-txt { font-size: 0.8rem; font-weight: 600; color: var(--teal-dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .pdf-head-right { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+            .pdf-dl-btn {
+                display: inline-flex; align-items: center; gap: 0.35rem;
+                padding: 0.38rem 0.8rem;
+                background: var(--teal); color: #fff;
+                font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+                border-radius: 6px; text-decoration: none;
+                transition: background .2s;
+            }
+            .pdf-dl-btn:hover { background: var(--teal-dark); }
+            .pdf-close-btn {
+                width: 1.75rem; height: 1.75rem; border-radius: 6px;
+                background: var(--cream-mid); border: 1px solid var(--border);
+                display: flex; align-items: center; justify-content: center;
+                cursor: pointer; color: var(--muted); font-size: 0.9rem;
+                transition: background .2s;
+            }
+            .pdf-close-btn:hover { background: #fee2e2; color: #dc2626; }
+            .pdf-frame-wrap { flex: 1; position: relative; background: #525659; overflow: hidden; }
+            .pdf-loading {
+                position: absolute; inset: 0; z-index: 1;
+                display: flex; flex-direction: column; align-items: center; justify-content: center;
+                background: #525659; gap: 0.75rem;
+            }
+            .spin-ring {
+                width: 36px; height: 36px;
+                border: 3px solid rgba(255,255,255,0.15);
+                border-top-color: var(--gold);
+                border-radius: 50%;
+                animation: spin .7s linear infinite;
+            }
+            .pdf-loading p { color: rgba(255,255,255,0.6); font-size: 0.75rem; }
+            #pdfFrame { width: 100%; height: 100%; border: none; display: block; }
+
+            .pdf-fallback {
+                display: none; padding: 0.55rem 1rem;
+                background: #fffbf0;
+                border-top: 1px solid rgba(184,146,42,0.25);
+                font-size: 0.72rem; color: var(--body); text-align: center;
+                flex-shrink: 0;
+            }
+            .pdf-fallback a { color: var(--teal); font-weight: 600; }
 
             /* ══ FOOTER ══ */
             .site-footer {
-                background: rgba(255, 255, 255, 0.9);
-                border-top: 1px solid var(--border);
-                padding: 2.5rem 1.5rem;
+                background: var(--white); border-top: 1px solid var(--border);
+                padding: 1.5rem;
             }
             .footer-inner {
-                max-width: 68rem;
-                margin: 0 auto;
-                display: flex;
-                flex-wrap: wrap;
-                align-items: center;
-                justify-content: space-between;
-                gap: 1rem;
+                max-width: 76rem; margin: 0 auto;
+                display: flex; flex-wrap: wrap;
+                align-items: center; justify-content: space-between; gap: 0.75rem;
             }
-            .footer-brand {
-                font-family: 'Playfair Display', serif;
-                font-size: 0.9rem;
-                font-weight: 700;
-                color: var(--teal);
+            .footer-brand { font-family: 'Lora', serif; font-size: 0.85rem; font-weight: 700; color: var(--teal); }
+            .footer-copy { font-size: 0.68rem; color: var(--muted); }
+            .footer-links { display: flex; gap: 1.25rem; }
+            .footer-links a { font-size: 0.7rem; color: var(--muted); text-decoration: none; transition: color .2s; }
+            .footer-links a:hover { color: var(--teal); }
+
+            /* ══ RESPONSIVE ══ */
+            @media (max-width: 860px) {
+                .body-wrap { grid-template-columns: 1fr; }
+                .side-col { order: -1; }
+                .hero-inner { grid-template-columns: 1fr; }
+                .hero-stats { display: none; }
             }
-            .footer-copy {
-                font-size: 0.75rem;
-                color: var(--text-muted);
-            }
-            .footer-links {
-                display: flex;
-                gap: 1.5rem;
-            }
-            .footer-links a {
-                font-size: 0.78rem;
-                color: var(--text-muted);
-                text-decoration: none;
-                transition: color 0.2s;
-            }
-            .footer-links a:hover {
-                color: var(--teal);
-            }
-
-            /* Scroll reveal */
-            .reveal {
-                opacity: 0;
-                transform: translateY(16px);
-                transition:
-                    opacity 0.6s ease,
-                    transform 0.6s cubic-bezier(0.22, 0.68, 0, 1.2);
-            }
-            .reveal.visible {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-            /* Page texture */
-            .page-texture {
-                position: fixed;
-                inset: 0;
-                pointer-events: none;
-                z-index: 0;
-                opacity: 0.025;
-                background-image: repeating-linear-gradient(
-                    -50deg,
-                    #8a6520 0px,
-                    #8a6520 1px,
-                    transparent 1px,
-                    transparent 22px
-                );
-            }
-
-            /* ══ MOBILE RESPONSIVE ══ */
-
-            /* Sidebar: goes below main on <900px */
-            @media (max-width: 900px) {
-                .main-wrap {
-                    grid-template-columns: 1fr;
-                    padding: 1.5rem 1rem 4rem;
-                    gap: 1.5rem;
-                }
-                .main-wrap > aside {
-                    order: -1; /* sidebar floats above on tablet */
-                    max-width: 100% !important;
-                    width: 100% !important;
-                }
-            }
-
-            /* Hero: tighten padding, hide meta dividers, let meta items wrap naturally */
-            @media (max-width: 640px) {
-                .paper-hero {
-                    padding: 2.5rem 1rem 2rem;
-                }
-                .paper-title {
-                    font-size: 1.35rem;
-                    margin-bottom: 1.25rem;
-                }
-                .category-badge {
-                    margin-bottom: 1rem;
-                }
-                .paper-meta-row {
-                    gap: 0.75rem 1rem;
-                    padding-top: 1rem;
-                }
-                /* Hide vertical dividers between meta items on mobile */
-                .meta-divider {
-                    display: none;
-                }
-                .meta-value {
-                    font-size: 0.82rem;
-                }
-
-                /* Header: shrink logo text on small screens */
-                .logo-text {
-                    font-size: 0.95rem;
-                }
-
-                /* Stats: smaller numbers */
-                .stats-inner {
-                    padding: 1rem;
-                }
-                .stat-val {
-                    font-size: 1.5rem;
-                }
-                .stat-lbl {
-                    font-size: 0.55rem;
-                }
-
-                /* Download card: stack text + button */
-                .download-inner {
-                    flex-direction: column;
-                    align-items: flex-start;
-                    padding: 1.25rem;
-                    gap: 1rem;
-                }
-                .download-btn {
-                    width: 100%;
-                    justify-content: center;
-                }
-
-                /* Citation buttons: full-width */
-                .cite-btn {
-                    width: 100% !important;
-                    justify-content: center !important;
-                }
-
-                /* Card body: tighter padding */
-                .card-body {
-                    padding: 1.25rem;
-                }
-
-                /* Section heading: smaller font */
-                .section-heading {
-                    font-size: 1.05rem;
-                }
-
-                /* Related grid: 1 column */
-                .related-grid {
-                    grid-template-columns: 1fr;
-                }
-
-                /* Modal: full width with safe insets */
-                .modal-inner {
-                    padding: 1.25rem;
-                }
-                .modal-title {
-                    font-size: 1.15rem;
-                    padding-right: 2.5rem;
-                }
-
-                /* Paper section spacing */
-                .paper-section {
-                    margin-bottom: 1.5rem;
-                }
-
-                /* Sidebar cards: use 2-col grid for paper details on mobile */
-                .sidebar-detail-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 0;
-                }
-            }
-
-            @media (max-width: 400px) {
-                .paper-hero {
-                    padding: 2rem 0.875rem 1.75rem;
-                }
-                .paper-title {
-                    font-size: 1.2rem;
-                }
-                .stats-inner {
-                    padding: 0.75rem 0.5rem;
-                }
-                .stat-val {
-                    font-size: 1.25rem;
-                }
-                .card-body {
-                    padding: 1rem;
-                }
-                .main-wrap {
-                    padding: 1rem 0.75rem 3rem;
-                }
+            @media (max-width: 600px) {
+                .paper-hero { padding: 1.75rem 1rem 1.5rem; }
+                .paper-title { font-size: 1.15rem; }
+                .body-wrap { padding: 1rem 1rem 2.5rem; gap: 1rem; }
+                .access-inner { flex-direction: column; align-items: stretch; }
+                .access-btns { flex-direction: column; }
+                .btn-read, .btn-dl { justify-content: center; }
+                .hero-meta { gap: 0.4rem 0.75rem; }
+                .hm-sep { display: none; }
             }
         </style>
     </head>
     <body>
-        <div class="page-texture"></div>
+        {{-- Accent bar --}}
+        <div class="accent-bar"></div>
 
-        {{-- Decorative Top Bar --}}
-        <div
-            style="
-                height: 12px;
-                background: linear-gradient(
-                    90deg,
-                    var(--teal-dark) 0%,
-                    var(--teal) 50%,
-                    #3aaba0 100%
-                );
-            "
-        ></div>
-
-        {{-- HEADER --}}
-        <header
-            style="
-                background: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(8px);
-                border-bottom: 1px solid var(--border);
-                position: sticky;
-                top: 0;
-                z-index: 50;
-            "
-        >
-            <div
-                style="
-                    max-width: 90rem;
-                    margin: 0 auto;
-                    padding: 0 1.25rem;
-                    height: 4.5rem;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    gap: 1rem;
-                "
-            >
-                <a
-                    href="/"
-                    style="
-                        display: flex;
-                        align-items: center;
-                        gap: 0.75rem;
-                        text-decoration: none;
-                        flex-shrink: 0;
-                    "
-                >
-                    <div
-                        style="
-                            width: 2.25rem;
-                            height: 2.25rem;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            background: var(--teal-dark);
-                            border-radius: 50%;
-                            border: 1px solid rgba(201, 168, 76, 0.3);
-                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-                            flex-shrink: 0;
-                        "
-                    >
-                        <svg
-                            class="text-[#f0d678] w-6 h-6"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                            />
+        {{-- ══ HEADER ══ --}}
+        <header class="site-header">
+            <div class="header-inner">
+                <a href="/" class="header-brand">
+                    <div class="brand-icon">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                         </svg>
                     </div>
-                    <div
-                        style="
-                            display: flex;
-                            flex-direction: column;
-                            min-width: 0;
-                        "
-                    >
-                        <span
-                            style="
-                                font-family: 'Playfair Display', serif;
-                                font-size: clamp(0.9rem, 3vw, 1.25rem);
-                                font-weight: 700;
-                                color: var(--teal-dark);
-                                line-height: 1;
-                                white-space: nowrap;
-                            "
-                        >
-                            Journal System
-                        </span>
-                        <span
-                            style="
-                                font-size: 0.5rem;
-                                font-weight: 700;
-                                color: var(--gold);
-                                text-transform: uppercase;
-                                letter-spacing: 0.05rem;
-                                white-space: nowrap;
-                            "
-                        >
-                            Academic Publishing Portal
-                        </span>
+                    <div style="display:flex;flex-direction:column;">
+                        <span class="brand-name">Journal System</span>
+                        <span class="brand-sub">Academic Publishing Portal</span>
                     </div>
                 </a>
-
-                <div
-                    style="
-                        display: flex;
-                        gap: 1rem;
-                        align-items: center;
-                        margin-left: auto;
-                    "
-                >
-                    <a
-                        href="/"
-                        style="
-                            font-size: 0.75rem;
-                            font-weight: 600;
-                            color: var(--text-muted);
-                            text-decoration: none;
-                            display: inline-flex;
-                            align-items: center;
-                            gap: 0.25rem;
-                            transition: color 0.2s;
-                            white-space: nowrap;
-                        "
-                    >
-                        <svg
-                            width="12"
-                            height="12"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
-                        >
-                            <line x1="19" y1="12" x2="5" y2="12"></line>
-                            <polyline points="12 19 5 12 12 5"></polyline>
-                        </svg>
-                        <span class="back-label">Back to Home</span>
-                    </a>
-                </div>
+                <a href="/" class="back-btn">
+                    <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <line x1="19" y1="12" x2="5" y2="12"/>
+                        <polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                    Back to Home
+                </a>
             </div>
         </header>
 
-        {{-- HERO --}}
-        <div class="paper-hero">
-            <div class="hero-shimmer shimmer-bar"></div>
+        {{-- ══ HERO ══ --}}
+        <section class="paper-hero">
+            <div class="hero-shimmer"></div>
             <div class="hero-inner">
-                <div class="fade-up" style="animation-delay: 0.05s">
-                    <div class="category-badge">
+                <div class="hero-main">
+                    <div class="status-badge">
                         <span class="pulse-dot"></span>
-                        {{ $paper['category'] }}
+                        {{ $paper['category'] ?? 'Research Article' }}
+                    </div>
+                    <h1 class="paper-title">{{ $paper['title'] }}</h1>
+
+                    <div class="hero-meta">
+                        <div class="hm-item">
+                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            <strong>{{ $paper['author'] ?? 'Unknown Author' }}</strong>
+                        </div>
+                        <div class="hm-sep"></div>
+                        <div class="hm-item">
+                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                            Published <strong>{{ $paper['publishedAt']->format('M d, Y') }}</strong>
+                        </div>
+                        <div class="hm-sep"></div>
+                        <div class="hm-item">
+                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                            Open Access
+                        </div>
                     </div>
                 </div>
-                <h1 class="paper-title fade-up" style="animation-delay: 0.15s">
-                    {{ $paper['title'] }}
-                </h1>
-                <div
-                    class="paper-meta-row fade-up"
-                    style="animation-delay: 0.28s"
-                >
-                    <div class="meta-item">
-                        <span class="meta-label">Author</span>
-                        <span class="meta-value">{{ $paper['author'] }}</span>
+
+                {{-- Sidebar stats (desktop only) --}}
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="hs-label">Status</span>
+                        <span class="hs-value" style="color:#7effd4;">✓ Published</span>
                     </div>
-                    <div class="meta-divider"></div>
-                    <div class="meta-item">
-                        <span class="meta-label">Published</span>
-                        <span class="meta-value">
-                            {{ $paper['publishedAt']->format('M d, Y') }}
-                        </span>
+                    <div class="hero-stat">
+                        <span class="hs-label">Year</span>
+                        <span class="hs-value">{{ $paper['publishedAt']->format('Y') }}</span>
                     </div>
-                    <div class="meta-divider"></div>
-                    <div class="meta-item">
-                        <span class="meta-label">Volume</span>
-                        <span class="meta-value">Vol. 8, No. 1</span>
+                    <div class="hero-stat">
+                        <span class="hs-label">Category</span>
+                        <span class="hs-value">{{ $paper['category'] ?? '—' }}</span>
                     </div>
-                    <div class="meta-divider"></div>
-                    <div class="meta-item">
-                        <span class="meta-label">DOI</span>
-                        <span
-                            class="meta-value"
-                            style="font-size: 0.75rem; opacity: 0.85"
-                        >
-                            10.1234/js.{{ $paper['id'] }}
-                        </span>
+                    <div class="hero-stat">
+                        <span class="hs-label">Format</span>
+                        <span class="hs-value">PDF / Online</span>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        {{-- MAIN --}}
-        <div class="main-wrap">
-            {{-- Primary Column --}}
-            <main>
-                {{-- Stats --}}
-                <div class="stats-card reveal">
-                    <div style="height: 3px" class="shimmer-bar"></div>
-                    <div class="stats-inner">
-                        <div class="stat-cell">
-                            <div class="stat-val">
-                                {{ $paper['citations'] }}
-                            </div>
-                            <div class="stat-lbl">Citations</div>
-                        </div>
-                        <div class="stat-cell">
-                            <div class="stat-val">
-                                {{ $paper['downloads'] }}
-                            </div>
-                            <div class="stat-lbl">Downloads</div>
-                        </div>
-                        <div class="stat-cell">
-                            <div class="stat-val">{{ $paper['reviews'] }}</div>
-                            <div class="stat-lbl">Peer Reviews</div>
-                        </div>
-                    </div>
-                </div>
+        {{-- ══ BODY ══ --}}
+        <div class="body-wrap">
 
-                {{-- Abstract Section --}}
-                <div
-                    class="paper-section reveal"
-                    style="transition-delay: 0.05s; margin-bottom: 2rem"
-                >
-                    <div class="section-heading">
-                        <div class="section-icon">
-                            <svg
-                                width="18"
-                                height="18"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    d="M9 12h6m-6 4h4M7 20H5a2 2 0 01-2-2V5a2 2 0 012-2h6.414a2 2 0 011.414.586l4.586 4.586A2 2 0 0117 9.414V15a2 2 0 01-2 2h-4v4a2 2 0 01-2 2z"
-                                />
+            {{-- ── MAIN COLUMN ── --}}
+            <main class="main-col">
+
+                {{-- Abstract --}}
+                <div class="reveal">
+                    <div class="sec-head">
+                        <div class="sec-icon">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M9 12h6m-6 4h4M7 20H5a2 2 0 01-2-2V5a2 2 0 012-2h6.414a2 2 0 011.414.586l4.586 4.586A2 2 0 0117 9.414V18a2 2 0 01-2 2H7z"/>
                             </svg>
                         </div>
                         Abstract
                     </div>
                     <div class="card">
-                        <div
-                            class="card-body"
-                            style="
-                                border-left: 4px solid var(--gold);
-                                background: var(--cream);
-                            "
-                        >
-                            <p
-                                style="
-                                    font-size: 0.85rem;
-                                    color: var(--text-body);
-                                    line-height: 1.75;
-                                    margin: 0;
-                                "
-                            >
+                        <div class="card-body" style="background:var(--cream);">
+                            <p class="abstract-text">
                                 {{ $paper['abstract'] ?? 'Lorem ipsum dolor es ma et al' }}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                {{-- Keywords Section --}}
-                <div
-                    class="paper-section reveal"
-                    style="transition-delay: 0.1s; margin-bottom: 2rem"
-                >
-                    <div class="section-heading">
-                        <div class="section-icon">
-                            <svg
-                                width="18"
-                                height="18"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                                />
-                            </svg>
-                        </div>
-                        Keywords
-                    </div>
-                    <div
-                        style="
-                            display: flex;
-                            gap: 0.75rem;
-                            flex-wrap: wrap;
-                            padding: 0;
-                        "
-                    >
-                        @if (isset($paper['keywords']) && is_array($paper['keywords']) && count($paper['keywords']) > 0)
-                            @foreach ($paper['keywords'] as $keyword)
-                                <span
-                                    style="
-                                        display: inline-block;
-                                        padding: 0.5rem 1rem;
-                                        background: rgba(45, 129, 118, 0.08);
-                                        border: 1px solid
-                                            rgba(45, 129, 118, 0.3);
-                                        color: var(--teal);
-                                        border-radius: 999px;
-                                        font-size: 0.8rem;
-                                        font-weight: 500;
-                                    "
-                                >
-                                    {{ $keyword }}
-                                </span>
-                            @endforeach
-                        @else
-                            <span
-                                style="
-                                    display: inline-block;
-                                    padding: 0.5rem 1rem;
-                                    background: rgba(45, 129, 118, 0.08);
-                                    border: 1px solid rgba(45, 129, 118, 0.3);
-                                    color: var(--teal);
-                                    border-radius: 999px;
-                                    font-size: 0.8rem;
-                                    font-weight: 500;
-                                "
-                            >
-                                Keyword 1
-                            </span>
-                            <span
-                                style="
-                                    display: inline-block;
-                                    padding: 0.5rem 1rem;
-                                    background: rgba(45, 129, 118, 0.08);
-                                    border: 1px solid rgba(45, 129, 118, 0.3);
-                                    color: var(--teal);
-                                    border-radius: 999px;
-                                    font-size: 0.8rem;
-                                    font-weight: 500;
-                                "
-                            >
-                                Keyword 2
-                            </span>
-                            <span
-                                style="
-                                    display: inline-block;
-                                    padding: 0.5rem 1rem;
-                                    background: rgba(45, 129, 118, 0.08);
-                                    border: 1px solid rgba(45, 129, 118, 0.3);
-                                    color: var(--teal);
-                                    border-radius: 999px;
-                                    font-size: 0.8rem;
-                                    font-weight: 500;
-                                "
-                            >
-                                Keyword 3
-                            </span>
-                        @endif
-                    </div>
-                </div>
-
-                {{-- Access Paper Section --}}
-                <div
-                    class="paper-section reveal"
-                    style="transition-delay: 0.15s; margin-bottom: 2rem"
-                >
-                    <div class="section-heading">
-                        <div class="section-icon">
-                            <svg
-                                width="18"
-                                height="18"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm8-5.5V5a2 2 0 00-2-2H6a2 2 0 00-2 2v6.5"
-                                />
+                {{-- Access Paper --}}
+                <div class="reveal" style="transition-delay:.1s">
+                    <div class="sec-head">
+                        <div class="sec-icon">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                             </svg>
                         </div>
                         Access Paper
                     </div>
-                    <div class="download-card">
-                        <div class="download-inner">
-                            <div class="download-text">
+                    <div class="access-card">
+                        <div class="access-inner">
+                            <div class="access-text">
                                 <h3>Full Paper Available</h3>
-                                <p>
-                                    Read online or download the complete PDF to
-                                    access methodology, results, and references.
-                                </p>
+                                <p>Read online or download the complete PDF — methodology, results, and references included.</p>
                             </div>
-                            <div
-                                style="
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: 0.6rem;
-                                    min-width: 160px;
-                                "
-                            >
-                                {{-- Read Online --}}
-                                <button
-                                    class="download-btn"
-                                    style="
-                                        background: var(--gold);
-                                        color: #fff;
-                                        border: none;
-                                        cursor: pointer;
-                                        justify-content: center;
-                                    "
-                                    onclick="
-                                        openPdfViewer(
-                                            '{{ route('papers.view', ['submission' => $paper['id']]) }}',
-                                        )
-                                    "
-                                >
-                                    <svg
-                                        width="14"
-                                        height="14"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2.2"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                        <circle cx="12" cy="12" r="3" />
+                            <div class="access-btns">
+                                <button class="btn-read"
+                                    onclick="openPdfViewer('{{ route('papers.view', ['submission' => $paper['id']]) }}')">
+                                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>
                                     </svg>
                                     Read Online
                                 </button>
-                                {{-- Download PDF --}}
-                                <a
-                                    href="{{ route('papers.download', ['submission' => $paper['id']]) }}"
-                                    class="download-btn"
-                                    style="justify-content: center"
-                                >
-                                    <svg
-                                        width="14"
-                                        height="14"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2.2"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
+                                <a href="{{ route('papers.download', ['submission' => $paper['id']]) }}" class="btn-dl">
+                                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
                                     Download PDF
                                 </a>
@@ -1501,861 +815,298 @@
                     </div>
                 </div>
 
-                {{-- Citation Section --}}
-                <div
-                    class="paper-section reveal"
-                    style="transition-delay: 0.2s; margin-bottom: 2rem"
-                >
-                    <div class="section-heading">
-                        <div class="section-icon">
-                            <svg
-                                width="18"
-                                height="18"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                                />
+                {{-- Citation --}}
+                <div class="reveal" style="transition-delay:.15s">
+                    <div class="sec-head">
+                        <div class="sec-icon">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
                             </svg>
                         </div>
-                        Citation
+                        Cite This Paper
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <p
-                                style="
-                                    font-size: 0.82rem;
-                                    color: var(--text-muted);
-                                    margin-bottom: 1.25rem;
-                                "
-                            >
-                                Choose your preferred citation style or export
-                                to reference management software.
-                            </p>
-                            <div
-                                style="
-                                    display: flex;
-                                    gap: 0.75rem;
-                                    flex-direction: column;
-                                "
-                            >
-                                <button
-                                    class="cite-btn"
-                                    onclick="openCitationModal()"
+                            <p class="cite-desc">Select a citation style or export to your reference manager.</p>
+                            <div class="cite-section-inner">
+                                <button class="btn-cite"
+                                    onclick="openCitationModal(event)"
                                     data-paper-title="{{ $paper['title'] }}"
                                     data-paper-author="{{ $paper['author'] }}"
                                     data-publication-year="{{ $paper['publishedAt']->format('Y') }}"
-                                    data-category="{{ $paper['category'] }}"
-                                    style="
-                                        width: 100%;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                    "
-                                >
-                                    <svg
-                                        width="14"
-                                        height="14"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2.2"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <rect
-                                            x="9"
-                                            y="9"
-                                            width="13"
-                                            height="13"
-                                            rx="2"
-                                            ry="2"
-                                        />
-                                        <path
-                                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-                                        />
+                                    data-category="{{ $paper['category'] }}">
+                                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
                                     </svg>
-                                    CITE THIS PAPER
+                                    Generate Citation
                                 </button>
-
-                                <a
-                                    href="{{ route('papers.download-ris', ['submission' => $paper['id']]) }}"
-                                    class="cite-btn"
-                                    style="
-                                        width: 100%;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        text-decoration: none;
-                                        background-color: #c9a84c;
-                                        color: #fff;
-                                        border: none;
-                                        cursor: pointer;
-                                    "
-                                    title="Download RIS format for Zotero, Mendeley, EndNote"
-                                >
-                                    <svg
-                                        width="14"
-                                        height="14"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2.2"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
-                                        />
-                                        <polyline points="7 10 12 15 17 10" />
-                                        <line x1="12" y1="15" x2="12" y2="3" />
+                                <a href="{{ route('papers.download-ris', ['submission' => $paper['id']]) }}" class="btn-ris">
+                                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
                                     </svg>
-                                    EXPORT AS RIS
+                                    Export as RIS
                                 </a>
+                                <p class="cite-note">RIS works with Zotero, Mendeley, EndNote &amp; more</p>
                             </div>
-                            <p
-                                style="
-                                    font-size: 0.75rem;
-                                    color: var(--text-muted);
-                                    margin-top: 0.75rem;
-                                    text-align: center;
-                                "
-                            >
-                                RIS format works with Zotero, Mendeley, EndNote,
-                                and other reference managers
-                            </p>
                         </div>
                     </div>
                 </div>
+
             </main>
 
-            {{-- Sidebar --}}
-            <aside style="width: 100%; max-width: 280px">
+            {{-- ── SIDEBAR ── --}}
+            <aside class="side-col">
+
+                {{-- Stats --}}
+                <div class="side-card reveal">
+                    <div class="stats-strip">
+                        <div class="stat-cell">
+                            <span class="stat-val">{{ $paper['views'] ?? '—' }}</span>
+                            <span class="stat-lbl">Views</span>
+                        </div>
+                        <div class="stat-cell">
+                            <span class="stat-val">{{ $paper['downloads'] ?? '—' }}</span>
+                            <span class="stat-lbl">Downloads</span>
+                        </div>
+                        <div class="stat-cell">
+                            <span class="stat-val">{{ $paper['citations'] ?? '0' }}</span>
+                            <span class="stat-lbl">Citations</span>
+                        </div>
+                    </div>
+                </div>
+
                 {{-- Paper Details --}}
-                <div class="card" style="margin-bottom: 1.5rem">
-                    <div
-                        class="card-header"
-                        style="
-                            padding: 1rem;
-                            border-bottom: 1px solid var(--border);
-                            display: flex;
-                            align-items: center;
-                            gap: 0.5rem;
-                            font-size: 0.75rem;
-                            font-weight: 700;
-                            color: var(--text-muted);
-                            text-transform: uppercase;
-                            letter-spacing: 0.05em;
-                        "
-                    >
-                        <svg
-                            width="14"
-                            height="14"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
-                        >
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M12 6v6l4 2" />
+                <div class="side-card reveal" style="transition-delay:.05s">
+                    <div class="sc-head">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                         </svg>
                         Paper Details
                     </div>
-                    <div
-                        class="card-body sidebar-detail-grid"
-                        style="padding: 1rem"
-                    >
-                        <div style="margin-bottom: 1.25rem">
-                            <p
-                                style="
-                                    font-size: 0.7rem;
-                                    font-weight: 700;
-                                    color: var(--text-muted);
-                                    text-transform: uppercase;
-                                    letter-spacing: 0.05em;
-                                    margin-bottom: 0.35rem;
-                                "
-                            >
-                                Category
-                            </p>
-                            <p
-                                style="
-                                    font-size: 0.9rem;
-                                    font-weight: 600;
-                                    color: var(--text-body);
-                                    margin: 0;
-                                "
-                            >
-                                {{ $paper['category'] ?? 'Engineering' }}
-                            </p>
-                        </div>
-                        <div style="margin-bottom: 1.25rem">
-                            <p
-                                style="
-                                    font-size: 0.7rem;
-                                    font-weight: 700;
-                                    color: var(--text-muted);
-                                    text-transform: uppercase;
-                                    letter-spacing: 0.05em;
-                                    margin-bottom: 0.35rem;
-                                "
-                            >
-                                Journal
-                            </p>
-                            <p
-                                style="
-                                    font-size: 0.9rem;
-                                    font-weight: 600;
-                                    color: var(--text-body);
-                                    margin: 0;
-                                "
-                            >
-                                Open Journal System
-                            </p>
-                        </div>
-                        <div style="margin-bottom: 1.25rem">
-                            <p
-                                style="
-                                    font-size: 0.7rem;
-                                    font-weight: 700;
-                                    color: var(--text-muted);
-                                    text-transform: uppercase;
-                                    letter-spacing: 0.05em;
-                                    margin-bottom: 0.35rem;
-                                "
-                            >
-                                Volume / Issue
-                            </p>
-                            <p
-                                style="
-                                    font-size: 0.9rem;
-                                    font-weight: 600;
-                                    color: var(--text-body);
-                                    margin: 0;
-                                "
-                            >
-                                Vol. 8, No. 1
-                            </p>
-                        </div>
-                        <div style="margin-bottom: 1.25rem">
-                            <p
-                                style="
-                                    font-size: 0.7rem;
-                                    font-weight: 700;
-                                    color: var(--text-muted);
-                                    text-transform: uppercase;
-                                    letter-spacing: 0.05em;
-                                    margin-bottom: 0.35rem;
-                                "
-                            >
-                                Pages
-                            </p>
-                            <p
-                                style="
-                                    font-size: 0.9rem;
-                                    font-weight: 600;
-                                    color: var(--text-body);
-                                    margin: 0;
-                                "
-                            >
-                                pp. 14–28
-                            </p>
-                        </div>
-                        <div style="margin-bottom: 1.25rem">
-                            <p
-                                style="
-                                    font-size: 0.7rem;
-                                    font-weight: 700;
-                                    color: var(--text-muted);
-                                    text-transform: uppercase;
-                                    letter-spacing: 0.05em;
-                                    margin-bottom: 0.35rem;
-                                "
-                            >
-                                Language
-                            </p>
-                            <p
-                                style="
-                                    font-size: 0.9rem;
-                                    font-weight: 600;
-                                    color: var(--text-body);
-                                    margin: 0;
-                                "
-                            >
-                                English
-                            </p>
+                    <div class="sc-body">
+                        <div class="info-list">
+                            <div class="info-row">
+                                <span class="ir-label">Author</span>
+                                <span class="ir-value">{{ $paper['author'] ?? '—' }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="ir-label">Published</span>
+                                <span class="ir-value">{{ $paper['publishedAt']->format('F d, Y') }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="ir-label">Category</span>
+                                <span class="ir-value">{{ $paper['category'] ?? '—' }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="ir-label">Journal</span>
+                                <span class="ir-value">Open Journal System</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="ir-label">Access</span>
+                                <span class="ir-value" style="color:var(--teal);font-weight:600;">Open Access</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- About the Author --}}
-                <div class="card">
-                    <div
-                        class="card-header"
-                        style="
-                            padding: 1rem;
-                            border-bottom: 1px solid var(--border);
-                            display: flex;
-                            align-items: center;
-                            gap: 0.5rem;
-                            font-size: 0.75rem;
-                            font-weight: 700;
-                            color: var(--text-muted);
-                            text-transform: uppercase;
-                            letter-spacing: 0.05em;
-                        "
-                    >
-                        <svg
-                            width="14"
-                            height="14"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
-                            />
-                            <circle cx="12" cy="7" r="4" />
+                {{-- Author --}}
+                <div class="side-card reveal" style="transition-delay:.1s">
+                    <div class="sc-head">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
                         </svg>
                         About the Author
                     </div>
-                    <div
-                        class="card-body"
-                        style="padding: 1.5rem; text-align: center"
-                    >
-                        <div
-                            style="
-                                width: 60px;
-                                height: 60px;
-                                margin: 0 auto 1rem;
-                                background: var(--teal);
-                                border-radius: 50%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                color: white;
-                                font-weight: 700;
-                                font-size: 1.4rem;
-                            "
-                        >
-                            {{ substr($paper['author'] ?? 'RA', 0, 2) }}
-                        </div>
-                        <p
-                            style="
-                                font-size: 0.95rem;
-                                font-weight: 700;
-                                color: var(--text-body);
-                                margin: 0 0 0.25rem;
-                            "
-                        >
-                            {{ $paper['author'] ?? 'Ralph Areta' }}
-                        </p>
-                        <p
-                            style="
-                                font-size: 0.8rem;
-                                color: var(--text-muted);
-                                margin: 0 0 0.75rem;
-                            "
-                        >
-                            Lead Researcher
-                        </p>
-                        <p
-                            style="
-                                font-size: 0.8rem;
-                                color: var(--text-body);
-                                line-height: 1.6;
-                                margin: 0;
-                            "
-                        >
-                            Researcher and author contributing to the Open
-                            Journal System academic community.
-                        </p>
-                    </div>
-                </div>
-            </aside>
-        </div>
-
-        <script>
-            /* Scroll reveal */
-            const observer = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach((e) => {
-                        if (e.isIntersecting) e.target.classList.add('visible');
-                    });
-                },
-                { threshold: 0.12 },
-            );
-            document
-                .querySelectorAll('.reveal')
-                .forEach((el) => observer.observe(el));
-
-            /* Citation modal */
-            let currentPaperData = {};
-
-            function openCitationModal() {
-                const btn = event.currentTarget;
-                currentPaperData = {
-                    title: btn.getAttribute('data-paper-title'),
-                    author: btn.getAttribute('data-paper-author'),
-                    year: btn.getAttribute('data-publication-year'),
-                    journal: 'Open Journal System',
-                    doi: Math.floor(Math.random() * 100000),
-                    url: window.location.href,
-                };
-                generateCitations();
-                document.getElementById('citationModal').classList.add('show');
-            }
-
-            function closeCitationModal() {
-                document
-                    .getElementById('citationModal')
-                    .classList.remove('show');
-            }
-
-            function generateCitations() {
-                const d = currentPaperData;
-                document.getElementById('apa').innerHTML =
-                    `${d.author}. (${d.year}). ${d.title}. <em>${d.journal}</em>. https://doi.org/10.1234/js.${d.doi}`;
-                document.getElementById('chicago').innerHTML =
-                    `${d.author}. "${d.title}." <em>${d.journal}</em> (${d.year}). Accessed ${new Date().toLocaleDateString()}. ${d.url}`;
-                document.getElementById('mla').innerHTML =
-                    `${d.author}. "${d.title}." <em>${d.journal}</em>, ${d.year}. DOI: 10.1234/js.${d.doi}.`;
-                document.getElementById('harvard').innerHTML =
-                    `${d.author}, ${d.year}. ${d.title}. <em>${d.journal}</em>. Available at: ${d.url} (Accessed: ${new Date().toLocaleDateString()}).`;
-            }
-
-            function switchCitationStyle(btn, style) {
-                document
-                    .querySelectorAll('.citation-tab-btn')
-                    .forEach((b) => b.classList.remove('active'));
-                document
-                    .querySelectorAll('.citation-content')
-                    .forEach((d) => d.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById(style).classList.add('active');
-            }
-
-            function copyCitation() {
-                const active = document.querySelector(
-                    '.citation-content.active',
-                );
-                if (!active) return;
-                navigator.clipboard.writeText(active.innerText).then(() => {
-                    const btn = event.currentTarget;
-                    const orig = btn.innerHTML;
-                    btn.innerHTML = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
-                    setTimeout(() => {
-                        btn.innerHTML = orig;
-                    }, 2000);
-                });
-            }
-
-            document
-                .getElementById('citationModal')
-                .addEventListener('click', function (e) {
-                    if (e.target === this) closeCitationModal();
-                });
-        </script>
-
-        {{-- PDF Viewer Modal --}}
-        <div
-            id="pdfViewerModal"
-            style="
-                display: none;
-                position: fixed;
-                inset: 0;
-                z-index: 2000;
-                background: rgba(10, 20, 30, 0.7);
-                backdrop-filter: blur(6px);
-                align-items: center;
-                justify-content: center;
-                padding: 1rem;
-            "
-        >
-            <div
-                style="
-                    background: #fff;
-                    border-radius: 16px;
-                    width: 100%;
-                    max-width: 900px;
-                    height: 90vh;
-                    display: flex;
-                    flex-direction: column;
-                    overflow: hidden;
-                    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.3);
-                    animation: slideUp 0.3s cubic-bezier(0.22, 0.68, 0, 1.2);
-                "
-            >
-                {{-- Modal Header --}}
-                <div
-                    style="
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
-                        padding: 0.875rem 1.25rem;
-                        border-bottom: 1px solid var(--border);
-                        background: var(--cream);
-                        flex-shrink: 0;
-                    "
-                >
-                    <div
-                        style="display: flex; align-items: center; gap: 0.6rem"
-                    >
-                        <div
-                            style="
-                                width: 1.75rem;
-                                height: 1.75rem;
-                                border-radius: 7px;
-                                background: var(--gold-dim);
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                color: var(--gold);
-                            "
-                        >
-                            <svg
-                                width="14"
-                                height="14"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"
-                                />
-                                <circle cx="12" cy="12" r="3" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p
-                                style="
-                                    font-size: 0.65rem;
-                                    font-weight: 700;
-                                    letter-spacing: 0.1em;
-                                    text-transform: uppercase;
-                                    color: var(--text-muted);
-                                    line-height: 1;
-                                "
-                            >
-                                Reading
-                            </p>
-                            <p
-                                style="
-                                    font-size: 0.88rem;
-                                    font-weight: 700;
-                                    color: var(--teal-dark);
-                                    line-height: 1.2;
-                                    max-width: 500px;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;
-                                    white-space: nowrap;
-                                "
-                                id="pdfViewerTitle"
-                            >
-                                {{ $paper['title'] }}
-                            </p>
+                    <div class="sc-body" style="text-align:center;">
+                        <div style="display:flex;flex-direction:column;align-items:center;">
+                            <div class="author-avatar">
+                                {{ substr($paper['author'] ?? 'RA', 0, 2) }}
+                            </div>
+                            <p class="author-name">{{ $paper['author'] ?? 'Unknown Author' }}</p>
+                            <p class="author-role">Researcher</p>
+                            <p class="author-bio">Contributing researcher in the Open Journal System academic community.</p>
                         </div>
                     </div>
-                    <div
-                        style="display: flex; align-items: center; gap: 0.5rem"
-                    >
-                        <a
-                            id="pdfDownloadBtn"
-                            href="#"
-                            class="download-btn"
-                            style="
-                                padding: 0.5rem 1rem;
-                                font-size: 0.72rem;
-                                background: var(--teal);
-                                color: #fff;
-                                text-decoration: none;
-                                border-radius: 8px;
-                                display: inline-flex;
-                                align-items: center;
-                                gap: 0.4rem;
-                            "
-                        >
-                            <svg
-                                width="12"
-                                height="12"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2.2"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                />
-                            </svg>
-                            Download
-                        </a>
-                        <button
-                            onclick="closePdfViewer()"
-                            style="
-                                width: 2rem;
-                                height: 2rem;
-                                border-radius: 8px;
-                                background: var(--cream);
-                                border: 1px solid var(--border);
-                                cursor: pointer;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                color: var(--text-muted);
-                                font-size: 1rem;
-                                transition: background 0.15s;
-                            "
-                            onmouseover="
-                                this.style.background = '#fee2e2';
-                                this.style.color = '#dc2626';
-                            "
-                            onmouseout="
-                                this.style.background = 'var(--cream)';
-                                this.style.color = 'var(--text-muted)';
-                            "
-                        >
-                            &times;
-                        </button>
-                    </div>
                 </div>
 
-                {{-- PDF iframe --}}
-                <div
-                    style="
-                        flex: 1;
-                        overflow: hidden;
-                        background: #525659;
-                        position: relative;
-                    "
-                >
-                    {{-- Loading state --}}
-                    <div
-                        id="pdfLoading"
-                        style="
-                            position: absolute;
-                            inset: 0;
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-                            justify-content: center;
-                            background: #525659;
-                            z-index: 1;
-                            gap: 1rem;
-                        "
-                    >
-                        <div
-                            style="
-                                width: 48px;
-                                height: 48px;
-                                border: 3px solid rgba(255, 255, 255, 0.2);
-                                border-top-color: var(--gold);
-                                border-radius: 50%;
-                                animation: spin 0.8s linear infinite;
-                            "
-                        ></div>
-                        <p
-                            style="
-                                color: rgba(255, 255, 255, 0.7);
-                                font-size: 0.82rem;
-                                font-weight: 500;
-                            "
-                        >
-                            Loading manuscript…
-                        </p>
-                    </div>
-                    <iframe
-                        id="pdfFrame"
-                        src=""
-                        style="
-                            width: 100%;
-                            height: 100%;
-                            border: none;
-                            display: block;
-                        "
-                        onload="
-                            document.getElementById(
-                                'pdfLoading',
-                            ).style.display = 'none'
-                        "
-                    ></iframe>
-                </div>
-
-                {{-- Mobile fallback notice --}}
-                <div
-                    id="pdfFallback"
-                    style="
-                        display: none;
-                        padding: 0.75rem 1.25rem;
-                        background: #fffbf0;
-                        border-top: 1px solid rgba(201, 168, 76, 0.3);
-                        font-size: 0.78rem;
-                        color: var(--gold-dk);
-                        text-align: center;
-                    "
-                >
-                    📱 If the PDF doesn't load on your device,
-                    <a
-                        id="pdfFallbackLink"
-                        href="#"
-                        style="
-                            color: var(--teal);
-                            font-weight: 600;
-                            text-decoration: underline;
-                        "
-                    >
-                        download it directly
-                    </a>
-                    .
-                </div>
-            </div>
-        </div>
-
-        <style>
-            @keyframes spin {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-        </style>
-
-        <script>
-            function openPdfViewer(url) {
-                const modal = document.getElementById('pdfViewerModal');
-                const frame = document.getElementById('pdfFrame');
-                const loading = document.getElementById('pdfLoading');
-                const dlBtn = document.getElementById('pdfDownloadBtn');
-                const fallbackLink = document.getElementById('pdfFallbackLink');
-                const fallback = document.getElementById('pdfFallback');
-
-                // Reset loading state
-                loading.style.display = 'flex';
-                frame.src = '';
-
-                // Set download links
-                dlBtn.href = url;
-                fallbackLink.href = url;
-
-                // Show modal
-                modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-
-                // Load PDF — append #toolbar=1&view=FitH for better browser rendering
-                setTimeout(() => {
-                    frame.src = url + '#toolbar=1&view=FitH';
-                }, 100);
-
-                // Show mobile fallback after 4s if still loading
-                const fallbackTimer = setTimeout(() => {
-                    if (loading.style.display !== 'none') {
-                        fallback.style.display = 'block';
-                    }
-                }, 4000);
-
-                frame.addEventListener(
-                    'load',
-                    function onLoad() {
-                        clearTimeout(fallbackTimer);
-                        frame.removeEventListener('load', onLoad);
-
-                        // Check if iOS/mobile — show fallback hint
-                        const isMobile = /iPhone|iPad|iPod|Android/i.test(
-                            navigator.userAgent,
-                        );
-                        if (isMobile) fallback.style.display = 'block';
-                    },
-                    { once: true },
-                );
-            }
-
-            function closePdfViewer() {
-                const modal = document.getElementById('pdfViewerModal');
-                const frame = document.getElementById('pdfFrame');
-                modal.style.display = 'none';
-                frame.src = ''; // stop loading/playing
-                document.body.style.overflow = '';
-                document.getElementById('pdfFallback').style.display = 'none';
-                document.getElementById('pdfLoading').style.display = 'flex';
-            }
-
-            // Close on backdrop click
-            document
-                .getElementById('pdfViewerModal')
-                .addEventListener('click', function (e) {
-                    if (e.target === this) closePdfViewer();
-                });
-
-            // Close on Escape
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') closePdfViewer();
-            });
-        </script>
-
-        {{-- Citation Modal --}}
+           
+        {{-- ══ CITATION MODAL ══ --}}
         <div id="citationModal" class="citation-modal">
             <div class="modal-box">
-                <div class="modal-top-bar"></div>
-                <button class="modal-close" onclick="closeCitationModal()">
-                    &times;
-                </button>
-                <div class="modal-inner">
-                    <h2 class="modal-title">Cite This Paper</h2>
-                    <p class="modal-subtitle">
-                        Select a format and copy the formatted reference.
-                    </p>
-
-                    <div class="citation-tabs">
-                        <button
-                            class="citation-tab-btn active"
-                            onclick="switchCitationStyle(this, 'apa')"
-                        >
-                            APA
-                        </button>
-                        <button
-                            class="citation-tab-btn"
-                            onclick="switchCitationStyle(this, 'chicago')"
-                        >
-                            Chicago
-                        </button>
-                        <button
-                            class="citation-tab-btn"
-                            onclick="switchCitationStyle(this, 'mla')"
-                        >
-                            MLA
-                        </button>
-                        <button
-                            class="citation-tab-btn"
-                            onclick="switchCitationStyle(this, 'harvard')"
-                        >
-                            Harvard
-                        </button>
+                <div class="modal-header">
+                    <div>
+                        <div class="modal-title">Cite This Paper</div>
+                        <div class="modal-sub">Select a format, then copy the reference.</div>
                     </div>
-
-                    <div id="apa" class="citation-content active"></div>
-                    <div id="chicago" class="citation-content"></div>
-                    <div id="mla" class="citation-content"></div>
-                    <div id="harvard" class="citation-content"></div>
-
+                    <button class="modal-close" onclick="closeCitationModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="cite-tabs">
+                        <button class="ct-btn active" onclick="switchCite(this,'apa')">APA</button>
+                        <button class="ct-btn" onclick="switchCite(this,'chicago')">Chicago</button>
+                        <button class="ct-btn" onclick="switchCite(this,'mla')">MLA</button>
+                        <button class="ct-btn" onclick="switchCite(this,'harvard')">Harvard</button>
+                    </div>
+                    <div id="apa"     class="cite-content active"></div>
+                    <div id="chicago" class="cite-content"></div>
+                    <div id="mla"     class="cite-content"></div>
+                    <div id="harvard" class="cite-content"></div>
                     <button class="copy-btn" onclick="copyCitation()">
-                        <svg
-                            width="13"
-                            height="13"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
-                            />
-                            <rect x="8" y="2" width="8" height="4" rx="1" />
+                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/>
                         </svg>
                         Copy Citation
                     </button>
                 </div>
             </div>
         </div>
+
+        {{-- ══ PDF VIEWER MODAL ══ --}}
+        <div id="pdfViewerModal" class="pdf-modal">
+            <div class="pdf-box">
+                <div class="pdf-head">
+                    <div class="pdf-head-left">
+                        <div class="pdf-icon">
+                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="pdf-label">Reading</div>
+                            <div class="pdf-title-txt" id="pdfViewerTitle">{{ $paper['title'] }}</div>
+                        </div>
+                    </div>
+                    <div class="pdf-head-right">
+                        <a id="pdfDownloadBtn" href="#" class="pdf-dl-btn">
+                            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Download
+                        </a>
+                        <button class="pdf-close-btn" onclick="closePdfViewer()">&times;</button>
+                    </div>
+                </div>
+                <div class="pdf-frame-wrap">
+                    <div class="pdf-loading" id="pdfLoading">
+                        <div class="spin-ring"></div>
+                        <p>Loading manuscript…</p>
+                    </div>
+                    <iframe id="pdfFrame" src=""
+                        onload="document.getElementById('pdfLoading').style.display='none'">
+                    </iframe>
+                </div>
+                <div class="pdf-fallback" id="pdfFallback">
+                    📱 If the PDF doesn't load,
+                    <a id="pdfFallbackLink" href="#">download it directly</a>.
+                </div>
+            </div>
+        </div>
+
+        <script>
+            /* ── Scroll reveal ── */
+            const ro = new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+            /* ── Citation modal ── */
+            let _pd = {};
+
+            function openCitationModal(e) {
+                const btn = e.currentTarget;
+                _pd = {
+                    title:  btn.getAttribute('data-paper-title'),
+                    author: btn.getAttribute('data-paper-author'),
+                    year:   btn.getAttribute('data-publication-year'),
+                    journal:'Open Journal System',
+                    doi:    Math.floor(Math.random() * 100000),
+                    url:    window.location.href,
+                };
+                buildCitations();
+                document.getElementById('citationModal').classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeCitationModal() {
+                document.getElementById('citationModal').classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            function buildCitations() {
+                const d = _pd;
+                document.getElementById('apa').innerHTML     = `${d.author}. (${d.year}). ${d.title}. <em>${d.journal}</em>. https://doi.org/10.1234/js.${d.doi}`;
+                document.getElementById('chicago').innerHTML = `${d.author}. "${d.title}." <em>${d.journal}</em> (${d.year}). Accessed ${new Date().toLocaleDateString()}. ${d.url}`;
+                document.getElementById('mla').innerHTML     = `${d.author}. "${d.title}." <em>${d.journal}</em>, ${d.year}. DOI: 10.1234/js.${d.doi}.`;
+                document.getElementById('harvard').innerHTML = `${d.author}, ${d.year}. ${d.title}. <em>${d.journal}</em>. Available at: ${d.url} (Accessed: ${new Date().toLocaleDateString()}).`;
+            }
+
+            function switchCite(btn, style) {
+                document.querySelectorAll('.ct-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.cite-content').forEach(d => d.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(style).classList.add('active');
+            }
+
+            function copyCitation() {
+                const active = document.querySelector('.cite-content.active');
+                if (!active) return;
+                navigator.clipboard.writeText(active.innerText).then(() => {
+                    const btn = event.currentTarget;
+                    const orig = btn.innerHTML;
+                    btn.innerHTML = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+                    setTimeout(() => btn.innerHTML = orig, 2000);
+                });
+            }
+
+            document.getElementById('citationModal').addEventListener('click', function(e) {
+                if (e.target === this) closeCitationModal();
+            });
+
+            /* ── PDF viewer ── */
+            function openPdfViewer(url) {
+                const modal   = document.getElementById('pdfViewerModal');
+                const frame   = document.getElementById('pdfFrame');
+                const loading = document.getElementById('pdfLoading');
+                const dlBtn   = document.getElementById('pdfDownloadBtn');
+                const fbLink  = document.getElementById('pdfFallbackLink');
+                const fb      = document.getElementById('pdfFallback');
+
+                loading.style.display = 'flex';
+                frame.src = '';
+                dlBtn.href = url;
+                fbLink.href = url;
+                fb.style.display = 'none';
+
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+
+                setTimeout(() => { frame.src = url + '#toolbar=1&view=FitH'; }, 100);
+
+                const fbTimer = setTimeout(() => {
+                    if (loading.style.display !== 'none') fb.style.display = 'block';
+                }, 4000);
+
+                frame.addEventListener('load', function onLoad() {
+                    clearTimeout(fbTimer);
+                    frame.removeEventListener('load', onLoad);
+                    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) fb.style.display = 'block';
+                }, { once: true });
+            }
+
+            function closePdfViewer() {
+                const modal = document.getElementById('pdfViewerModal');
+                const frame = document.getElementById('pdfFrame');
+                modal.classList.remove('open');
+                frame.src = '';
+                document.body.style.overflow = '';
+                document.getElementById('pdfLoading').style.display = 'flex';
+                document.getElementById('pdfFallback').style.display = 'none';
+            }
+
+            document.getElementById('pdfViewerModal').addEventListener('click', function(e) {
+                if (e.target === this) closePdfViewer();
+            });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePdfViewer(); closeCitationModal(); } });
+        </script>
     </body>
 </html>

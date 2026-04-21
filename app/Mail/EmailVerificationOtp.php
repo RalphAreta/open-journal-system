@@ -8,19 +8,28 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class OtpMail extends Mailable
+class EmailVerificationOtp extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public string $otp) {}
+    public function __construct(public string $token) {}
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'Your Verification Code - Journal System');
+        return new Envelope(
+            subject: 'Your Journal System Verification Code',
+        );
     }
 
     public function content(): Content
     {
-        return new Content(view: 'emails.otp');
+        return new Content(
+            view: 'emails.otp',
+        );
+    }
+
+    public function attachments(): array
+    {
+        return [];
     }
 }

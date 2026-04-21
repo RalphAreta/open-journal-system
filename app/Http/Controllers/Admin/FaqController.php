@@ -8,11 +8,14 @@ use Illuminate\Http\Request;
 
 class FaqController extends Controller
 {
-    public function index()
-    {
-        $faqs = Faq::ordered()->get()->groupBy('category');
-        return view('admin.faqs.index', compact('faqs'));
-    }
+ public function index()
+{
+    $faqs = Faq::ordered()->get()->groupBy('category');
+    $total = Faq::count();
+    $active = Faq::where('is_active', true)->count();
+
+    return view('admin.faqs.index', compact('faqs', 'total', 'active'));
+}
 
     public function store(Request $request)
     {

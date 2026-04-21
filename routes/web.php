@@ -38,22 +38,11 @@ Route::middleware('guest')->group(function (): void {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [RegisterController::class, 'register']);
+    Route::post('/register', [RegisterController::class, 'store']);
+    Route::get('/verify-email', [RegisterController::class, 'showVerify'])->name('verify.email.show');
+    Route::post('/verify-email', [RegisterController::class, 'verify'])->name('verify.email');
+    Route::post('/verify-email/resend', [RegisterController::class, 'resend'])->name('verify.email.resend');
 });
-
-use App\Http\Controllers\Auth\OtpController;
-
-Route::get('/email/verify', [OtpController::class, 'show'])
-    ->middleware('auth')
-   ->name('verification.notice');
-
-Route::post('/email/verify', [OtpController::class, 'verify'])
-    ->middleware('auth')
-    ->name('otp.verify.submit');
-
-Route::post('/email/resend', [OtpController::class, 'resend'])
-    ->middleware(['auth', 'throttle:6,1'])
-    ->name('otp.resend');
 
 
 Route::middleware('auth')->group(function (): void {
