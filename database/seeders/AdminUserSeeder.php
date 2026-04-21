@@ -11,17 +11,33 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@ojs.local'],
-            [
-                'name' => 'Admin',
-                'password' => Hash::make('password'),
-            ]
-        );
-
         $adminRole = Role::where('name', 'admin')->first();
-        if ($adminRole && ! $admin->roles()->where('role_id', $adminRole->id)->exists()) {
-            $admin->roles()->attach($adminRole->id);
+
+        $adminUsers = [
+            [
+                'email' => 'admin@ojs.local',
+                'name' => 'Admin',
+                'password' => 'password',
+            ],
+            [
+                'email' => 'admin@ojs.com',
+                'name' => 'Admin',
+                'password' => 'password',
+            ],
+        ];
+
+        foreach ($adminUsers as $adminUser) {
+            $admin = User::firstOrCreate(
+                ['email' => $adminUser['email']],
+                [
+                    'name' => $adminUser['name'],
+                    'password' => Hash::make($adminUser['password']),
+                ]
+            );
+
+            if ($adminRole && ! $admin->roles()->where('role_id', $adminRole->id)->exists()) {
+                $admin->roles()->attach($adminRole->id);
+            }
         }
     }
 }
