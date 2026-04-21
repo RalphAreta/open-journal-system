@@ -3,536 +3,1007 @@
 @section('title', 'Submit Review')
 
 @section('content')
-    <div class="max-w-4xl mx-auto py-6 sm:py-8 px-4 sm:px-6">
-        {{-- Header Section --}}
-        <div class="mb-8 sm:mb-10">
-            <nav
-                class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex-wrap"
-            >
-                <a
-                    href="{{ route('reviews.index') }}"
-                    class="hover:text-red-600 transition-colors"
-                >
-                    My Reviews
-                </a>
-                <svg
-                    class="w-3 h-3 shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path d="M9 5l7 7-7 7" stroke-width="3" />
-                </svg>
-                <span class="text-slate-900 tracking-widest">
-                    Submit Review
-                </span>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet"
+    />
+
+    <style>
+        .rv-root {
+            font-family: 'DM Sans', sans-serif;
+            background: #f7f6f3;
+            min-height: 100vh;
+            padding: 2.5rem 1rem;
+        }
+        .rv-inner {
+            max-width: 780px;
+            margin: 0 auto;
+        }
+
+        /* Breadcrumb */
+        .rv-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .rv-breadcrumb a {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #94928a;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+        .rv-breadcrumb a:hover {
+            color: #b91c1c;
+        }
+        .rv-breadcrumb-sep {
+            color: #c7c4bd;
+            font-size: 11px;
+        }
+        .rv-breadcrumb-current {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #1c1917;
+        }
+
+        /* Page header */
+        .rv-header {
+            border-left: 3px solid #b91c1c;
+            padding-left: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .rv-header h1 {
+            font-family: 'Lora', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1c1917;
+            line-height: 1.2;
+            margin: 0 0 0.4rem;
+        }
+        .rv-header p {
+            font-size: 0.875rem;
+            color: #78716c;
+            margin: 0;
+            font-weight: 300;
+        }
+
+        /* Cards */
+        .rv-card {
+            background: #fff;
+            border: 1px solid #e7e5e0;
+            border-radius: 6px;
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.25rem;
+        }
+        .rv-card-title {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #a09e97;
+            margin: 0 0 1.25rem;
+        }
+
+        /* Submission info grid */
+        .rv-meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        @media (max-width: 560px) {
+            .rv-meta-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .rv-meta-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #a09e97;
+            margin-bottom: 0.3rem;
+        }
+        .rv-meta-value {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: #1c1917;
+        }
+        .rv-tag {
+            display: inline-block;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.2rem 0.75rem;
+            border-radius: 2px;
+        }
+        .rv-abstract {
+            font-size: 0.9rem;
+            color: #57534e;
+            line-height: 1.75;
+            border-top: 1px solid #f0ede8;
+            padding-top: 1.25rem;
+        }
+
+        /* File download */
+        .rv-file-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .rv-file-icon {
+            width: 40px;
+            height: 40px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .rv-file-icon svg {
+            width: 18px;
+            height: 18px;
+            color: #b91c1c;
+        }
+        .rv-file-info {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+        }
+        .rv-file-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1c1917;
+        }
+        .rv-file-sub {
+            font-size: 0.75rem;
+            color: #a09e97;
+        }
+        .rv-download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #b91c1c;
+            text-decoration: none;
+            letter-spacing: 0.03em;
+            border: 1px solid #fecaca;
+            padding: 0.45rem 1rem;
+            border-radius: 4px;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .rv-download-btn:hover {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+        .rv-download-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Section heading inside form card */
+        .rv-form-heading {
+            font-family: 'Lora', serif;
+            font-size: 1.375rem;
+            font-weight: 600;
+            color: #1c1917;
+            margin: 0 0 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f0ede8;
+        }
+
+        /* Form fields */
+        .rv-field {
+            margin-bottom: 1.75rem;
+        }
+        .rv-label {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #1c1917;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.625rem;
+            letter-spacing: 0.01em;
+        }
+        .rv-required {
+            color: #b91c1c;
+        }
+        .rv-optional {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: #a09e97;
+        }
+
+        /* Tooltip */
+        .rv-tip-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .rv-tip-btn {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #e7e5e0;
+            border: none;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 800;
+            color: #78716c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            padding: 0;
+            transition:
+                background 0.15s,
+                color 0.15s;
+        }
+        .rv-tip-btn:hover {
+            background: #1c1917;
+            color: #fff;
+        }
+        .rv-tip-box {
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% + 10px);
+            transform: translateX(-50%);
+            width: 280px;
+            background: #1c1917;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 400;
+            line-height: 1.6;
+            border-radius: 6px;
+            padding: 0.875rem 1rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 30;
+        }
+        .rv-tip-box::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #1c1917;
+        }
+        .rv-tip-wrap:hover .rv-tip-box,
+        .rv-tip-btn:focus + .rv-tip-box {
+            opacity: 1;
+        }
+        .rv-tip-label {
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 0.35rem;
+            display: block;
+        }
+        .rv-tip-amber {
+            color: #fbbf24;
+        }
+        .rv-tip-blue {
+            color: #60a5fa;
+        }
+
+        /* Inputs */
+        .rv-select,
+        .rv-textarea,
+        .rv-number {
+            width: 100%;
+            border: 1px solid #e7e5e0;
+            border-radius: 5px;
+            background: #fff;
+            color: #1c1917;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            transition:
+                border-color 0.15s,
+                box-shadow 0.15s;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .rv-select {
+            padding: 0.6rem 1rem;
+            height: 42px;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.875rem center;
+            padding-right: 2.5rem;
+        }
+        .rv-textarea {
+            padding: 0.75rem 1rem;
+            resize: vertical;
+            min-height: 140px;
+            line-height: 1.65;
+        }
+        .rv-number {
+            padding: 0.6rem 1rem;
+            width: 100px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .rv-select:focus,
+        .rv-textarea:focus,
+        .rv-number:focus {
+            border-color: #b91c1c;
+            box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.08);
+        }
+        .rv-select:hover,
+        .rv-textarea:hover,
+        .rv-number:hover {
+            border-color: #c7c4bd;
+        }
+        .rv-error {
+            color: #b91c1c;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.375rem;
+        }
+
+        /* Rating row */
+        .rv-rating-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .rv-rating-suffix {
+            font-size: 0.875rem;
+            color: #a09e97;
+            font-weight: 500;
+        }
+        .rv-rating-badge {
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.35rem 0.875rem;
+            border-radius: 3px;
+            letter-spacing: 0.02em;
+            transition: all 0.2s;
+        }
+        .rv-badge-1 {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+        .rv-badge-2 {
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+        .rv-badge-3 {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+        .rv-badge-4 {
+            background: #fefce8;
+            color: #854d0e;
+            border: 1px solid #fef08a;
+        }
+        .rv-badge-5 {
+            background: #f7fee7;
+            color: #3f6212;
+            border: 1px solid #d9f99d;
+        }
+        .rv-badge-6 {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        .rv-badge-empty {
+            background: transparent;
+            color: transparent;
+            border: 1px solid transparent;
+        }
+
+        /* Rating scale */
+        .rv-scale {
+            margin-top: 0;
+        }
+        .rv-scale-title {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #a09e97;
+            margin-bottom: 0.875rem;
+        }
+        .rv-scale-bar {
+            display: flex;
+            border-radius: 4px;
+            overflow: hidden;
+            height: 8px;
+            margin-bottom: 1.25rem;
+        }
+        .rv-scale-seg {
+            flex: 1;
+        }
+        .rv-scale-seg-1 {
+            background: #fca5a5;
+        }
+        .rv-scale-seg-2 {
+            background: #fdba74;
+        }
+        .rv-scale-seg-3 {
+            background: #fde68a;
+        }
+        .rv-scale-seg-4 {
+            background: #fef08a;
+        }
+        .rv-scale-seg-5 {
+            background: #bef264;
+        }
+        .rv-scale-seg-6 {
+            background: #86efac;
+        }
+        .rv-scale-rows {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+        @media (max-width: 480px) {
+            .rv-scale-rows {
+                grid-template-columns: 1fr;
+            }
+        }
+        .rv-scale-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+        .rv-scale-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .rv-scale-range {
+            font-weight: 700;
+            color: #1c1917;
+            min-width: 40px;
+        }
+        .rv-scale-desc {
+            color: #78716c;
+        }
+
+        /* Divider inside form */
+        .rv-divider {
+            border: none;
+            border-top: 1px solid #f0ede8;
+            margin: 2rem 0;
+        }
+
+        /* Actions */
+        .rv-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #f0ede8;
+        }
+        .rv-cancel {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #78716c;
+            text-decoration: none;
+            letter-spacing: 0.01em;
+            transition: color 0.15s;
+        }
+        .rv-cancel:hover {
+            color: #1c1917;
+        }
+        .rv-action-btns {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .rv-btn-draft {
+            background: #fff;
+            border: 1.5px solid #e7e5e0;
+            color: #57534e;
+            padding: 0.625rem 1.375rem;
+            border-radius: 5px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .rv-btn-draft:hover {
+            border-color: #a09e97;
+            color: #1c1917;
+            background: #f7f6f3;
+        }
+
+        .rv-btn-submit {
+            background: #1c1917;
+            border: 1.5px solid #1c1917;
+            color: #fff;
+            padding: 0.625rem 1.625rem;
+            border-radius: 5px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .rv-btn-submit:hover {
+            background: #b91c1c;
+            border-color: green;
+        }
+        .rv-btn-submit svg {
+            width: 14px;
+            height: 14px;
+        }
+    </style>
+
+    <div class="rv-root">
+        <div class="rv-inner">
+            {{-- Breadcrumb --}}
+            <nav class="rv-breadcrumb">
+                <a href="{{ route('reviews.index') }}">My Reviews</a>
+                <span class="rv-breadcrumb-sep">›</span>
+                <span class="rv-breadcrumb-current">Submit Review</span>
             </nav>
-            <h1
-                class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tighter mb-2"
-            >
-                Review Submission
-            </h1>
-            <p class="text-slate-600 text-sm sm:text-base">
-                {{ $submission->title }}
-            </p>
-        </div>
 
-        {{-- Submission Info --}}
-        <div
-            class="bg-white rounded-lg shadow border border-slate-200 p-4 sm:p-6 mb-6"
-        >
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                <div>
-                    <p
-                        class="text-xs font-bold text-slate-400 uppercase tracking-widest"
-                    >
-                        Author
-                    </p>
-                    <p class="text-slate-900 font-semibold">
-                        {{ $submission->author->name }}
-                    </p>
-                </div>
-                <div>
-                    <p
-                        class="text-xs font-bold text-slate-400 uppercase tracking-widest"
-                    >
-                        Research Field
-                    </p>
-                    <span
-                        class="inline-block bg-red-50 border border-red-200 text-red-700 px-2 py-0.5 rounded-full text-sm"
-                    >
-                        {{ $submission->research_field ?? 'Not specified' }}
-                    </span>
-                </div>
+            {{-- Page header --}}
+            <div class="rv-header">
+                <h1>Review Submission</h1>
+                <p>{{ $submission->title }}</p>
             </div>
-            <div>
-                <p
-                    class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
-                >
-                    Abstract
-                </p>
-                <p class="text-slate-700 leading-relaxed text-sm sm:text-base">
-                    {{ $submission->abstract }}
-                </p>
-            </div>
-        </div>
 
-        {{-- Submission File --}}
-        <div
-            class="bg-white rounded-lg shadow border border-slate-200 p-4 sm:p-6 mb-6"
-        >
-            <p
-                class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-4"
-            >
-                Submission File
-            </p>
-
-            @if ($submission->file_path)
-                <div
-                    class="flex items-start sm:items-center justify-between gap-3 flex-wrap"
-                >
+            {{-- Submission Info --}}
+            <div class="rv-card">
+                <p class="rv-card-title">Submission Details</p>
+                <div class="rv-meta-grid">
                     <div>
-                        <p class="text-sm font-medium text-slate-700 mb-1">
-                            {{ $submission->file_name }}
+                        <p class="rv-meta-label">Author</p>
+                        <p class="rv-meta-value">
+                            {{ $submission->author->name }}
                         </p>
-                        <p class="text-xs text-slate-500">PDF, DOC, or DOCX</p>
                     </div>
-                    <a
-                        href="{{ route('submissions.download', ['submission' => $submission]) }}"
-                        class="inline-flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors shrink-0"
-                    >
-                        <svg
-                            class="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                    <div>
+                        <p class="rv-meta-label">Research Field</p>
+                        <span class="rv-tag">
+                            {{ $submission->research_field ?? 'Not specified' }}
+                        </span>
+                    </div>
+                </div>
+                <div class="rv-abstract">
+                    <p class="rv-meta-label" style="margin-bottom: 0.5rem">
+                        Abstract
+                    </p>
+                    {{ $submission->abstract }}
+                </div>
+            </div>
+
+            {{-- Submission File --}}
+            <div class="rv-card">
+                <p class="rv-card-title">Submission File</p>
+
+                @if ($submission->file_path)
+                    <div class="rv-file-row">
+                        <div class="rv-file-info">
+                            <div class="rv-file-icon">
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="1.75"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                    />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="rv-file-name">
+                                    {{ $submission->file_name }}
+                                </p>
+                                <p class="rv-file-sub">PDF · DOC · DOCX</p>
+                            </div>
+                        </div>
+                        <a
+                            href="{{ route('submissions.download', ['submission' => $submission]) }}"
+                            class="rv-download-btn"
                         >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                            />
-                        </svg>
-                        Download file
-                    </a>
-                </div>
-            @else
-                <p class="text-slate-700 italic text-sm">No file submitted.</p>
-            @endif
-        </div>
-
-        {{-- Review Form --}}
-        <div
-            class="bg-white rounded-lg shadow border border-slate-200 p-4 sm:p-6"
-        >
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-6">
-                Submit Your Review
-            </h2>
-
-            <form
-                method="POST"
-                action="{{ route('reviews.store') }}"
-                class="space-y-6"
-            >
-                @csrf
-                <input
-                    type="hidden"
-                    name="review_assignment_id"
-                    value="{{ $assignment->id }}"
-                />
-
-                {{-- Recommendation --}}
-                <div>
-                    <label
-                        class="block text-sm font-semibold text-slate-900 mb-3"
-                    >
-                        Recommendation
-                        <span class="text-red-600">*</span>
-                    </label>
-                    <select
-                        id="recommendation"
-                        name="recommendation"
-                        class="w-full px-4 py-2.5 border border-slate-300 rounded-lg bg-white text-slate-900 font-medium focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
-                    >
-                        <option value="">— Select Recommendation —</option>
-                        @foreach (\App\Models\Review::recommendationOptions() as $value => $label)
-                            <option
-                                value="{{ $value }}"
-                                {{ old('recommendation', $existingReview?->recommendation) === $value ? 'selected' : '' }}
+                            <svg
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
                             >
-                                {{ $label }}
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                />
+                            </svg>
+                            Download
+                        </a>
+                    </div>
+                @else
+                    <p
+                        style="
+                            font-size: 0.875rem;
+                            color: #a09e97;
+                            font-style: italic;
+                            margin: 0;
+                        "
+                    >
+                        No file submitted.
+                    </p>
+                @endif
+            </div>
+
+            {{-- Review Form --}}
+            <div class="rv-card">
+                <h2 class="rv-form-heading">Your Review</h2>
+
+                <form method="POST" action="{{ route('reviews.store') }}">
+                    @csrf
+                    <input
+                        type="hidden"
+                        name="review_assignment_id"
+                        value="{{ $assignment->id }}"
+                    />
+
+                    {{-- Recommendation --}}
+                    <div class="rv-field">
+                        <label class="rv-label">
+                            Recommendation
+                            <span class="rv-required">*</span>
+                        </label>
+                        <select name="recommendation" class="rv-select">
+                            <option value="">
+                                — Select a recommendation —
                             </option>
-                        @endforeach
-                    </select>
-                    @error('recommendation')
-                        <p class="text-red-600 text-xs font-medium mt-1">
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>
+                            @foreach (\App\Models\Review::recommendationOptions() as $value => $label)
+                                <option
+                                    value="{{ $value }}"
+                                    {{ old('recommendation', $existingReview?->recommendation) === $value ? 'selected' : '' }}
+                                >
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('recommendation')
+                            <p class="rv-error">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                {{-- Comments for Author --}}
-                <div>
-                    <label
-                        for="comments_for_author"
-                        class="block text-sm font-semibold text-slate-900 mb-3"
-                    >
-                        <span class="flex items-center gap-2">
+                    <hr class="rv-divider" />
+
+                    {{-- Comments for Author --}}
+                    <div class="rv-field">
+                        <label for="comments_for_author" class="rv-label">
                             Review Comments
-                            <span class="text-red-600">*</span>
-                            <span
-                                class="relative group inline-flex items-center"
-                            >
-                                <span
-                                    class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-900 text-slate-500 hover:text-white text-[10px] font-black cursor-help transition-colors duration-150 select-none leading-none"
+                            <span class="rv-required">*</span>
+                            <span class="rv-tip-wrap">
+                                <button
+                                    type="button"
+                                    class="rv-tip-btn"
+                                    aria-label="Hint"
                                 >
                                     ?
-                                </span>
-                                <span
-                                    class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2.5 w-72 bg-slate-900 text-white text-xs rounded-lg px-3.5 py-3 shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 font-normal leading-relaxed"
-                                >
-                                    <span
-                                        class="font-bold text-amber-400 block mb-1.5"
-                                    >
+                                </button>
+                                <span class="rv-tip-box">
+                                    <span class="rv-tip-label rv-tip-amber">
                                         ⚠ Reminder
                                     </span>
-                                    Do
-                                    <span class="font-bold text-amber-300">
-                                        not
-                                    </span>
-                                    state your final recommendation (e.g. "Minor
-                                    Revisions" or "Reject") directly in the
-                                    review comments. Focus on providing
-                                    constructive feedback and informing the
-                                    author on what needs to be improved.
-                                    <span
-                                        class="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-slate-900"
-                                    ></span>
+                                    Do not state your final recommendation
+                                    directly in the review comments. Focus on
+                                    constructive, actionable feedback for the
+                                    author.
                                 </span>
                             </span>
-                        </span>
-                    </label>
-                    <textarea
-                        id="comments_for_author"
-                        name="comments_for_author"
-                        rows="5"
-                        required
-                        class="w-full px-4 py-3 border border-slate-300 rounded-lg text-slate-900 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all resize-none text-sm sm:text-base"
-                        placeholder="Provide constructive feedback for the author..."
-                    >
+                        </label>
+                        <textarea
+                            id="comments_for_author"
+                            name="comments_for_author"
+                            class="rv-textarea"
+                            required
+                            placeholder="Provide detailed, constructive feedback to help the author improve their work…"
+                        >
 {{ old('comments_for_author', $existingReview?->comments_for_author) }}</textarea
-                    >
-                    @error('comments_for_author')
-                        <p class="text-red-600 text-xs font-medium mt-1">
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>
+                        >
+                        @error('comments_for_author')
+                            <p class="rv-error">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                {{-- Comments for Editor --}}
-                <div>
-                    <label
-                        for="comments_for_editor"
-                        class="block text-sm font-semibold text-slate-900 mb-3"
-                    >
-                        <span class="flex items-center gap-2">
+                    {{-- Comments for Editor --}}
+                    <div class="rv-field">
+                        <label for="comments_for_editor" class="rv-label">
                             Comments for Editor
-                            <span class="text-red-600">*</span>
-                            <span
-                                class="relative group inline-flex items-center"
-                            >
-                                <span
-                                    class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-900 text-slate-500 hover:text-white text-[10px] font-black cursor-help transition-colors duration-150 select-none leading-none"
+                            <span class="rv-required">*</span>
+                            <span class="rv-tip-wrap">
+                                <button
+                                    type="button"
+                                    class="rv-tip-btn"
+                                    aria-label="Hint"
                                 >
                                     ?
-                                </span>
-                                <span
-                                    class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2.5 w-72 bg-slate-900 text-white text-xs rounded-lg px-3.5 py-3 shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 font-normal leading-relaxed"
-                                >
-                                    <span
-                                        class="font-bold text-blue-400 block mb-1.5"
-                                    >
-                                        🔒 Ethics &amp; Confidentiality
+                                </button>
+                                <span class="rv-tip-box">
+                                    <span class="rv-tip-label rv-tip-blue">
+                                        🔒 Confidential
                                     </span>
-                                    This section is visible to the editor only.
-                                    Include any ethical concerns, conflicts of
-                                    interest, or observations about research
-                                    integrity that should not be shared with the
-                                    author.
-                                    <span
-                                        class="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-slate-900"
-                                    ></span>
+                                    Visible to the editor only. Include ethical
+                                    concerns, conflicts of interest, or
+                                    observations about research integrity.
                                 </span>
                             </span>
-                        </span>
-                    </label>
-                    <textarea
-                        id="comments_for_editor"
-                        name="comments_for_editor"
-                        rows="5"
-                        required
-                        class="w-full px-4 py-3 border border-slate-300 rounded-lg text-slate-900 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all resize-none text-sm sm:text-base"
-                        placeholder="Share ethical concerns or confidential notes with the editor..."
-                    >
+                        </label>
+                        <textarea
+                            id="comments_for_editor"
+                            name="comments_for_editor"
+                            class="rv-textarea"
+                            required
+                            placeholder="Share confidential notes, ethical concerns, or integrity observations with the editor…"
+                        >
 {{ old('comments_for_editor', $existingReview?->comments_for_editor) }}</textarea
-                    >
-                    @error('comments_for_editor')
-                        <p class="text-red-600 text-xs font-medium mt-1">
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>
+                        >
+                        @error('comments_for_editor')
+                            <p class="rv-error">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                {{-- Rating Scale Reference --}}
-                <div
-                    class="bg-slate-50 border border-slate-200 rounded-lg p-4 sm:p-6 mb-6"
-                >
-                    <h3
-                        class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wide"
-                    >
-                        Rating Scale
-                    </h3>
-                    <div class="overflow-x-auto -mx-4 sm:mx-0">
-                        <div class="min-w-[480px] px-4 sm:px-0 sm:min-w-0">
-                            <table class="w-full text-xs">
-                                <thead>
-                                    <tr class="border-b border-slate-300">
-                                        <th
-                                            class="text-left p-2 font-bold text-slate-900"
-                                        >
-                                            Range
-                                        </th>
-                                        <th
-                                            class="text-left p-2 font-bold text-slate-900"
-                                        >
-                                            Label
-                                        </th>
-                                        <th
-                                            class="text-left p-2 font-bold text-slate-900"
-                                        >
-                                            Description
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr
-                                        class="border-b border-slate-200 bg-red-50"
-                                    >
-                                        <td
-                                            class="p-2 font-medium text-slate-900"
-                                        >
-                                            1-20
-                                        </td>
-                                        <td class="p-2 text-slate-900">
-                                            Critically deficient
-                                        </td>
-                                        <td class="p-2 text-slate-700">
-                                            Fundamental flaws; unsuitable for
-                                            publication
-                                        </td>
-                                    </tr>
-                                    <tr
-                                        class="border-b border-slate-200 bg-orange-50"
-                                    >
-                                        <td
-                                            class="p-2 font-medium text-slate-900"
-                                        >
-                                            21-40
-                                        </td>
-                                        <td class="p-2 text-slate-900">
-                                            Below standard
-                                        </td>
-                                        <td class="p-2 text-slate-700">
-                                            Major deficiencies; significant
-                                            revisions needed
-                                        </td>
-                                    </tr>
-                                    <tr
-                                        class="border-b border-slate-200 bg-amber-50"
-                                    >
-                                        <td
-                                            class="p-2 font-medium text-slate-900"
-                                        >
-                                            41-55
-                                        </td>
-                                        <td class="p-2 text-slate-900">
-                                            Acceptable but limited
-                                        </td>
-                                        <td class="p-2 text-slate-700">
-                                            Concerns present; major revisions
-                                            required
-                                        </td>
-                                    </tr>
-                                    <tr
-                                        class="border-b border-slate-200 bg-yellow-50"
-                                    >
-                                        <td
-                                            class="p-2 font-medium text-slate-900"
-                                        >
-                                            56-70
-                                        </td>
-                                        <td class="p-2 text-slate-900">
-                                            Competent work
-                                        </td>
-                                        <td class="p-2 text-slate-700">
-                                            Acceptable quality; moderate
-                                            revisions recommended
-                                        </td>
-                                    </tr>
-                                    <tr
-                                        class="border-b border-slate-200 bg-lime-50"
-                                    >
-                                        <td
-                                            class="p-2 font-medium text-slate-900"
-                                        >
-                                            71-85
-                                        </td>
-                                        <td class="p-2 text-slate-900">
-                                            Good to excellent
-                                        </td>
-                                        <td class="p-2 text-slate-700">
-                                            Sound work; minimal revisions needed
-                                        </td>
-                                    </tr>
-                                    <tr class="bg-green-50">
-                                        <td
-                                            class="p-2 font-medium text-slate-900"
-                                        >
-                                            86-100
-                                        </td>
-                                        <td class="p-2 text-slate-900">
-                                            Outstanding
-                                        </td>
-                                        <td class="p-2 text-slate-700">
-                                            Exemplary quality; ready for
-                                            publication
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <hr class="rv-divider" />
+
+                    {{-- Rating Scale Reference --}}
+                    <div class="rv-scale rv-field">
+                        <p class="rv-scale-title">Rating Scale Reference</p>
+                        <div class="rv-scale-bar">
+                            <div
+                                class="rv-scale-seg rv-scale-seg-1"
+                                style="flex: 20"
+                            ></div>
+                            <div
+                                class="rv-scale-seg rv-scale-seg-2"
+                                style="flex: 20"
+                            ></div>
+                            <div
+                                class="rv-scale-seg rv-scale-seg-3"
+                                style="flex: 15"
+                            ></div>
+                            <div
+                                class="rv-scale-seg rv-scale-seg-4"
+                                style="flex: 15"
+                            ></div>
+                            <div
+                                class="rv-scale-seg rv-scale-seg-5"
+                                style="flex: 15"
+                            ></div>
+                            <div
+                                class="rv-scale-seg rv-scale-seg-6"
+                                style="flex: 15"
+                            ></div>
+                        </div>
+                        <div class="rv-scale-rows">
+                            <div class="rv-scale-row">
+                                <span
+                                    class="rv-scale-dot"
+                                    style="background: #fca5a5"
+                                ></span>
+                                <span class="rv-scale-range">1–20</span>
+                                <span class="rv-scale-desc">
+                                    Critically deficient
+                                </span>
+                            </div>
+                            <div class="rv-scale-row">
+                                <span
+                                    class="rv-scale-dot"
+                                    style="background: #fdba74"
+                                ></span>
+                                <span class="rv-scale-range">21–40</span>
+                                <span class="rv-scale-desc">
+                                    Below standard
+                                </span>
+                            </div>
+                            <div class="rv-scale-row">
+                                <span
+                                    class="rv-scale-dot"
+                                    style="background: #fde68a"
+                                ></span>
+                                <span class="rv-scale-range">41–55</span>
+                                <span class="rv-scale-desc">
+                                    Acceptable but limited
+                                </span>
+                            </div>
+                            <div class="rv-scale-row">
+                                <span
+                                    class="rv-scale-dot"
+                                    style="background: #fef08a"
+                                ></span>
+                                <span class="rv-scale-range">56–70</span>
+                                <span class="rv-scale-desc">
+                                    Competent work
+                                </span>
+                            </div>
+                            <div class="rv-scale-row">
+                                <span
+                                    class="rv-scale-dot"
+                                    style="background: #bef264"
+                                ></span>
+                                <span class="rv-scale-range">71–85</span>
+                                <span class="rv-scale-desc">
+                                    Good to excellent
+                                </span>
+                            </div>
+                            <div class="rv-scale-row">
+                                <span
+                                    class="rv-scale-dot"
+                                    style="background: #86efac"
+                                ></span>
+                                <span class="rv-scale-range">86–100</span>
+                                <span class="rv-scale-desc">Outstanding</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {{-- Rating --}}
-                <div>
-                    <label
-                        for="rating"
-                        class="block text-sm font-semibold text-slate-900 mb-3"
-                    >
-                        Rating
-                        <span class="text-slate-500 font-normal text-xs">
-                            (1-100, optional)
-                        </span>
-                    </label>
-                    <div class="flex items-center gap-3 flex-wrap">
-                        <input
-                            id="rating"
-                            type="number"
-                            name="rating"
-                            min="1"
-                            max="100"
-                            value="{{ old('rating', $existingReview?->rating) }}"
-                            class="w-24 px-4 py-2.5 border border-slate-300 rounded-lg text-slate-900 font-medium focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
-                            placeholder="0"
-                        />
-                        <span class="text-xs text-slate-500 font-medium">
-                            / 100
-                        </span>
-                        <span
-                            id="ratingInterpretation"
-                            class="text-xs text-slate-600 font-semibold px-3 py-2 bg-slate-50 rounded-lg"
-                        ></span>
+                    {{-- Rating --}}
+                    <div class="rv-field">
+                        <label for="rating" class="rv-label">
+                            Rating
+                            <span class="rv-optional">(1 – 100, optional)</span>
+                        </label>
+                        <div class="rv-rating-row">
+                            <input
+                                id="rating"
+                                type="number"
+                                name="rating"
+                                min="1"
+                                max="100"
+                                value="{{ old('rating', $existingReview?->rating) }}"
+                                class="rv-number"
+                                placeholder="—"
+                            />
+                            <span class="rv-rating-suffix">/ 100</span>
+                            <span
+                                id="ratingBadge"
+                                class="rv-rating-badge rv-badge-empty"
+                            ></span>
+                        </div>
+                        @error('rating')
+                            <p class="rv-error">{{ $message }}</p>
+                        @enderror
                     </div>
-                    @error('rating')
-                        <p class="text-red-600 text-xs font-medium mt-1">
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>
 
-                {{-- Actions --}}
-                <div
-                    class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-6 border-t border-slate-200 gap-3"
-                >
-                    <a
-                        href="{{ route('reviews.index') }}"
-                        class="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors text-center sm:text-left"
-                    >
-                        Cancel
-                    </a>
-                    <div
-                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
-                    >
-                        <button
-                            type="submit"
-                            name="action"
-                            value="save_draft"
-                            class="bg-slate-400 hover:bg-slate-500 text-white px-6 py-3 rounded-lg text-sm font-bold uppercase tracking-[.06em] transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-slate-200/80 hover:shadow-lg hover:shadow-slate-300/50"
+                    {{-- Actions --}}
+                    <div class="rv-actions">
+                        <a
+                            href="{{ route('reviews.index') }}"
+                            class="rv-cancel"
                         >
-                            Save & Submit Later
-                        </button>
-                        <button
-                            type="submit"
-                            name="action"
-                            value="submit"
-                            class="bg-slate-900 hover:bg-red-600 text-white px-6 py-3 rounded-lg text-sm font-bold uppercase tracking-[.06em] transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-slate-200/80 hover:shadow-lg hover:shadow-red-200/50"
-                        >
-                            Submit Review
-                        </button>
+                            Cancel
+                        </a>
+                        <div class="rv-action-btns">
+                            <button
+                                type="submit"
+                                name="action"
+                                value="save_draft"
+                                class="rv-btn-draft"
+                            >
+                                Save Draft
+                            </button>
+                            <button
+                                type="submit"
+                                name="action"
+                                value="submit"
+                                class="rv-btn-submit"
+                            >
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                </svg>
+                                Submit Review
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const ratingInput = document.getElementById('rating');
-            const interpretationDisplay = document.getElementById(
-                'ratingInterpretation',
-            );
+            const input = document.getElementById('rating');
+            const badge = document.getElementById('ratingBadge');
 
-            function updateInterpretation(rating) {
-                if (!rating || rating < 1 || rating > 100) {
-                    interpretationDisplay.textContent = '';
-                    return;
+            const bands = [
+                {
+                    min: 1,
+                    max: 20,
+                    label: 'Critically deficient',
+                    cls: 'rv-badge-1',
+                },
+                {
+                    min: 21,
+                    max: 40,
+                    label: 'Below standard',
+                    cls: 'rv-badge-2',
+                },
+                {
+                    min: 41,
+                    max: 55,
+                    label: 'Acceptable but limited',
+                    cls: 'rv-badge-3',
+                },
+                {
+                    min: 56,
+                    max: 70,
+                    label: 'Competent work',
+                    cls: 'rv-badge-4',
+                },
+                {
+                    min: 71,
+                    max: 85,
+                    label: 'Good to excellent',
+                    cls: 'rv-badge-5',
+                },
+                { min: 86, max: 100, label: 'Outstanding', cls: 'rv-badge-6' },
+            ];
+
+            function update(val) {
+                const n = parseInt(val, 10);
+                badge.className = 'rv-rating-badge rv-badge-empty';
+                badge.textContent = '';
+                if (!val || isNaN(n) || n < 1 || n > 100) return;
+                const band = bands.find((b) => n >= b.min && n <= b.max);
+                if (band) {
+                    badge.className = 'rv-rating-badge ' + band.cls;
+                    badge.textContent = band.label;
                 }
-
-                const interpretations = {
-                    '1-20': 'Critically deficient',
-                    '21-40': 'Below publication standard',
-                    '41-55': 'Acceptable but limited',
-                    '56-70': 'Competent work',
-                    '71-85': 'Good to excellent',
-                    '86-100': 'Outstanding contribution',
-                };
-
-                let interpretation = '';
-                if (rating >= 1 && rating <= 20)
-                    interpretation = interpretations['1-20'];
-                else if (rating >= 21 && rating <= 40)
-                    interpretation = interpretations['21-40'];
-                else if (rating >= 41 && rating <= 55)
-                    interpretation = interpretations['41-55'];
-                else if (rating >= 56 && rating <= 70)
-                    interpretation = interpretations['56-70'];
-                else if (rating >= 71 && rating <= 85)
-                    interpretation = interpretations['71-85'];
-                else if (rating >= 86 && rating <= 100)
-                    interpretation = interpretations['86-100'];
-
-                interpretationDisplay.textContent = interpretation;
             }
 
-            if (ratingInput) {
-                ratingInput.addEventListener('input', function () {
-                    updateInterpretation(this.value);
-                });
-                if (ratingInput.value) {
-                    updateInterpretation(ratingInput.value);
-                }
+            if (input) {
+                input.addEventListener('input', () => update(input.value));
+                update(input.value);
             }
         });
     </script>

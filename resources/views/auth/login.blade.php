@@ -423,18 +423,6 @@
                         </div>
                     </div>
 
-                    <label
-                        class="flex items-center gap-2.5 cursor-pointer text-[13px] text-[#6a7890]"
-                    >
-                        <input
-                            type="checkbox"
-                            name="remember"
-                            class="w-4 h-4 accent-[#a07830]"
-                            {{ old('remember') ? 'checked' : '' }}
-                        />
-                        Keep me signed in
-                    </label>
-
                     <div class="flex items-center gap-3 py-2">
                         <div class="flex-1 h-px bg-[#e8e0d0]"></div>
                         <span
