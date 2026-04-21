@@ -780,29 +780,6 @@
                     </div>
                 </div>
 
-                {{-- Keywords --}}
-                <div class="reveal" style="transition-delay:.05s">
-                    <div class="sec-head">
-                        <div class="sec-icon">
-                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/>
-                            </svg>
-                        </div>
-                        Keywords
-                    </div>
-                    <div class="kw-list">
-                        @if(isset($paper['keywords']) && is_array($paper['keywords']) && count($paper['keywords']) > 0)
-                            @foreach($paper['keywords'] as $keyword)
-                                <span class="kw-tag">{{ $keyword }}</span>
-                            @endforeach
-                        @else
-                            <span class="kw-tag">Keyword 1</span>
-                            <span class="kw-tag">Keyword 2</span>
-                            <span class="kw-tag">Keyword 3</span>
-                        @endif
-                    </div>
-                </div>
-
                 {{-- Access Paper --}}
                 <div class="reveal" style="transition-delay:.1s">
                     <div class="sec-head">
@@ -946,7 +923,7 @@
                                 {{ substr($paper['author'] ?? 'RA', 0, 2) }}
                             </div>
                             <p class="author-name">{{ $paper['author'] ?? 'Unknown Author' }}</p>
-                            <p class="author-role">Lead Researcher</p>
+                            <p class="author-role">Researcher</p>
                             <p class="author-bio">Contributing researcher in the Open Journal System academic community.</p>
                         </div>
                     </div>
