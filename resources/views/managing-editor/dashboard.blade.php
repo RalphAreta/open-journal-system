@@ -899,7 +899,7 @@
                 <div>
                     <p class="hero-eyebrow">Managing Editor Dashboard</p>
                     <h1 class="hero-title">
-                        Manuscript
+                        Publishing
                         <em>Processing</em>
                     </h1>
                     <p class="hero-sub">
@@ -1501,7 +1501,12 @@
                                                     <button
                                                         type="button"
                                                         class="btn-action gold"
-                                                        onclick="toggleArchiveFields('archiveFields{{ $s->id }}', this)"
+                                                        onclick="
+                                                            toggleArchiveFields(
+                                                                'archiveFields{{ $s->id }}',
+                                                                this,
+                                                            )
+                                                        "
                                                         aria-expanded="false"
                                                     >
                                                         <svg
@@ -1521,7 +1526,11 @@
                                                         Archive Paper
                                                     </button>
 
-                                                    <div id="archiveFields{{ $s->id }}" class="items-center gap-2" style="display: none;">
+                                                    <div
+                                                        id="archiveFields{{ $s->id }}"
+                                                        class="items-center gap-2"
+                                                        style="display: none"
+                                                    >
                                                         <input
                                                             type="text"
                                                             name="archive_volume"
@@ -1547,7 +1556,11 @@
                                                         <button
                                                             type="button"
                                                             class="btn-action teal"
-                                                            onclick="toggleArchiveFields('archiveFields{{ $s->id }}')"
+                                                            onclick="
+                                                                toggleArchiveFields(
+                                                                    'archiveFields{{ $s->id }}',
+                                                                )
+                                                            "
                                                         >
                                                             Cancel
                                                         </button>
@@ -1809,7 +1822,10 @@
                                         action="{{ route('managing-editor.archive', $s) }}"
                                     >
                                         @csrf
-                                        <button type="submit" class="btn-action gold">
+                                        <button
+                                            type="submit"
+                                            class="btn-action gold"
+                                        >
                                             <svg
                                                 width="12"
                                                 height="12"
@@ -1835,7 +1851,10 @@
                                         action="{{ route('managing-editor.unarchive', $s) }}"
                                     >
                                         @csrf
-                                        <button type="submit" class="btn-action teal">
+                                        <button
+                                            type="submit"
+                                            class="btn-action teal"
+                                        >
                                             <svg
                                                 width="12"
                                                 height="12"
