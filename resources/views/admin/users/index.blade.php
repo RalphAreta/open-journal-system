@@ -476,7 +476,7 @@
                             @forelse ($users as $u)
                                 <tr
                                     class="user-row group"
-                                    data-roles="{{ strtolower($u->roles->pluck('display_name')->implode(',')) }}"
+                                    data-roles="{{ strtolower($u->roles()->pluck('display_name')->implode(',')) }}"
                                     style="
                                         animation-delay: {{ $loop->index * 40 }}ms;
                                     "
@@ -510,7 +510,7 @@
                                     <td>
                                         <div class="flex flex-wrap gap-1.5">
                                             @php
-                                                $displayRoles = $u->roles->pluck('display_name')->filter();
+                                                $displayRoles = $u->roles()->pluck('display_name')->filter();
                                             @endphp
 
                                             @forelse ($displayRoles as $roleName)
