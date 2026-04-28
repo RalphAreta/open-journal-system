@@ -380,8 +380,9 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
         $category = trim((string) $request->query('category', ''));
         $isArchivePage = $status === Submission::STATUS_ARCHIVED;
 
-        $baseArchiveQuery = Submission::where('status', $status)
-            ->with('author');
+       $baseArchiveQuery = $isArchivePage
+    ? Submission::where('status', $status)->with('author')
+    : Submission::whereIn('status', [Submission::STATUS_PUBLISHED, Submission::STATUS_ARCHIVED])->with('author');
 
         $filteredArchiveQuery = (clone $baseArchiveQuery)
             ->when($search !== '', function ($query) use ($search) {
