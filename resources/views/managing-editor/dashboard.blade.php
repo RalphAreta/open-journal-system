@@ -899,7 +899,7 @@
                 <div>
                     <p class="hero-eyebrow">Managing Editor Dashboard</p>
                     <h1 class="hero-title">
-                        Publishing
+                        Publication
                         <em>Processing</em>
                     </h1>
                     <p class="hero-sub">
