@@ -896,7 +896,7 @@
                             >
                                 @foreach ($groupedPapers as $volumeGroup)
                                     <a
-                                        href="{{ route('archive.volume', ['volume' => $volumeGroup['volume']]) }}"
+                                        href="{{ route('archive.volume', ['volume' => $volumeGroup['volume'], 'issue' => $volumeGroup['issue']]) }}"
                                         class="group block bg-white rounded-2xl border border-[#e0d8cc] shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
                                     >
                                         @if (! empty($volumeGroup['coverImage']))
@@ -943,21 +943,18 @@
                                             <p
                                                 class="text-[10px] font-bold uppercase tracking-widest text-[#a07830] mb-1"
                                             >
-                                                Volume
+                                                {{ $volumeGroup['issue'] ? 'Volume · Issue' : 'Volume' }}
                                             </p>
                                             <h3
-                                                class="font-libre text-lg font-bold text-[#2d8176] group-hover:text-[#c9a84c] transition-colors leading-tight"
+                                                class="font-libre text-base font-bold text-[#2d8176] group-hover:text-[#c9a84c] transition-colors leading-tight"
                                             >
-                                                {{ $volumeGroup['volume'] }}
+                                                {{ $volumeGroup['label'] }}
                                             </h3>
                                             <p
                                                 class="text-xs text-[#6a7890] mt-1 font-semibold"
                                             >
                                                 {{ $volumeGroup['papers']->count() }}
                                                 {{ $volumeGroup['papers']->count() === 1 ? 'paper' : 'papers' }}
-                                                ·
-                                                {{ $volumeGroup['issuesCount'] }}
-                                                {{ $volumeGroup['issuesCount'] === 1 ? 'issue' : 'issues' }}
                                             </p>
                                             <div
                                                 class="mt-3 text-[10px] font-bold uppercase tracking-widest text-[#2d8176] flex items-center gap-1 group-hover:gap-2 transition-all"

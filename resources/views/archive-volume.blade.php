@@ -308,7 +308,7 @@
                                     <span
                                         class="px-2 py-1 bg-white/20 text-white text-[10px] font-bold uppercase tracking-widest rounded-full"
                                     >
-                                        Issue {{ $paper['archiveIssue'] }}
+                                        {{ $paper['archiveIssue'] ? 'Issue ' . $paper['archiveIssue'] : 'No Issue' }}
                                     </span>
                                 </div>
                             </div>

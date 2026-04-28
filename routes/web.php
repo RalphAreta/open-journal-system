@@ -31,7 +31,8 @@ Route::post('/volumes',                          [VolumeController::class, 'stor
 Route::post('/volumes/{volume}/issues',          [VolumeController::class, 'storeIssue'])->name('managing-editor.issues.store');
 Route::post('/issues/{issue}/cover',             [VolumeController::class, 'uploadCover'])->name('managing-editor.issues.cover');
 Route::get('/archive', [HomeController::class, 'archivePapers'])->name('archive');
-Route::get('/archive/volume/{volume}', [HomeController::class, 'showVolume'])->name('archive.volume'); // ← BAGO   
+Route::get('/archive/volume/{volume}/{issue?}', [HomeController::class, 'showVolume'])
+    ->name('archive.volume');
 
 // Public routes for viewing published papers
 Route::get('/archive', [HomeController::class, 'archivePapers'])->name('archive');
