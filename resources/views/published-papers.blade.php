@@ -1337,7 +1337,7 @@
                 <p
                     class="text-[10px] font-bold uppercase tracking-[0.3em] mb-5 text-[#f0d678]"
                 >
-                    Advancing Knowledge • Inspiring Innovation
+                    Advancing Research • Inspiring Innovation
                 </p>
                 <div
                     class="h-1 w-20 bg-linear-to-r from-[#c9a84c] to-transparent mx-auto mb-6"
