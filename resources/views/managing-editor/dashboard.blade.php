@@ -1157,6 +1157,165 @@
             @endforeach
         </div>
 
+        {{-- Volumes & Issues Quick Link --}}
+        <div class="fu2 mb-8">
+            <div
+                style="
+                    background: #fff;
+                    border: 1px solid var(--border-dk);
+                    border-radius: 14px;
+                    overflow: hidden;
+                    box-shadow: 0 2px 12px rgba(26, 18, 9, 0.07);
+                "
+            >
+                <div
+                    style="
+                        padding: 16px 24px 14px;
+                        background: var(--parchment);
+                        border-bottom: 1px solid var(--border);
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        flex-wrap: wrap;
+                        gap: 10px;
+                    "
+                >
+                    <div>
+                        <p
+                            style="
+                                font-size: 10px;
+                                font-weight: 700;
+                                letter-spacing: 0.18em;
+                                text-transform: uppercase;
+                                color: var(--teal);
+                                margin-bottom: 3px;
+                            "
+                        >
+                            Publication
+                        </p>
+                        <p
+                            style="
+                                font-family: 'Libre Baskerville', serif;
+                                font-size: 1.05rem;
+                                font-weight: 700;
+                                color: var(--ink);
+                            "
+                        >
+                            Volumes &amp; Issues
+                        </p>
+                    </div>
+                    <a
+                        href="{{ route('managing-editor.volumes.index') }}"
+                        class="btn-action teal"
+                    >
+                        <svg
+                            width="12"
+                            height="12"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                            />
+                        </svg>
+                        Manage Volumes &amp; Issues
+                    </a>
+                </div>
+
+                {{-- Quick stats --}}
+                <div
+                    style="
+                        padding: 16px 24px;
+                        display: flex;
+                        gap: 24px;
+                        flex-wrap: wrap;
+                    "
+                >
+                    @php
+                        $totalVolumes = \App\Models\Volume::count();
+                        $totalIssues = \App\Models\Issue::count();
+                        $missingCovers = \App\Models\Issue::whereNull('cover_image')->count();
+                    @endphp
+
+                    <div>
+                        <p
+                            style="
+                                font-size: 0.68rem;
+                                font-weight: 700;
+                                letter-spacing: 0.1em;
+                                text-transform: uppercase;
+                                color: var(--ink-soft);
+                            "
+                        >
+                            Volumes
+                        </p>
+                        <p
+                            style="
+                                font-family: 'Libre Baskerville', serif;
+                                font-size: 1.8rem;
+                                font-weight: 700;
+                                color: var(--teal);
+                            "
+                        >
+                            {{ sprintf('%02d', $totalVolumes) }}
+                        </p>
+                    </div>
+                    <div>
+                        <p
+                            style="
+                                font-size: 0.68rem;
+                                font-weight: 700;
+                                letter-spacing: 0.1em;
+                                text-transform: uppercase;
+                                color: var(--ink-soft);
+                            "
+                        >
+                            Total Issues
+                        </p>
+                        <p
+                            style="
+                                font-family: 'Libre Baskerville', serif;
+                                font-size: 1.8rem;
+                                font-weight: 700;
+                                color: var(--teal-dk);
+                            "
+                        >
+                            {{ sprintf('%02d', $totalIssues) }}
+                        </p>
+                    </div>
+                    @if ($missingCovers > 0)
+                        <div>
+                            <p
+                                style="
+                                    font-size: 0.68rem;
+                                    font-weight: 700;
+                                    letter-spacing: 0.1em;
+                                    text-transform: uppercase;
+                                    color: var(--ink-soft);
+                                "
+                            >
+                                Missing Covers
+                            </p>
+                            <p
+                                style="
+                                    font-family: 'Libre Baskerville', serif;
+                                    font-size: 1.8rem;
+                                    font-weight: 700;
+                                    color: #a07830;
+                                "
+                            >
+                                {{ sprintf('%02d', $missingCovers) }}
+                            </p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
         {{-- Alert --}}
         @if ($stats['pending'] > 0)
             <div class="fu2 mb-4">
@@ -1528,42 +1687,71 @@
 
                                                     <div
                                                         id="archiveFields{{ $s->id }}"
-                                                        class="items-center gap-2"
+                                                        class="flex flex-col gap-2"
                                                         style="display: none"
                                                     >
-                                                        <input
-                                                            type="text"
+                                                        @php
+                                                            $volumesList = \App\Models\Volume::with('issues')
+                                                                ->orderByDesc('number')
+                                                                ->get();
+                                                        @endphp
+
+                                                        <select
                                                             name="archive_volume"
-                                                            class="w-24 px-2 py-1 rounded-md border border-[rgba(0,0,0,.18)] text-[.68rem]"
-                                                            placeholder="Volume"
-                                                            value="{{ old('archive_volume') }}"
+                                                            id="volumeSelect{{ $s->id }}"
+                                                            class="px-2 py-1 rounded-md border border-[rgba(0,0,0,.18)] text-[.75rem]"
                                                             required
-                                                        />
-                                                        <input
-                                                            type="text"
-                                                            name="archive_issue"
-                                                            class="w-24 px-2 py-1 rounded-md border border-[rgba(0,0,0,.18)] text-[.68rem]"
-                                                            placeholder="Issue"
-                                                            value="{{ old('archive_issue') }}"
-                                                            required
-                                                        />
-                                                        <button
-                                                            type="submit"
-                                                            class="btn-action gold"
-                                                        >
-                                                            Confirm Archive
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            class="btn-action teal"
-                                                            onclick="
-                                                                toggleArchiveFields(
-                                                                    'archiveFields{{ $s->id }}',
+                                                            onchange="
+                                                                populateIssues(
+                                                                    {{ $s->id }},
+                                                                    this.value,
                                                                 )
                                                             "
                                                         >
-                                                            Cancel
-                                                        </button>
+                                                            <option value="">
+                                                                — Select Volume
+                                                                —
+                                                            </option>
+                                                            @foreach ($volumesList as $vol)
+                                                                <option
+                                                                    value="{{ $vol->number }}"
+                                                                >
+                                                                    Volume
+                                                                    {{ $vol->number }}
+                                                                    ({{ $vol->year }})
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+
+                                                        <select
+                                                            name="archive_issue"
+                                                            id="issueSelect{{ $s->id }}"
+                                                            class="px-2 py-1 rounded-md border border-[rgba(0,0,0,.18)] text-[.75rem]"
+                                                        >
+                                                            <option value="">
+                                                                — No Issue —
+                                                            </option>
+                                                        </select>
+
+                                                        <div class="flex gap-2">
+                                                            <button
+                                                                type="submit"
+                                                                class="btn-action gold"
+                                                            >
+                                                                Confirm Archive
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                class="btn-action teal"
+                                                                onclick="
+                                                                    toggleArchiveFields(
+                                                                        'archiveFields{{ $s->id }}',
+                                                                    )
+                                                                "
+                                                            >
+                                                                Cancel
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </form>
                                             @endif
@@ -2470,133 +2658,150 @@
 @push('scripts')
     <script>
         function filterTable() {
-                            const f = document.getElementById('dashboardSearch').value.toUpperCase();
-                            document.querySelectorAll('.submission-row').forEach(row => {
-                                const title  = row.querySelector('.title-cell')?.innerText.toUpperCase() ?? '';
-                                const ref    = row.cells?.[0]?.innerText.toUpperCase() ?? row.querySelector('.ms-ref')?.innerText.toUpperCase() ?? '';
-                                const status = row.querySelector('.status-cell')?.innerText.toUpperCase() ?? '';
-                                row.style.display = (title.includes(f) || ref.includes(f) || status.includes(f)) ? '' : 'none';
-                            });
-                        }
+                                    const f = document.getElementById('dashboardSearch').value.toUpperCase();
+                                    document.querySelectorAll('.submission-row').forEach(row => {
+                                        const title  = row.querySelector('.title-cell')?.innerText.toUpperCase() ?? '';
+                                        const ref    = row.cells?.[0]?.innerText.toUpperCase() ?? row.querySelector('.ms-ref')?.innerText.toUpperCase() ?? '';
+                                        const status = row.querySelector('.status-cell')?.innerText.toUpperCase() ?? '';
+                                        row.style.display = (title.includes(f) || ref.includes(f) || status.includes(f)) ? '' : 'none';
+                                    });
+                                }
 
-                  const ctfRoutes = @json(
-            $submissions->filter(fn($s) => is_null($s->managing_editor_status) || $s->managing_editor_status === 'pending')
-                ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.ctf.generate', $s)])
+                          const ctfRoutes = @json(
+                    $submissions->filter(fn($s) => is_null($s->managing_editor_status) || $s->managing_editor_status === 'pending')
+                        ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.ctf.generate', $s)])
+                );
+
+                function openCtfModal(id, title) {
+                    document.getElementById('ctfManuscriptTitle').textContent = title;
+                    document.getElementById('ctfModalForm').action = ctfRoutes[id] ?? '#';
+                    document.getElementById('ctfModal').classList.add('open');
+                }
+                function closeCtfModal() {
+                    document.getElementById('ctfModal').classList.remove('open');
+                }
+
+                function toggleArchiveFields(targetId, triggerButton = null) {
+                    const panel = document.getElementById(targetId);
+                    if (!panel) {
+                        return;
+                    }
+
+                    const isClosed = panel.style.display === 'none' || panel.style.display === '';
+                    panel.style.display = isClosed ? 'flex' : 'none';
+
+                    if (panel.style.display === 'flex') {
+                        const firstInput = panel.querySelector('input[name="archive_volume"]');
+                        firstInput?.focus();
+                    }
+
+                    if (triggerButton) {
+                        triggerButton.setAttribute('aria-expanded', String(panel.style.display === 'flex'));
+                    }
+                }
+
+
+
+                                const layoutRoutes = @json(
+                                    $submissions->filter(fn($s) => $s->managing_editor_status === 'ctf_returned')
+                                        ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.forward', $s)])
+                                );
+
+                                function openLayoutModal(id, title) {
+                                    const route = layoutRoutes[id];
+                                    if (!route) { alert('Route not found for id: ' + id); return; }
+                                    document.getElementById('modalManuscriptTitle').textContent = title;
+                                    document.getElementById('layoutModalForm').action = route;
+                                    document.getElementById('layout_editor_id').value = '';
+                                    document.getElementById('layoutModal').classList.add('open');
+                                }
+                                function closeLayoutModal() { document.getElementById('layoutModal').classList.remove('open'); }
+
+                                function closeOnBackdrop(e, id) {
+                                    if (e.target === document.getElementById(id)) {
+                                        if (id === 'ctfModal') closeCtfModal();
+                                        else if (id === 'reassignModal') closeReassignModal();
+                                        else closeLayoutModal();
+                                    }
+                                }
+
+                                document.addEventListener('keydown', e => {
+                                    if (e.key === 'Escape') { closeCtfModal(); closeLayoutModal(); closeReassignModal(); }
+                                });
+
+                                function openReassignModal(submissionId, title, assignmentId, authorFeedback) {
+                                    document.getElementById('reassignManuscriptTitle').textContent = title;
+                                    document.getElementById('reassignAssignmentId').value = assignmentId;
+                                    document.getElementById('reassignAuthorFeedback').textContent = authorFeedback || '—';
+                                    document.getElementById('reassignModalForm').action = `/managing-editor/submissions/${submissionId}/reassign-layout`;
+                                    document.getElementById('reassign_layout_editor_id').value = '';
+                                    document.getElementById('reassignModal').classList.add('open');
+                                }
+                                function closeReassignModal() { document.getElementById('reassignModal').classList.remove('open'); }
+
+                                @if(session('success'))
+                                Swal.fire({
+                                    icon:'success',
+                                    title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
+                                    html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+                                    confirmButtonText:'Close', confirmButtonColor:'#2d8176',
+                                    customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+                                    buttonsStyling:false,
+                                });
+                                @endif
+                                @if(session('error'))
+                                Swal.fire({
+                                    icon:'error',
+                                    title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Oops!</span>',
+                                    html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('error') }}</p>',
+                                    confirmButtonText:'Close', confirmButtonColor:'#c9a84c',
+                                    customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+                                    buttonsStyling:false,
+                                });
+                                @endif
+                                @if(session('info'))
+                                Swal.fire({
+                                    icon:'info',
+                                    title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Note</span>',
+                                    html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('info') }}</p>',
+                                    confirmButtonText:'Got it', confirmButtonColor:'#2d8176',
+                                    customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+                                    buttonsStyling:false,
+                                });
+                                @endif
+                                @if(session('warning'))
+                                Swal.fire({
+                                    icon:'warning',
+                                    title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Warning</span>',
+                                    html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('warning') }}</p>',
+                                    confirmButtonText:'Understood', confirmButtonColor:'#c9a84c',
+                                    customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
+                                    buttonsStyling:false,
+                                });
+                                @endif
+                                function onTemplateFileSelected(input) {
+                            const file = input.files[0];
+                            if (!file) return;
+                            document.getElementById('templateFileName').textContent = file.name;
+                            document.getElementById('templateFileSize').textContent = (file.size/1024/1024).toFixed(2) + ' MB';
+                            document.getElementById('templateFileSelected').classList.add('show');
+                        }
+                        const volumeIssues = @json(
+            \App\Models\Volume::with('issues')->orderByDesc('number')->get()
+                ->mapWithKeys(fn($v) => [$v->number => $v->issues->pluck('number')])
         );
 
-        function openCtfModal(id, title) {
-            document.getElementById('ctfManuscriptTitle').textContent = title;
-            document.getElementById('ctfModalForm').action = ctfRoutes[id] ?? '#';
-            document.getElementById('ctfModal').classList.add('open');
-        }
-        function closeCtfModal() {
-            document.getElementById('ctfModal').classList.remove('open');
-        }
-
-        function toggleArchiveFields(targetId, triggerButton = null) {
-            const panel = document.getElementById(targetId);
-            if (!panel) {
+        function populateIssues(submissionId, volumeNumber) {
+            const select = document.getElementById('issueSelect' + submissionId);
+            select.innerHTML = '<option value="">— Select Issue —</option>';
+            const issues = volumeIssues[volumeNumber] ?? [];
+            if (issues.length === 0) {
+                select.innerHTML += '<option value="" disabled>No issues for this volume</option>';
                 return;
             }
-
-            const isClosed = panel.style.display === 'none' || panel.style.display === '';
-            panel.style.display = isClosed ? 'flex' : 'none';
-
-            if (panel.style.display === 'flex') {
-                const firstInput = panel.querySelector('input[name="archive_volume"]');
-                firstInput?.focus();
-            }
-
-            if (triggerButton) {
-                triggerButton.setAttribute('aria-expanded', String(panel.style.display === 'flex'));
-            }
+            issues.forEach(issueNo => {
+                select.innerHTML += `<option value="${issueNo}">Issue ${issueNo}</option>`;
+            });
         }
-
-
-
-                        const layoutRoutes = @json(
-                            $submissions->filter(fn($s) => $s->managing_editor_status === 'ctf_returned')
-                                ->mapWithKeys(fn($s) => [$s->id => route('managing-editor.forward', $s)])
-                        );
-
-                        function openLayoutModal(id, title) {
-                            const route = layoutRoutes[id];
-                            if (!route) { alert('Route not found for id: ' + id); return; }
-                            document.getElementById('modalManuscriptTitle').textContent = title;
-                            document.getElementById('layoutModalForm').action = route;
-                            document.getElementById('layout_editor_id').value = '';
-                            document.getElementById('layoutModal').classList.add('open');
-                        }
-                        function closeLayoutModal() { document.getElementById('layoutModal').classList.remove('open'); }
-
-                        function closeOnBackdrop(e, id) {
-                            if (e.target === document.getElementById(id)) {
-                                if (id === 'ctfModal') closeCtfModal();
-                                else if (id === 'reassignModal') closeReassignModal();
-                                else closeLayoutModal();
-                            }
-                        }
-
-                        document.addEventListener('keydown', e => {
-                            if (e.key === 'Escape') { closeCtfModal(); closeLayoutModal(); closeReassignModal(); }
-                        });
-
-                        function openReassignModal(submissionId, title, assignmentId, authorFeedback) {
-                            document.getElementById('reassignManuscriptTitle').textContent = title;
-                            document.getElementById('reassignAssignmentId').value = assignmentId;
-                            document.getElementById('reassignAuthorFeedback').textContent = authorFeedback || '—';
-                            document.getElementById('reassignModalForm').action = `/managing-editor/submissions/${submissionId}/reassign-layout`;
-                            document.getElementById('reassign_layout_editor_id').value = '';
-                            document.getElementById('reassignModal').classList.add('open');
-                        }
-                        function closeReassignModal() { document.getElementById('reassignModal').classList.remove('open'); }
-
-                        @if(session('success'))
-                        Swal.fire({
-                            icon:'success',
-                            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Done</span>',
-                            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
-                            confirmButtonText:'Close', confirmButtonColor:'#2d8176',
-                            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
-                            buttonsStyling:false,
-                        });
-                        @endif
-                        @if(session('error'))
-                        Swal.fire({
-                            icon:'error',
-                            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Oops!</span>',
-                            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('error') }}</p>',
-                            confirmButtonText:'Close', confirmButtonColor:'#c9a84c',
-                            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
-                            buttonsStyling:false,
-                        });
-                        @endif
-                        @if(session('info'))
-                        Swal.fire({
-                            icon:'info',
-                            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Note</span>',
-                            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('info') }}</p>',
-                            confirmButtonText:'Got it', confirmButtonColor:'#2d8176',
-                            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
-                            buttonsStyling:false,
-                        });
-                        @endif
-                        @if(session('warning'))
-                        Swal.fire({
-                            icon:'warning',
-                            title:'<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Warning</span>',
-                            html:'<p style="font-size:.9rem;color:#6b5740;">{{ session('warning') }}</p>',
-                            confirmButtonText:'Understood', confirmButtonColor:'#c9a84c',
-                            customClass:{popup:'rounded-2xl',confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest'},
-                            buttonsStyling:false,
-                        });
-                        @endif
-                        function onTemplateFileSelected(input) {
-                    const file = input.files[0];
-                    if (!file) return;
-                    document.getElementById('templateFileName').textContent = file.name;
-                    document.getElementById('templateFileSize').textContent = (file.size/1024/1024).toFixed(2) + ' MB';
-                    document.getElementById('templateFileSelected').classList.add('show');
-                }
     </script>
 @endpush
