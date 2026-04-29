@@ -36,7 +36,10 @@ class EditorialBoardController extends Controller
     public function create()
     {
         $roles = $this->roles;
-        return view('admin.editorial-board.create', compact('roles'));
+        // Pass an explicit null editorialBoard so the shared form partial
+        // can safely reference the variable (avoids Undefined variable notices).
+        return view('admin.editorial-board.create', compact('roles'))
+            ->with('editorialBoard', null);
     }
 
     public function store(Request $request)
