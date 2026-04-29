@@ -309,17 +309,17 @@ public function archivePaper(Request $request, Submission $submission): Redirect
         return back()->with('error', 'Only published papers can be archived.');
     }
 
-    $validated = $request->validate([
-        'archive_volume' => ['required', 'string', 'max:50'],
-        'archive_issue' => ['required', 'string', 'max:50'],
-    ]);
+  $validated = $request->validate([
+    'archive_volume' => ['required', 'string', 'max:50'],
+    'archive_issue'  => ['nullable', 'string', 'max:50'],
+]);
 
-    $submission->update([
-        'status' => Submission::STATUS_ARCHIVED,
-        'managing_editor_status' => 'archived',
-        'archive_volume' => trim($validated['archive_volume']),
-        'archive_issue' => trim($validated['archive_issue']),
-    ]);
+  $submission->update([
+    'status'                 => Submission::STATUS_ARCHIVED,
+    'managing_editor_status' => 'archived',
+    'archive_volume'         => trim($validated['archive_volume']),
+    'archive_issue'          => isset($validated['archive_issue']) ? trim($validated['archive_issue']) : null,
+]);
 
     return redirect()
         ->route('managing-editor.dashboard')

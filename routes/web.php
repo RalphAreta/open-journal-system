@@ -21,9 +21,18 @@ use App\Http\Controllers\ManagingEditorController;
 use App\Http\Controllers\Admin\DeclineReasonController;
 use App\Http\Controllers\Admin\EditorialBoardController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\ManagingEditor\VolumeController;
 Route::get('/', function () {
     return Auth::check() ? redirect()->route('dashboard') : app(HomeController::class)->index();
 });
+
+Route::get('/volumes',                           [VolumeController::class, 'index'])->name('managing-editor.volumes.index');
+Route::post('/volumes',                          [VolumeController::class, 'storeVolume'])->name('managing-editor.volumes.store');
+Route::post('/volumes/{volume}/issues',          [VolumeController::class, 'storeIssue'])->name('managing-editor.issues.store');
+Route::post('/issues/{issue}/cover',             [VolumeController::class, 'uploadCover'])->name('managing-editor.issues.cover');
+Route::get('/archive', [HomeController::class, 'archivePapers'])->name('archive');
+Route::get('/archive/volume/{volume}/{issue?}', [HomeController::class, 'showVolume'])
+    ->name('archive.volume');
 
 // Public routes for viewing published papers
 Route::get('/archive', [HomeController::class, 'archivePapers'])->name('archive');
@@ -238,6 +247,7 @@ Route::get('/managing-editor/submissions/{submission}/download-signed-ctf', [Man
     ->name('managing-editor.download-signed-ctf'); // ← dagdag
 Route::post('/managing-editor/submissions/{submission}/reassign-layout', [ManagingEditorController::class, 'reassignLayout'])
         ->name('managing-editor.reassign-layout');
+
 
 });
 });

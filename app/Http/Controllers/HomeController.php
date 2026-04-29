@@ -380,8 +380,9 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
         $category = trim((string) $request->query('category', ''));
         $isArchivePage = $status === Submission::STATUS_ARCHIVED;
 
-        $baseArchiveQuery = Submission::where('status', $status)
-            ->with('author');
+       $baseArchiveQuery = $isArchivePage
+    ? Submission::where('status', $status)->with('author')
+    : Submission::whereIn('status', [Submission::STATUS_PUBLISHED, Submission::STATUS_ARCHIVED])->with('author');
 
         $filteredArchiveQuery = (clone $baseArchiveQuery)
             ->when($search !== '', function ($query) use ($search) {
@@ -426,7 +427,7 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
 
             if ($isArchivePage) {
                 $archiveVolume = $submission->archive_volume ?: ($publishedAt ? $publishedAt->format('Y') : now()->format('Y'));
-                $archiveIssue = $submission->archive_issue ?: '1';
+                $archiveIssue = $submission->archive_issue;
             }
 
             return [
@@ -445,26 +446,50 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
         });
 
         // Group papers by volume for archive
-        $groupedPapers = null;
-        if ($isArchivePage) {
-            $groupedPapers = $publishedPapers->groupBy(function ($paper) {
-                return (string) $paper['archiveVolume'];
-            })->map(function ($volumeGroup) {
-                $firstPaper = $volumeGroup->first();
+   $groupedPapers = null;
+if ($isArchivePage) {
+    $volumeNumbers = $publishedPapers->pluck('archiveVolume')->filter()->unique()->values();
 
-                $sortedPapers = $volumeGroup->sortBy(function ($paper) {
-                    return strtolower((string) $paper['archiveIssue']);
-                })->values();
+    $volumeCovers = \App\Models\Volume::whereIn('number', $volumeNumbers)
+        ->with(['issues' => function($q) {
+            $q->whereNotNull('cover_image')->orderBy('number');
+        }])
+        ->get()
+        ->mapWithKeys(fn($v) => [$v->number => $v->issues->keyBy('number')]);
 
-                return [
-                    'volume' => $firstPaper['archiveVolume'],
-                    'issuesCount' => $volumeGroup->pluck('archiveIssue')->filter()->unique()->count(),
-                    'papers' => $sortedPapers,
-                ];
-            })->sortBy(function ($group) {
-                return strtolower((string) $group['volume']);
-            })->values()->reverse()->values();
-        }
+    // Group by volume + issue combination
+    $groupedPapers = $publishedPapers->groupBy(function ($paper) {
+        $vol = (string) $paper['archiveVolume'];
+        $issue = $paper['archiveIssue'];
+        return $vol . '||' . ($issue ?? '__none__');
+    })->map(function ($group) use ($volumeCovers) {
+        $first = $group->first();
+        $volNumber = $first['archiveVolume'];
+        $issueNumber = $first['archiveIssue'];
+
+        // Get cover: prefer issue-specific, fallback to first issue of volume
+        $issueCovers = $volumeCovers[$volNumber] ?? collect();
+        $coverImage = $issueNumber
+            ? ($issueCovers[$issueNumber]?->cover_image ?? $issueCovers->first()?->cover_image)
+            : $issueCovers->first()?->cover_image;
+
+        $year = $first['publishedAt']?->format('Y') ?? '';
+
+        return [
+            'volume'      => $volNumber,
+            'issue'       => $issueNumber,
+            'year'        => $year,
+            'coverImage'  => $coverImage,
+            'papers'      => $group->values(),
+            'label'       => $issueNumber
+                                ? "Vol. {$volNumber} No. {$issueNumber} ({$year})"
+                                : "Vol. {$volNumber} ({$year})",
+        ];
+    })->sortBy([
+        fn($a, $b) => (int)$b['volume'] <=> (int)$a['volume'],
+        fn($a, $b) => (int)($a['issue'] ?? 0) <=> (int)($b['issue'] ?? 0),
+    ])->values();
+}
 
         return view('published-papers', [
             'papers' => $publishedPapers,
@@ -481,4 +506,56 @@ $editorialBoard = EditorialBoardMember::where('is_active', true)
             'isArchivePage' => $isArchivePage,
         ]);
     }
+ public function showVolume(string $volume, ?string $issue = null)
+{
+    $submissions = Submission::where('status', Submission::STATUS_ARCHIVED)
+        ->where(function ($q) use ($volume) {
+            $q->where('archive_volume', $volume)
+              ->orWhere(function ($q2) use ($volume) {
+                  $q2->whereNull('archive_volume')
+                     ->whereYear('published_at', $volume);
+              });
+        })
+        ->when($issue !== null, function ($q) use ($issue) {
+            $q->where('archive_issue', $issue);
+        })
+        ->when($issue === null, function ($q) {
+            $q->whereNull('archive_issue');
+        })
+        ->with('author')
+        ->latest('published_at')
+        ->get();
+
+    if ($submissions->isEmpty()) {
+        abort(404);
+    }
+
+    // Get cover image
+    $volModel = \App\Models\Volume::where('number', $volume)
+        ->with(['issues' => fn($q) => $q->whereNotNull('cover_image')->orderBy('number')])
+        ->first();
+    $coverImage = $volModel?->issues->first()?->cover_image;
+
+    $papers = $submissions->map(function ($submission) {
+        return [
+            'id'           => $submission->id,
+            'title'        => $submission->title,
+            'abstract'     => $submission->abstract,
+            'category'     => $submission->research_field,
+            'author'       => $submission->author->name ?? 'Anonymous',
+            'publishedAt'  => $submission->published_at,
+            'downloads'    => $submission->download_count ?? 0,
+            'archiveIssue' => $submission->archive_issue,
+        ];
+    });
+
+    $issuesCount = $papers->pluck('archiveIssue')->whereNotNull()->unique()->count();
+
+    return view('archive-volume', [
+        'volume'      => $volume,
+        'coverImage'  => $coverImage,
+        'papers'      => $papers,
+        'issuesCount' => $issuesCount,
+    ]);
+}
 }

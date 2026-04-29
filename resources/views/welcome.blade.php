@@ -2711,10 +2711,10 @@
                 <div class="process-grid">
                     @php
                         $steps = [
-                            ['num' => '01', 'title' => 'Submit', 'days' => '1–2 days', 'desc' => 'Upload your manuscript, abstract, keywords, and author affiliations through our secure portal.'],
-                            ['num' => '02', 'title' => 'Screen', 'days' => '3–5 days', 'desc' => 'Editorial board conducts initial screening for scope, formatting, and ethical compliance.'],
-                            ['num' => '03', 'title' => 'Review', 'days' => '10–14 days', 'desc' => 'Two or more expert reviewers provide detailed double-blind evaluations and recommendations.'],
-                            ['num' => '04', 'title' => 'Publish', 'days' => '3–5 days', 'desc' => 'Accepted articles receive DOI registration, professional layout, and global distribution.'],
+                            ['num' => '01', 'title' => 'Submit', 'desc' => 'Upload your manuscript, abstract, keywords, and author affiliations through our secure portal.'],
+                            ['num' => '02', 'title' => 'Screen', 'desc' => 'Editorial board conducts initial screening for scope, formatting, and ethical compliance.'],
+                            ['num' => '03', 'title' => 'Review', 'desc' => 'Expert reviewers provide detailed double-blind evaluations, followed by editorial and layout editing by the Managing Editor and Layout Editor.'],
+                            ['num' => '04', 'title' => 'Publish', 'desc' => 'Accepted articles receive DOI registration, professional layout, and global distribution.'],
                         ];
                     @endphp
 
@@ -2730,7 +2730,6 @@
                                     {{ $s['title'] }}
                                 </h3>
                             </div>
-                            <span class="process-days">{{ $s['days'] }}</span>
                             <p class="process-desc">{{ $s['desc'] }}</p>
                         </div>
                     @endforeach
@@ -3080,7 +3079,7 @@
                                             </div>
                                         </div>
                                         <div class="board-eic-body">
-                                            <div class="board-eic-badge"> 
+                                            <div class="board-eic-badge">
                                                 <svg
                                                     width="9"
                                                     height="9"
@@ -3867,7 +3866,7 @@
                     © {{ date('Y') }} Journal System — All rights reserved.
                 </span>
                 <span class="footer-tagline">
-                    Advancing Knowledge · Inspiring Innovation
+                    Advancing Research · Inspiring Innovation
                 </span>
             </div>
         </footer>
