@@ -1642,7 +1642,7 @@
                     <div class="card fu3" style="margin-top: 16px">
                         <div class="section-label">Editor Decision</div>
 
-                        @if (in_array($submission->status, ['accepted', 'rejected', 'revisions_requested', 'with_managing_editor', 'layout_editing', 'layout_review', 'author_confirmation']))
+                        @if (in_array($submission->status, ['accepted', 'rejected', 'revisions_requested', 'with_managing_editor', 'layout_editing', 'layout_review', 'author_confirmation', 'published']))
                             <div class="state-block state-blue">
                                 <div
                                     style="
@@ -2948,9 +2948,9 @@
                         $steps = [
                             ['label' => 'Submitted', 'sub' => 'Manuscript received', 'done' => true],
                             ['label' => 'Initial Screening', 'sub' => 'Scope & format check', 'done' => $submission->hasPassedInitialScreening()],
-                            ['label' => 'Under Review', 'sub' => 'Peer review in progress', 'done' => in_array($submission->status, ['accepted', 'rejected', 'revisions_requested', 'with_managing_editor', 'layout_editing', 'layout_review', 'author_confirmation', 'revision_under_review'])],
-                            ['label' => 'Decision', 'sub' => 'Editor records outcome', 'done' => in_array($submission->status, ['accepted', 'rejected', 'revisions_requested', 'with_managing_editor', 'layout_editing', 'layout_review', 'author_confirmation'])],
-                            ['label' => 'Publication', 'sub' => 'Layout, DOI & release', 'done' => in_array($submission->status, ['layout_editing', 'layout_review', 'author_confirmation'])],
+                            ['label' => 'Under Review', 'sub' => 'Peer review in progress', 'done' => in_array($submission->status, ['accepted', 'rejected', 'revisions_requested', 'with_managing_editor', 'layout_editing', 'layout_review', 'author_confirmation', 'revision_under_review', 'published'])],
+                            ['label' => 'Decision', 'sub' => 'Editor records outcome', 'done' => in_array($submission->status, ['accepted', 'rejected', 'revisions_requested', 'with_managing_editor', 'layout_editing', 'layout_review', 'author_confirmation', 'published'])],
+                            ['label' => 'Publication', 'sub' => 'Layout, DOI & release', 'done' => in_array($submission->status, ['layout_editing', 'layout_review', 'author_confirmation', 'published'])],
                         ];
                         $currentStep = collect($steps)
                             ->filter(fn ($s) => $s['done'])

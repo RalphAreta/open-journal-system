@@ -539,7 +539,7 @@
                                 type="checkbox"
                                 name="roles[]"
                                 value="{{ $role->id }}"
-                                {{ in_array($role->id, old('roles',$user->roles()->pluck('roles.id')->toArray(),),) ? 'checked' : '' }}
+                                {{ in_array($role->id, old('roles', $user->roles()->pluck('id')->toArray())) ? 'checked' : '' }}
                             />
                             <span class="role-name">
                                 {{ $role->display_name }}
