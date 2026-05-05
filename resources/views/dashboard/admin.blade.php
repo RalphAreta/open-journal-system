@@ -139,7 +139,7 @@
         }
         @media (min-width: 480px) {
             .stat-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         .stat-cell {
@@ -623,27 +623,6 @@
                     </svg>
                 </div>
                 <div class="accent-line al-teal"></div>
-            </a>
-
-            <a href="{{ route('admin.roles.index') }}" class="stat-cell">
-                <p class="stat-lbl">System Roles</p>
-                <p class="stat-val sv-gold">
-                    {{ sprintf('%02d', $roleCount) }}
-                </p>
-                <div class="stat-cta cta-gold">
-                    Manage roles
-                    <svg
-                        width="13"
-                        height="13"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                        viewBox="0 0 24 24"
-                    >
-                        <path d="M9 18l6-6-6-6" />
-                    </svg>
-                </div>
-                <div class="accent-line al-gold"></div>
             </a>
 
             <a href="{{ route('admin.submissions') }}" class="stat-cell">

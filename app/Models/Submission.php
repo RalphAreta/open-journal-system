@@ -187,7 +187,7 @@ public const AUTHOR_STATUS_REVISION = 'revision_requested';
 
     public function isPendingInitialScreening(): bool
     {
-        return $this->initial_screening_status === self::SCREENING_STATUS_PENDING;
+        return $this->initial_screening_status === self::SCREENING_STATUS_PENDING;    
     }
 
     public function hasFailedInitialScreening(): bool
