@@ -158,9 +158,9 @@
                 <p
                     class="readable-text text-[14px] leading-relaxed font-medium text-white mb-8 animate-lp-up [animation-delay:340ms]"
                 >
-                    BatStateU International Research Journal of Information
-                    Systems & Engineering Technology — peer-reviewed,
-                    open-access research for the global academic community.
+                    Research Journal of Information Systems & Engineering
+                    Technology — peer-reviewed, open-access research for the
+                    global academic community.
                 </p>
                 <div
                     class="w-12 h-0.5 bg-[#c9a84c] mb-6 animate-lp-up [animation-delay:460ms]"
