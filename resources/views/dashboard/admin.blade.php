@@ -827,13 +827,7 @@
                                 'dot' => 'var(--teal)',
                                 'badge' => $userCount . ' users',
                             ],
-                            [
-                                'label' => 'Role Configuration',
-                                'sub' => 'Define permissions & access levels',
-                                'route' => 'admin.roles.index',
-                                'dot' => 'var(--gold)',
-                                'badge' => $roleCount . ' roles',
-                            ],
+
                             [
                                 'label' => 'All Submissions',
                                 'sub' => 'System-wide manuscript view',
