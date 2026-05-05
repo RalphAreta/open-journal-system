@@ -2530,15 +2530,15 @@
             <div class="mobile-menu" id="mobile-menu">
                 <div class="mobile-menu-inner">
                     <a href="/published-papers" class="mobile-nav-link">
-                        📄 Published Papers
+                        Published Papers
                     </a>
                     <a href="#fields" class="mobile-nav-link">
-                        🔬 Research Fields
+                        Research Fields
                     </a>
                     <a href="#process" class="mobile-nav-link">
-                        ⚙️ Review Process
+                        Review Process
                     </a>
-                    <a href="/login" class="mobile-nav-link">🔑 Sign In</a>
+                    <a href="/login" class="mobile-nav-link">Sign In</a>
                     <a href="/register" class="mobile-nav-register">
                         Register — Submit Now →
                     </a>
