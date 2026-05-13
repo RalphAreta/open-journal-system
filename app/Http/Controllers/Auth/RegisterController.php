@@ -27,42 +27,66 @@ class RegisterController extends Controller
 
     // ── Step 1: Validate → save pending → send OTP ─────────────────
     public function store(Request $request)
-    {
-        $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
-            'roles'    => ['required', 'array', 'min:1'],
-            'roles.*'  => ['in:author,reviewer,editor'],
-            'password' => ['required', 'confirmed', Password::min(8)],
-        ]);
+{
+    $request->validate([
+        'name'     => ['required', 'string', 'max:255'],
+        'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
+        'roles'    => ['required', 'array', 'min:1'],
+        'roles.*'  => ['in:author,reviewer,editor'],
+        'password' => ['required', 'confirmed', Password::min(8)],
+        // ✅ CV required lang kung reviewer o editor ang pinili
+        'cv'       => [
+            function ($attribute, $value, $fail) use ($request) {
+                $needsReview = collect($request->roles ?? [])
+                    ->intersect(['reviewer', 'editor'])
+                    ->isNotEmpty();
+                if ($needsReview && !$request->hasFile('cv')) {
+                    $fail('A CV is required for reviewer and editor applications.');
+                }
+            },
+            'nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120',
+        ],
+    ]);
 
-        $token = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-
-        // Encrypt the full payload so raw data isn't sitting in the DB
-        $payload = Crypt::encryptString(json_encode([
-            'name'      => $request->name,
-            'email'     => $request->email,
-            'password'  => Hash::make($request->password),
-            'roles'     => $request->roles,
-            'expertise' => $request->input('expertise', []),
-        ]));
-
-        PendingRegistration::updateOrCreate(
-            ['email' => $request->email],
-            [
-                'token'      => Hash::make($token),
-                'payload'    => $payload,
-                'attempts'   => 0,
-                'expires_at' => Carbon::now()->addMinutes(10),
-            ]
-        );
-
-        Mail::to($request->email)->send(new EmailVerificationOtp($token));
-
-        session(['pending_email' => $request->email]);
-
-        return redirect()->route('verify.email.show');
+    // ✅ I-store muna ang CV bago i-encrypt ang payload
+    $cvPath = null;
+    if ($request->hasFile('cv')) {
+        $cvPath = $request->file('cv')->store('cvs', 'private');
     }
+
+    $needsReview = collect($request->roles)
+        ->intersect(['reviewer', 'editor'])
+        ->isNotEmpty();
+
+    $token = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+    // ✅ Isama ang cv_path at status sa payload
+    $payload = Crypt::encryptString(json_encode([
+        'name'      => $request->name,
+        'email'     => $request->email,
+        'password'  => Hash::make($request->password),
+        'roles'     => $request->roles,
+        'expertise' => $request->input('expertise', []),
+        'cv_path'   => $cvPath,                                  // ← bago
+        'status'    => $needsReview ? 'pending' : 'approved',   // ← bago
+    ]));
+
+    PendingRegistration::updateOrCreate(
+        ['email' => $request->email],
+        [
+            'token'      => Hash::make($token),
+            'payload'    => $payload,
+            'attempts'   => 0,
+            'expires_at' => Carbon::now()->addMinutes(10),
+        ]
+    );
+
+    Mail::to($request->email)->send(new EmailVerificationOtp($token));
+
+    session(['pending_email' => $request->email]);
+
+    return redirect()->route('verify.email.show');
+}
 
     // ── Step 2: Show OTP page ───────────────────────────────────────
     public function showVerify()
@@ -73,7 +97,8 @@ class RegisterController extends Controller
         return view('auth.verify-email');
     }
 
-    // ── Step 3: Verify OTP → create real user ──────────────────────
+   
+   // ── Step 3: Verify OTP → create real user ──────────────────────
     public function verify(Request $request)
     {
         $request->validate(['token' => ['required', 'digits:6']]);
@@ -81,7 +106,6 @@ class RegisterController extends Controller
         $email   = session('pending_email');
         $pending = PendingRegistration::where('email', $email)->first();
 
-        // Expired or not found
         if (! $pending || Carbon::now()->isAfter($pending->expires_at)) {
             $pending?->delete();
             session()->forget('pending_email');
@@ -89,7 +113,6 @@ class RegisterController extends Controller
                 ->withErrors(['token' => 'Your code has expired. Please register again.']);
         }
 
-        // Too many attempts
         if ($pending->attempts >= 3) {
             $pending->delete();
             session()->forget('pending_email');
@@ -97,7 +120,6 @@ class RegisterController extends Controller
                 ->withErrors(['token' => 'Too many failed attempts. Please register again.']);
         }
 
-        // Wrong code
         if (! Hash::check($request->token, $pending->token)) {
             $pending->increment('attempts');
             $remaining = 3 - $pending->fresh()->attempts;
@@ -106,20 +128,19 @@ class RegisterController extends Controller
             ]);
         }
 
-        // ✅ OTP valid — decrypt payload and create user
         $data = json_decode(Crypt::decryptString($pending->payload), true);
 
         $user = User::create([
             'name'     => $data['name'],
             'email'    => $data['email'],
-            'password' => $data['password'], // already hashed
+            'password' => $data['password'],
+            'cv_path'  => $data['cv_path'] ?? null,
+            'status'   => $data['status'] ?? 'approved',
         ]);
 
-        // Assign roles
         $roleModels = Role::whereIn('name', $data['roles'])->get();
         $user->roles()->sync($roleModels->pluck('id'));
 
-        // Assign expertise (for reviewer/editor)
         $needsExpertise = array_intersect($data['roles'], ['reviewer', 'editor']);
         if (! empty($needsExpertise) && ! empty($data['expertise'])) {
             foreach ($data['expertise'] as $field) {
@@ -130,16 +151,21 @@ class RegisterController extends Controller
             }
         }
 
-        // Mark email as verified since they proved ownership via OTP
-       // Mark email as verified since they proved ownership via OTP
-$user->forceFill(['email_verified_at' => now()])->save();
+        $user->forceFill(['email_verified_at' => now()])->save();
 
-$pending->delete();
-session()->forget('pending_email');
+        $pending->delete();
+        session()->forget('pending_email');
 
-return redirect()->route('login')
-    ->with('success', 'Your account has been verified! You can now log in.');
-    }
+        if ($user->status === 'pending') {
+            return redirect()->route('login')
+                ->with('success', 'Your email has been verified! Your account is pending admin approval. You will be notified once reviewed.');
+        }
+
+        Auth::login($user);
+        return redirect()->route('dashboard')
+            ->with('success', 'Your account has been verified! Welcome!');
+
+    }   // ← ✅ closing brace ng verify() — ito ang kulang!
 
     // ── Step 4: Resend OTP ──────────────────────────────────────────
     public function resend()
@@ -163,4 +189,5 @@ return redirect()->route('login')
 
         return back()->with('resent', true);
     }
+
 }

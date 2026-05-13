@@ -99,6 +99,9 @@ Route::middleware('auth')->group(function (): void {
     '/reviews/submission/{submission}/peer-reviews',
     [ReviewController::class, 'peerReviews']
 )->name('reviews.peer-reviews');
+Route::get('/reviewer/submissions/{submission}/preview',
+    [ReviewController::class, 'previewFile'])
+    ->name('reviewer.preview-file');
     });
 
     Route::middleware('role:layout-editor')->group(function (): void {
@@ -107,6 +110,9 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/layout-editor/assignment/{id}/download', [LayoutEditorController::class, 'downloadFile'])->name('layout-editor.download');
         Route::post('/layout-editor/assignment/{id}/upload', [LayoutEditorController::class, 'uploadFile'])->name('layout-editor.upload');
         Route::get('/layout-editor/assignment/{id}/download-layout', [LayoutEditorController::class, 'downloadLayoutFile'])->name('layout-editor.download-layout');
+        Route::get('/layout-editor/submissions/{submission}/preview',
+    [ReviewController::class, 'previewFile'])
+    ->name('layout-editor.preview-file');
     });
 
     Route::middleware('role:editor')->group(function (): void {
@@ -124,6 +130,9 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/editor/submissions/{submission}/send-to-layout-editor', [ReviewController::class, 'sendToLayoutEditor'])->name('editor.send-to-layout-editor');
         Route::post('/editor/submissions/{submission}/send-layout-to-author', [ReviewController::class, 'sendLayoutToAuthor'])->name('editor.send-layout-to-author');
         Route::post('/editor/submissions/{submission}/send-to-managing-editor', [ReviewController::class, 'sendToManagingEditor'])->name('editor.send-to-managing-editor');
+    Route::get('editor/submissions/{submission}/preview', 
+    [ReviewController::class, 'previewFile'])
+    ->name('editor.preview-file');
     });
 
     Route::middleware('role:editor-in-chief')->group(function (): void {
@@ -138,7 +147,10 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/chief-editor/appeals', [AppealController::class, 'index'])->name('appeals.index');
         Route::get('/chief-editor/appeals/{appeal}', [AppealController::class, 'show'])->name('appeals.show');
         Route::put('/chief-editor/appeals/{appeal}', [AppealController::class, 'update'])->name('appeals.update');
-    });
+      Route::get('chief-editor/submissions/{submission}/preview', 
+        [ChiefEditorController::class, 'previewFile'])
+        ->name('chief-editor.preview-file');
+});
 
     Route::middleware('role:admin')->group(function (): void {
         Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
@@ -165,6 +177,11 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/admin/editor-expertise/{user}', [EditorExpertiseController::class, 'update'])->name('admin.editor-expertise.update');
         Route::post('/admin/editor-expertise/{user}/add-field', [EditorExpertiseController::class, 'addField'])->name('admin.editor-expertise.add-field');
         Route::delete('/admin/editor-expertise/{expertise}', [EditorExpertiseController::class, 'removeField'])->name('admin.editor-expertise.remove-field');
+        
+        Route::get('/admin/pending-users', [AdminUserController::class, 'pending'])->name('admin.users.pending');
+Route::post('/admin/pending-users/{user}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
+Route::post('/admin/pending-users/{user}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
+Route::get('/admin/cv/{user}', [AdminUserController::class, 'downloadCv'])->name('admin.users.cv');
 
         // Expertise Categories Management
         Route::get('/admin/expertise-categories', [ExpertiseCategoryController::class, 'index'])->name('admin.expertise-categories.index');

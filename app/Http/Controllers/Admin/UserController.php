@@ -88,4 +88,33 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('admin.users.index')->with('success', 'User deleted.');
     }
+
+    public function pending()
+{
+    $pending = User::where('status', 'pending')
+                   ->with('roles')
+                   ->latest()
+                   ->get();
+    return view('admin.users.pending', compact('pending'));
+}
+
+public function approve(User $user)
+{
+    $user->update(['status' => 'approved']);
+    // optionally: Mail::to($user)->send(new AccountApproved($user));
+    return back()->with('success', "{$user->name} has been approved.");
+}
+
+public function reject(User $user)
+{
+    $user->update(['status' => 'rejected']);
+    // optionally: Mail::to($user)->send(new AccountRejected($user));
+    return back()->with('success', "{$user->name}'s application was rejected.");
+}
+
+public function downloadCv(User $user)
+{
+    abort_unless($user->cv_path && Storage::disk('private')->exists($user->cv_path), 404);
+    return Storage::disk('private')->download($user->cv_path);
+}
 }

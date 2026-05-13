@@ -616,61 +616,106 @@
                 <p class="rv-card-title">Submission File</p>
 
                 @if ($submission->file_path)
-                    <div class="rv-file-row">
+                  <div class="rv-file-row">
                         <div class="rv-file-info">
                             <div class="rv-file-icon">
-                                <svg
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="1.75"
-                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                    />
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                 </svg>
                             </div>
                             <div>
-                                <p class="rv-file-name">
-                                    {{ $submission->file_name }}
-                                </p>
-                                <p class="rv-file-sub">PDF · DOC · DOCX</p>
+                                <p class="rv-file-name">{{ $submission->file_name }}</p>
+                                <p class="rv-file-sub">DOC · DOCX</p>
                             </div>
                         </div>
-                        <a
-                            href="{{ route('submissions.download', ['submission' => $submission]) }}"
-                            class="rv-download-btn"
-                        >
-                            <svg
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                            <button
+                                type="button"
+                                onclick="openFileModal()"
+                                class="rv-download-btn"
+                                style="background:none;border-color:#fecaca;cursor:pointer;"
                             >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                                />
-                            </svg>
-                            Download
-                        </a>
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                                View File
+                            </button>
+                            <a href="{{ route('submissions.download', ['submission' => $submission]) }}"
+                                class="rv-download-btn">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                                Download
+                            </a>
+                        </div>
                     </div>
-                @else
-                    <p
-                        style="
-                            font-size: 0.875rem;
-                            color: #a09e97;
-                            font-style: italic;
-                            margin: 0;
-                        "
-                    >
-                        No file submitted.
-                    </p>
-                @endif
-            </div>
+
+                    {{-- File Viewer Modal — OUTSIDE rv-file-row --}}
+                <div
+    id="rv-file-modal"
+    style="display:none;position:fixed;inset:0;z-index:999;align-items:center;justify-content:center;padding:16px;background:rgba(28,25,23,0.75);backdrop-filter:blur(4px);"
+    onclick="if(event.target===this) this.style.display='none'"
+>
+                        <div style="width:min(900px,100%);height:min(88vh,860px);background:white;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.3);display:flex;flex-direction:column;overflow:hidden;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #e7e5e0;background:#f7f6f3;flex-shrink:0;">
+                                <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+                                    <div style="width:32px;height:32px;border-radius:6px;background:#fef2f2;border:1px solid #fecaca;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                        <svg width="16" height="16" fill="none" stroke="#b91c1c" viewBox="0 0 24 24" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div style="min-width:0;">
+                                        <p style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#a09e97;margin:0;">Manuscript File</p>
+                                        <p style="font-size:13px;font-weight:600;color:#1c1917;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $submission->file_name }}</p>
+                                    </div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:12px;">
+                                    <a href="{{ route('submissions.download', ['submission' => $submission]) }}"
+                                        style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:5px;background:#f0fdf4;border:1px solid #bbf7d0;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#166534;text-decoration:none;">
+                                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                        </svg>
+                                        Download
+                                    </a>
+                                    <button type="button"
+                                        onclick="document.getElementById('rv-file-modal').style.display='none'"                                        style="width:32px;height:32px;border-radius:6px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#a09e97;">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                            <path d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="flex:1;overflow:hidden;background:#f7f6f3;position:relative;">
+                              <iframe
+    data-src="{{ route('reviewer.preview-file', $submission) }}#toolbar=1&navpanes=0&scrollbar=1&view=FitH"
+    style="width:100%;height:100%;border:0;"
+    title="Manuscript Preview"
+    id="rv-preview-iframe"
+></iframe>
+                                <div id="rv-viewer-loading"
+                                    style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f7f6f3;transition:opacity 0.4s;pointer-events:none;">
+                                    <div style="width:40px;height:40px;border-radius:8px;background:white;border:1px solid #e7e5e0;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                                        <svg style="width:20px;height:20px;animation:rv-spin 1s linear infinite;" fill="none" viewBox="0 0 24 24">
+                                            <circle style="opacity:.25" cx="12" cy="12" r="10" stroke="#b91c1c" stroke-width="4"/>
+                                            <path style="opacity:.75" fill="#b91c1c" d="M4 12a8 8 0 018-8v8H4z"/>
+                                        </svg>
+                                    </div>
+                                    <p style="font-size:11px;font-weight:700;color:#a09e97;text-transform:uppercase;letter-spacing:.1em;margin:0;">Converting document…</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <style>@keyframes rv-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }</style>
+
+                  @else
+        <p style="font-size:0.875rem;color:#a09e97;font-style:italic;margin:0;">
+            No file submitted.
+        </p>
+    @endif
+</div>
 
             {{-- Review Form --}}
             <div class="rv-card">
@@ -1006,5 +1051,26 @@
                 update(input.value);
             }
         });
+       function openFileModal() {
+    const modal = document.getElementById('rv-file-modal');
+    modal.style.display = 'flex';
+
+    // Lazy-load iframe only on first open
+    const iframe = document.getElementById('rv-preview-iframe');
+    if (iframe && iframe.dataset.src && !iframe.src) {
+        iframe.src = iframe.dataset.src;
+        iframe.addEventListener('load', () => {
+            const loading = document.getElementById('rv-viewer-loading');
+            if (loading) loading.style.opacity = '0';
+        });
+    }
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('rv-file-modal');
+        if (modal) modal.style.display = 'none';
+    }
+});
     </script>
 @endsection

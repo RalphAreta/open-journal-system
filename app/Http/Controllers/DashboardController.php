@@ -174,21 +174,23 @@ class DashboardController extends Controller
         return view('dashboard.editor', compact('submissions', 'stats'));
     }
 
-    public function admin(Request $request): View
-    {
-        $request->session()->put('preferred_dashboard', 'admin');
-        $request->session()->put('active_role', 'admin'); // Ensure active role is set
+  public function admin(Request $request): View
+{
+    $request->session()->put('preferred_dashboard', 'admin');
+    $request->session()->put('active_role', 'admin');
 
-        $userCount       = \App\Models\User::count();
-        $submissionCount = Submission::count();
-        $roleCount       = \App\Models\Role::count();
+    $userCount       = \App\Models\User::count();
+    $submissionCount = Submission::count();
+    $roleCount       = \App\Models\Role::count();
+    $pendingCount    = \App\Models\User::where('status', 'pending')->count(); // ✅ bago
 
-        return view('dashboard.admin', [
-            'userCount'       => $userCount,
-            'submissionCount' => $submissionCount,
-            'roleCount'       => $roleCount,
-        ]);
-    }
+    return view('dashboard.admin', [
+        'userCount'       => $userCount,
+        'submissionCount' => $submissionCount,
+        'roleCount'       => $roleCount,
+        'pendingCount'    => $pendingCount, // ✅ bago
+    ]);
+}
 
     /**
      * Switch to a different role (for users with multiple roles).

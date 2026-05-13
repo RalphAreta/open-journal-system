@@ -829,6 +829,14 @@
                             ],
 
                             [
+                                'label' => 'Pending Registrations',
+                                'sub' => 'Review reviewer & editor applications',
+                                'route' => 'admin.users.pending',
+                                'dot' => '#c0392b',
+                                'badge' => $pendingCount . ' pending', // pass this from controller
+                            ],
+
+                            [
                                 'label' => 'All Submissions',
                                 'sub' => 'System-wide manuscript view',
                                 'route' => 'admin.submissions',

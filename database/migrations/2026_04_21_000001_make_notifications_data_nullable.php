@@ -8,12 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement('ALTER TABLE notifications ALTER COLUMN data DROP NOT NULL');
+        // ✅ Check muna kung may data column bago i-alter
+        if (Schema::hasColumn('notifications', 'data')) {
+            DB::statement('ALTER TABLE notifications ALTER COLUMN data DROP NOT NULL');
+        }
     }
 
     public function down(): void
     {
-        DB::statement("UPDATE notifications SET data = '' WHERE data IS NULL");
-        DB::statement('ALTER TABLE notifications ALTER COLUMN data SET NOT NULL');
+        if (Schema::hasColumn('notifications', 'data')) {
+            DB::statement("UPDATE notifications SET data = '' WHERE data IS NULL");
+            DB::statement('ALTER TABLE notifications ALTER COLUMN data SET NOT NULL');
+        }
     }
 };

@@ -319,4 +319,57 @@ class ChiefEditorController extends Controller
         return redirect()->route('chief-editor.submission.show', $submission)
             ->with('success', 'Submission reassigned to: ' . $editor->name . '.');
     }
+
+  public function previewFile(Submission $submission)
+{
+    // Correct path — files are in storage/app/private/
+    $filePath = storage_path('app/private/' . $submission->original_file_path);
+
+    if (!file_exists($filePath)) {
+        abort(404, 'File not found');
+    }
+
+    $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+
+    // PDF — serve directly inline
+    if ($ext === 'pdf') {
+        return response()->file($filePath, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'inline',
+        ]);
+    }
+
+    // DOC/DOCX — convert to PDF via PhpWord + DomPDF
+    try {
+        \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
+
+        $phpWord    = \PhpOffice\PhpWord\IOFactory::load($filePath);
+        $htmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'HTML');
+
+        $tmpHtml = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'preview_' . $submission->id . '_' . time() . '.html';
+        $htmlWriter->save($tmpHtml);
+        $htmlContent = file_get_contents($tmpHtml);
+        @unlink($tmpHtml);
+
+        $dompdf = new \Dompdf\Dompdf([
+            'isHtml5ParserEnabled'    => true,
+            'isRemoteEnabled'         => false,
+            'defaultPaperSize'        => 'a4',
+            'defaultPaperOrientation' => 'portrait',
+        ]);
+
+        $dompdf->loadHtml($htmlContent, 'UTF-8');
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return response($dompdf->output(), 200, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="preview.pdf"',
+            'Cache-Control'       => 'private, max-age=3600',
+        ]);
+
+    } catch (\Exception $e) {
+        abort(500, 'Preview failed: ' . $e->getMessage());
+    }
+}
 }

@@ -528,25 +528,53 @@
                                 Submission Details
                             </h2>
                             @if ($originalFileExists)
-                                <a
-                                    href="{{ route('submissions.download-original', $submission) }}"
-                                    class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-[color:var(--teal)] hover:text-[color:var(--teal-d)] transition-colors"
-                                >
-                                    <svg
-                                        class="w-3.5 h-3.5"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
+                                <div class="flex items-center gap-3">
+                                    <button
+                                        type="button"
+                                        onclick="
+                                            document
+                                                .getElementById(
+                                                    'file-viewer-modal',
+                                                )
+                                                .classList.remove('hidden')
+                                        "
+                                        class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-[color:var(--teal)] hover:text-[color:var(--teal-d)] transition-colors"
                                     >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2.5"
-                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                                        />
-                                    </svg>
-                                    Download File
-                                </a>
+                                        <svg
+                                            class="w-3.5 h-3.5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2.5"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                            />
+                                        </svg>
+                                        View File
+                                    </button>
+                                    <a
+                                        href="{{ route('submissions.download-original', $submission) }}"
+                                        class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-[#b0aaa0] hover:text-[color:var(--ink)] transition-colors"
+                                    >
+                                        <svg
+                                            class="w-3.5 h-3.5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2.5"
+                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                            />
+                                        </svg>
+                                        Download
+                                    </a>
+                                </div>
                             @endif
                         </div>
                         <div class="card-body">
@@ -1332,12 +1360,12 @@
                                         <p class="field-label mb-1.5">
                                             Notes (Optional)
                                         </p>
-                                        <textarea
-                                            name="notes"
-                                            rows="3"
-                                            placeholder="Add assignment notes..."
-                                            class="w-full px-3 py-2.5 text-sm border border-[#e2ddd4] rounded-xl focus:border-[color:var(--teal)] focus:ring-2 focus:ring-[rgba(45,129,118,.1)] outline-none font-['Source_Sans_3'] resize-none transition-all"
-                                        ></textarea>
+                                      <textarea
+    name="notes"
+    id="assignment-notes"
+    rows="4"
+    class="w-full px-3 py-2.5 text-sm border border-[#e2ddd4] rounded-xl focus:border-[color:var(--teal)] focus:ring-2 focus:ring-[rgba(45,129,118,.1)] outline-none font-['Source_Sans_3'] resize-none transition-all"
+>You are hereby assigned to handle the peer review process for the manuscript entitled "{{ $submission->title }}", submitted on {{ $submission->submitted_at->format('F j, Y') }} under the research field of {{ $submission->research_field ?? 'General Research' }}. Kindly review the manuscript in accordance with the journal's editorial standards and provide your evaluation at the earliest convenience.</textarea>
                                     </div>
 
                                     <button
@@ -1468,6 +1496,151 @@
                 @endif
             </div>
         </div>
+        {{-- ── File Viewer Modal ── --}}
+        @if ($originalFileExists)
+            <div
+                id="file-viewer-modal"
+                class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4"
+                style="
+                    background: rgba(13, 22, 40, 0.75);
+                    backdrop-filter: blur(4px);
+                "
+                onclick="
+                    if (event.target === this) this.classList.add('hidden');
+                "
+            >
+                <div
+                    class="relative bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                    style="width: min(900px, 100%); height: min(88vh, 860px)"
+                >
+                    {{-- Modal Header --}}
+                    <div
+                        class="flex items-center justify-between px-5 py-3.5 border-b border-[#ede8e0] bg-[#faf8f5] shrink-0"
+                    >
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-[#e8f4f2] border border-[rgba(45,129,118,.25)] flex items-center justify-center shrink-0"
+                            >
+                                <svg
+                                    class="w-4 h-4 text-[#2d8176]"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                    />
+                                </svg>
+                            </div>
+                            <div class="min-w-0">
+                                <p
+                                    class="text-[9px] font-black uppercase tracking-[.18em] text-[#b0aaa0]"
+                                >
+                                    Manuscript File
+                                </p>
+                                <p
+                                    class="text-sm font-bold text-[#0d1628] truncate"
+                                >
+                                    {{ $submission->original_file_name ?? $submission->title }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 shrink-0 ml-3">
+                            <a
+                                href="{{ route('submissions.download-original', $submission) }}"
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] text-[10px] font-black uppercase tracking-wider text-emerald-700 hover:bg-emerald-50 transition-colors"
+                            >
+                                <svg
+                                    class="w-3 h-3"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2.5"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                    />
+                                </svg>
+                                Download
+                            </a>
+                            <button
+                                type="button"
+                                onclick="
+                                    document
+                                        .getElementById('file-viewer-modal')
+                                        .classList.add('hidden')
+                                "
+                                class="w-8 h-8 rounded-lg flex items-center justify-center text-[#b0aaa0] hover:bg-[#f5f0e8] hover:text-[#0d1628] transition-colors"
+                            >
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2.5"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Viewer Body --}}
+                    <div class="flex-1 overflow-hidden bg-[#f5f0e8] relative">
+                        <iframe
+                            src="{{ route('chief-editor.preview-file', $submission) }}#toolbar=1&navpanes=0&scrollbar=1&view=FitH"
+                            class="w-full h-full border-0"
+                            title="Manuscript Preview"
+                        ></iframe>
+
+                        {{-- Loading overlay --}}
+                        <div
+                            id="viewer-loading"
+                            class="absolute inset-0 flex flex-col items-center justify-center bg-[#f5f0e8] pointer-events-none"
+                            style="transition: opacity 0.4s"
+                        >
+                            <div
+                                class="w-10 h-10 rounded-xl bg-white border border-[#ede8e0] flex items-center justify-center mb-3 shadow-sm"
+                            >
+                                <svg
+                                    class="w-5 h-5 text-[#2d8176] animate-spin"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        class="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        stroke-width="4"
+                                    />
+                                    <path
+                                        class="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v8H4z"
+                                    />
+                                </svg>
+                            </div>
+                            <p
+                                class="text-xs font-bold text-[#b0aaa0] uppercase tracking-widest"
+                            >
+                                Converting document…
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 
     <script>
@@ -1493,5 +1666,36 @@
                 ? '+ Show other editors'
                 : '− Hide other editors';
         }
+
+        // Hide loading overlay when iframe loads
+        document
+            .querySelectorAll('#file-viewer-modal iframe')
+            .forEach((iframe) => {
+                iframe.addEventListener('load', () => {
+                    const loading = document.getElementById('viewer-loading');
+                    if (loading) loading.style.opacity = '0';
+                });
+            });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document
+                    .getElementById('file-viewer-modal')
+                    ?.classList.add('hidden');
+            }
+        });
+        // Auto-update notes when editor is selected
+document.querySelectorAll('.editor-cb').forEach(cb => {
+    cb.addEventListener('change', () => {
+        if (cb.checked) {
+            const editorName = cb.closest('label').querySelector('.text-sm.font-bold')?.textContent?.trim() ?? '';
+            const notes = document.getElementById('assignment-notes');
+            if (notes && editorName) {
+                notes.value = `Dear ${editorName},\n\nYou are hereby assigned to handle the peer review process for the manuscript entitled "${{{ $submission->title }}}", submitted on {{ $submission->submitted_at->format('F j, Y') }} under the research field of {{ $submission->research_field ?? 'General Research' }}. Kindly review the manuscript in accordance with the journal's editorial standards and provide your evaluation at the earliest convenience.`;
+            }
+        }
+    });
+});
     </script>
 @endsection

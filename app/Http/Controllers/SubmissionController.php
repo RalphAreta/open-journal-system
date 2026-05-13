@@ -77,12 +77,15 @@ class SubmissionController extends Controller
         $fieldOptions = \App\Models\EditorExpertise::getFieldOptions();
 
         // Restriction 1: one active submission at a time
-        $activeSubmission = Submission::where('author_id', Auth::id())
-            ->whereIn('status', self::ACTIVE_STATUSES)
-            ->latest()
-            ->first();
+      $activeSubmissions = Submission::where('author_id', Auth::id())
+    ->whereIn('status', self::ACTIVE_STATUSES)
+    ->latest()
+    ->get();
 
-        return view('submissions.create', compact('fieldOptions', 'activeSubmission'));
+$activeSubmission = $activeSubmissions->first();
+$isLimitReached   = $activeSubmissions->count() >= 2;
+
+return view('submissions.create', compact('fieldOptions', 'activeSubmission', 'activeSubmissions', 'isLimitReached'));
     }
 
     // ───────────────────────────────────────────────────────────────────────
@@ -91,14 +94,14 @@ class SubmissionController extends Controller
     public function store(Request $request): RedirectResponse|View
     {
         // ── Restriction 1 (server-side guard) ──────────────────────────────
-        $activeSubmission = Submission::where('author_id', Auth::id())
-            ->whereIn('status', self::ACTIVE_STATUSES)
-            ->first();
+      $activeCount = Submission::where('author_id', Auth::id())
+    ->whereIn('status', self::ACTIVE_STATUSES)
+    ->count();
 
-        if ($activeSubmission) {
-            return redirect()->route('submissions.create')
-                ->with('error', 'You already have an active submission. Please wait until it is published or rejected before submitting a new manuscript.');
-        }
+if ($activeCount >= 2) {
+    return redirect()->route('submissions.create')
+        ->with('error', 'You have reached the maximum of 2 active submissions. Please wait until one is published or rejected before submitting a new manuscript.');
+}
 
         // ── Validate ────────────────────────────────────────────────────────
         $validated = $request->validate([

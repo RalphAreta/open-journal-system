@@ -855,24 +855,69 @@
                         @if ($submission->file_path)
                             <div>
                                 <div class="meta-label">Manuscript</div>
-                                <a
-                                    href="{{ route('submissions.download', ['submission' => $submission]) }}"
-                                    class="dl-link"
+                                <div
+                                    style="
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 12px;
+                                        flex-wrap: wrap;
+                                        margin-top: 4px;
+                                    "
                                 >
-                                    <svg
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
+                                    <button
+                                        type="button"
+                                        onclick="
+                                            document
+                                                .getElementById(
+                                                    'file-viewer-modal',
+                                                )
+                                                .classList.remove('hidden')
+                                        "
+                                        class="dl-link"
+                                        style="
+                                            background: none;
+                                            border: none;
+                                            cursor: pointer;
+                                            padding: 0;
+                                        "
                                     >
-                                        <path
-                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                                        />
-                                    </svg>
-                                    {{ $submission->file_name }}
-                                </a>
+                                        <svg
+                                            width="14"
+                                            height="14"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                        >
+                                            <path
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                            />
+                                        </svg>
+                                        View File
+                                    </button>
+                                    <a
+                                        href="{{ route('submissions.download', ['submission' => $submission]) }}"
+                                        class="dl-link"
+                                        style="
+                                            color: var(--muted);
+                                            font-size: 12px;
+                                        "
+                                    >
+                                        <svg
+                                            width="13"
+                                            height="13"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                        >
+                                            <path
+                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                            />
+                                        </svg>
+                                        Download
+                                    </a>
+                                </div>
                             </div>
                         @endif
                     </div>
@@ -3070,123 +3115,378 @@
         </div>
         {{-- end page-shell --}}
     </div>
+    {{-- ── File Viewer Modal ── --}}
+    @if ($submission->file_path)
+        <div
+            id="file-viewer-modal"
+            class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4"
+            style="
+                background: rgba(13, 22, 40, 0.75);
+                backdrop-filter: blur(4px);
+            "
+            onclick="if (event.target === this) this.classList.add('hidden');"
+        >
+            <div
+                class="relative bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                style="width: min(900px, 100%); height: min(88vh, 860px)"
+            >
+                {{-- Modal Header --}}
+                <div
+                    class="flex items-center justify-between px-5 py-3.5 border-b shrink-0"
+                    style="background: #faf8f5; border-color: #ede8e0"
+                >
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div
+                            style="
+                                width: 32px;
+                                height: 32px;
+                                border-radius: 8px;
+                                background: #e8f4f2;
+                                border: 1px solid rgba(45, 129, 118, 0.25);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                flex-shrink: 0;
+                            "
+                        >
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#2d8176"
+                                stroke-width="2"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                />
+                            </svg>
+                        </div>
+                        <div class="min-w-0">
+                            <p
+                                style="
+                                    font-size: 9px;
+                                    font-weight: 900;
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.18em;
+                                    color: #b0aaa0;
+                                "
+                            >
+                                Manuscript File
+                            </p>
+                            <p
+                                style="
+                                    font-size: 13px;
+                                    font-weight: 700;
+                                    color: #0d1628;
+                                "
+                                class="truncate"
+                            >
+                                {{ $submission->file_name }}
+                            </p>
+                        </div>
+                    </div>
+                    <div
+                        style="
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            flex-shrink: 0;
+                            margin-left: 12px;
+                        "
+                    >
+                        <a
+                            href="{{ route('submissions.download', ['submission' => $submission]) }}"
+                            style="
+                                display: inline-flex;
+                                align-items: center;
+                                gap: 6px;
+                                padding: 6px 12px;
+                                border-radius: 8px;
+                                background: #f0fdf4;
+                                border: 1px solid #bbf7d0;
+                                font-size: 10px;
+                                font-weight: 900;
+                                text-transform: uppercase;
+                                letter-spacing: 0.08em;
+                                color: #15803d;
+                                text-decoration: none;
+                            "
+                        >
+                            <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.5"
+                            >
+                                <path
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                />
+                            </svg>
+                            Download
+                        </a>
+                        <button
+                            type="button"
+                            onclick="
+                                document
+                                    .getElementById('file-viewer-modal')
+                                    .classList.add('hidden')
+                            "
+                            style="
+                                width: 32px;
+                                height: 32px;
+                                border-radius: 8px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                background: none;
+                                border: none;
+                                cursor: pointer;
+                                color: #b0aaa0;
+                            "
+                        >
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.5"
+                            >
+                                <path d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                {{-- Viewer Body --}}
+                <div
+                    style="
+                        flex: 1;
+                        overflow: hidden;
+                        background: #f5f0e8;
+                        position: relative;
+                    "
+                >
+                    <iframe
+                        src="{{ route('editor.preview-file', $submission) }}#toolbar=1&navpanes=0&scrollbar=1&view=FitH"
+                        style="width: 100%; height: 100%; border: 0"
+                        title="Manuscript Preview"
+                    ></iframe>
+
+                    <div
+                        id="editor-viewer-loading"
+                        style="
+                            position: absolute;
+                            inset: 0;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            background: #f5f0e8;
+                            transition: opacity 0.4s;
+                            pointer-events: none;
+                        "
+                    >
+                        <div
+                            style="
+                                width: 40px;
+                                height: 40px;
+                                border-radius: 10px;
+                                background: white;
+                                border: 1px solid #ede8e0;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                margin-bottom: 12px;
+                                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                            "
+                        >
+                            <svg
+                                style="
+                                    width: 20px;
+                                    height: 20px;
+                                    color: #2d8176;
+                                    animation: spin 1s linear infinite;
+                                "
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle
+                                    style="opacity: 0.25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    stroke-width="4"
+                                />
+                                <path
+                                    style="opacity: 0.75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8v8H4z"
+                                />
+                            </svg>
+                        </div>
+                        <p
+                            style="
+                                font-size: 11px;
+                                font-weight: 700;
+                                color: #b0aaa0;
+                                text-transform: uppercase;
+                                letter-spacing: 0.1em;
+                            "
+                        >
+                            Converting document…
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    @endif
 @endsection
 
 @push('scripts')
     <script>
         function toggleReviewer(card) {
-                    const cb = card.querySelector('.reviewer-checkbox');
-                    if (!cb) return;
-                    cb.checked = !cb.checked;
-                    card.classList.toggle('selected', cb.checked);
-                    const total = document.querySelectorAll('.reviewer-checkbox:checked').length;
-                    const badge = document.getElementById('selected-count');
-                    const num   = document.getElementById('selected-num');
-                    if (badge && num) { num.textContent = total; badge.classList.toggle('hidden', total === 0); }
-                }
+                            const cb = card.querySelector('.reviewer-checkbox');
+                            if (!cb) return;
+                            cb.checked = !cb.checked;
+                            card.classList.toggle('selected', cb.checked);
+                            const total = document.querySelectorAll('.reviewer-checkbox:checked').length;
+                            const badge = document.getElementById('selected-count');
+                            const num   = document.getElementById('selected-num');
+                            if (badge && num) { num.textContent = total; badge.classList.toggle('hidden', total === 0); }
+                        }
 
-                function updateDueDateHint(input) {
-                    const hint   = document.getElementById('due-hint');
-                    const daysEl = document.getElementById('due-days');
-                    const dateEl = document.getElementById('due-date');
-                    if (!input.value || !hint) { hint?.classList.add('hidden'); return; }
-                    const diff = Math.ceil((new Date(input.value) - new Date()) / 86400000);
-                    daysEl.textContent = diff;
-                    daysEl.style.color = diff < 0 ? 'var(--red)' : diff <= 7 ? 'var(--amber)' : 'var(--emerald)';
-                    const opts = { month:'short', day:'numeric', year:'numeric' };
-                    dateEl.textContent = 'Due: ' + new Date(input.value).toLocaleDateString('en-US', opts) + ' · 11:59 PM';
-                    hint.classList.remove('hidden');
-                }
+                        function updateDueDateHint(input) {
+                            const hint   = document.getElementById('due-hint');
+                            const daysEl = document.getElementById('due-days');
+                            const dateEl = document.getElementById('due-date');
+                            if (!input.value || !hint) { hint?.classList.add('hidden'); return; }
+                            const diff = Math.ceil((new Date(input.value) - new Date()) / 86400000);
+                            daysEl.textContent = diff;
+                            daysEl.style.color = diff < 0 ? 'var(--red)' : diff <= 7 ? 'var(--amber)' : 'var(--emerald)';
+                            const opts = { month:'short', day:'numeric', year:'numeric' };
+                            dateEl.textContent = 'Due: ' + new Date(input.value).toLocaleDateString('en-US', opts) + ' · 11:59 PM';
+                            hint.classList.remove('hidden');
+                        }
 
-                const dForm     = document.getElementById('decision-form');
-                const revFields = document.getElementById('revision-fields');
-                const revReason = document.getElementById('revision_reason');
+                        const dForm     = document.getElementById('decision-form');
+                        const revFields = document.getElementById('revision-fields');
+                        const revReason = document.getElementById('revision_reason');
 
-                if (dForm && revFields) {
-                    const statusRadios  = dForm.querySelectorAll('input[name="status"]');
-                    const revTypeRadios = dForm.querySelectorAll('input[name="revision_type"]');
+                        if (dForm && revFields) {
+                            const statusRadios  = dForm.querySelectorAll('input[name="status"]');
+                            const revTypeRadios = dForm.querySelectorAll('input[name="revision_type"]');
 
-                    function toggleRevision() {
-                        const sel   = dForm.querySelector('input[name="status"]:checked');
-                        const isRev = sel?.value === 'revisions_requested';
-                        revFields.style.display = isRev ? 'flex' : 'none';
-                        revTypeRadios.forEach(r => isRev ? r.setAttribute('required','') : r.removeAttribute('required'));
-                        if (revReason) isRev ? revReason.setAttribute('required','') : revReason.removeAttribute('required');
-                    }
+                            function toggleRevision() {
+                                const sel   = dForm.querySelector('input[name="status"]:checked');
+                                const isRev = sel?.value === 'revisions_requested';
+                                revFields.style.display = isRev ? 'flex' : 'none';
+                                revTypeRadios.forEach(r => isRev ? r.setAttribute('required','') : r.removeAttribute('required'));
+                                if (revReason) isRev ? revReason.setAttribute('required','') : revReason.removeAttribute('required');
+                            }
 
-                    statusRadios.forEach(r => r.addEventListener('change', toggleRevision));
+                            statusRadios.forEach(r => r.addEventListener('change', toggleRevision));
 
-                    dForm.addEventListener('submit', () => {
-                        const sel = dForm.querySelector('input[name="status"]:checked');
-                        if (sel?.value !== 'revisions_requested') {
-                            revTypeRadios.forEach(r => r.disabled = true);
-                            if (revReason) revReason.disabled = true;
+                            dForm.addEventListener('submit', () => {
+                                const sel = dForm.querySelector('input[name="status"]:checked');
+                                if (sel?.value !== 'revisions_requested') {
+                                    revTypeRadios.forEach(r => r.disabled = true);
+                                    if (revReason) revReason.disabled = true;
+                                }
+                            });
+
+                            toggleRevision();
+
+                            @if(isset($selectedStatus) && $selectedStatus === 'revisions_requested')
+                                revFields.style.display = 'flex';
+                            @endif
+                        }
+
+                        // ── Reviewer Count Validation ──
+                (function () {
+                    const assignForm = document.getElementById('assign-reviewer-form');
+                    if (!assignForm) return;
+
+                    assignForm.addEventListener('submit', function (e) {
+                        const checked = assignForm.querySelectorAll('.reviewer-checkbox:checked');
+                        const count = checked.length;
+
+                        if (count < 2) {
+                            e.preventDefault();
+                            Swal.fire({
+                                icon: 'warning',
+                                title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.15rem;font-weight:700;">Not Enough Reviewers</span>',
+                                html: `
+                                    <p style="font-size:.88rem;color:#6b5740;line-height:1.65">
+                                        Please select <strong style="color:#1a1209">at least 2 reviewers</strong> before assigning.<br>
+                                        <span style="font-size:.78rem;color:#94a3b8">
+                                            You currently have <strong style="color:#d97706">${count}</strong> selected.
+                                            Recommended: <strong>2–3 reviewers</strong>.
+                                        </span>
+                                    </p>`,
+                                confirmButtonText: 'Select More Reviewers',
+                                confirmButtonColor: '#2d8176',
+                                customClass: {
+                                    popup: 'rounded-2xl',
+                                    confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest'
+                                },
+                                buttonsStyling: false,
+                            });
+                            return;
+                        }
+
+                        if (count > 3) {
+                            e.preventDefault();
+                            Swal.fire({
+                                icon: 'info',
+                                title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.15rem;font-weight:700;">Too Many Reviewers</span>',
+                                html: `
+                                    <p style="font-size:.88rem;color:#6b5740;line-height:1.65">
+                                        Maximum of <strong style="color:#1a1209">3 reviewers</strong> only.<br>
+                                        <span style="font-size:.78rem;color:#94a3b8">
+                                            You currently have <strong style="color:#dc2626">${count}</strong> selected.
+                                        </span>
+                                    </p>`,
+                                confirmButtonText: 'Adjust Selection',
+                                confirmButtonColor: '#2d8176',
+                                customClass: {
+                                    popup: 'rounded-2xl',
+                                    confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest'
+                                },
+                                buttonsStyling: false,
+                            });
+                            return;
                         }
                     });
-
-                    toggleRevision();
-
-                    @if(isset($selectedStatus) && $selectedStatus === 'revisions_requested')
-                        revFields.style.display = 'flex';
-                    @endif
-                }
-
-                // ── Reviewer Count Validation ──
-        (function () {
-            const assignForm = document.getElementById('assign-reviewer-form');
-            if (!assignForm) return;
-
-            assignForm.addEventListener('submit', function (e) {
-                const checked = assignForm.querySelectorAll('.reviewer-checkbox:checked');
-                const count = checked.length;
-
-                if (count < 2) {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: 'warning',
-                        title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.15rem;font-weight:700;">Not Enough Reviewers</span>',
-                        html: `
-                            <p style="font-size:.88rem;color:#6b5740;line-height:1.65">
-                                Please select <strong style="color:#1a1209">at least 2 reviewers</strong> before assigning.<br>
-                                <span style="font-size:.78rem;color:#94a3b8">
-                                    You currently have <strong style="color:#d97706">${count}</strong> selected.
-                                    Recommended: <strong>2–3 reviewers</strong>.
-                                </span>
-                            </p>`,
-                        confirmButtonText: 'Select More Reviewers',
-                        confirmButtonColor: '#2d8176',
-                        customClass: {
-                            popup: 'rounded-2xl',
-                            confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest'
-                        },
-                        buttonsStyling: false,
-                    });
-                    return;
-                }
-
-                if (count > 3) {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: 'info',
-                        title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.15rem;font-weight:700;">Too Many Reviewers</span>',
-                        html: `
-                            <p style="font-size:.88rem;color:#6b5740;line-height:1.65">
-                                Maximum of <strong style="color:#1a1209">3 reviewers</strong> only.<br>
-                                <span style="font-size:.78rem;color:#94a3b8">
-                                    You currently have <strong style="color:#dc2626">${count}</strong> selected.
-                                </span>
-                            </p>`,
-                        confirmButtonText: 'Adjust Selection',
-                        confirmButtonColor: '#2d8176',
-                        customClass: {
-                            popup: 'rounded-2xl',
-                            confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest'
-                        },
-                        buttonsStyling: false,
-                    });
-                    return;
-                }
+                })();
+                // Editor file viewer
+        document.querySelectorAll('#file-viewer-modal iframe').forEach(iframe => {
+            iframe.addEventListener('load', () => {
+                const loading = document.getElementById('editor-viewer-loading');
+                if (loading) loading.style.opacity = '0';
             });
-        })();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('file-viewer-modal')?.classList.add('hidden');
+            }
+        });
     </script>
 @endpush

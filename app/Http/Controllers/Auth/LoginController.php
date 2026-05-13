@@ -27,24 +27,40 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         $remember    = $request->boolean('remember');
 
-        if (! Auth::attempt($credentials, $remember)) {
-            return back()
-                ->withInput($request->only('email', 'role'))
-                ->with('error', 'These credentials do not match our records.');
-        }
+       if (! Auth::attempt($credentials, $remember)) {
+    return back()
+        ->withInput($request->only('email', 'role'))
+        ->with('error', 'These credentials do not match our records.');
+}
 
-        $user         = Auth::user();
-        $selectedRole = $request->input('role');
+$user         = Auth::user();
+$selectedRole = $request->input('role');
 
-        if (! $user || ! ($user instanceof User) || ! $user->hasRole($selectedRole)) {
-            Auth::logout();
-            return back()
-                ->withInput($request->only('email', 'role'))
-                ->with('error', 'Your account does not have the selected role.');
-        }
+if (! $user || ! ($user instanceof User) || ! $user->hasRole($selectedRole)) {
+    Auth::logout();
+    return back()
+        ->withInput($request->only('email', 'role'))
+        ->with('error', 'Your account does not have the selected role.');
+}
 
-        $request->session()->regenerate();
-        session(['active_role' => $selectedRole]);
+// ✅ DITO ILAGAY — pagkatapos ng role check, bago ang session regenerate
+if ($user->status === 'pending') {
+    Auth::logout();
+    return back()
+        ->withInput($request->only('email', 'role'))
+        ->with('error', 'Your account is pending admin approval.');
+}
+
+if ($user->status === 'rejected') {
+    Auth::logout();
+    return back()
+        ->withInput($request->only('email', 'role'))
+        ->with('error', 'Your application was not approved. Contact the administrator.');
+}
+
+// ✅ Dito na nagsisimula ang dating code
+$request->session()->regenerate();
+session(['active_role' => $selectedRole]);
 
         // Increment per-user daily login counter (file-based) and store in session
         try {
