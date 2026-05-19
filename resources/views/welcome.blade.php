@@ -2512,8 +2512,21 @@
                         Published Journals
                     </a>
                     <a href="#fields" class="nav-link">Research Fields</a>
-                    <a href="/login" class="nav-link">Sign In</a>
-                    <a href="/register" class="btn-nav-register">Register</a>
+
+                    @auth
+                        {{-- Naka-login na, wag na ipakita ang Sign In --}}
+                        <a
+                            href="{{ route('dashboard') }}"
+                            class="btn-nav-register"
+                        >
+                            Go to Dashboard
+                        </a>
+                    @else
+                        <a href="/login" class="nav-link">Sign In</a>
+                        <a href="/register" class="btn-nav-register">
+                            Register
+                        </a>
+                    @endauth
                 </div>
 
                 <button
@@ -2538,10 +2551,20 @@
                     <a href="#process" class="mobile-nav-link">
                         Review Process
                     </a>
-                    <a href="/login" class="mobile-nav-link">Sign In</a>
-                    <a href="/register" class="mobile-nav-register">
-                        Register — Submit Now →
-                    </a>
+
+                    @auth
+                        <a
+                            href="{{ route('dashboard') }}"
+                            class="mobile-nav-register"
+                        >
+                            Go to Dashboard →
+                        </a>
+                    @else
+                        <a href="/login" class="mobile-nav-link">Sign In</a>
+                        <a href="/register" class="mobile-nav-register">
+                            Register — Submit Now →
+                        </a>
+                    @endauth
                 </div>
             </div>
         </nav>

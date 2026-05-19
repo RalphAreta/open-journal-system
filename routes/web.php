@@ -23,7 +23,7 @@ use App\Http\Controllers\Admin\EditorialBoardController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\ManagingEditor\VolumeController;
 Route::get('/', function () {
-    return Auth::check() ? redirect()->route('dashboard') : app(HomeController::class)->index();
+       return app(HomeController::class)->index();
 });
 
 Route::get('/volumes',                           [VolumeController::class, 'index'])->name('managing-editor.volumes.index');

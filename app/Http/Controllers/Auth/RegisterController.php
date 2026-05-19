@@ -34,25 +34,8 @@ class RegisterController extends Controller
         'roles'    => ['required', 'array', 'min:1'],
         'roles.*'  => ['in:author,reviewer,editor'],
         'password' => ['required', 'confirmed', Password::min(8)],
-        // ✅ CV required lang kung reviewer o editor ang pinili
-        'cv'       => [
-            function ($attribute, $value, $fail) use ($request) {
-                $needsReview = collect($request->roles ?? [])
-                    ->intersect(['reviewer', 'editor'])
-                    ->isNotEmpty();
-                if ($needsReview && !$request->hasFile('cv')) {
-                    $fail('A CV is required for reviewer and editor applications.');
-                }
-            },
-            'nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120',
-        ],
     ]);
 
-    // ✅ I-store muna ang CV bago i-encrypt ang payload
-    $cvPath = null;
-    if ($request->hasFile('cv')) {
-        $cvPath = $request->file('cv')->store('cvs', 'private');
-    }
 
     $needsReview = collect($request->roles)
         ->intersect(['reviewer', 'editor'])
@@ -66,9 +49,8 @@ class RegisterController extends Controller
         'email'     => $request->email,
         'password'  => Hash::make($request->password),
         'roles'     => $request->roles,
-        'expertise' => $request->input('expertise', []),
-        'cv_path'   => $cvPath,                                  // ← bago
-        'status'    => $needsReview ? 'pending' : 'approved',   // ← bago
+       'expertise' => $request->input('expertise', []),
+'status'    => $needsReview ? 'pending' : 'approved',
     ]));
 
     PendingRegistration::updateOrCreate(
@@ -131,12 +113,11 @@ class RegisterController extends Controller
         $data = json_decode(Crypt::decryptString($pending->payload), true);
 
         $user = User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'password' => $data['password'],
-            'cv_path'  => $data['cv_path'] ?? null,
-            'status'   => $data['status'] ?? 'approved',
-        ]);
+    'name'     => $data['name'],
+    'email'    => $data['email'],
+    'password' => $data['password'],
+    'status'   => $data['status'] ?? 'approved',
+]);
 
         $roleModels = Role::whereIn('name', $data['roles'])->get();
         $user->roles()->sync($roleModels->pluck('id'));

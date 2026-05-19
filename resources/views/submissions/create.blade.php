@@ -124,7 +124,7 @@
         </div>
 
         {{-- ── Active Submission Block ── --}}
-      @if (isset($isLimitReached) && $isLimitReached)
+        @if (isset($isLimitReached) && $isLimitReached)
             <div class="mb-8 fu">
                 <div
                     class="bg-white border-2 border-amber-300 rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(217,119,6,.12)]"
@@ -155,64 +155,95 @@
                             >
                                 Submission Limit Reached
                             </p>
-                           <p class="text-[.95rem] sm:text-[1rem] font-bold text-amber-900">
-    You have reached the maximum of 2 active submissions
-</p>
+                            <p
+                                class="text-[.95rem] sm:text-[1rem] font-bold text-amber-900"
+                            >
+                                You have reached the maximum of 2 active
+                                submissions
+                            </p>
                         </div>
                     </div>
 
                     <div class="px-5 sm:px-7 py-5 sm:py-6">
-                       <p class="text-[.9rem] text-[#6b5740] mb-5 leading-relaxed">
-    Our policy allows <strong class="text-[#1a1209]">up to 2 active manuscripts per author</strong> 
-    at a time. You may submit a new manuscript once one of your current submissions has been
-    <strong class="text-emerald-700">published</strong> or
-    <strong class="text-red-600">rejected</strong>.
-</p>
+                        <p
+                            class="text-[.9rem] text-[#6b5740] mb-5 leading-relaxed"
+                        >
+                            Our policy allows
+                            <strong class="text-[#1a1209]">
+                                up to 2 active manuscripts per author
+                            </strong>
+                            at a time. You may submit a new manuscript once one
+                            of your current submissions has been
+                            <strong class="text-emerald-700">published</strong>
+                            or
+                            <strong class="text-red-600">rejected</strong>
+                            .
+                        </p>
 
-                       <div class="bg-[#faf6ef] border border-[#e8dfd0] rounded-xl p-4 sm:p-5 space-y-3">
-    <p class="text-[.65rem] font-extrabold tracking-[.16em] uppercase text-[#6b5740]">
-        Your Active Submissions
-    </p>
-    @foreach ($activeSubmissions as $activeSub)
-        <div class="bg-white border border-[#e8dfd0] rounded-lg p-3">
-            <p class="font-['Libre_Baskerville',serif] text-[.95rem] font-bold text-[#1a1209] mb-2 leading-snug">
-                {{ $activeSub->title }}
-            </p>
-            <div class="flex flex-wrap items-center gap-3">
-                @php
-                    $sc = $statusColors[$activeSub->status] ?? 'bg-slate-50 border-slate-200 text-slate-600';
-                @endphp
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.68rem] font-extrabold tracking-[.06em] uppercase {{ $sc }}">
-                    <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 inline-block"></span>
-                    {{ \App\Models\Submission::statusOptions()[$activeSub->status] ?? $activeSub->status }}
-                </span>
-                <span class="text-[.75rem] text-[#6b5740]">
-                    Submitted {{ $activeSub->created_at->format('M d, Y') }}
-                </span>
-            </div>
-        </div>
-    @endforeach
-</div>
+                        <div
+                            class="bg-[#faf6ef] border border-[#e8dfd0] rounded-xl p-4 sm:p-5 space-y-3"
+                        >
+                            <p
+                                class="text-[.65rem] font-extrabold tracking-[.16em] uppercase text-[#6b5740]"
+                            >
+                                Your Active Submissions
+                            </p>
+                            @foreach ($activeSubmissions as $activeSub)
+                                <div
+                                    class="bg-white border border-[#e8dfd0] rounded-lg p-3"
+                                >
+                                    <p
+                                        class="font-['Libre_Baskerville',serif] text-[.95rem] font-bold text-[#1a1209] mb-2 leading-snug"
+                                    >
+                                        {{ $activeSub->title }}
+                                    </p>
+                                    <div
+                                        class="flex flex-wrap items-center gap-3"
+                                    >
+                                        @php
+                                            $sc =
+                                                $statusColors[$activeSub->status] ??
+                                                'bg-slate-50 border-slate-200 text-slate-600';
+                                        @endphp
+
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[.68rem] font-extrabold tracking-[.06em] uppercase {{ $sc }}"
+                                        >
+                                            <span
+                                                class="w-1.5 h-1.5 rounded-full bg-current opacity-70 inline-block"
+                                            ></span>
+                                            {{ \App\Models\Submission::statusOptions()[$activeSub->status] ?? $activeSub->status }}
+                                        </span>
+                                        <span
+                                            class="text-[.75rem] text-[#6b5740]"
+                                        >
+                                            Submitted
+                                            {{ $activeSub->created_at->format('M d, Y') }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                         <div class="mt-5 flex flex-wrap items-center gap-3">
                             <a
-                             href="{{ route('submissions.index') }}"
-    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.75rem] font-bold tracking-[.08em] uppercase transition-all shadow-[0_2px_10px_rgba(45,129,118,.25)] hover:-translate-y-0.5"
->
-    <svg
-        class="w-3.5 h-3.5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-    >
-        <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2.5"
-            d="M4 6h16M4 10h16M4 14h16M4 18h16"
-        />
-    </svg>
-    View My Submissions
-</a>
+                                href="{{ route('submissions.index') }}"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.75rem] font-bold tracking-[.08em] uppercase transition-all shadow-[0_2px_10px_rgba(45,129,118,.25)] hover:-translate-y-0.5"
+                            >
+                                <svg
+                                    class="w-3.5 h-3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2.5"
+                                        d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                                    />
+                                </svg>
+                                View My Submissions
+                            </a>
                             <a
                                 href="{{ route('submissions.index') }}"
                                 class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#f3ece0] hover:bg-[#e8dfd0] text-[#6b5740] text-[.75rem] font-bold tracking-[.08em] uppercase border border-[#c9b99a] transition-all"
@@ -490,7 +521,67 @@
                         </div>
                     </div>
 
-                    {{-- ── Card 02: File Upload ── --}}
+                    {{-- ── Card 02: Authors & Affiliations ── --}}
+                    <div
+                        class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden shadow-[0_2px_16px_rgba(26,18,9,.07)] fu2"
+                    >
+                        <div
+                            class="flex items-center gap-4 px-5 sm:px-7 py-4 bg-[#f3ece0] border-b border-[#e8dfd0]"
+                        >
+                            <div
+                                class="w-[30px] h-[30px] rounded-lg bg-[#2d8176] text-white flex items-center justify-center shrink-0 text-[.68rem] font-extrabold tracking-wider"
+                            >
+                                02
+                            </div>
+                            <h2
+                                class="font-['Libre_Baskerville',serif] text-[1rem] font-bold text-[#1a1209] tracking-wide flex-1"
+                            >
+                                Authors &amp; Affiliations
+                            </h2>
+                        </div>
+
+                        <div class="px-5 sm:px-7 py-5 sm:py-7">
+                            <p
+                                class="text-[.82rem] text-[#6b5740] mb-4 leading-relaxed"
+                            >
+                                Add all contributing authors in order. Each
+                                author can have multiple affiliations.
+                            </p>
+
+                            <div id="authors-list" class="space-y-4"></div>
+
+                            <button
+                                type="button"
+                                onclick="addAuthor()"
+                                class="mt-4 flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl border-2 border-dashed border-[#c9b99a] text-[.78rem] font-bold text-[#6b5740] hover:border-[#2d8176] hover:text-[#2d8176] hover:bg-[#e8f4f2] transition-all"
+                            >
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2.5"
+                                        d="M12 4v16m8-8H4"
+                                    />
+                                </svg>
+                                Add Another Author
+                            </button>
+
+                            @error('authors')
+                                <p
+                                    class="mt-2 text-[.8rem] text-red-600 font-medium"
+                                >
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- ── Card 03: File Upload ── --}}
                     <div
                         class="bg-white border border-[#c9b99a] rounded-[14px] overflow-hidden shadow-[0_2px_16px_rgba(26,18,9,.07)] fu2"
                     >
@@ -732,191 +823,317 @@
 
 @push('scripts')
     <script>
-        const fileInput = document.getElementById('file');
-                        if (fileInput) {
-                           fileInput.addEventListener('change', function () {
-            const display = document.getElementById('file-name-display');
-            const text    = document.getElementById('file-name-text');
-            if (this.files.length > 0) {
-                const file = this.files[0];
-                const ext  = file.name.split('.').pop().toLowerCase();
+        // ── Authors & Affiliations ──────────────────────────────────────────
+        let authorIdx = 0;
 
-                if (ext === 'pdf') {
-                    // I-clear ang file input
-                    this.value = '';
-                    display.classList.add('hidden');
-                    display.style.display = '';
+        const AUTHOR_ROLES = [
+            { value: 'first_author',         label: 'First Author' },
+            { value: 'co_author',            label: 'Co-Author' },
+            { value: 'corresponding_author', label: 'Corresponding Author' },
+            { value: 'secondary_author',     label: 'Secondary Author' },
+        ];
 
-                    Swal.fire({
-                        icon: 'error',
-                        title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.2rem;font-weight:700;">PDF Not Allowed</span>',
-                        html: '<p style="font-size:.88rem;color:#6b5740;line-height:1.6">PDF files are not accepted.<br>Please upload your manuscript in <strong style="color:#1a1209">DOC or DOCX</strong> format only.</p>',
-                        confirmButtonText: 'Got it',
-                        confirmButtonColor: '#2d8176',
-                        customClass: {
-                            popup: 'rounded-2xl',
-                            confirmButton: 'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest',
-                        },
-                        buttonsStyling: true,
-                    });
-                    return;
-                }
+        function addAuthor() {
+            const list   = document.getElementById('authors-list');
+            const idx    = authorIdx++;
+            const isFirst = list.children.length === 0;
 
-                text.textContent = file.name;
-                display.classList.remove('hidden');
-                display.style.display = 'inline-flex';
-            }
-        });
-                        }
+            const roleOptions = AUTHOR_ROLES
+                .map((r, i) => `<option value="${r.value}" ${isFirst && i === 0 ? 'selected' : ''}>${r.label}</option>`)
+                .join('');
 
-                        const dz = document.getElementById('dropzone');
-                        if (dz) {
-                            dz.addEventListener('dragover',  (e) => { e.preventDefault(); dz.classList.add('dragover'); });
-                            dz.addEventListener('dragleave', ()  => dz.classList.remove('dragover'));
-                            dz.addEventListener('drop',      ()  => dz.classList.remove('dragover'));
-                        }
+            const removeBtn = isFirst ? '' : `
+                <button type="button" onclick="removeAuthor(this)"
+                    class="flex items-center gap-1 text-[.7rem] font-bold text-red-400 hover:text-red-600 transition-colors">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Remove
+                </button>`;
 
-                        (function () {
-                            const titleEl   = document.getElementById('title');
-                            const submitBtn = document.getElementById('submit-btn');
-                            if (!titleEl) return;
+            const html = `
+            <div class="author-row bg-[#faf6ef] border border-[#e8dfd0] rounded-xl p-4 space-y-3" data-idx="${idx}">
+                <div class="flex items-center justify-between">
+                    <span class="author-label text-[.68rem] font-extrabold tracking-[.16em] uppercase text-[#2d8176]">
+                        Author ${list.children.length + 1}
+                    </span>
+                    ${removeBtn}
+                </div>
 
-                            let debounceTimer = null;
-                            let liveWarning   = null;
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block mb-1.5 text-[.68rem] font-bold tracking-[.12em] uppercase text-[#6b5740]">
+                            Full Name <span class="text-[#2d8176]">*</span>
+                        </label>
+                        <input type="text" name="authors[${idx}][name]" required
+                            placeholder="e.g., Juan dela Cruz"
+                            class="field w-full px-4 py-2.5 border border-[#e8dfd0] rounded-lg bg-white text-[.92rem] text-[#1a1209] transition-all placeholder:text-[#b5a595]"/>
+                    </div>
+                    <div>
+                        <label class="block mb-1.5 text-[.68rem] font-bold tracking-[.12em] uppercase text-[#6b5740]">
+                            Role <span class="text-[#2d8176]">*</span>
+                        </label>
+                        <div class="relative">
+                            <select name="authors[${idx}][role]" required
+                                class="field w-full px-4 py-2.5 pr-9 border border-[#e8dfd0] rounded-lg bg-white text-[.92rem] text-[#1a1209] cursor-pointer transition-all appearance-none">
+                                ${roleOptions}
+                            </select>
+                            <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6b5740] pointer-events-none"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
 
-                            titleEl.addEventListener('input', () => {
-                                clearTimeout(debounceTimer);
-                                debounceTimer = setTimeout(runCheck, 800);
+                <div>
+                    <label class="block mb-1.5 text-[.68rem] font-bold tracking-[.12em] uppercase text-[#6b5740]">
+                        Affiliation(s) <span class="text-[#2d8176]">*</span>
+                    </label>
+                    <div class="affiliations-list space-y-2">
+                        <div class="affil-row flex gap-2">
+                            <input type="text" name="authors[${idx}][affiliations][]" required
+                                placeholder="e.g., Batangas State University, Philippines"
+                                class="field flex-1 px-4 py-2.5 border border-[#e8dfd0] rounded-lg bg-white text-[.88rem] text-[#1a1209] transition-all placeholder:text-[#b5a595]"/>
+                        </div>
+                    </div>
+                    <button type="button" onclick="addAffiliation(this)"
+                        class="mt-2 flex items-center gap-1.5 text-[.72rem] font-bold text-[#2d8176] hover:text-[#1a4d46] transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Add Affiliation
+                    </button>
+                </div>
+            </div>`;
+
+            list.insertAdjacentHTML('beforeend', html);
+            renumberAuthors();
+        }
+
+        function removeAuthor(btn) {
+            btn.closest('.author-row').remove();
+            renumberAuthors();
+        }
+
+        function addAffiliation(btn) {
+            const affList = btn.previousElementSibling; // .affiliations-list
+            const idx     = btn.closest('.author-row').dataset.idx;
+
+            const html = `
+            <div class="affil-row flex gap-2">
+                <input type="text" name="authors[${idx}][affiliations][]"
+                    placeholder="e.g., Research Institute, City"
+                    class="field flex-1 px-4 py-2.5 border border-[#e8dfd0] rounded-lg bg-white text-[.88rem] text-[#1a1209] transition-all placeholder:text-[#b5a595]"/>
+                <button type="button" onclick="removeAffiliation(this)"
+                    class="px-2.5 rounded-lg border border-red-200 text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>`;
+
+            affList.insertAdjacentHTML('beforeend', html);
+        }
+
+        function removeAffiliation(btn) {
+            btn.closest('.affil-row').remove();
+        }
+
+        function renumberAuthors() {
+            document.querySelectorAll('.author-row').forEach((row, i) => {
+                const label = row.querySelector('.author-label');
+                if (label) label.textContent = `Author ${i + 1}`;
+            });
+        }
+
+        // Mag-init ng isang author on load
+        document.addEventListener('DOMContentLoaded', () => addAuthor());
+                const fileInput = document.getElementById('file');
+                                if (fileInput) {
+                                   fileInput.addEventListener('change', function () {
+                    const display = document.getElementById('file-name-display');
+                    const text    = document.getElementById('file-name-text');
+                    if (this.files.length > 0) {
+                        const file = this.files[0];
+                        const ext  = file.name.split('.').pop().toLowerCase();
+
+                        if (ext === 'pdf') {
+                            // I-clear ang file input
+                            this.value = '';
+                            display.classList.add('hidden');
+                            display.style.display = '';
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.2rem;font-weight:700;">PDF Not Allowed</span>',
+                                html: '<p style="font-size:.88rem;color:#6b5740;line-height:1.6">PDF files are not accepted.<br>Please upload your manuscript in <strong style="color:#1a1209">DOC or DOCX</strong> format only.</p>',
+                                confirmButtonText: 'Got it',
+                                confirmButtonColor: '#2d8176',
+                                customClass: {
+                                    popup: 'rounded-2xl',
+                                    confirmButton: 'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest',
+                                },
+                                buttonsStyling: true,
                             });
+                            return;
+                        }
 
-                            async function runCheck() {
-                                const title    = titleEl.value.trim();
-                                const abstract = document.getElementById('abstract')?.value?.trim() ?? '';
-                                if (title.length < 10) { clearWarning(); return; }
-                                try {
-                                    const res  = await fetch(
-                                        `{{ route('submissions.check-similarity') }}?title=${encodeURIComponent(title)}&abstract=${encodeURIComponent(abstract)}`,
-                                        { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
-                                    );
-                                    const data = await res.json();
-                                    if (data.similar && data.similar.length > 0) renderWarning(data.similar);
-                                    else clearWarning();
-                                } catch (e) {}
-                            }
-
-                            function renderWarning(similar) {
-                                if (!liveWarning) {
-                                    liveWarning = document.createElement('div');
-                                    liveWarning.id = 'live-sim-warning';
-                                    const leftCol = document.querySelector('.lg\\:col-span-8');
-                                    if (leftCol) leftCol.prepend(liveWarning);
+                        text.textContent = file.name;
+                        display.classList.remove('hidden');
+                        display.style.display = 'inline-flex';
+                    }
+                });
                                 }
-                                const items = similar.map(s => `
-                                    <div class="sim-item">
-                                        <p style="font-size:.85rem;font-weight:700;color:#1a1209;margin-bottom:4px">${s.title}</p>
-                                        <span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#fffbeb;border:1px solid #fde68a;color:#b45309;padding:2px 8px;border-radius:999px">${s.status}</span>
-                                        ${s.research_field ? `<span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;padding:2px 8px;border-radius:999px;margin-left:4px">${s.research_field}</span>` : ''}
-                                        <span style="font-size:.72rem;color:#6b5740;margin-left:6px">${s.created_at}</span>
-                                    </div>`).join('');
-                                liveWarning.innerHTML = `
-                                    <div class="sim-warning" style="margin-bottom:20px">
-                                        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:8px">
-                                            <svg style="width:18px;height:18px;color:#d97706;flex-shrink:0;margin-top:2px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                                            </svg>
-                                            <div>
-                                                <p style="font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#b45309;margin-bottom:2px">Similar Articles Detected</p>
-                                                <p style="font-size:.88rem;color:#92400e">${similar.length} submission(s) with a similar title found.</p>
-                                            </div>
-                                        </div>
-                                        ${items}
-                                        <label style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer">
-                                            <input type="checkbox" id="live-sim-ack" name="similarity_acknowledged" value="1"
-                                                   style="margin-top:3px;width:16px;height:16px;accent-color:#d97706;cursor:pointer;flex-shrink:0"/>
-                                            <span style="font-size:.82rem;font-weight:600;color:#92400e;line-height:1.5">
-                                                I confirm my manuscript is <strong>original and distinct</strong> from the listed submissions.
-                                            </span>
-                                        </label>
-                                    </div>`;
-                                if (submitBtn) {
+
+                                const dz = document.getElementById('dropzone');
+                                if (dz) {
+                                    dz.addEventListener('dragover',  (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+                                    dz.addEventListener('dragleave', ()  => dz.classList.remove('dragover'));
+                                    dz.addEventListener('drop',      ()  => dz.classList.remove('dragover'));
+                                }
+
+                                (function () {
+                                    const titleEl   = document.getElementById('title');
+                                    const submitBtn = document.getElementById('submit-btn');
+                                    if (!titleEl) return;
+
+                                    let debounceTimer = null;
+                                    let liveWarning   = null;
+
+                                    titleEl.addEventListener('input', () => {
+                                        clearTimeout(debounceTimer);
+                                        debounceTimer = setTimeout(runCheck, 800);
+                                    });
+
+                                    async function runCheck() {
+                                        const title    = titleEl.value.trim();
+                                        const abstract = document.getElementById('abstract')?.value?.trim() ?? '';
+                                        if (title.length < 10) { clearWarning(); return; }
+                                        try {
+                                            const res  = await fetch(
+                                                `{{ route('submissions.check-similarity') }}?title=${encodeURIComponent(title)}&abstract=${encodeURIComponent(abstract)}`,
+                                                { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
+                                            );
+                                            const data = await res.json();
+                                            if (data.similar && data.similar.length > 0) renderWarning(data.similar);
+                                            else clearWarning();
+                                        } catch (e) {}
+                                    }
+
+                                    function renderWarning(similar) {
+                                        if (!liveWarning) {
+                                            liveWarning = document.createElement('div');
+                                            liveWarning.id = 'live-sim-warning';
+                                            const leftCol = document.querySelector('.lg\\:col-span-8');
+                                            if (leftCol) leftCol.prepend(liveWarning);
+                                        }
+                                        const items = similar.map(s => `
+                                            <div class="sim-item">
+                                                <p style="font-size:.85rem;font-weight:700;color:#1a1209;margin-bottom:4px">${s.title}</p>
+                                                <span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#fffbeb;border:1px solid #fde68a;color:#b45309;padding:2px 8px;border-radius:999px">${s.status}</span>
+                                                ${s.research_field ? `<span style="font-size:.68rem;font-weight:700;text-transform:uppercase;background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;padding:2px 8px;border-radius:999px;margin-left:4px">${s.research_field}</span>` : ''}
+                                                <span style="font-size:.72rem;color:#6b5740;margin-left:6px">${s.created_at}</span>
+                                            </div>`).join('');
+                                        liveWarning.innerHTML = `
+                                            <div class="sim-warning" style="margin-bottom:20px">
+                                                <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:8px">
+                                                    <svg style="width:18px;height:18px;color:#d97706;flex-shrink:0;margin-top:2px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                                                    </svg>
+                                                    <div>
+                                                        <p style="font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#b45309;margin-bottom:2px">Similar Articles Detected</p>
+                                                        <p style="font-size:.88rem;color:#92400e">${similar.length} submission(s) with a similar title found.</p>
+                                                    </div>
+                                                </div>
+                                                ${items}
+                                                <label style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer">
+                                                    <input type="checkbox" id="live-sim-ack" name="similarity_acknowledged" value="1"
+                                                           style="margin-top:3px;width:16px;height:16px;accent-color:#d97706;cursor:pointer;flex-shrink:0"/>
+                                                    <span style="font-size:.82rem;font-weight:600;color:#92400e;line-height:1.5">
+                                                        I confirm my manuscript is <strong>original and distinct</strong> from the listed submissions.
+                                                    </span>
+                                                </label>
+                                            </div>`;
+                                        if (submitBtn) {
+                                            submitBtn.disabled = true;
+                                            document.getElementById('live-sim-ack')?.addEventListener('change', function () {
+                                                submitBtn.disabled = !this.checked;
+                                            });
+                                        }
+                                    }
+
+                                    function clearWarning() {
+                                        if (liveWarning) { liveWarning.remove(); liveWarning = null; }
+                                        if (submitBtn && !document.getElementById('sim-ack')) submitBtn.disabled = false;
+                                    }
+                                })();
+
+                                const simAck    = document.getElementById('sim-ack');
+                                const submitBtn = document.getElementById('submit-btn');
+                                if (simAck && submitBtn) {
                                     submitBtn.disabled = true;
-                                    document.getElementById('live-sim-ack')?.addEventListener('change', function () {
+                                    submitBtn.title = 'Please acknowledge the similar submissions above first.';
+                                    simAck.addEventListener('change', function () {
                                         submitBtn.disabled = !this.checked;
+                                        submitBtn.title = '';
                                     });
                                 }
-                            }
 
-                            function clearWarning() {
-                                if (liveWarning) { liveWarning.remove(); liveWarning = null; }
-                                if (submitBtn && !document.getElementById('sim-ack')) submitBtn.disabled = false;
-                            }
-                        })();
+                                @if(session('success'))
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Submitted</span>',
+                                    html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
+                                    confirmButtonText: 'Close', confirmButtonColor: '#2d8176',
+                                    customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
+                                    buttonsStyling: false,
+                                });
+                                @endif
+                                // ── Submit Confirmation ──
+                        const submitBtnConfirm = document.getElementById('submit-btn');
+                        if (submitBtnConfirm) {
+                            submitBtnConfirm.addEventListener('click', function (e) {
+                                // Huwag mag-confirm kung disabled (similarity check)
+                                if (this.disabled) return;
 
-                        const simAck    = document.getElementById('sim-ack');
-                        const submitBtn = document.getElementById('submit-btn');
-                        if (simAck && submitBtn) {
-                            submitBtn.disabled = true;
-                            submitBtn.title = 'Please acknowledge the similar submissions above first.';
-                            simAck.addEventListener('change', function () {
-                                submitBtn.disabled = !this.checked;
-                                submitBtn.title = '';
+                                e.preventDefault();
+
+                                const title    = document.getElementById('title')?.value?.trim() || 'Untitled';
+                                const field    = document.getElementById('research_field');
+                                const fieldTxt = field?.options[field.selectedIndex]?.text || 'Not specified';
+                                const file     = document.getElementById('file')?.files[0];
+                                const fileName = file ? file.name : 'No file selected';
+
+                                Swal.fire({
+                                    title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.2rem;font-weight:700;">Submit Manuscript?</span>',
+                                    html: `
+                                        <p style="font-size:.85rem;color:#6b5740;margin-bottom:14px;line-height:1.6">
+                                            Are you sure you want to submit this manuscript? 
+                                        </p>
+
+                                        <p style="font-size:.76rem;color:#b5a595;margin-top:12px;line-height:1.5">
+                                            Once submitted, your manuscript will go through initial screening before peer review.
+                                        </p>`,
+                                    icon: 'question',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Yes, Submit',
+                                    cancelButtonText: 'Go Back',
+                                    reverseButtons: true,
+                                    customClass: {
+                                        popup:         'rounded-2xl',
+                                        confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest',
+                                        cancelButton:  'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest',
+                                    },
+                                    confirmButtonColor: '#2d8176',
+                                    cancelButtonColor:  '#f3ece0',
+                                    buttonsStyling: true,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        document.getElementById('submission-form').submit();
+                                    }
+                                });
                             });
                         }
-
-                        @if(session('success'))
-                        Swal.fire({
-                            icon: 'success',
-                            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.3rem;font-weight:700;">Submitted</span>',
-                            html: '<p style="font-size:.9rem;color:#6b5740;">{{ session('success') }}</p>',
-                            confirmButtonText: 'Close', confirmButtonColor: '#2d8176',
-                            customClass: { popup:'rounded-2xl', confirmButton:'rounded-lg px-8 py-2.5 text-xs font-bold uppercase tracking-widest' },
-                            buttonsStyling: false,
-                        });
-                        @endif
-                        // ── Submit Confirmation ──
-                const submitBtnConfirm = document.getElementById('submit-btn');
-                if (submitBtnConfirm) {
-                    submitBtnConfirm.addEventListener('click', function (e) {
-                        // Huwag mag-confirm kung disabled (similarity check)
-                        if (this.disabled) return;
-
-                        e.preventDefault();
-
-                        const title    = document.getElementById('title')?.value?.trim() || 'Untitled';
-                        const field    = document.getElementById('research_field');
-                        const fieldTxt = field?.options[field.selectedIndex]?.text || 'Not specified';
-                        const file     = document.getElementById('file')?.files[0];
-                        const fileName = file ? file.name : 'No file selected';
-
-                        Swal.fire({
-                            title: '<span style="font-family:\'Libre Baskerville\',serif;font-size:1.2rem;font-weight:700;">Submit Manuscript?</span>',
-                            html: `
-                                <p style="font-size:.85rem;color:#6b5740;margin-bottom:14px;line-height:1.6">
-                                    Are you sure you want to submit this manuscript? 
-                                </p>
-
-                                <p style="font-size:.76rem;color:#b5a595;margin-top:12px;line-height:1.5">
-                                    Once submitted, your manuscript will go through initial screening before peer review.
-                                </p>`,
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonText: 'Yes, Submit',
-                            cancelButtonText: 'Go Back',
-                            reverseButtons: true,
-                            customClass: {
-                                popup:         'rounded-2xl',
-                                confirmButton: 'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest',
-                                cancelButton:  'rounded-lg px-6 py-2.5 text-xs font-bold uppercase tracking-widest',
-                            },
-                            confirmButtonColor: '#2d8176',
-                            cancelButtonColor:  '#f3ece0',
-                            buttonsStyling: true,
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                document.getElementById('submission-form').submit();
-                            }
-                        });
-                    });
-                }
     </script>
 @endpush

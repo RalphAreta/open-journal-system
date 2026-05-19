@@ -354,6 +354,14 @@
                             <div
                                 class="hidden md:flex items-center space-x-1 ml-4 border-l border-white/10 pl-4"
                             >
+                                {{-- Desktop nav links (inside the md:flex div) --}}
+                                <a
+                                    href="{{ url('/') }}"
+                                    class="{{ $linkBase . $inactive }}"
+                                    onclick="confirmGoHome(event)"
+                                >
+                                    HOME
+                                </a>
                                 <a
                                     href="{{ route('dashboard') }}"
                                     class="{{ $linkBase . $inactive }}"
@@ -943,10 +951,33 @@
                         {{-- Nav links --}}
                         @php
                             $mLink = 'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold
-                                                                                              text-white/90 hover:text-white hover:bg-white/10 transition-all tracking-wide';
+                                                                                                                              text-white/90 hover:text-white hover:bg-white/10 transition-all tracking-wide';
                         @endphp
 
+                        {{-- ↓ BAGONG HOME LINK (ilagay dito) --}}
                         <a
+                            href="{{ url('/') }}"
+                            class="{{ $mLink }}"
+                            onclick="confirmGoHome(event)"
+                        >
+                            <svg
+                                class="w-4 h-4 shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                                />
+                            </svg>
+                            Home
+                        </a>
+
+                        <a
+                            {{-- ← DATING DASHBOARD LINK, wag baguhin --}}
                             href="{{ route('dashboard') }}"
                             class="{{ $mLink }}"
                         >
@@ -1285,6 +1316,24 @@
             mobileMenu?.querySelectorAll('a').forEach((link) => {
                 link.addEventListener('click', () => toggleMobileMenu(true));
             });
+            /* ── Go Home confirm ── */
+            function confirmGoHome(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: '<span class="font-libre text-[#2D8176]">Leave to Home Page?</span>',
+                    text: 'You will be taken to the public landing page.',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#2d8176',
+                    cancelButtonColor: '#a07830',
+                    confirmButtonText: 'Yes, Go to Home',
+                    cancelButtonText: 'Stay Here',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '{{ url('/') }}';
+                    }
+                });
+            }
         </script>
         <script
             defer

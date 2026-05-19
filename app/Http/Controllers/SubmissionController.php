@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use App\Models\LayoutEditorAssignment;
-
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\SimpleType\Jc;
+use PhpOffice\PhpWord\Shared\Converter;
 class SubmissionController extends Controller
 {
     // ─── Statuses that mean "still active / in-progress" ───────────────────
@@ -111,6 +114,13 @@ if ($activeCount >= 2) {
             'research_field'          => ['required', 'string', 'in:' . implode(',', array_keys(\App\Models\EditorExpertise::getFieldOptions()))],
             'file'                    => ['required', 'file', 'mimes:pdf,doc,docx', 'max:51200'],
             'similarity_acknowledged' => ['nullable', 'in:1'],
+
+              'authors'                  => ['required', 'array', 'min:1'],
+    'authors.*.name'           => ['required', 'string', 'max:255'],
+    'authors.*.role'           => ['required', 'in:first_author,co_author,corresponding_author,secondary_author'],
+    'authors.*.affiliations'   => ['required', 'array', 'min:1'],
+    'authors.*.affiliations.*' => ['required', 'string', 'max:255'],
+
         ]);
 
         // ── Restriction 2: similar article check ───────────────────────────
@@ -150,7 +160,11 @@ if ($activeCount >= 2) {
             'status'             => Submission::STATUS_SUBMITTED,
             'submitted_at'       => now(),
             'submission_number'  => $nextSubmissionNumber,
+             'authors'            => json_encode(array_values($validated['authors'])),
         ]);
+
+        $titlePagePath = $this->generateTitlePage($submission);
+$submission->update(['title_page_path' => $titlePagePath]);
 
         // ── Notify chief editors ────────────────────────────────────────────
         $chiefEditors = User::whereHas('roles', fn ($q) => $q->where('name', 'editor-in-chief'))->get();
@@ -638,4 +652,87 @@ if ($activeCount >= 2) {
 
         return "[Journal]-D-{$year}-{$submissionNumber}R{$revisionCount}.{$extension}";
     }
+
+    // ───────────────────────────────────────────────────────────────────────
+//  WORD DOC: Title Page Generator
+// ───────────────────────────────────────────────────────────────────────
+private function generateTitlePage(Submission $submission): string
+{
+    $phpWord = new \PhpOffice\PhpWord\PhpWord();
+    $phpWord->setDefaultFontName('Times New Roman');
+    $phpWord->setDefaultFontSize(12);
+
+    $cm = fn($val) => \PhpOffice\PhpWord\Shared\Converter::cmToTwip($val);
+
+    $section = $phpWord->addSection([
+        'marginTop'    => $cm(2.5),
+        'marginBottom' => $cm(2.5),
+        'marginLeft'   => $cm(3.0),
+        'marginRight'  => $cm(2.5),
+    ]);
+
+    // Title
+    $section->addText(
+        htmlspecialchars($submission->title),
+        ['bold' => true, 'size' => 16, 'name' => 'Times New Roman'],
+        ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 360]
+    );
+
+    // Authors
+    $roleLabels = [
+        'first_author'         => 'First Author',
+        'co_author'            => 'Co-Author',
+        'corresponding_author' => 'Corresponding Author',
+        'secondary_author'     => 'Secondary Author',
+    ];
+
+    $authors = json_decode($submission->authors, true) ?? [];
+
+    foreach ($authors as $author) {
+        $role    = $roleLabels[$author['role']] ?? ucfirst(str_replace('_', ' ', $author['role']));
+        $nameRun = $section->addTextRun([
+            'alignment'  => \PhpOffice\PhpWord\SimpleType\Jc::CENTER,
+            'spaceAfter' => 80,
+        ]);
+        $nameRun->addText(htmlspecialchars($author['name']), ['bold' => true, 'size' => 12]);
+        $nameRun->addText(" ({$role})", ['size' => 10, 'color' => '555555']);
+
+        foreach ($author['affiliations'] as $affil) {
+            if (!trim($affil)) continue;
+            $section->addText(
+                htmlspecialchars(trim($affil)),
+                ['italic' => true, 'size' => 10, 'color' => '666666'],
+                ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 40]
+            );
+        }
+        $section->addTextBreak(1);
+    }
+
+    $section->addTextBreak(1);
+
+    // Abstract
+    $section->addText('Abstract', ['bold' => true, 'size' => 12], ['spaceAfter' => 120]);
+    $section->addText(
+        htmlspecialchars($submission->abstract),
+        ['size' => 11],
+        ['spaceAfter' => 240, 'lineHeight' => 1.5]
+    );
+
+    // Keywords
+    if ($submission->keywords) {
+        $kwRun = $section->addTextRun(['spaceAfter' => 120]);
+        $kwRun->addText('Keywords: ', ['bold' => true, 'size' => 11]);
+        $kwRun->addText(htmlspecialchars($submission->keywords), ['italic' => true, 'size' => 11]);
+    }
+
+    // Save
+    $dir = storage_path('app/submissions/title_pages');
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+
+    $filename = "title_page_{$submission->id}.docx";
+    \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007')
+        ->save("{$dir}/{$filename}");
+
+    return "submissions/title_pages/{$filename}";
+}
 }

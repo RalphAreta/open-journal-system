@@ -443,36 +443,6 @@
             display: block;
         }
 
-        /* ── CV Drop Zone ── */
-        .cv-drop-zone {
-            display: block;
-            border: 1.5px dashed #c9a84c;
-            border-radius: 12px;
-            background: rgba(201, 168, 76, 0.04);
-            cursor: pointer;
-            padding: 1rem;
-            text-align: center;
-            transition:
-                background 0.2s,
-                border-color 0.2s;
-        }
-        .cv-drop-zone:hover,
-        .cv-drop-zone.drag-over {
-            background: rgba(201, 168, 76, 0.09);
-            border-color: #a07830;
-        }
-        .cv-icon-wrap {
-            width: 2.2rem;
-            height: 2.2rem;
-            border-radius: 10px;
-            background: rgba(180, 190, 210, 0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #8a96a8;
-            margin: 0 auto;
-        }
-
         /* ════════════════════════════════
            MOBILE OVERRIDES
         ════════════════════════════════ */
@@ -845,7 +815,6 @@
                     <form
                         method="POST"
                         action="{{ route('register') }}"
-                        enctype="multipart/form-data"
                         class="space-y-5 md:space-y-6"
                     >
                         @csrf
@@ -1026,6 +995,7 @@
                         </div>
 
                         {{-- ── Expertise Panel (conditional) ── --}}
+                        {{-- ── Expertise Panel (conditional) ── --}}
                         <div id="expertise-container">
                             <div
                                 class="p-4 sm:p-5 border border-dashed border-[#c9a84c]/35 rounded-xl bg-[#fdfcf8]"
@@ -1055,142 +1025,6 @@
                                             <span>{{ $category }}</span>
                                         </label>
                                     @endforeach
-                                </div>
-                                {{-- ── CV Upload (inside #expertise-container, after expertise grid) ── --}}
-                                <div
-                                    class="mt-4 pt-4 border-t border-dashed border-[#c9a84c]/25"
-                                >
-                                    <div
-                                        class="form-section-label"
-                                        style="margin-bottom: 0.75rem"
-                                    >
-                                        Upload CV / Resumé
-                                    </div>
-                                    <p
-                                        class="text-[.72rem] text-[#a0aab8] mb-3 -mt-1"
-                                    >
-                                        Required for reviewer and editor
-                                        accounts. PDF or Word, max 5 MB. Your
-                                        application will be reviewed by an admin
-                                        before activation.
-                                    </p>
-                                    <label class="cv-drop-zone" id="cvDropZone">
-                                        <input
-                                            type="file"
-                                            name="cv"
-                                            id="cvInput"
-                                            accept=".pdf,.doc,.docx"
-                                            class="sr-only"
-                                            onchange="handleCvChange(this)"
-                                        />
-                                        {{-- idle state --}}
-                                        <div
-                                            id="cvIdle"
-                                            class="flex flex-col items-center gap-2 py-2"
-                                        >
-                                            <div class="cv-icon-wrap">
-                                                <svg
-                                                    width="22"
-                                                    height="22"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.6"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
-                                                    />
-                                                    <polyline
-                                                        points="17 8 12 3 7 8"
-                                                    />
-                                                    <line
-                                                        x1="12"
-                                                        y1="3"
-                                                        x2="12"
-                                                        y2="15"
-                                                    />
-                                                </svg>
-                                            </div>
-                                            <span
-                                                class="text-[.78rem] font-semibold text-[#6a7890]"
-                                            >
-                                                Click to browse or drag & drop
-                                            </span>
-                                            <span
-                                                class="text-[.68rem] text-[#a0aab8]"
-                                            >
-                                                PDF, DOC, DOCX · max 5 MB
-                                            </span>
-                                        </div>
-                                        {{-- file chosen state --}}
-                                        <div
-                                            id="cvChosen"
-                                            class="hidden flex items-center gap-3 py-1 px-2"
-                                        >
-                                            <div
-                                                class="cv-icon-wrap"
-                                                style="
-                                                    background: rgba(
-                                                        201,
-                                                        168,
-                                                        76,
-                                                        0.15
-                                                    );
-                                                    color: #a07830;
-                                                "
-                                            >
-                                                <svg
-                                                    width="18"
-                                                    height="18"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.8"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <polyline
-                                                        points="20 6 9 17 4 12"
-                                                    />
-                                                </svg>
-                                            </div>
-                                            <div class="min-w-0">
-                                                <p
-                                                    id="cvFileName"
-                                                    class="text-[.8rem] font-semibold text-[#1a202c] truncate"
-                                                ></p>
-                                                <p
-                                                    id="cvFileSize"
-                                                    class="text-[.67rem] text-[#a0aab8]"
-                                                ></p>
-                                            </div>
-                                            <button
-                                                type="button"
-                                                onclick="clearCv(event)"
-                                                class="ml-auto shrink-0 text-[#b0bac8] hover:text-[#dc2626] transition-colors p-1"
-                                            >
-                                                <svg
-                                                    width="14"
-                                                    height="14"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <line
-                                                        x1="18"
-                                                        y1="6"
-                                                        x2="6"
-                                                        y2="18"
-                                                    />
-                                                    <line
-                                                        x1="6"
-                                                        y1="6"
-                                                        x2="18"
-                                                        y2="18"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -1528,48 +1362,6 @@
             if (!icon) return;
             el.addEventListener('focus', () => (icon.style.color = '#c9a84c'));
             el.addEventListener('blur', () => (icon.style.color = ''));
-        });
-
-        /* ── CV upload UI ── */
-        function handleCvChange(input) {
-            const file = input.files[0];
-            if (!file) return;
-            document.getElementById('cvIdle').classList.add('hidden');
-            const chosen = document.getElementById('cvChosen');
-            chosen.classList.remove('hidden');
-            chosen.classList.add('flex');
-            document.getElementById('cvFileName').textContent = file.name;
-            const kb = file.size / 1024;
-            document.getElementById('cvFileSize').textContent =
-                kb > 1024
-                    ? (kb / 1024).toFixed(1) + ' MB'
-                    : Math.round(kb) + ' KB';
-        }
-        function clearCv(e) {
-            e.preventDefault();
-            document.getElementById('cvInput').value = '';
-            document.getElementById('cvChosen').classList.add('hidden');
-            document.getElementById('cvChosen').classList.remove('flex');
-            document.getElementById('cvIdle').classList.remove('hidden');
-        }
-
-        // Drag-and-drop
-        const zone = document.getElementById('cvDropZone');
-        zone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            zone.classList.add('drag-over');
-        });
-        zone.addEventListener('dragleave', () =>
-            zone.classList.remove('drag-over'),
-        );
-        zone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            zone.classList.remove('drag-over');
-            const dt = e.dataTransfer;
-            if (dt.files.length) {
-                document.getElementById('cvInput').files = dt.files;
-                handleCvChange(document.getElementById('cvInput'));
-            }
         });
     </script>
 @endsection
