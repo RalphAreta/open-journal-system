@@ -810,7 +810,7 @@
                             <p
                                 class="text-[.6rem] font-extrabold tracking-[.12em] uppercase text-[#6b5740] mb-2"
                             >
-                                Current Status
+                                Current Statuss
                             </p>
                             @php
                                 $screeningFailed = $submission->initial_screening_status === 'failed';
@@ -1164,6 +1164,66 @@
                                         </div>
                                     @endif
                                 @endif
+                            </div>
+                        @endif
+
+                        @if ($submission->title_page_path)
+                            <div class="py-4 last:pb-0">
+                                <p
+                                    class="text-[.6rem] font-extrabold tracking-[.12em] uppercase text-[#6b5740] mb-2"
+                                >
+                                    Title Page
+                                </p>
+                                <div
+                                    class="flex items-center gap-3 px-4 py-3 bg-[#e8f4f2] border border-[rgba(45,129,118,.3)] rounded-xl mb-3"
+                                >
+                                    <div
+                                        class="w-10 h-10 rounded-lg shrink-0 bg-white border border-[rgba(45,129,118,.2)] flex items-center justify-center text-[#2d8176]"
+                                    >
+                                        <svg
+                                            class="w-5 h-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                                                stroke-width="1.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <div class="overflow-hidden flex-1 min-w-0">
+                                        <p class="file-name-text">
+                                            title_page_{{ $submission->id }}.docx
+                                        </p>
+                                        <p
+                                            class="text-[.62rem] text-[#2d8176] tracking-[.06em] uppercase mt-0.5 font-bold"
+                                        >
+                                            Auto-Generated
+                                        </p>
+                                    </div>
+                                </div>
+                                <a
+                                    href="{{ route('submissions.title-page.download', $submission) }}"
+                                    class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-[#2d8176] hover:bg-[#1a4d46] text-white text-[.7rem] font-bold tracking-[.08em] uppercase transition-all"
+                                >
+                                    <svg
+                                        class="w-3.5 h-3.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                        />
+                                    </svg>
+                                    Download Title Page
+                                </a>
                             </div>
                         @endif
 

@@ -735,4 +735,16 @@ private function generateTitlePage(Submission $submission): string
 
     return "submissions/title_pages/{$filename}";
 }
+public function downloadTitlePage(Submission $submission)
+{
+    $this->authorizeView($submission);
+
+    $fullPath = storage_path('app/' . $submission->title_page_path);
+
+    if (!$submission->title_page_path || !file_exists($fullPath)) {
+        abort(404, 'Title page not found.');
+    }
+
+    return response()->download($fullPath, 'title_page_' . $submission->id . '.docx');
+}
 }

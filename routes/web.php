@@ -81,6 +81,8 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/submissions/{submission}/upload-signed-ctf', [SubmissionController::class, 'uploadSignedCtf'])->name('submissions.upload-signed-ctf'); // ← dagdag
         Route::post('/submissions/{submission}/author-confirm', [SubmissionController::class, 'authorConfirm'])->name('submissions.author-confirm');
     Route::post('/submissions/{submission}/author-request-revision', [SubmissionController::class, 'authorRequestRevision'])->name('submissions.author-request-revision');
+    Route::get('/submissions/{submission}/title-page', [SubmissionController::class, 'downloadTitlePage'])
+    ->name('submissions.title-page.download');
     });
 
     Route::middleware('role:reviewer')->group(function (): void {
